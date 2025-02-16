@@ -1,0 +1,78 @@
+---
+/**
+ * Hero section with fullscreen video background
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+  videoSrc: string;
+  logoSrc: string;
+  logoAlt: string;
+  overlayColor?: string;
+  overlayOpacity?: string;
+}
+
+const {
+  videoSrc,
+  logoSrc,
+  logoAlt,
+  overlayColor = "rgb(0,0,0)",
+  overlayOpacity = "0.43"
+} = Astro.props;
+---
+
+<section class="relative h-screen w-full overflow-hidden">
+  <!-- Video Background -->
+  <div class="absolute inset-0 h-full w-full">
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      class="h-full w-full object-cover"
+    >
+      <source src={videoSrc} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Overlay -->
+  <div 
+    class="absolute inset-0 z-10"
+    style={`background-color: ${overlayColor}; opacity: ${overlayOpacity};`}
+  >
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
+    <div 
+      class="w-full max-w-[700px] animate-fadeIn"
+      style="animation-duration: 3.5s;"
+    >
+      <Image
+        src={logoSrc}
+        alt={logoAlt}
+        class="w-full"
+        width={700}
+        height={200}
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+</style>

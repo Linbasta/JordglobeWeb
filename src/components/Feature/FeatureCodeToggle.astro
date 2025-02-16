@@ -1,0 +1,169 @@
+---
+/**
+ * * These are toggle-able code sections, to showcase code in different languages
+ * Each code section is a tab, and the code is displayed in a window below
+ *
+ * This uses an Astro content collection for the data. Check out src/data/codeToggles for the data
+ */
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import { Icon } from "astro-icon/components";
+
+// components
+import Badge from "@components/Badge/Badge.astro";
+
+// get all code toggle sections
+const codeToggles = await getCollection("codeToggles", ({ data }) => {
+	// filter out drafts
+	return data.draft !== true;
+});
+
+interface codeToggleData {
+	language: string;
+	order: number;
+	icon?: string;
+	code: any; // return from render() function. This is the code HTML
+}
+
+// for each element in codeToggles, render the code and return the data
+const codeToggleData: codeToggleData[] = await Promise.all(
+	codeToggles.map(async (codeToggle) => {
+		const { language, order, icon } = codeToggle.data;
+		const { Content } = await render(codeToggle);
+		return { language, order, icon, code: Content };
+	}),
+);
+
+// sort the elements by order
+codeToggleData.sort((a, b) => a.order - b.order);
+---
+
+<section id="feature-code-toggle" class="bg-base-950 dark:bg-base-900 overflow-clip py-16 md:py-24">
+	<div class="mx-auto max-w-4xl px-4">
+		<div class="dark mx-auto max-w-xl text-center" data-aos="fade-left" id="code-toggle-trigger">
+			<Badge>Code for everyone</Badge>
+			<h2 class="h2">Check out this cool code toggle</h2>
+			<p class="description mt-4 text-xl tracking-tight text-pretty">
+				Showcase how you can use your tool in all sorts of different languages.
+			</p>
+		</div>
+		<div
+			class="code-toggle border-base-900 mt-16 w-full overflow-clip rounded-2xl border"
+			style="background-color:var(--astro-code-background)"
+			data-aos="fade-left"
+			data-aos-trigger="#code-toggle-trigger"
+			data-aos-delay=".3"
+		>
+			<div class="tabs border-base-900 flex justify-start gap-2 overflow-x-scroll border-b p-3">
+				{
+					codeToggleData.map((codeToggle, idx) => (
+						<button
+							id={`code toggle ${idx}`}
+							class="code-toggle__tab border-base-900 text-base-200 hover:border-base-700 flex flex-nowrap items-center gap-1 rounded-md border px-2 py-1 transition duration-300"
+							data-tab={idx}
+							aria-expanded="false"
+							aria-haspopup="true"
+							aria-controls={`code content ${idx}`}
+						>
+							{codeToggle.icon && <Icon name={codeToggle.icon} class="size-4" aria-hidden="true" />}
+							<span>{codeToggle.language}</span>
+						</button>
+					))
+				}
+			</div>
+			<div class="code-window h-96">
+				<div class="relative z-10 h-full overflow-hidden">
+					{
+						codeToggleData.map((codeToggle, idx) => (
+							<div
+								id={`code content ${idx}`}
+								class="code-toggle__content markdown-content absolute inset-x-0 z-10 hidden h-full max-w-none opacity-0 transition-all duration-300"
+								data-tab={idx}
+								aria-labelledby={`code toggle ${idx}`}
+							>
+								{/* render the code HTML */}
+								<codeToggle.code />
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	function codeToggleSetup() {
+		const tabs = document.querySelectorAll(".code-toggle__tab");
+		const contents = document.querySelectorAll(".code-toggle__content") as NodeListOf<HTMLElement>;
+
+		if (!tabs.length || !contents.length) return;
+
+		tabs.forEach((tab) => {
+			tab.addEventListener("click", () => {
+				// if tab has class "active", return
+				if (tab.classList.contains("active")) return;
+
+				//@ts-ignore
+				const newContent = contents[parseInt(tab.getAttribute("data-tab"))];
+
+				// remove active class from currently active tab
+				tabs.forEach((t) => {
+					if (t.classList.contains("active")) {
+						// turn off currently active tab
+						t.classList.remove("active");
+						t.setAttribute("aria-expanded", "false");
+
+						// hide currently active content
+						//@ts-ignore
+						const oldContent = contents[parseInt(t.getAttribute("data-tab"))];
+						oldContent.classList.remove("code-toggle__content--fade-in");
+					}
+				});
+
+				// add active class to clicked tab
+				tab.classList.add("active");
+				tab.setAttribute("aria-expanded", "true");
+
+				// show new code content
+				newContent.classList.remove("hidden");
+				newContent.classList.add("code-toggle__content--fade-in");
+			});
+		});
+
+		// Set default active tab
+		tabs[0].classList.add("active");
+		tabs[0].setAttribute("aria-expanded", "true");
+		contents[0].classList.remove("hidden");
+		contents[0].classList.add("code-toggle__content--fade-in");
+	}
+
+	// runs on initial page load
+	codeToggleSetup();
+
+	// runs on view transitions navigation
+	document.addEventListener("astro:after-swap", codeToggleSetup);
+</script>
+
+<style>
+	@import "tailwindcss/theme" theme(reference);
+	@import "@/styles/tailwind-theme.css" theme(reference);
+
+	.code-toggle__content--fade-in {
+		animation: codeContentFadeInAnimation ease-out 0.5s forwards;
+	}
+
+	@keyframes codeContentFadeInAnimation {
+		0% {
+			top: 0.25rem;
+			opacity: 0;
+		}
+		100% {
+			top: 0;
+			opacity: 1;
+		}
+	}
+
+	.code-toggle__tab.active {
+		@apply border-base-600 bg-base-900 text-base-50;
+	}
+</style>

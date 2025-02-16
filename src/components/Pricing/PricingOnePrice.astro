@@ -1,0 +1,132 @@
+---
+/**
+ * * pricing section for one price only
+ * For those who like to keep it simple
+ */
+
+import { Icon } from "astro-icon/components";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// components
+import Button from "@components/Button/Button.astro";
+import Badge from "@components/Badge/Badge.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { useTranslations } from "@js/translationUtils";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(currLocale);
+
+interface pricingItem {
+	name: string; // plan name
+	description: string; // plan description
+	price: {
+		monthly: number; // monthly price
+	};
+	features: string[]; // list of features
+	cardBullets: string[]; // list of card bullets
+}
+
+const pricingData: pricingItem = {
+	name: "Solo",
+	description: "All features for one low monthly price.",
+	price: {
+		monthly: 19,
+	},
+	features: ["Unlimited Projects", "150+ Integrations", "Post Schedule", "Priority Support"],
+	cardBullets: [
+		"Price Per User",
+		"Unlimited Projects",
+		"No Attribution Required",
+		"150+ Integrations",
+		"Email Support",
+	],
+};
+---
+
+<section
+	id="pricing"
+	class="dark bg-base-950 text-base-100 dark:bg-base-900 overflow-hidden py-16 lg:py-24"
+>
+	<div class="site-container">
+		<div class="-m-8 flex flex-wrap">
+			<div class="w-full p-8 md:w-1/2">
+				<div class="flex h-full max-w-2xl flex-col justify-between">
+					<div class="mb-16">
+						<Badge>one simple price</Badge>
+						<h2 class="h2">Elevate your brand with a beautiful website.</h2>
+					</div>
+					<div class="mr-auto max-w-xl">
+						<p class="text-base-400 mb-8 text-xl tracking-tight">
+							Here’s a brief description of the features:
+						</p>
+						<ul class="-m-2.5 flex flex-wrap">
+							{
+								pricingData.features.map((feature) => (
+									<li class="flex items-center p-2.5">
+										<div class="mr-3.5 inline-block">
+											<Icon
+												name="tabler/check"
+												class="text-primary-600 size-7"
+												aria-hidden="true"
+											/>
+										</div>
+										<p class="text-xl tracking-tight">{feature}</p>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="w-full p-8 md:w-1/2">
+				<div
+					class="mx-auto transform rounded-2xl bg-indigo-600 transition duration-500 hover:-translate-y-2 md:mr-0 md:max-w-md"
+				>
+					<div class="bg-base-100 rounded-2xl p-12 pt-3 pr-3">
+						<div class="flex justify-end">
+							<span
+								class="from-gradient-1 via-gradient-2 to-gradient-3 inline-block rounded-full bg-linear-40 px-3 py-1.5 text-sm font-medium tracking-tight text-white"
+								>One Plan</span
+							>
+						</div>
+						<div class="text-base-900 pr-9">
+							<h3 class="mb-6 font-serif text-6xl tracking-tighter">
+								{pricingData.name}
+							</h3>
+							<p class="mb-3 text-3xl font-semibold" style="letter-spacing: -0.5px;">
+								From ${pricingData.price.monthly}/mo
+							</p>
+							<p class="tracking-tight">
+								{pricingData.description}
+							</p>
+						</div>
+					</div>
+					<div class="p-12 pb-11">
+						<ul class="-m-1.5 mb-11">
+							{
+								pricingData.cardBullets.map((bullet) => (
+									<li class="flex items-center p-1.5">
+										<div class="mr-2 inline-block">
+											<Icon name="tabler/point" class="size-4 text-white" aria-hidden="true" />
+										</div>
+										<span class="font-medium tracking-tight text-white">{bullet}</span>
+									</li>
+								))
+							}
+						</ul>
+						<Button variant="outline" href={getRelativeLocaleUrl(currLocale, "/signup")}>
+							Try 14 Days Free Trial
+						</Button>
+						<!-- <a
+              class="mb-4 inline-block w-full rounded-lg bg-white px-5 py-4 text-center font-semibold tracking-tight text-base-700 transition duration-200 hover:bg-base-100 focus:ring-4 focus:ring-base-200"
+              href="#">Try 14 Days Free Trial</a
+            > -->
+						<p class="mt-4 text-sm tracking-tight text-white">No credit card required</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

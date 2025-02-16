@@ -1,0 +1,37 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import FeatureBento from "@components/Feature/FeatureBento.astro";
+import FeatureThreeImage from "@components/Feature/FeatureThreeImage.astro";
+import FeatureCardsSmall from "@components/Feature/FeatureCardsSmall.astro";
+import FeatureCardsSmall2 from "@components/Feature/FeatureCardsSmall2.astro";
+import FeatureCardsMedium from "@components/Feature/FeatureCardsMedium.astro";
+import FeatureVideo from "@components/Feature/FeatureVideo.astro";
+import FeatureSideImage from "@components/Feature/FeatureSideImage.astro";
+import FeatureSimple from "@components/Feature/FeatureSimple.astro";
+import FeatureSteps from "@components/Feature/FeatureSteps.astro";
+import FeatureIntegrations from "@components/Feature/FeatureIntegrations.astro";
+import FeatureNumbers from "@components/Feature/FeatureNumbers.astro";
+import FeatureCodeToggle from "@components/Feature/FeatureCodeToggle.astro";
+---
+
+<BaseLayout
+	title="Feature sections"
+	description="All of the feature sections included with the Nova theme"
+>
+	<hr class="pt-16" />
+	<FeatureBento />
+	<FeatureCodeToggle />
+	<FeatureCardsSmall2 />
+	<FeatureThreeImage />
+	<FeatureIntegrations />
+	<FeatureCardsMedium />
+	<FeatureVideo />
+	<FeatureSideImage />
+	<FeatureSteps />
+	<FeatureSimple />
+	<FeatureCardsSmall />
+	<FeatureNumbers />
+</BaseLayout>

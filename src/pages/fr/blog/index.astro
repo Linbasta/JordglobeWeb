@@ -1,0 +1,44 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import PostCard from "@components/PostCard/PostCardNova.astro";
+import CategoryCloud from "@components/CategoryCloud/CategoryCloud.astro";
+import Badge from "@components/Badge/Badge.astro";
+
+// utils
+import { getAllPosts } from "@js/blogUtils";
+import { getLocaleFromUrl } from "@js/localeUtils";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+const posts = await getAllPosts(currLocale);
+---
+
+<BaseLayout
+	title="Our Blog Posts"
+	description="Learn from our blog posts about web development, design, and more."
+>
+	<section class="site-container">
+		<div class="overflow-x-clip pt-28 md:pt-36">
+			<div class="mx-auto flex max-w-[950px] flex-col justify-center">
+				<!-- <div class="mx-auto">
+          <Badge>Blog</Badge>
+        </div> -->
+				<h1 class="h1 text-center">Read from our blogs</h1>
+				<p class="description mx-auto mt-0 max-w-2xl text-center md:text-lg">
+					Use and re-use tons of responsive sections to create the perfect layout. Sections are
+					organised into convenient categories.
+				</p>
+			</div>
+
+			<div class="mb-10 mt-8 flex justify-center md:mb-20">
+				<CategoryCloud />
+			</div>
+		</div>
+
+		<div class="grid gap-8 gap-y-10 md:grid-cols-2 md:gap-16 lg:grid-cols-3">
+			{posts.map((post) => <PostCard post={post} showDescription={false} data-aos="fade-up" />)}
+		</div>
+	</section>
+</BaseLayout>

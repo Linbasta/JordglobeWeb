@@ -1,0 +1,174 @@
+@import url("./fonts.css");
+
+@import "tailwindcss";
+
+/* tailwind plugins */
+@plugin "@tailwindcss/forms";
+@plugin "tailwindcss-animate";
+
+/* dark mode */
+@variant dark (&:where(.dark, .dark *));
+
+/* theme definition import */
+@import "./tailwind-theme.css";
+
+/* other imports into specific layers */
+@import "./aos.css" layer(utilities);
+@import "./markdown-content.css" layer(components);
+@import "./buttons.css" layer(components);
+
+/* https://tailwindcss.com/docs/adding-custom-styles#using-css-and-layer */
+@layer base {
+	:root {
+		/* starwind component variables  */
+		--background: var(--color-base-50);
+		--foreground: var(--color-base-900);
+		--card: var(--color-base-50);
+		--card-foreground: var(--color-base-950);
+		--popover: var(--color-base-50);
+		--popover-foreground: var(--color-base-950);
+		--primary: var(--color-primary-700);
+		--primary-dark: var(--color-primary-800);
+		--primary-foreground: var(--color-base-50);
+		--secondary: var(--color-fuchsia-700);
+		--secondary-foreground: var(--color-base-50);
+		--muted: var(--color-base-100);
+		--muted-foreground: var(--color-base-600);
+		--accent: var(--color-base-200);
+		--accent-foreground: var(--color-base-900);
+		--info: var(--color-sky-300);
+		--info-foreground: var(--color-sky-950);
+		--success: var(--color-green-300);
+		--success-foreground: var(--color-green-950);
+		--warning: var(--color-amber-300);
+		--warning-foreground: var(--color-amber-950);
+		--error: var(--color-red-700);
+		--error-foreground: var(--color-base-50);
+		--border: var(--color-base-300);
+		--input: var(--color-base-200);
+		--outline: var(--color-primary-500);
+
+		--radius: 0.5rem;
+
+		/* custom shiki styling for markdown code blocks. These are the variables Astro uses
+		Shiki Themes: https://shiki.style/themes   https://shiki.matsu.io/guide/theme-colors#css-variables-theme */
+		--astro-code-foreground: #ffffff;
+		--astro-code-background: #0a0e17;
+		--astro-code-token-constant: #93c5fd;
+		--astro-code-token-string: #624fb0;
+		--astro-code-token-comment: #a1a1aad0;
+		--astro-code-token-keyword: #d4d4d8d0;
+		--astro-code-token-parameter: #47a7eb;
+		--astro-code-token-function: #818cf8;
+		--astro-code-token-string-expression: #fdcc7c;
+		--astro-code-token-punctuation: #d4d4d8d0;
+		--astro-code-token-link: #ffffff;
+
+		/* default font */
+		font-family: var(--font-sans);
+	}
+
+	.dark {
+		/* starwind dark theme config */
+		--background: var(--color-base-950);
+		--foreground: var(--color-base-100);
+		--card: oklch(1% 0 0);
+		--card-foreground: var(--color-base-100);
+		--popover: oklch(1% 0 0);
+		--popover-foreground: var(--color-base-100);
+		--primary: var(--color-primary-500);
+		--primary-dark: var(--color-primary-800);
+		--primary-foreground: var(--color-base-50);
+		--secondary: var(--color-fuchsia-300);
+		--secondary-foreground: oklch(1% 0 0);
+		--muted: var(--color-base-900);
+		--muted-foreground: var(--color-base-400);
+		--accent: var(--color-base-900);
+		--accent-foreground: var(--color-base-100);
+		--info: var(--color-sky-300);
+		--info-foreground: var(--color-sky-950);
+		--success: var(--color-green-300);
+		--success-foreground: var(--color-green-950);
+		--warning: var(--color-amber-300);
+		--warning-foreground: var(--color-amber-950);
+		--error: var(--color-red-400);
+		--error-foreground: oklch(99% 0 0);
+		--border: var(--color-base-700);
+		--input: var(--color-base-800);
+		--outline: var(--color-primary-500);
+
+		@apply scheme-dark;
+	}
+
+	/* starwind preflight merged with Cosmic Themes */
+	* {
+		@apply border-border;
+	}
+	*:focus-visible {
+		@apply outline-outline !transition-none;
+	}
+	html {
+		@apply bg-background text-foreground leading-[1.6rem] scheme-light dark:scheme-dark;
+		scroll-behavior: smooth;
+		-moz-text-size-adjust: none;
+		-webkit-text-size-adjust: none;
+		text-size-adjust: none;
+	}
+	button {
+		@apply cursor-pointer;
+	}
+}
+
+@layer components {
+	.h1 {
+		@apply text-base-900 dark:text-base-100 mb-4 font-serif text-5xl tracking-tighter md:text-6xl;
+	}
+
+	.h2 {
+		@apply text-base-900 dark:text-base-100 mb-4 font-serif text-4xl tracking-tighter md:text-6xl;
+	}
+
+	.h3 {
+		@apply text-base-900 dark:text-base-100 text-xl font-medium md:text-2xl;
+	}
+
+	.description {
+		@apply text-base-700 dark:text-base-300;
+	}
+
+	.site-container {
+		@apply mx-auto max-w-[90rem] px-4;
+	}
+
+	/* used for various form inputs */
+	.form__label {
+		@apply text-base-800 dark:text-base-200;
+	}
+
+	.form__input {
+		@apply border-base-300 text-base-700 placeholder-base-500 w-full rounded-md border bg-white p-4 tracking-tight transition duration-200 outline-none;
+		@apply dark:border-base-700 dark:bg-base-900 dark:text-base-300 dark:placeholder-base-500;
+		@apply focus:border-base-700 dark:focus:border-base-300 focus:ring-0 focus:outline-none;
+	}
+
+	/* styles navbar links */
+	.nav__link--base {
+		@apply text-base-800 hover:text-primary-600 dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
+	}
+}
+
+@layer utilities {
+	/* used with select field */
+	.sr-only {
+		@apply sr-only;
+	}
+
+	.rotate-180 {
+		@apply rotate-180;
+	}
+
+	/* use with "animate-pause" to pause a CSS animation */
+	.pause {
+		animation-play-state: paused !important;
+	}
+}
