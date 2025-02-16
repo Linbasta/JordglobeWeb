@@ -40,7 +40,8 @@ import FaqAccordions from "@components/Faq/FaqAccordions.astro";
 import FaqCards from "@components/Faq/FaqCards.astro";
 
 import HeroVideo from '@components/Hero/HeroVideo.astro';
-import logoImage from '../assets/images/cosmic-themes-logo.png';
+import HeroDownload from '@components/Hero/HeroDownload.astro';
+import logoImage from '@images/cosmic-themes-logo.png';
 
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
@@ -62,12 +63,13 @@ const siteData = getTranslatedData("siteData", currLocale);
 />
 	<!-- <HeroSideImage /> -->
 	<!-- <HeroBgImage /> -->
+	<HeroDownload/> 
 
 
 	<!-- <HeroCentered /> -->
 
-	<!-- <LogoCloudStatic /> -->
-	<!-- <LogoCloudMarquee /> -->
+	<LogoCloudStatic />
+	<LogoCloudMarquee />
 
 	<FeatureBento />
 
@@ -75,14 +77,14 @@ const siteData = getTranslatedData("siteData", currLocale);
 
 	<FeatureCardsMedium />
 
-	<!-- <FeatureCardsSmall2 /> -->
-	<!-- <FeatureCardsSmall /> -->
+	<FeatureCardsSmall2 />
+	<FeatureCardsSmall />
 	<FeatureVideo /> 
 
 	<!-- <ServicesSideImage /> -->
 	<!-- <ServicesIcon /> -->
 
-	<!-- <FeatureSideImage /> -->
+	<FeatureSideImage />
 
 	<!-- <TestimonialsSwiperQuotes /> -->
 	<!-- <TestimonialsColumns /> -->
@@ -99,6 +101,6 @@ const siteData = getTranslatedData("siteData", currLocale);
 	<!-- <CtaCardLeft /> -->
 	<CtaCenter />
 
-	<!-- <FaqAccordions /> -->
+	<FaqAccordions />
 	<FaqCards />
 </BaseLayout>
