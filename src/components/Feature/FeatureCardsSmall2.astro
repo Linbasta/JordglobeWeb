@@ -9,10 +9,16 @@
  */
 
 import { Icon } from "astro-icon/components";
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
 
 // components
 import FeatureCard from "@components/FeatureCard/FeatureCardSmall2.astro";
 import Badge from "@components/Badge/Badge.astro";
+
+// get localized data
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
 
 interface FeatureData {
 	title: string;
@@ -20,40 +26,12 @@ interface FeatureData {
 }
 
 // data
-const featureData: FeatureData[] = [
-	{
-		title: "Connect all our contacts",
-		text: `Sync with your calendar apps and contacts. Google, Outlook, ProtonMail, and more.`,
-	},
-	{
-		title: "Dashboards for all businesses",
-		text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus
-            rerum, reiciendis quisquam cum sunt.`,
-	},
-	{
-		title: "Synced to the cloud",
-		text: `Your data is accessible from everywhere, syncing across all your devices.`,
-	},
-	{
-		title: "Your business intelligence, simplified",
-		text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus
-            rerum.`,
-	},
-	{
-		title: "Real-time insights at your fingertips",
-		text: `Data syncs across your team instantly. Real-time access, with 99.9% uptime.`,
-	},
-	{
-		title: "Connects to popular apps",
-		text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus
-            rerum, reiciendis quisquam cum sunt.`,
-	},
-];
+const featureData: FeatureData[] = siteData.featureCardsSmall2;
 ---
 
 <section id="feature-cards-small-2" class="py-16 md:py-24">
 	<div class="site-container relative">
-		<div class="mb-16 mr-auto md:max-w-4xl">
+		<div class="mr-auto mb-16 md:max-w-4xl">
 			<h2 class="h2" id="trigger-cards-small-2" data-aos="fade-right">Feature Snapshot</h2>
 		</div>
 		<div

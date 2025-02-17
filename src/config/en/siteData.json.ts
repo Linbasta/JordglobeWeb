@@ -3,6 +3,8 @@ import image1 from "@images/device.jpg";
 import image2 from "@images/woman4.jpg";
 import image3 from "@images/stock.jpg";
 
+
+
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
 	name: "Jordglobe",
@@ -66,6 +68,32 @@ const siteData: SiteDataProps = {
 			title: "Dashboards for all businesses",
 			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum.`,
 			image: image3,
+		},
+	],
+	featureCardsSmall2: [
+		{
+			title: "Connect all our contacts",
+			text: `Sync with your calendar apps and contacts. Google, Outlook, ProtonMail, and more.`,
+		},
+		{
+			title: "Dashboards for all businesses",
+			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum, reiciendis quisquam cum sunt.`,
+		},
+		{
+			title: "Synced to the cloud",
+			text: `Your data is accessible from everywhere, syncing across all your devices.`,
+		},
+		{
+			title: "Your business intelligence, simplified",
+			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum.`,
+		},
+		{
+			title: "Real-time insights at your fingertips",
+			text: `Data syncs across your team instantly. Real-time access, with 99.9% uptime.`,
+		},
+		{
+			title: "Connects to popular apps",
+			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum, reiciendis quisquam cum sunt.`,
 		},
 	]
 };

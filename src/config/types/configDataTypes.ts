@@ -40,6 +40,8 @@ export interface SiteDataProps {
 	};
 	// Added localization for FeatureBento component
 	featureBento: FeatureBentoProps;
+	featureThreeImage: FeatureDataThreeImages[];
+	featureCardsSmall2: FeatureDataCards2Small2[];
 }
 
 // --------------------------------------------------------
@@ -178,4 +180,22 @@ export interface teamMember {
 export interface SiteSettingsProps {
 	useViewTransitions?: boolean;
 	useAnimations?: boolean;
+}
+
+export interface FeatureDataThreeImages {
+	title: string;
+	text: string;
+	image: ImageMetadata;
+}
+
+export interface FeatureDataCards2Small2 {
+	title: string;
+	text: string;
+}
+
+export interface SiteDataProps {
+	// ...existing code...
+	featureBento: FeatureBentoProps;
+	featureThreeImage: FeatureDataThreeImages[];
+	featureCardsSmall2: FeatureDataCards2Small2[];
 }
