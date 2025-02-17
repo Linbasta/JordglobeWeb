@@ -31,9 +31,9 @@
 	--color-base-950: var(--color-gray-950);
 
 	/* other theme settings */
-	--color-gradient-1: hsl(266, 96%, 73%);
-	--color-gradient-2: hsl(355, 100%, 83%);
-	--color-gradient-3: hsl(37, 97%, 74%);
+	--color-gradient-1: #0062FF;
+	--color-gradient-2: #B7E57E;
+	--color-gradient-3: #031D5E;
 	--button-transition-properties:
 		box-shadow, color, background-color, border-color, text-decoration-color, fill, stroke;
 

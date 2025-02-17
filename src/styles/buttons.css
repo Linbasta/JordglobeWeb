@@ -6,8 +6,8 @@
 }
 
 .button--primary {
-	@apply bg-primary-600 text-white;
-	@apply hover:bg-primary-700;
+	@apply bg-[#09b300] text-white;
+	@apply hover:bg-[#b7e57e];
 	@apply focus:ring-primary-300 focus:ring-4;
 }
 

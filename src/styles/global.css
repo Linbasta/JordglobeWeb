@@ -21,14 +21,14 @@
 @layer base {
 	:root {
 		/* starwind component variables  */
-		--background: var(--color-base-50);
+		--background: #0538B4;
 		--foreground: var(--color-base-900);
 		--card: var(--color-base-50);
 		--card-foreground: var(--color-base-950);
 		--popover: var(--color-base-50);
 		--popover-foreground: var(--color-base-950);
-		--primary: var(--color-primary-700);
-		--primary-dark: var(--color-primary-800);
+		--primary: #0538B4;
+		--primary-dark: #031D5E;
 		--primary-foreground: var(--color-base-50);
 		--secondary: var(--color-fuchsia-700);
 		--secondary-foreground: var(--color-base-50);
@@ -119,21 +119,23 @@
 	}
 }
 
+
 @layer components {
+
 	.h1 {
-		@apply text-base-900 dark:text-base-100 mb-4 font-serif text-5xl tracking-tighter md:text-6xl;
+		@apply text-[#b7e57e] dark:text-base-100 mb-4 font-serif text-5xl tracking-tighter md:text-6xl;
 	}
 
 	.h2 {
-		@apply text-base-900 dark:text-base-100 mb-4 font-serif text-4xl tracking-tighter md:text-6xl;
+		@apply  text-[#b7e57e] dark:text-base-100 mb-4 font-serif text-4xl tracking-tighter md:text-6xl;
 	}
 
 	.h3 {
-		@apply text-base-900 dark:text-base-100 text-xl font-medium md:text-2xl;
+		@apply text-white dark:text-base-100 text-xl font-medium md:text-2xl;
 	}
 
 	.description {
-		@apply text-base-700 dark:text-base-300;
+		@apply text-white dark:text-base-300;
 	}
 
 	.site-container {
@@ -153,7 +155,7 @@
 
 	/* styles navbar links */
 	.nav__link--base {
-		@apply text-base-800 hover:text-primary-600 dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
+		@apply text-white hover:text-primary-600 dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
 	}
 }
 
