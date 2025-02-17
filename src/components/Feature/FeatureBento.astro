@@ -6,6 +6,7 @@
 
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
+import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
 
 // components
@@ -17,8 +18,9 @@ import card1img2 from "@images/email-light.png";
 import card2img from "@images/feedback.png";
 import card3img from "@images/payment-received.png";
 
-// get localized data (assuming default locale is "en")
-const siteData = getTranslatedData("siteData", "en");
+// get localized data
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
 const fBent = siteData.featureBento;
 ---
 

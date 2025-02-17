@@ -1,4 +1,7 @@
 import { type SiteDataProps } from "../types/configDataTypes";
+import image1 from "@images/device.jpg";
+import image2 from "@images/woman4.jpg";
+import image3 from "@images/stock.jpg";
 
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
@@ -46,7 +49,25 @@ const siteData: SiteDataProps = {
 		ctaSrText: "TSConfig path aliases setup",
 		learnMoreText: "Learn more",
 		paymentInfoText: "Made $489.00 payment for Netflix"
-	}
+	},
+
+	featureThreeImage: [
+		{
+			title: "Real-time insightss",
+			text: `Data syncs across your team instantly. Real-time access, with 99.9% uptime.`,
+			image: image1,
+		},
+		{
+			title: "Connect all our contacts",
+			text: `Sync with your calendar apps and contacts. Google, Outlook, ProtonMail, and more.`,
+			image: image2,
+		},
+		{
+			title: "Dashboards for all businesses",
+			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum.`,
+			image: image3,
+		},
+	]
 };
 
 export default siteData;
