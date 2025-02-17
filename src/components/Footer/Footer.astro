@@ -15,6 +15,7 @@ import { getTranslatedData } from "@js/translationUtils";
 const currLocale = getLocaleFromUrl(Astro.url);
 const siteData = getTranslatedData("siteData", currLocale);
 
+
 const today = new Date();
 ---
 
@@ -26,90 +27,13 @@ const today = new Date();
 					<div class="max-w-xs">
 						<SiteLogo />
 						<p class="mt-11 tracking-tight">
-							A template for the next killer SaaS. Multiple pages and sections, blog, i18n,
-							animations, CMS - all ready to go.
+					{siteData.description}
 						</p>
 					</div>
 				</div>
 				<div class="w-full p-2 md:w-1/2">
 					<div class="flex flex-wrap justify-between">
-						<!-- first links column -->
-						<div class="w-auto p-8">
-							<h3 class="text-base-700/80 dark:text-base-400/80 mb-12 font-semibold tracking-tight">
-								Landing Pages
-							</h3>
-							<ul class="flex flex-col gap-5">
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/")}>Landing 1</FooterLink>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/landing2")}
-										>Landing 2</FooterLink
-									>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/landing3")}
-										>Landing 3</FooterLink
-									>
-								</li>
-							</ul>
-						</div>
-
-						<!-- second links column -->
-						<div class="w-auto p-8">
-							<h3 class="text-base-700/80 dark:text-base-400/80 mb-12 font-semibold tracking-tight">
-								Sections
-							</h3>
-							<ul class="flex flex-col gap-5">
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/features")}
-										>Features</FooterLink
-									>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/pricing")}
-										>Pricing</FooterLink
-									>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/testimonials-faq")}
-										>Testimonial & FAQ</FooterLink
-									>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/examples/hero-sections")}
-										>Hero</FooterLink
-									>
-								</li>
-							</ul>
-						</div>
-
-						<!-- third links column -->
-						<div class="w-auto p-8">
-							<h3 class="text-base-700/80 dark:text-base-400/80 mb-12 font-semibold tracking-tight">
-								Forms
-							</h3>
-							<ul class="flex flex-col gap-5">
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/contact")}
-										>Contact</FooterLink
-									>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/login")}>Login</FooterLink>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/signup")}>Signup</FooterLink>
-								</li>
-								<li>
-									<FooterLink href={getRelativeLocaleUrl(currLocale, "/password-reset")}
-										>Password Reset</FooterLink
-									>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
+									</div>
 			</div>
 		</div>
 		<div class="py-6">
@@ -125,20 +49,15 @@ const today = new Date();
 					<div class="flex flex-col">
 						<div class="flex gap-5">
 							<SocialIcon
-								href="https://twitter.com/BowTiedWebReapr"
+								href="https://twitter.com/ollelandin"
 								icon="tabler/brand-x"
 								social="twitter (x)"
 							/>
-							<SocialIcon
+							<!-- <SocialIcon
 								href="https://twitter.com/BowTiedWebReapr"
 								icon="tabler/brand-facebook"
 								social="facebook"
-							/>
-							<SocialIcon
-								href="https://twitter.com/BowTiedWebReapr"
-								icon="tabler/brand-google-filled"
-								social="google"
-							/>
+							/> -->
 						</div>
 					</div>
 				</div>

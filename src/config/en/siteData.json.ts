@@ -2,11 +2,11 @@ import { type SiteDataProps } from "../types/configDataTypes";
 
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
-	name: "Nova",
+	name: "Jordglobe",
 	// Your website's title and description (meta fields)
-	title: "Nova - a SaaS theme and landing page crafted with Astro and Tailwind CSS",
+	title: "JordGlobe - the best geography game in the world",
 	description:
-		"Create an amazing website for your SaaS clients with our beautiful website theme designed using Astro and Tailwind CSS. Perfect for freelancers, developers, startups, and personal use.",
+		"JordGlobe is a casual game with a 3D Globe & visual effects that harnesses addictive gaming mechanics for good. While playing feels effortless, mastering the game naturally leads to learning about our world - turning casual gaming into meaningful screen time.",
 
 	// used on contact page and footer
 	contact: {
@@ -20,13 +20,13 @@ const siteData: SiteDataProps = {
 	author: {
 		name: "Cosmic Themes",
 		email: "creator@cosmicthemes.com",
-		twitter: "Cosmic_Themes",
+		twitter: "ollelandin",
 	},
 
 	// default image for meta tags if the page doesn't have an image already
 	defaultImage: {
-		src: "/images/cosmic-themes-logo.jpg",
-		alt: "Cosmic Themes logo",
+		src: "/images/jordglobe-logo.png",
+		alt: "JordGlobe logo",
 	},
 };
 
