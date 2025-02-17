@@ -28,6 +28,25 @@ const siteData: SiteDataProps = {
 		src: "/images/jordglobe-logo.png",
 		alt: "JordGlobe logo",
 	},
+
+	// Localization for FeatureBento component
+	featureBento: {
+		badgeText: "It's the best",
+		sectionTitle: "Boost your brand's visibility and reach with Novaaa",
+		card1Title: "Live chat technology",
+		card1Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
+		card1ImageAlt: "email",
+		card1ImageAltLight: "email light",
+		card2Title: "Receive feedbacks",
+		card2Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
+		card2ImageAlt: "feedback",
+		card3Title: "Secured payment",
+		card3Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
+		card3ImageAlt: "payment received",
+		ctaSrText: "TSConfig path aliases setup",
+		learnMoreText: "Learn more",
+		paymentInfoText: "Made $489.00 payment for Netflix"
+	}
 };
 
 export default siteData;

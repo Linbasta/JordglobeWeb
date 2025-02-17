@@ -1,27 +1,32 @@
 ---
 /**
- * * This is a 3 card bento grid. Each card has a title, text, and "learn more" link
- * Unfortunately, this is something that takes fine tuning and you'll likely want to create your own assets for
+ * * This is a 3 card bento grid. Each card has a title, text, and "learn more" link.
+ * All user-facing strings are now localized via siteData.
  */
 
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
+import { getTranslatedData } from "@js/translationUtils";
 
 // components
 import Badge from "@components/Badge/Badge.astro";
 
-// image
+// images
 import card1img1 from "@images/email.png";
 import card1img2 from "@images/email-light.png";
 import card2img from "@images/feedback.png";
 import card3img from "@images/payment-received.png";
+
+// get localized data (assuming default locale is "en")
+const siteData = getTranslatedData("siteData", "en");
+const fBent = siteData.featureBento;
 ---
 
 <section id="feature-bento" class="overflow-hidden py-16 md:py-24">
 	<div class="site-container">
 		<div class="mx-auto mb-20 max-w-2xl text-center">
-			<Badge>It's the best</Badge>
-			<h2 class="h2">Boost your brand's visibility and reach with Nova</h2>
+			<Badge>{fBent.badgeText}</Badge>
+			<h2 class="h2">{fBent.sectionTitle}</h2>
 		</div>
 		<div class="mx-auto max-w-7xl">
 			<div class="-m-4 flex flex-wrap">
@@ -31,15 +36,14 @@ import card3img from "@images/payment-received.png";
 						<div class="w-full p-4">
 							<div class="relative rounded-lg bg-indigo-500/10 p-8 dark:bg-indigo-500/30">
 								<h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
-									Live chat technology
+									{fBent.card1Title}
 								</h3>
 								<p class="description mb-9 tracking-tight md:max-w-sm">
-									Create an on-brand home for your product and create countle hours on design time.
-									Use this table to compare your product.
+									{fBent.card1Description}
 								</p>
 								<Image
 									src={card1img1}
-									alt="email"
+									alt={fBent.card1ImageAlt}
 									loading="lazy"
 									height={90}
 									class="relative -right-4 mb-10 ml-auto w-auto"
@@ -49,14 +53,14 @@ import card3img from "@images/payment-received.png";
 									href="/blog/tsconfig-paths-setup/"
 								>
 									<span class="mr-2.5">
-										<span class="sr-only">TSConfig path aliases setup</span>
-										Learn more
+										<span class="sr-only">{fBent.ctaSrText}</span>
+										{fBent.learnMoreText}
 									</span>
 									<Icon name="nova/arrow-angled" aria-hidden="true" class="size-6" />
 								</a>
 								<Image
 									src={card1img2}
-									alt="email light"
+									alt={fBent.card1ImageAltLight}
 									loading="lazy"
 									height={81}
 									class="absolute right-0 bottom-5"
@@ -69,25 +73,24 @@ import card3img from "@images/payment-received.png";
 								class="bg-base-500/10 dark:bg-base-500/50 relative overflow-hidden rounded-lg p-8"
 							>
 								<h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
-									Receive feedbacks
+									{fBent.card2Title}
 								</h3>
 								<p class="description mb-36 tracking-tight md:max-w-sm">
-									Create an on-brand home for your product and create countle hours on design time.
-									Use this table to compare your product.
+									{fBent.card2Description}
 								</p>
 								<a
 									class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 flex items-center font-semibold tracking-tight transition duration-200"
 									href="/blog/tsconfig-paths-setup/"
 								>
 									<span class="mr-2.5">
-										<span class="sr-only">TSConfig path aliases setup</span>
-										Learn more
+										<span class="sr-only">{fBent.ctaSrText}</span>
+										{fBent.learnMoreText}
 									</span>
 									<Icon name="nova/arrow-angled" aria-hidden="true" class="size-6" />
 								</a>
 								<Image
 									src={card2img}
-									alt="feedback"
+									alt={fBent.card2ImageAlt}
 									loading="lazy"
 									height={170}
 									class="absolute right-7 bottom-0"
@@ -102,25 +105,26 @@ import card3img from "@images/payment-received.png";
 					<div
 						class="relative h-full overflow-hidden rounded-lg bg-green-500/10 p-8 dark:bg-green-500/30"
 					>
-						<h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">Secured payment</h3>
+						<h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
+							{fBent.card3Title}
+						</h3>
 						<p class="description mb-10 tracking-tight md:max-w-sm">
-							Create an on-brand home for your product and countle hours on design time. Use this
-							table to compare your product.
+							{fBent.card3Description}
 						</p>
 						<a
 							class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 mb-4 flex items-center font-semibold tracking-tight transition duration-200"
 							href="/blog/tsconfig-paths-setup/"
 						>
 							<span class="mr-2.5">
-								<span class="sr-only">TSConfig path aliases setup</span>
-								Learn more
+								<span class="sr-only">{fBent.ctaSrText}</span>
+								{fBent.learnMoreText}
 							</span>
 							<Icon name="nova/arrow-angled" aria-hidden="true" class="size-6" />
 						</a>
 						<div class="mx-auto max-w-max">
 							<Image
 								src={card3img}
-								alt="payment received"
+								alt={fBent.card3ImageAlt}
 								loading="lazy"
 								height={377}
 								class="mx-auto mb-3.5 transform transition duration-500 hover:-translate-y-2"
@@ -132,7 +136,7 @@ import card3img from "@images/payment-received.png";
 								<div class="mr-3 inline-block">
 									<Icon name="nova/circle-check" aria-hidden="true" class="size-6" />
 								</div>
-								<span>Made $489.00 payment for Netflix</span>
+								<span>{fBent.paymentInfoText}</span>
 							</a>
 						</div>
 					</div>
