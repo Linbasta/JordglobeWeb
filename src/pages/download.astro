@@ -1,0 +1,17 @@
+---
+// filepath: /Users/oloflandin/Programming/JordglobeSite/src/pages/download.astro
+// Use the request headers to detect the user's device and redirect accordingly.
+const userAgent = Astro.request.headers.get('user-agent') || '';
+
+const androidUrl = "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo";
+const iosUrl = "https://apps.apple.com/app/id1599500931"; // Replace idXXXXXXXXX with your App Store app id
+
+if (/android/i.test(userAgent)) {
+    return Astro.redirect(androidUrl);
+} else if (/iPhone|iPad|iPod/i.test(userAgent)) {
+    return Astro.redirect(iosUrl);
+} else {
+    // Fallback redirection: for desktop users you may choose a default
+    return Astro.redirect(androidUrl);
+}
+---
