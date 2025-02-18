@@ -1,39 +1,46 @@
 /**
  * * Configuration of the i18n system data files and text translations
- * Example translations below are for English and French, with textTranslations used in src/layouts/BlogLayoutCenter.astro and src/components/Hero/[hero].astro
+ * Example translations below are for English and Swedish, with textTranslations used in src/layouts/BlogLayoutCenter.astro and src/components/Hero/[hero].astro
  */
 
 /**
  * * Data file configuration for the i18n system
  * Every {Data} key must exist in the below object
  */
-import siteDataEn from "./en/siteData.json";
-import siteDataFr from "./fr/siteData.json";
-import navDataEn from "./en/navData.json";
-import navDataFr from "./fr/navData.json";
-import faqDataEn from "./en/faqData.json";
-import faqDataFr from "./fr/faqData.json";
-import teamDataEn from "./en/teamData.json";
-import teamDataFr from "./fr/teamData.json";
-import testimonialDataEn from "./en/testimonialData.json";
-import testimonialDataFr from "./fr/testimonialData.json";
 
-export const dataTranslations = {
-	en: {
-		siteData: siteDataEn,
-		navData: navDataEn,
-		faqData: faqDataEn,
-		teamData: teamDataEn,
-		testimonialData: testimonialDataEn,
-	},
-	fr: {
-		siteData: siteDataFr,
-		navData: navDataFr,
-		faqData: faqDataFr,
-		teamData: teamDataFr,
-		testimonialData: testimonialDataFr,
-	},
-} as const;
+// List of data keys to load per language
+const dataKeys = [
+	"siteData",
+	"navData",
+	"faqData",
+	"teamData",
+	"testimonialData",
+];
+
+// Define supported languages
+const supportedLangs = ['en', 'sv', 'fr'];
+
+// Use static glob imports for each supported language
+const modulesMap: Record<string, Record<string, any>> = {
+	en: import.meta.glob('./en/*.json.ts', { eager: true }),
+	sv: import.meta.glob('./sv/*.json.ts', { eager: true }),
+	fr: import.meta.glob('./fr/*.json.ts', { eager: true }),
+};
+
+// Build dataTranslations using modulesMap
+const dataTranslations: Record<string, Record<string, any>> = {};
+for (const lang of supportedLangs) {
+	const modules = modulesMap[lang];
+	dataTranslations[lang] = {};
+	for (const key of dataKeys) {
+		const filePath = `./${lang}/${key}.json.ts`;
+		if (modules[filePath]) {
+			dataTranslations[lang][key] = (modules[filePath] as any).default || modules[filePath];
+		}
+	}
+}
+console.log(dataTranslations)
+export { dataTranslations };
 
 /**
  * * Text translations are used with the `useTranslation` function from src/js/i18nUtils.ts to translate various strings on your site.
@@ -45,13 +52,7 @@ export const dataTranslations = {
  * import { useTranslations } from "@js/translationUtils";
  * const currLocale = getLocaleFromUrl(Astro.url);
  * const t = useTranslations(currLocale);
- * t("back_to_all_posts"); // this would be "Retour à tous les articles" if the current locale is "fr"
- * ```
- * or
- * ```ts
- * import { useTranslations } from "@js/translationUtils";
- * const t = useTranslations("fr");
- * t("back_to_all_posts"); // this would be "Retour à tous les articles"
+ * t("back_to_all_posts"); // example usage for "en" or "sv"
  * ```
  */
 export const textTranslations = {
@@ -62,29 +63,40 @@ export const textTranslations = {
 		back_to_all_posts: "Back to all posts",
 		updated: "Updated",
 	},
-	fr: {
-		hero_text: "Tout ce dont vous avez besoin pour un site Web incroyable.",
+	sv: {
+		hero_text: "Allt du behöver för en fantastisk webbplats.",
 		hero_description:
-			"Je ne parle pas vraiment français donc j'utilise Google Translate pour quelques parties de cette démo.",
+			"En mall för nästa stora SaaS. Flera sidor och sektioner, blogg, i18n, animationer, CMS - allt redo att gå.",
+		back_to_all_posts: "Till alla inlägg",
+		updated: "Uppdaterad",
+	},
+	// Added French translations
+	fr: {
+		hero_text: "Tout ce dont vous avez besoin pour un site web incroyable.",
+		hero_description:
+			"Un modèle pour le prochain SaaS phare. Plusieurs pages et sections, blog, i18n, animations, CMS - tout prêt à l'emploi.",
 		back_to_all_posts: "Retour à tous les articles",
 		updated: "Mis à jour",
-	},
+	}
 } as const;
 
 /**
- * * Route translations are used to translate route names for the language switcher component
- * This can be useful for SEO reasons. The key does not matter, it just needs to match between languages
+ * * Route translations are used to translate route names for the language switcher component.
+ * Useful for SEO; the key must match between languages.
  *
  * ## Examples
  *
- * These routes must be everything after the base domain. So if this is "Nova.com/blog", the route would be "blog"
- * Or if this is "Nova.com/blog/my-post", the route would be "blog/my-post"
+ * These routes cover everything after the base domain.
  */
 export const routeTranslations = {
 	en: {
 		aboutKey: "about",
 	},
-	fr: {
-		aboutKey: "a-propos",
+	sv: {
+		aboutKey: "om",
 	},
+	fr: {
+		aboutKey: "about",
+	},
+
 } as const;

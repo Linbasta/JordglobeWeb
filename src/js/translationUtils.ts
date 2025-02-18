@@ -68,6 +68,7 @@ export function getLocalizedPathname(locale: (typeof locales)[number], url: URL)
 		return Object.keys(obj).find((key) => obj[key] === value.replace(/\/$/, "").replace(/^\//, ""));
 	};
 
+
 	let oldPath: string, currLocale: (typeof locales)[number];
 	//@ts-ignore
 	if (locales.includes(lang)) {
@@ -85,6 +86,10 @@ export function getLocalizedPathname(locale: (typeof locales)[number], url: URL)
 
 	// trim any starting and ending slashes for comparison
 	const routeStringTrimmed = oldPath.replace(/\/$/, "").replace(/^\//, "");
+	// Modified: if routeStringTrimmed is empty or explicitly "index", return base URL
+	if (!routeStringTrimmed) {
+		return getRelativeLocaleUrl(locale, "/");
+	}
 
 	// first find out if the passed value maps to a key for route translations
 	const routeTranslationsKey = getKeyByValue(routeTranslations[currLocale], routeStringTrimmed);
