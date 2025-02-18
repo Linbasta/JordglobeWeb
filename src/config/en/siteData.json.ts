@@ -9,9 +9,8 @@ import remember from "@images/front/Remember.png";
 const siteData: SiteDataProps = {
 	name: "Jordglobe",
 	// Your website's title and description (meta fields)
-	title: "JordGlobe - the best geography game in the world",
-	description:
-		"JordGlobe is a casual game with a 3D Globe & visual effects that harnesses addictive gaming mechanics for good. While playing feels effortless, mastering the game naturally leads to learning about our world - turning casual gaming into meaningful screen time.",
+	title: "JordGlobe - the ultimate geography game",
+	description: "JordGlobe uses addictive gaming to make learning geography fun and effortless.",
 
 	// used on contact page and footer
 	contact: {
@@ -72,31 +71,32 @@ const siteData: SiteDataProps = {
 				image: remember,
 			}],
 	},
+	featureCardsTitle: "Mnemonic Techniques",
 	featureCardsSmall2: [
 		{
-			title: "Connect all our contacts",
-			text: `Sync with your calendar apps and contacts. Google, Outlook, ProtonMail, and more.`,
+			title: "Method of Loci",
+			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
 		},
 		{
-			title: "Dashboards for all businesses",
-			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum, reiciendis quisquam cum sunt.`,
+			title: "Contextual Memory",
+			text: `The more connections new knowledge has to existing memories, the easier it is to create a lasting memory.`,
 		},
 		{
-			title: "Synced to the cloud",
-			text: `Your data is accessible from everywhere, syncing across all your devices.`,
+			title: "Spaced Repetition",
+			text: `Repeat knowledge at increasing intervals to build lasting memories with minimal effort.`,
 		},
 		{
-			title: "Your business intelligence, simplified",
-			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum.`,
+			title: "Dual Coding",
+			text: `You learn better when knowledge is presented in multiple formats at once (e.g., image, text, and map).`,
 		},
 		{
-			title: "Real-time insights at your fingertips",
-			text: `Data syncs across your team instantly. Real-time access, with 99.9% uptime.`,
+			title: "Interleaving",
+			text: `We remember things better when we are forced to apply new knowledge in various contexts.`,
 		},
 		{
-			title: "Connects to popular apps",
-			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum, reiciendis quisquam cum sunt.`,
-		},
+			title: "Casual Gaming",
+			text: `Rewards, animations, and game design make learning addictive.`,
+		}
 	]
 };
 

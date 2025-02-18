@@ -42,6 +42,8 @@ export interface SiteDataProps {
 	featureBento: FeatureBentoProps;
 	featureThreeImage: FeatureDataThreeImages;
 	featureCardsSmall2: FeatureDataCards2Small2[];
+	// Added new property for feature cards section title
+	featureCardsTitle: string;
 }
 
 // --------------------------------------------------------
@@ -203,4 +205,5 @@ export interface SiteDataProps {
 	featureBento: FeatureBentoProps;
 	featureThreeImage: FeatureDataThreeImages[];
 	featureCardsSmall2: FeatureDataCards2Small2[];
+	featureCardsTitle: string;
 }
