@@ -1,8 +1,5 @@
 ---
-/**
- * * Feature section with 3 main images, each with title and text above them
- */
-
+import { type FeatureDataThreeImages } from "src/config/types/configDataTypes";
 import { Image } from "astro:assets";
 import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
@@ -11,25 +8,20 @@ import { getTranslatedData } from "@js/translationUtils";
 const currLocale = getLocaleFromUrl(Astro.url);
 const siteData = getTranslatedData("siteData", currLocale);
 
-interface FeatureData {
-	title: string;
-	text: string;
-	image: ImageMetadata;
-}
 
 // data
-const featureData: FeatureData[] = siteData.featureThreeImage;
+const featureData: FeatureDataThreeImages = siteData.featureThreeImage;
 ---
 
 <section
 	id="feature-three-image"
-	class="bg-base-950 dark:bg-base-900 overflow-hidden py-16 md:py-24"
+	class="background-yellow overflow-hidden py-16 md:py-24"
 >
 	<div class="site-container">
-		<h2 class="h2 text-base-100 mb-12 lg:mb-24">How to streamline your workflow</h2>
+		<h2 class="h2 text-base-100 mb-12 lg:mb-24">{featureData.title}</h2>
 		<div class="-m-5 flex flex-wrap" id="trigger-three-img">
 			{
-				featureData.map((feature, idx) => (
+				featureData.cards.map((feature, idx) => (
 					<div
 						class="w-full p-5 md:w-1/3"
 						data-aos="fade-up"

@@ -53,25 +53,25 @@ const siteData: SiteDataProps = {
 		paymentInfoText: "Become a knowledge master",
 	},
 
-
-
-	featureThreeImage: [
-		{
-			title: "PLAY",
-			text: `JordGlobe is a casual game with a 3D Globe & visual effects that harnesses addictive gaming mechanics for good. While playing feels effortless, mastering the game naturally leads to learning about our world - turning casual gaming into meaningful screen time.`,
-			image: play,
-		},
-		{
-			title: "LEARN",
-			text: `JordGlobe intelligently adapts to your skill. The game reveals the correct answer when you make errors. And those questions are repeated focusing on what you need to learn. Even ambitious goals like learning 50 states of USA can be achieved effortlessly. By dividing the states into bite size game sessions you learn them a few at the time. Before you know it - you can name all the 50 states!`,
-			image: learn,
-		},
-		{
-			title: "REMEMBER",
-			text: `New knowledge need repetition to stick. The Memory Medals in JordGlobe rewards you for retaining the knowledge. At optimal time points, you are challenged to prove that you still remember. The more challenges you beat, the longer time you can wait before the next repetition. Remember for life with minimum effort!`,
-			image: remember,
-		},
-	],
+	featureThreeImage: {
+		title: "Play --> Learn --> Remember",
+		cards: [
+			{
+				title: "PLAY",
+				text: `JordGlobe is a casual game that makes learning about our world fun and effortless. Its addictive gaming mechanics transform casual gaming into meaningful screen time.`,
+				image: play,
+			},
+			{
+				title: "LEARN",
+				text: `The game adapts to your skill level and helps you learn from mistakes. Complex topics like the 50 US states become manageable through bite-sized sessions. The game repeats questions strategically, focusing on what you need to master.`,
+				image: learn,
+			},
+			{
+				title: "REMEMBER",
+				text: `Memory Medals reward long-term retention by challenging you at optimal intervals. With each successful challenge, the time between repetitions increases. Master knowledge permanently with minimal effort.`,
+				image: remember,
+			}],
+	},
 	featureCardsSmall2: [
 		{
 			title: "Connect all our contacts",

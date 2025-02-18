@@ -173,4 +173,8 @@
 	.pause {
 		animation-play-state: paused !important;
 	}
+
+	.background-yellow {
+		background-color: #031D5E;
+	}
 }

@@ -40,7 +40,7 @@ export interface SiteDataProps {
 	};
 	// Added localization for FeatureBento component
 	featureBento: FeatureBentoProps;
-	featureThreeImage: FeatureDataThreeImages[];
+	featureThreeImage: FeatureDataThreeImages;
 	featureCardsSmall2: FeatureDataCards2Small2[];
 }
 
@@ -160,7 +160,7 @@ export interface FaqItem {
 // --------------------------------------------------------
 // testimonial data types
 export interface TestimonialItem {
-    avatar?: ImageMetadata | string | null; 
+	avatar?: ImageMetadata | string | null;
 	name: string;
 	title: string;
 	testimonial: string;
@@ -182,10 +182,15 @@ export interface SiteSettingsProps {
 	useAnimations?: boolean;
 }
 
-export interface FeatureDataThreeImages {
+export interface ThreeImageCard {
 	title: string;
 	text: string;
 	image: ImageMetadata;
+}
+
+export interface FeatureDataThreeImages {
+	title: string;
+	cards: ThreeImageCard[];
 }
 
 export interface FeatureDataCards2Small2 {
