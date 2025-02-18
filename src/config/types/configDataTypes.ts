@@ -75,8 +75,11 @@ export type navItem = navLinkItem | navDropdownItem | navMegaDropdownItem;
 // --------------------------------------------------------
 // faq data types
 export interface FaqItem {
-	question: string; // this is the question of the accordion
-	answer: string; // these are the details seen after expanding the accordion
+	title: string;
+	items: {
+		question: string; // this is the question of the accordion
+		answer: string; // these are the details seen after expanding the accordion
+	}[];
 }
 
 // --------------------------------------------------------
@@ -154,9 +157,13 @@ export type navItem = navLinkItem | navDropdownItem | navMegaDropdownItem;
 
 // --------------------------------------------------------
 // faq data types
+// Updated FaqItem to represent the FAQ section structure from faqData.json.ts
 export interface FaqItem {
-	question: string; // this is the question of the accordion
-	answer: string; // these are the details seen after expanding the accordion
+	title: string;
+	items: {
+		question: string; // this is the question of the accordion
+		answer: string; // these are the details seen after expanding the accordion
+	}[];
 }
 
 // --------------------------------------------------------
