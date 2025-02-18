@@ -1,11 +1,13 @@
 ---
 /**
- * Hero section with fullscreen video background
+ * Hero section with fullscreen video background,
+ * showing a poster image (first video frame) until the video is ready.
  */
 import { Image } from "astro:assets";
 
 interface Props {
   videoSrc: string;
+  posterSrc: string; // first frame image
   logoSrc: string;
   logoAlt: string;
   overlayColor?: string;
@@ -14,6 +16,7 @@ interface Props {
 
 const {
   videoSrc,
+  posterSrc,
   logoSrc,
   logoAlt,
   overlayColor = "rgb(0,0,0)",
@@ -25,6 +28,7 @@ const {
   <!-- Video Background -->
   <div class="absolute inset-0 h-full w-full">
     <video
+      id="hero-video"
       autoplay
       loop
       muted
@@ -36,12 +40,18 @@ const {
     </video>
   </div>
 
+  <!-- Poster Overlay (First Video Frame) -->
+  <div
+    id="poster-overlay"
+    class="absolute inset-0 z-30 bg-cover bg-center"
+    style={`background-image: url('${posterSrc}');`}
+  ></div>
+
   <!-- Overlay -->
   <div 
     class="absolute inset-0 z-10"
     style={`background-color: ${overlayColor}; opacity: ${overlayOpacity};`}
-  >
-  </div>
+  ></div>
 
   <!-- Content -->
   <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
@@ -60,7 +70,21 @@ const {
   </div>
 </section>
 
+<script client:load>
+  const video = document.getElementById("hero-video");
+  const posterOverlay = document.getElementById("poster-overlay");
+
+  video.addEventListener("loadeddata", () => {
+    if (posterOverlay) {
+      posterOverlay.style.transition = "opacity 0.5s";
+      posterOverlay.style.opacity = "0";
+      setTimeout(() => posterOverlay.remove(), 500);
+    }
+  });
+</script>
+
 <style>
+/* Fade-in animation for content */
 @keyframes fadeIn {
   from {
     opacity: 0;
