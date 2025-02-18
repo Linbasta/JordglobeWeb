@@ -1,7 +1,7 @@
 import { type SiteDataProps } from "../types/configDataTypes";
-import image1 from "@images/device.jpg";
-import image2 from "@images/woman4.jpg";
-import image3 from "@images/stock.jpg";
+import play from "@images/front/play.jpg";
+import learn from "@images/front/learn.png";
+import remember from "@images/front/Remember.png";
 
 
 
@@ -15,16 +15,16 @@ const siteData: SiteDataProps = {
 
 	// used on contact page and footer
 	contact: {
-		address1: "1234 Main Street",
-		address2: "New York, NY 10001",
-		phone: "(123) 456-7890",
-		email: "creator@cosmicthemes.com",
+		address1: "Box 92138",
+		address2: "121 62 Johanneshov",
+		phone: "",
+		email: "info@jordglobe.com",
 	},
 
 	// Your information for blog post purposes
 	author: {
-		name: "Cosmic Themes",
-		email: "creator@cosmicthemes.com",
+		name: "Jordglobe",
+		email: "info@jordglobe.com",
 		twitter: "ollelandin",
 	},
 
@@ -34,40 +34,42 @@ const siteData: SiteDataProps = {
 		alt: "JordGlobe logo",
 	},
 
-	// Localization for FeatureBento component
+
 	featureBento: {
-		badgeText: "It's the best",
-		sectionTitle: "Boost your brand's visibility and reach with Novaaa",
-		card1Title: "Live chat technology",
-		card1Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
-		card1ImageAlt: "email",
-		card1ImageAltLight: "email light",
-		card2Title: "Receive feedbacks",
-		card2Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
-		card2ImageAlt: "feedback",
-		card3Title: "Secured payment",
-		card3Description: "Create an on-brand home for your product and reduce design time. Use this table to compare your product.",
-		card3ImageAlt: "payment received",
-		ctaSrText: "TSConfig path aliases setup",
-		learnMoreText: "Learn more",
-		paymentInfoText: "Made $489.00 payment for Netflix"
+		badgeText: "Learning Made Fun",
+		sectionTitle: "The Duolingo for Geography",
+		card1Title: "Countries & Flags",
+		card1Description: "Master countries and their flags - essential knowledge that helps you better understand global news, international events, and the changing world map. Never feel lost in world news again.",
+		card1ImageAlt: "countries and flags",
+		card1ImageAltLight: "countries and flags light",
+		card2Title: "Provinces & Cities",
+		card2Description: "Learn about cities and regions to grasp where events happen and why they matter. From economic powerhouses to geopolitical hotspots, knowing locations helps you understand international relations and global developments.",
+		card2ImageAlt: "provinces and cities",
+		card3Title: "Trivia Beyond Borders",
+		card3Description: "Challenge yourself with fun trivia that goes beyond mere geography. Uncover surprising facts that reveal hidden links between people and places, reminding you that every corner of the world is interconnected.",
+		card3ImageAlt: "trivia beyond geography",
+		ctaSrText: "Start your global journey",
+		learnMoreText: "Begin exploring",
+		paymentInfoText: "Become a knowledge master",
 	},
+
+
 
 	featureThreeImage: [
 		{
-			title: "Real-time insightss",
-			text: `Data syncs across your team instantly. Real-time access, with 99.9% uptime.`,
-			image: image1,
+			title: "PLAY",
+			text: `JordGlobe is a casual game with a 3D Globe & visual effects that harnesses addictive gaming mechanics for good. While playing feels effortless, mastering the game naturally leads to learning about our world - turning casual gaming into meaningful screen time.`,
+			image: play,
 		},
 		{
-			title: "Connect all our contacts",
-			text: `Sync with your calendar apps and contacts. Google, Outlook, ProtonMail, and more.`,
-			image: image2,
+			title: "LEARN",
+			text: `JordGlobe intelligently adapts to your skill. The game reveals the correct answer when you make errors. And those questions are repeated focusing on what you need to learn. Even ambitious goals like learning 50 states of USA can be achieved effortlessly. By dividing the states into bite size game sessions you learn them a few at the time. Before you know it - you can name all the 50 states!`,
+			image: learn,
 		},
 		{
-			title: "Dashboards for all businesses",
-			text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit totam delectus rerum.`,
-			image: image3,
+			title: "REMEMBER",
+			text: `New knowledge need repetition to stick. The Memory Medals in JordGlobe rewards you for retaining the knowledge. At optimal time points, you are challenged to prove that you still remember. The more challenges you beat, the longer time you can wait before the next repetition. Remember for life with minimum effort!`,
+			image: remember,
 		},
 	],
 	featureCardsSmall2: [
