@@ -73,12 +73,19 @@ const {
 <script client:load>
   const video = document.getElementById("hero-video");
   const posterOverlay = document.getElementById("poster-overlay");
+  const logo = document.querySelector(".animate-fadeIn");
 
   video.addEventListener("loadeddata", () => {
     if (posterOverlay) {
       posterOverlay.style.transition = "opacity 0.5s";
       posterOverlay.style.opacity = "0";
       setTimeout(() => posterOverlay.remove(), 500);
+    }
+  });
+
+  video.addEventListener("play", () => {
+    if (logo) {
+      logo.style.animationPlayState = "running";
     }
   });
 </script>
@@ -98,5 +105,6 @@ const {
 
 .animate-fadeIn {
   animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-play-state: paused; /* Start paused */
 }
 </style>
