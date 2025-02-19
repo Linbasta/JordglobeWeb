@@ -174,7 +174,22 @@
 		animation-play-state: paused !important;
 	}
 
+	/* Einar look here*/
+
 	.background-yellow {
 		background-color: #031D5E;
+	}
+
+	.bg-testimonial {
+		background-color: #031D5E;
+	}
+
+	.bg-testimonial-card {
+		background-color: #36539c;
+		border-color: #624fb0;
+	}
+
+	.bg-testimonial-card:hover {
+		border-color: #ffffff;
 	}
 }

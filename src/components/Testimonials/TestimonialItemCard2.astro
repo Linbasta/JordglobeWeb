@@ -14,7 +14,7 @@ const { class: className, avatar, name, title, testimonial, ...rest } = Astro.pr
 ---
 
 <div
-	class="flex h-full flex-col rounded-xl border border-base-200 bg-base-50 p-3 transition-colors hover:border-base-300 md:p-4 dark:border-base-800 dark:bg-base-900 dark:text-base-100 dark:hover:border-base-700"
+	class="flex h-full flex-col rounded-xl border bg-testimonial-card p-3 transition-colors md:p-4 dark:border-base-800 dark:bg-base-900 dark:text-base-100 dark:hover:border-base-700"
 	class:list={className}
 	{...rest}
 >

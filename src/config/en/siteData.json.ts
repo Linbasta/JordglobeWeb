@@ -97,7 +97,10 @@ const siteData: SiteDataProps = {
 			title: "Casual Gaming",
 			text: `Rewards, animations, and game design make learning addictive.`,
 		}
-	]
+	],
+
+	testimonialsTitle: "User feedback",
+	testimonialsDescription: "What our users say about JordGlobe",
 };
 
 export default siteData;

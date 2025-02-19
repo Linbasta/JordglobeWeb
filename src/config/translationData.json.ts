@@ -70,7 +70,7 @@ export const textTranslations = {
 		back_to_all_posts: "Till alla inlägg",
 		updated: "Uppdaterad",
 	},
-	// Added French translations
+// Added French translations
 	fr: {
 		hero_text: "Tout ce dont vous avez besoin pour un site web incroyable.",
 		hero_description:
