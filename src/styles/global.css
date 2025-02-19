@@ -66,6 +66,8 @@
 
 		/* default font */
 		font-family: var(--font-sans);
+		/* add new custom fade colors */
+		--reviews-color-fade: #00d0ff; /* example light fade color */
 	}
 
 	.dark {
@@ -98,6 +100,8 @@
 		--outline: var(--color-primary-500);
 
 		@apply scheme-dark;
+		/* add dark mode fade color */
+		--custom-color-fade-dark: #b8860b; /* example dark fade color */
 	}
 
 	/* starwind preflight merged with Cosmic Themes */
