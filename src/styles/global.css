@@ -20,8 +20,9 @@
 /* https://tailwindcss.com/docs/adding-custom-styles#using-css-and-layer */
 @layer base {
 	:root {
-		/* starwind component variables  */
+		/* Einar */
 		--background: #0538B4;
+		/* slut Einar*/
 		--foreground: var(--color-base-900);
 		--card: var(--color-base-50);
 		--card-foreground: var(--color-base-950);
