@@ -2,6 +2,12 @@ import { type SiteDataProps } from "../types/configDataTypes";
 import play from "@images/front/play.jpg";
 import learn from "@images/front/learn.png";
 import remember from "@images/front/Remember.png";
+import contextualMemory from "@images/front/contextual_memory.jpg";
+import spacedRepetition from "@images/front/spaced_repetition.jpg";
+import dualCoding from "@images/front/dual_coding.jpg";
+import methodOfLoci from "@images/front/method_of_loci.jpg";
+import interleaving from "@images/front/itearleaving.jpg";
+import casualGaming from "@images/front/casual_gaming.jpg";
 
 
 
@@ -76,26 +82,32 @@ const siteData: SiteDataProps = {
 		{
 			title: "Method of Loci",
 			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
+			image: contextualMemory,
 		},
 		{
 			title: "Contextual Memory",
 			text: `The more connections new knowledge has to existing memories, the easier it is to create a lasting memory.`,
+			image: contextualMemory,
 		},
 		{
 			title: "Spaced Repetition",
 			text: `Repeat knowledge at increasing intervals to build lasting memories with minimal effort.`,
+			image: spacedRepetition,
 		},
 		{
 			title: "Dual Coding",
 			text: `You learn better when knowledge is presented in multiple formats at once (e.g., image, text, and map).`,
+			image: dualCoding,
 		},
 		{
 			title: "Interleaving",
 			text: `We remember things better when we are forced to apply new knowledge in various contexts.`,
+			image: interleaving,
 		},
 		{
 			title: "Casual Gaming",
 			text: `Rewards, animations, and game design make learning addictive.`,
+			image: casualGaming,
 		}
 	],
 
