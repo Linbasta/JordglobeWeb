@@ -177,38 +177,82 @@
 
 	/* Einar look here*/
 
-	.three-images {
+
+	#feature-download {
 		background-color: #031D5E;
 	}
 
-	/* New styles for headings within .three-images */
-	 .three-images h1 { 
+	#feature-download h1 { 
 		color: firebrick
 	}
-	.three-images h2 {
+	#feature-download h2 {
 
 		color: firebrick
 	}
-	.three-images h3 {
+	#feature-download h3 {
 		color:yellow 
 	} 
-	.three-images p{
+	#feature-download p{
 		color:yellow 
 	}
 
-	.feature-cards-small-2 h1 { 
+	#three-images {
+		background-color: #031D5E;
+	}
+
+	#three-images h1 { 
+		color: firebrick
+	}
+	#three-images h2 {
+
+		color: firebrick
+	}
+	#three-images h3 {
+		color:yellow 
+	} 
+	#three-images p{
+		color:yellow 
+	}
+
+	#feature-cards-small-2 { 
+		background-color: rgb(0, 229, 255)
+	}
+	#feature-cards-small-2 h1 { 
 		color: rgb(0, 229, 255)
 	}
-	.feature-cards-small-2 h2 {
+	#feature-cards-small-2 h2 {
 
 		color: rgb(255, 0, 0)
 	}
-	.feature-cards-small-2 h3 {
+	#feature-cards-small-2 h3 {
 		color:rgb(206, 206, 142) 
 	} 
-	.feature-cards-small-2 p{
+	#feature-cards-small-2 p{
 		color:rgb(255, 0, 187) 
 	}
+
+	#feature-bento { 
+		background-color: #d9ff00;
+	}
+
+	#feature-bento h1 { 
+		color: rgb(0, 229, 255)
+	}
+	#feature-bento  h2 {
+
+		color: rgb(255, 0, 0)
+	}
+	#feature-bento  h3 {
+		color:rgb(206, 206, 142) 
+	} 
+	#feature-bento  p{
+		color:rgb(255, 0, 187) 
+	}
+	#feature-bento  .description{
+		color:rgb(134, 0, 0) 
+	}
+
+
 
 	.bg-testimonial {
 		background-color: #031D5E;
