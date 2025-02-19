@@ -15,8 +15,8 @@ import casualGaming from "@images/front/casual_gaming.jpg";
 const siteData: SiteDataProps = {
 	name: "Jordglobe",
 	// Your website's title and description (meta fields)
-	title: "JordGlobe - the ultimate geography game",
-	description: "JordGlobe uses addictive gaming to make learning geography fun and effortless.",
+	title: "JordGlobe - le jeu de géographie ultime",
+	description: "JordGlobe utilise des jeux addictifs pour rendre l'apprentissage de la géographie amusant et sans effort.",
 
 	// used on contact page and footer
 	contact: {
@@ -36,89 +36,89 @@ const siteData: SiteDataProps = {
 	// default image for meta tags if the page doesn't have an image already
 	defaultImage: {
 		src: "/images/jordglobe-logo.png",
-		alt: "JordGlobe logo",
+		alt: "Logo JordGlobe",
 	},
 
 
 	featureBento: {
-		badgeText: "Learning Made Fun",
-		sectionTitle: "The Duolingo for Geography",
-		card1Title: "Countries & Flags",
-		card1Description: "Master countries and their flags - essential knowledge that helps you better understand global news, international events, and the changing world map. Never feel lost in world news again.",
-		card1ImageAlt: "countries and flags",
-		card1ImageAltLight: "countries and flags light",
-		card2Title: "Provinces & Cities",
-		card2Description: "Learn about cities and regions to grasp where events happen and why they matter. From economic powerhouses to geopolitical hotspots, knowing locations helps you understand international relations and global developments.",
-		card2ImageAlt: "provinces and cities",
-		card3Title: "Trivia Beyond Borders",
-		card3Description: "Challenge yourself with fun trivia that goes beyond mere geography. Uncover surprising facts that reveal hidden links between people and places, reminding you that every corner of the world is interconnected.",
-		card3ImageAlt: "trivia beyond geography",
-		ctaSrText: "Start your global journey",
-		learnMoreText: "Begin exploring",
-		paymentInfoText: "Become a knowledge master",
+		badgeText: "Apprentissage Amusant",
+		sectionTitle: "Le Duolingo de la Géographie",
+		card1Title: "Pays & Drapeaux",
+		card1Description: "Maîtrisez les pays et leurs drapeaux - des connaissances essentielles qui vous aident à mieux comprendre les actualités mondiales, les événements internationaux et la carte du monde en constante évolution. Ne vous sentez plus jamais perdu dans les actualités mondiales.",
+		card1ImageAlt: "pays et drapeaux",
+		card1ImageAltLight: "pays et drapeaux clair",
+		card2Title: "Provinces & Villes",
+		card2Description: "Apprenez à connaître les villes et les régions pour comprendre où se produisent les événements et pourquoi ils sont importants. Des puissances économiques aux points chauds géopolitiques, connaître les lieux vous aide à comprendre les relations internationales et les développements mondiaux.",
+		card2ImageAlt: "provinces et villes",
+		card3Title: "Trivia Au-Delà des Frontières",
+		card3Description: "Défiez-vous avec des trivia amusants qui vont au-delà de la simple géographie. Découvrez des faits surprenants qui révèlent des liens cachés entre les personnes et les lieux, vous rappelant que chaque coin du monde est interconnecté.",
+		card3ImageAlt: "trivia au-delà de la géographie",
+		ctaSrText: "Commencez votre voyage mondial",
+		learnMoreText: "Commencez à explorer",
+		paymentInfoText: "Devenez un maître du savoir",
 	},
 
 	featureThreeImage: {
-		title: "Play --> Learn --> Remember",
+		title: "Jouer --> Apprendre --> Se Souvenir",
 		cards: [
 			{
-				title: "PLAY",
-				text: `JordGlobe is a casual game that makes learning about our world fun and effortless. Its addictive gaming mechanics transform casual gaming into meaningful screen time.`,
+				title: "JOUER",
+				text: `JordGlobe est un jeu décontracté qui rend l'apprentissage de notre monde amusant et sans effort. Ses mécanismes de jeu addictifs transforment le jeu décontracté en temps d'écran significatif.`,
 				image: play,
 			},
 			{
-				title: "LEARN",
-				text: `The game adapts to your skill level and helps you learn from mistakes. Complex topics like the 50 US states become manageable through bite-sized sessions. The game repeats questions strategically, focusing on what you need to master.`,
+				title: "APPRENDRE",
+				text: `Le jeu s'adapte à votre niveau de compétence et vous aide à apprendre de vos erreurs. Des sujets complexes comme les 50 États américains deviennent gérables grâce à des sessions de taille réduite. Le jeu répète les questions de manière stratégique, en se concentrant sur ce que vous devez maîtriser.`,
 				image: learn,
 			},
 			{
-				title: "REMEMBER",
-				text: `Memory Medals reward long-term retention by challenging you at optimal intervals. With each successful challenge, the time between repetitions increases. Master knowledge permanently with minimal effort.`,
+				title: "SE SOUVENIR",
+				text: `Les Médailles de Mémoire récompensent la rétention à long terme en vous défiant à des intervalles optimaux. À chaque défi réussi, le temps entre les répétitions augmente. Maîtrisez les connaissances de manière permanente avec un effort minimal.`,
 				image: remember,
 			}],
 	},
-	featureCardsTitle: "Mnemonic Techniques",
+	featureCardsTitle: "Techniques Mnémotechniques",
 	featureCardsSmall2: [
 		{
-			title: "Method of Loci",
-			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
+			title: "Méthode des Loci",
+			text: `Transformez le globe terrestre en votre palais de mémoire. Chaque lieu devient une ancre puissante pour les connaissances, transformant la géographie en une carte mémoire naturelle.`,
+			image: methodOfLoci,
+		},
+		{
+			title: "Mémoire Contextuelle",
+			text: `Plus les nouvelles connaissances ont de connexions avec les souvenirs existants, plus il est facile de créer un souvenir durable.`,
 			image: contextualMemory,
 		},
 		{
-			title: "Contextual Memory",
-			text: `The more connections new knowledge has to existing memories, the easier it is to create a lasting memory.`,
-			image: contextualMemory,
-		},
-		{
-			title: "Spaced Repetition",
-			text: `Repeat knowledge at increasing intervals to build lasting memories with minimal effort.`,
+			title: "Répétition Espacée",
+			text: `Répétez les connaissances à des intervalles croissants pour créer des souvenirs durables avec un effort minimal.`,
 			image: spacedRepetition,
 		},
 		{
-			title: "Dual Coding",
-			text: `You learn better when knowledge is presented in multiple formats at once (e.g., image, text, and map).`,
+			title: "Codage Double",
+			text: `Vous apprenez mieux lorsque les connaissances sont présentées sous plusieurs formats à la fois (par exemple, image, texte et carte).`,
 			image: dualCoding,
 		},
 		{
-			title: "Interleaving",
-			text: `We remember things better when we are forced to apply new knowledge in various contexts.`,
+			title: "Entrelacement",
+			text: `Nous nous souvenons mieux des choses lorsque nous sommes obligés d'appliquer de nouvelles connaissances dans divers contextes.`,
 			image: interleaving,
 		},
 		{
-			title: "Casual Gaming",
-			text: `Rewards, animations, and game design make learning addictive.`,
+			title: "Jeu Décontracté",
+			text: `Les récompenses, les animations et la conception du jeu rendent l'apprentissage addictif.`,
 			image: casualGaming,
 		}
 	],
 
-	testimonialsTitle: "User feedback",
-	testimonialsDescription: "What our users say about JordGlobe",
+	testimonialsTitle: "Avis des utilisateurs",
+	testimonialsDescription: "Ce que nos utilisateurs disent de JordGlobe",
 
 	// Added featureVideo properties
 	featureVideo: {
-		title: "Gameplay video",
-		playButtonAriaLabel: "play video",
-		imageAlt: "trailer",
+		title: "Vidéo de gameplay",
+		playButtonAriaLabel: "lire la vidéo",
+		imageAlt: "bande-annonce",
 	},
 };
 

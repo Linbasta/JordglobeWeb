@@ -82,7 +82,7 @@ const siteData: SiteDataProps = {
 		{
 			title: "Method of Loci",
 			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
-			image: contextualMemory,
+			image: methodOfLoci,
 		},
 		{
 			title: "Contextual Memory",
