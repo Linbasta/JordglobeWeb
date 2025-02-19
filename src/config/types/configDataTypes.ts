@@ -126,4 +126,5 @@ export interface FeatureDataThreeImages {
 export interface FeatureDataCards2Small2 {
 	title: string;
 	text: string;
+	image: ImageMetadata;
 }

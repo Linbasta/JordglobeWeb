@@ -1,32 +1,27 @@
 ---
 /**
- * * These are small cards with icons, titles, and text
+ * * These are small cards with images, titles, and text.
  * This looks best with an even number of cards. They are smaller to
- * use with more cards in the same section. 6 cards is probably ideal
+ * use with more cards in the same section. 6 cards is probably ideal.
  *
- * ! I copy all icons into the src/icons folder and recommend you do the same
- * ! If the icon is at src/icons/tabler/paint.svg then you put in "tabler/paint"
+ * ! The image is provided via the "image" prop and should be located in a directory of your choice.
  */
-
-import { Icon } from "astro-icon/components";
 
 interface Props {
 	title: string;
 	text: string;
+	image: string; // new image URL property
 	rest?: any; // catch-all for any additional parameters, such as "aria-label"
 }
 
-const { title, text, ...rest } = Astro.props as Props;
+const { title, text, image, ...rest } = Astro.props as Props;
 ---
 
 <div {...rest}>
 	<div class="h-full">
 		<div class="flex gap-3">
-			<Icon
-				name="nova/circle-check"
-				class="size-8 shrink-0 rounded-full text-white"
-				aria-hidden="true"
-			/>
+			{/* Replace Icon with an image */}
+			<img src={image} alt={title} class="w-20 h-20 self-center object-cover" />
 			<div class="flex flex-col items-start">
 				<h3 class="inline text-lg font-semibold text-base-900 dark:text-base-100">
 					{title}

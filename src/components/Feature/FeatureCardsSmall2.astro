@@ -23,6 +23,7 @@ const siteData = getTranslatedData("siteData", currLocale);
 interface FeatureData {
 	title: string;
 	text: string;
+	image: ImageMetadata;
 }
 
 // data
@@ -40,7 +41,7 @@ const featureData: FeatureData[] = siteData.featureCardsSmall2;
 			data-aos-delay=".3"
 			data-aos-trigger="#trigger-cards-small-2"
 		>
-			{featureData.map((feature, idx) => <FeatureCard title={feature.title} text={feature.text} />)}
+			{featureData.map((feature, idx) => <FeatureCard title={feature.title} text={feature.text} image={feature.image.src}/>)}
 		</div>
 	</div>
 </section>
