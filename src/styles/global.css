@@ -153,10 +153,7 @@
 		@apply focus:border-base-700 dark:focus:border-base-300 focus:ring-0 focus:outline-none;
 	}
 
-	/* styles navbar links */
-	.nav__link--base {
-		@apply text-white hover:text-primary-600 dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
-	}
+	
 }
 
 @layer utilities {
@@ -192,4 +189,14 @@
 	.bg-testimonial-card:hover {
 		border-color: #ffffff;
 	}
+
+	.language-selector{
+		background-color: #36539c;
+		border-color: #624fb0;
+	}
+/* styles navbar links */
+	.nav__link--base {
+		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
+	}
+
 }
