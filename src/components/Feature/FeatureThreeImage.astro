@@ -15,10 +15,10 @@ const featureData: FeatureDataThreeImages = siteData.featureThreeImage;
 
 <section
 	id="feature-three-image"
-	class="background-yellow overflow-hidden py-16 md:py-24"
+	class="three-images overflow-hidden py-16 md:py-24"
 >
 	<div class="site-container">
-		<h2 class="h2 text-base-100 mb-12 lg:mb-24">{featureData.title}</h2>
+		<h2 class="h2 mb-12 lg:mb-24">{featureData.title}</h2>
 		<div class="-m-5 flex flex-wrap" id="trigger-three-img">
 			{
 				featureData.cards.map((feature, idx) => (
@@ -28,8 +28,8 @@ const featureData: FeatureDataThreeImages = siteData.featureThreeImage;
 						data-aos-delay={0.2 * idx}
 						data-aos-trigger="#trigger-three-img"
 					>
-						<h3 class="text-base-100 mb-4 text-xl font-semibold tracking-tight">{feature.title}</h3>
-						<p class="text-base-400 dark:text-base-300 mb-12 text-xl tracking-tight">
+						<h3 class="mb-4 text-xl font-semibold tracking-tight">{feature.title}</h3>
+						<p class=" dark:text-base-300 mb-12 text-l tracking-tight">
 							{feature.text}
 						</p>
 						<Image

@@ -177,8 +177,37 @@
 
 	/* Einar look here*/
 
-	.background-yellow {
+	.three-images {
 		background-color: #031D5E;
+	}
+
+	/* New styles for headings within .three-images */
+	 .three-images h1 { 
+		color: firebrick
+	}
+	.three-images h2 {
+
+		color: firebrick
+	}
+	.three-images h3 {
+		color:yellow 
+	} 
+	.three-images p{
+		color:yellow 
+	}
+
+	.feature-cards-small-2 h1 { 
+		color: rgb(0, 229, 255)
+	}
+	.feature-cards-small-2 h2 {
+
+		color: rgb(255, 0, 0)
+	}
+	.feature-cards-small-2 h3 {
+		color:rgb(206, 206, 142) 
+	} 
+	.feature-cards-small-2 p{
+		color:rgb(255, 0, 187) 
 	}
 
 	.bg-testimonial {
@@ -188,6 +217,7 @@
 	.bg-testimonial-card {
 		background-color: #36539c;
 		border-color: #624fb0;
+		color:rgb(0, 229, 255)
 	}
 
 	.bg-testimonial-card:hover {
