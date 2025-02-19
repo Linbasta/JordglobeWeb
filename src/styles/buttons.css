@@ -1,4 +1,5 @@
 /* buttons, 4 types "primary", "secondary", "outline", "ghost" */
+/* Einar */
 .button {
 	@apply flex items-center justify-center rounded-lg px-5 py-3 font-semibold tracking-tight transition-(--button-transition-properties) duration-200;
 	@apply focus:outline-none;
