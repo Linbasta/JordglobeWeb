@@ -1,62 +1,82 @@
 import { type TestimonialItem } from "../types/configDataTypes";
 
-import BowTiedFocus from "@images/BowTiedFocus.jpg";
-import TravisB from "@images/travis-b.png";
-import Isaac from "@images/isaac_saas.jpg";
-import Aniket from "@images/aniket_p.jpg";
-import David from "@images/david-g-davedev.png";
-import Damiano from "@images/damiano.jpg";
-
+import user from "@images/front/user.png";
 export const testimonialData: TestimonialItem[] = [
 	{
-		avatar: Aniket,
-		name: "Aniket P",
-		title: "Data Scientist",
-		testimonial: `I'm not a front-end dev, but I wanted to rebuild my personal site with Astro. If you're in the same shoes,
-      I can't recommend enough Cosmic Themes.
-      `,
+		avatar: user,
+		name: "raketerr",
+		title: "Android",
+		testimonial: `
+			Been playing for a couple months now and it's crazy how much geography I've picked up!
+		`,
+		avatarTintColor: "#f0f8ff", // even index
 	},
 	{
-		avatar: BowTiedFocus,
-		name: "BowTiedFocus",
-		title: "Frontend Engineer",
-		testimonial: `The Blogsmith Pro theme is ridiculously well put together and documented.
-      I learned a ton about Astro engineering by studying it, and I've already used some of the components
-      for my web design clients. 
-      `,
+		avatar: user,
+		name: "sarah1985",
+		title: "iOS",
+		testimonial: `Great app!`,
+		avatarTintColor: "#faebd7", // odd index
 	},
-	{
-		avatar: Damiano,
-		name: "Damiano L",
-		title: "C++ Developer",
-		testimonial: `Cosmic Themes provides some of the best Astro themes out there. They are well designed, easy to customize and, 
-      most importantly, the team is very responsive concerning support and feature requests.
-      `,
-	},
-	{
-		avatar: David,
-		name: "David G",
-		title: "Web Developer",
-		testimonial: `It's the cleanest template standup experience ever! I've never used Astro, but looking at the demo, code, it
-      should be fairly simple pickup on top of my existing React and NextJS experience.
-      `,
-	},
-	{
-		avatar: TravisB,
-		name: "Travis B",
-		title: "Developer",
-		testimonial: `Cosmic themes are for webdevs and marketers who don't want to waste time reinventing the wheel. 
-    Their themes have great examples of some of the creative things you can accomplish with Astro. 
-      `,
-	},
-	{
-		avatar: Isaac,
-		name: "Isaac",
-		title: "SaaS Developer",
-		testimonial: `My step-dad is starting a construction business and we're looking through Astro themes right now for his website
-      and stumbled upon Cosmic Themes "Galaxy" theme. Absolutely filthy. Excellent work, man.
-      `,
-	},
-];
 
+	{
+		avatar: user,
+		name: "michael_r",
+		title: "Android",
+		testimonial: `
+			Got this for my kids but now I'm hooked too 😅 Finally something educational that doesn't feel like homework! Way better than them watching random videos.
+		`,
+		avatarTintColor: "#f0f8ff", // even index
+	},
+	{
+		avatar: user,
+		name: "emily.rose",
+		title: "iOS",
+		testimonial: `
+			Such a fun way to kill time! Started playing during coffee breaks at work, now I'm actually learning something instead of just scrolling insta 🌍
+		`,
+		avatarTintColor: "#faebd7", // odd index
+	},
+	{
+		avatar: user,
+		name: "robert.k",
+		title: "Android",
+		testimonial: `
+			Honestly surprised how addictive this is! I pick it up when waiting the bus or something. Plus you actually remember stuff!
+		`,
+		avatarTintColor: "#f0f8ff", // even index
+	},
+	{
+		avatar: user,
+		name: "kellyMiller",
+		title: "iOS",
+		testimonial: `Fun and quick!`,
+		avatarTintColor: "#faebd7", // odd index
+	},
+	{
+		avatar: user,
+		name: "laura_s",
+		title: "Android",
+		testimonial: `
+			My students love this! Use it for 5-min warmups in class. Even the kids who usually hate geography are getting into it 
+		`,
+		avatarTintColor: "#f0f8ff", // even index
+	},
+	{
+		avatar: user,
+		name: "david.smith",
+		title: "iOS",
+		testimonial: `
+			This app is lowkey amazing for learning geography! Love how you can play for just a few mins and still learn something new. The games are pretty fun too!
+		`,
+		avatarTintColor: "#faebd7", // odd index
+	},
+	{
+		avatar: user,
+		name: "patrick1980",
+		title: "Android",
+		testimonial: "Greate game! Only thing missing is a multiplayer mode!",
+		avatarTintColor: "#f0f8ff", // even index
+	}
+];
 export default testimonialData;

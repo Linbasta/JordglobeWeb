@@ -48,6 +48,14 @@ export interface SiteDataProps {
 		playButtonAriaLabel: string;
 		imageAlt: string;
 	};
+	heroDownload: HeroDownloadProps;
+}
+
+export interface HeroDownloadProps {
+	title: string;
+	description: string;
+	appStoreAlt: string;
+	googlePlayAlt: string;
 }
 
 // --------------------------------------------------------

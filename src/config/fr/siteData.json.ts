@@ -39,6 +39,12 @@ const siteData: SiteDataProps = {
 		alt: "Logo JordGlobe",
 	},
 
+	heroDownload: {
+		title: "Jouer à Jordglobe",
+		description: "Téléchargez Jordglobe ici et commencez votre voyage !",
+		appStoreAlt: "Télécharger sur l'App Store",
+		googlePlayAlt: "Obtenir sur Google Play"
+	},
 
 	featureBento: {
 		badgeText: "Apprentissage Amusant",

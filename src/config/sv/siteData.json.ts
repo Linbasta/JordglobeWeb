@@ -39,6 +39,12 @@ const siteData: SiteDataProps = {
 		alt: "JordGlobe logotyp",
 	},
 
+	heroDownload: {
+		title: "Spela Jordglobe",
+		description: "Ladda ner Jordglobe här och påbörja din resa!",
+		appStoreAlt: "Ladda ner på App Store",
+		googlePlayAlt: "Hämta på Google Play"
+	},
 
 	featureBento: {
 		badgeText: "Roligt Lärande",
