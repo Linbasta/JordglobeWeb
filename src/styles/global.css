@@ -367,6 +367,33 @@
 		color: #ffffff;
 	}
 
+	.faq-card:hover {
+		background-color: #5582f5;
+		border-color: #624fb0;
+		color: #ffffff;
+	}
+
+	#footer {
+		background-color: #031D5E;
+	}
+
+	#footer h1 {
+		color: rgb(0, 229, 255)
+	}
+
+	#footer h2 {
+
+		color: rgb(255, 0, 0)
+	}
+
+	#footer h3 {
+		color: rgb(206, 206, 142)
+	}
+
+	#footer p {
+		color: rgb(255, 0, 187)
+	}
+
 	.mobile-menu {
 		background-color: #031D5E;
 		border-color: #624fb0;
@@ -379,9 +406,5 @@
 		color: #ff0000;
 	}
 
-	.faq-card:hover {
-		background-color: #5582f5;
-		border-color: #624fb0;
-		color: #ffffff;
-	}
+
 }
