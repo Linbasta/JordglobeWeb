@@ -10,68 +10,70 @@ import Damiano from "@images/damiano.jpg";
 export const testimonialData: TestimonialItem[] = [
 	{
 		avatar: BowTiedFocus,
-		name: "Tobiass89",
-		title: "Regular Player",
+		name: "raketerr",
+		title: "Android",
 		testimonial: `
-			Been playing for a couple months now and it's crazy how much geography I've picked up! Way better than those boring flashcard apps 😄
+			Been playing for a couple months now and it's crazy how much geography I've picked up!
 		`,
 	},
 	{
 		avatar: BowTiedFocus,
-		name: "Sarah_K",
-		title: "Student",
-		testimonial: `
-			Perfect for my bus rides to uni! Quick games that actually teach you stuff. Love how it connects places to cool historical facts.
-		`,
+		name: "sarah1985",
+		title: "iOS",
+		testimonial: `Great app!`,
 	},
+
 	{
 		avatar: BowTiedFocus,
-		name: "GameDad45",
-		title: "Parent",
+		name: "michael_r",
+		title: "Android",
 		testimonial: `
 			Got this for my kids but now I'm hooked too 😅 Finally something educational that doesn't feel like homework! Way better than them watching random videos.
 		`,
 	},
 	{
 		avatar: BowTiedFocus,
-		name: "TravelingTom",
-		title: "Premium User",
-		testimonial: `
-			Upgraded to premium after a week - no regrets! The unlimited hearts are super worth it. Helps me plan my trips better too, ngl
-		`,
-	},
-	{
-		avatar: BowTiedFocus,
-		name: "QuizQueen",
-		title: "Daily Player",
+		name: "emily.rose",
+		title: "iOS",
 		testimonial: `
 			Such a fun way to kill time! Started playing during coffee breaks at work, now I'm actually learning something instead of just scrolling insta 🌍
 		`,
 	},
 	{
 		avatar: BowTiedFocus,
-		name: "Mike_1995",
-		title: "Geography Fan",
+		name: "robert.k",
+		title: "Android",
 		testimonial: `
-			Honestly surprised how addictive this is! The quick games are perfect when you're waiting for the bus or something. Plus you actually remember stuff!
+			Honestly surprised how addictive this is! I pick it up when waiting the bus or something. Plus you actually remember stuff!
 		`,
 	},
 	{
 		avatar: BowTiedFocus,
-		name: "CoolTeacher",
-		title: "High School Teacher",
+		name: "kellyMiller",
+		title: "iOS",
+		testimonial: `Fun and quick!`,
+	},
+	{
+		avatar: BowTiedFocus,
+		name: "laura_s",
+		title: "Android",
 		testimonial: `
-			My students love this! Use it for 5-min warmups in class. Even the kids who usually hate geography are getting into it 🙌
+			My students love this! Use it for 5-min warmups in class. Even the kids who usually hate geography are getting into it 
 		`,
 	},
 	{
 		avatar: BowTiedFocus,
-		name: "WorldWanderer",
-		title: "Casual Player",
+		name: "david.smith",
+		title: "iOS",
 		testimonial: `
 			This app is lowkey amazing for learning geography! Love how you can play for just a few mins and still learn something new. The games are pretty fun too!
 		`,
+	},
+	{
+		avatar: BowTiedFocus,
+		name: "patrick1980",
+		title: "Android",
+		testimonial: "Greate game! Only thing missing is a multiplayer mode!",
 	}
 ];
-
 export default testimonialData;
