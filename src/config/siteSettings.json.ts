@@ -19,7 +19,7 @@ export const localeMap = {
 export const languageSwitcherMap = {
 	en: "EN",
 	sv: "SV",
-	fr: "FR",
+	// fr: "FR",
 	// en: "English",
 	// fr: "Français",
 } as const;
