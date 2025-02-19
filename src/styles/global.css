@@ -199,4 +199,15 @@
 		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
 	}
 
+	.faq-card {
+		background-color: #031D5E;
+		border-color: #624fb0;
+		color: #ffffff;
+	}
+
+.faq-card:hover {
+		background-color: #5582f5;
+		border-color: #624fb0;
+		color: #ffffff;
+	}
 }
