@@ -68,7 +68,8 @@
 		/* default font */
 		font-family: var(--font-sans);
 		/* add new custom fade colors */
-		--reviews-color-fade: #00d0ff; /* example light fade color */
+		--reviews-color-fade: #00d0ff;
+		/* example light fade color */
 	}
 
 	.dark {
@@ -102,16 +103,19 @@
 
 		@apply scheme-dark;
 		/* add dark mode fade color */
-		--custom-color-fade-dark: #b8860b; /* example dark fade color */
+		--custom-color-fade-dark: #b8860b;
+		/* example dark fade color */
 	}
 
 	/* starwind preflight merged with Cosmic Themes */
 	* {
 		@apply border-border;
 	}
+
 	*:focus-visible {
 		@apply outline-outline !transition-none;
 	}
+
 	html {
 		@apply bg-background text-foreground leading-[1.6rem] scheme-light dark:scheme-dark;
 		scroll-behavior: smooth;
@@ -119,6 +123,7 @@
 		-webkit-text-size-adjust: none;
 		text-size-adjust: none;
 	}
+
 	button {
 		@apply cursor-pointer;
 	}
@@ -132,7 +137,7 @@
 	}
 
 	.h2 {
-		@apply  text-[#b7e57e] dark:text-base-100 mb-4 font-serif text-4xl tracking-tighter md:text-6xl;
+		@apply text-[#b7e57e] dark:text-base-100 mb-4 font-serif text-4xl tracking-tighter md:text-6xl;
 	}
 
 	.h3 {
@@ -158,10 +163,11 @@
 		@apply focus:border-base-700 dark:focus:border-base-300 focus:ring-0 focus:outline-none;
 	}
 
-	
+
 }
 
 @layer utilities {
+
 	/* used with select field */
 	.sr-only {
 		@apply sr-only;
@@ -178,104 +184,181 @@
 
 	/* Einar look here*/
 
-
 	#feature-download {
 		background-color: #031D5E;
 	}
 
-	#feature-download h1 { 
+	#feature-download h1 {
 		color: firebrick
 	}
+
 	#feature-download h2 {
 
 		color: firebrick
 	}
+
 	#feature-download h3 {
-		color:yellow 
-	} 
-	#feature-download p{
-		color:yellow 
+		color: yellow
 	}
 
-	#three-images {
+	#feature-download p {
+		color: yellow
+	}
+
+	#feature-three-image {
 		background-color: #031D5E;
 	}
 
-	#three-images h1 { 
+	#feature-three-image h1 {
 		color: firebrick
 	}
-	#three-images h2 {
+
+	#feature-three-image h2 {
 
 		color: firebrick
 	}
-	#three-images h3 {
-		color:yellow 
-	} 
-	#three-images p{
-		color:yellow 
+
+	#feature-three-image h3 {
+		color: yellow
 	}
 
-	#feature-cards-small-2 { 
+	#feature-three-image p {
+		color: yellow
+	}
+
+	#feature-cards-small-2 {
 		background-color: rgb(0, 229, 255)
 	}
-	#feature-cards-small-2 h1 { 
+
+	#feature-cards-small-2 h1 {
 		color: rgb(0, 229, 255)
 	}
+
 	#feature-cards-small-2 h2 {
 
 		color: rgb(255, 0, 0)
 	}
+
 	#feature-cards-small-2 h3 {
-		color:rgb(206, 206, 142) 
-	} 
-	#feature-cards-small-2 p{
-		color:rgb(255, 0, 187) 
+		color: rgb(206, 206, 142)
 	}
 
-	#feature-bento { 
+	#feature-cards-small-2 p {
+		color: rgb(255, 0, 187)
+	}
+
+	#feature-bento {
 		background-color: #d9ff00;
 	}
 
-	#feature-bento h1 { 
+	#feature-bento h1 {
 		color: rgb(0, 229, 255)
 	}
-	#feature-bento  h2 {
+
+	#feature-bento h2 {
 
 		color: rgb(255, 0, 0)
 	}
-	#feature-bento  h3 {
-		color:rgb(206, 206, 142) 
-	} 
-	#feature-bento  p{
-		color:rgb(255, 0, 187) 
-	}
-	#feature-bento  .description{
-		color:rgb(134, 0, 0) 
+
+	#feature-bento h3 {
+		color: rgb(206, 206, 142)
 	}
 
+	#feature-bento p {
+		color: rgb(255, 0, 187)
+	}
+
+	#feature-bento .description {
+		color: rgb(134, 0, 0)
+	}
 
 
-	.bg-testimonial {
+	#feature-video {
+		background-color: #d9ff00;
+	}
+
+	#feature-bento h1 {
+		color: rgb(0, 229, 255)
+	}
+
+	#feature-video h2 {
+
+		color: rgb(255, 0, 0)
+	}
+
+	#feature-video h3 {
+		color: rgb(206, 206, 142)
+	}
+
+	#feature-video p {
+		color: rgb(255, 0, 187)
+	}
+
+	#feature-video .description {
+		color: rgb(134, 0, 0)
+	}
+
+
+	#testimonials-rows {
 		background-color: #031D5E;
+	}
+
+	#testimonials-rows h1 {
+		color: rgb(0, 229, 255)
+	}
+
+	#testimonials-rows h2 {
+
+		color: rgb(255, 0, 0)
+	}
+
+	#testimonials-rows h3 {
+		color: rgb(206, 206, 142)
+	}
+
+	#testimonials-rows p {
+		color: rgb(255, 0, 187)
 	}
 
 	.bg-testimonial-card {
 		background-color: #36539c;
 		border-color: #624fb0;
-		color:rgb(0, 229, 255)
+		color: rgb(0, 229, 255)
 	}
 
 	.bg-testimonial-card:hover {
 		border-color: #ffffff;
 	}
 
-	.language-selector{
+	.language-selector {
 		background-color: #36539c;
 		border-color: #624fb0;
 	}
-/* styles navbar links */
+
+	/* styles navbar links */
 	.nav__link--base {
 		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
+	}
+
+	#faq-accordions {
+		background-color: #031D5E;
+	}
+
+	#faq-accordions h1 {
+		color: rgb(0, 229, 255)
+	}
+
+	#faq-accordions h2 {
+
+		color: rgb(255, 0, 0)
+	}
+
+	#faq-accordions h3 {
+		color: rgb(206, 206, 142)
+	}
+
+	#faq-accordions p {
+		color: rgb(255, 0, 187)
 	}
 
 	.faq-card {
@@ -283,6 +366,7 @@
 		border-color: #624fb0;
 		color: #ffffff;
 	}
+
 	.mobile-menu {
 		background-color: #031D5E;
 		border-color: #624fb0;
@@ -295,7 +379,7 @@
 		color: #ff0000;
 	}
 
-.faq-card:hover {
+	.faq-card:hover {
 		background-color: #5582f5;
 		border-color: #624fb0;
 		color: #ffffff;

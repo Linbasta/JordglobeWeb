@@ -6,105 +6,91 @@
 import { Image } from "astro:assets";
 
 interface Props {
-  videoSrc: string;
-  posterSrc: string; // first frame image
-  logoSrc: string;
-  logoAlt: string;
-  overlayColor?: string;
-  overlayOpacity?: string;
+	videoSrc: string;
+	posterSrc: string; // first frame image
+	logoSrc: string;
+	logoAlt: string;
+	overlayColor?: string;
+	overlayOpacity?: string;
 }
 
 const {
-  videoSrc,
-  posterSrc,
-  logoSrc,
-  logoAlt,
-  overlayColor = "rgb(0,0,0)",
-  overlayOpacity = "0.43"
+	videoSrc,
+	posterSrc,
+	logoSrc,
+	logoAlt,
+	overlayColor = "rgb(0,0,0)",
+	overlayOpacity = "0.43",
 } = Astro.props;
 ---
 
-<section class="relative h-screen w-full overflow-hidden">
-  <!-- Video Background -->
-  <div class="absolute inset-0 h-full w-full">
-    <video
-      id="hero-video"
-      autoplay
-      loop
-      muted
-      playsinline
-      class="h-full w-full object-cover"
-    >
-      <source src={videoSrc} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
+<section id="feature-video" class="relative h-screen w-full overflow-hidden">
+	<!-- Video Background -->
+	<div class="absolute inset-0 h-full w-full">
+		<video id="hero-video" autoplay loop muted playsinline class="h-full w-full object-cover">
+			<source src={videoSrc} type="video/mp4" />
+			Your browser does not support the video tag.
+		</video>
+	</div>
 
-  <!-- Poster Overlay (First Video Frame) -->
-  <div
-    id="poster-overlay"
-    class="absolute inset-0 z-30 bg-cover bg-center"
-    style={`background-image: url('${posterSrc.src}');`}
-  ></div>
+	<!-- Poster Overlay (First Video Frame) -->
+	<div
+		id="poster-overlay"
+		class="absolute inset-0 z-30 bg-cover bg-center"
+		style={`background-image: url('${posterSrc.src}');`}
+	>
+	</div>
 
-  <!-- Overlay -->
-  <div 
-    class="absolute inset-0 z-10"
-    style={`background-color: ${overlayColor}; opacity: ${overlayOpacity};`}
-  ></div>
+	<!-- Overlay -->
+	<div
+		class="absolute inset-0 z-10"
+		style={`background-color: ${overlayColor}; opacity: ${overlayOpacity};`}
+	>
+	</div>
 
-  <!-- Content -->
-  <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
-    <div 
-      class="w-full max-w-[700px] animate-fadeIn"
-      style="animation-duration: 3.5s;"
-    >
-      <Image
-        src={logoSrc}
-        alt={logoAlt}
-        class="w-full"
-        width={700}
-        height={200}
-      />
-    </div>
-  </div>
+	<!-- Content -->
+	<div class="relative z-20 flex h-full w-full items-center justify-center px-4">
+		<div class="animate-fadeIn w-full max-w-[700px]" style="animation-duration: 3.5s;">
+			<Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={200} />
+		</div>
+	</div>
 </section>
 
 <script client:load>
-  const video = document.getElementById("hero-video");
-  const posterOverlay = document.getElementById("poster-overlay");
-  const logo = document.querySelector(".animate-fadeIn");
+	const video = document.getElementById("hero-video");
+	const posterOverlay = document.getElementById("poster-overlay");
+	const logo = document.querySelector(".animate-fadeIn");
 
-  video.addEventListener("loadeddata", () => {
-    if (posterOverlay) {
-      posterOverlay.style.transition = "opacity 0.5s";
-      posterOverlay.style.opacity = "0";
-      setTimeout(() => posterOverlay.remove(), 500);
-    }
-  });
+	video.addEventListener("loadeddata", () => {
+		if (posterOverlay) {
+			posterOverlay.style.transition = "opacity 0.5s";
+			posterOverlay.style.opacity = "0";
+			setTimeout(() => posterOverlay.remove(), 500);
+		}
+	});
 
-  video.addEventListener("play", () => {
-    if (logo) {
-      logo.style.animationPlayState = "running";
-    }
-  });
+	video.addEventListener("play", () => {
+		if (logo) {
+			logo.style.animationPlayState = "running";
+		}
+	});
 </script>
 
 <style>
-/* Fade-in animation for content */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.7);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+	/* Fade-in animation for content */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: scale(0.7);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
 
-.animate-fadeIn {
-  animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  animation-play-state: paused; /* Start paused */
-}
+	.animate-fadeIn {
+		animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
+		animation-play-state: paused; /* Start paused */
+	}
 </style>

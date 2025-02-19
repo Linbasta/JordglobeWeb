@@ -20,13 +20,10 @@ import { type TestimonialItem } from "@config/types/configDataTypes";
 
 const currLocale = getLocaleFromUrl(Astro.url);
 const testimonialData = getTranslatedData("testimonialData", currLocale);
-const  siteData = getTranslatedData("siteData", currLocale)
+const siteData = getTranslatedData("siteData", currLocale);
 ---
 
-<section
-	id="testimonials-rows"
-	class="overflow-hidden bg-testimonial py-16 md:pb-28 md:pt-24 dark:bg-base-950"
->
+<section id="testimonials-rows" class="dark:bg-base-950 overflow-hidden py-16 md:pt-24 md:pb-28">
 	<div class="relative mx-auto mb-16 text-center md:max-w-4xl">
 		<!-- <Badge>200+ Happy customers</Badge> -->
 		<h2 class="h2 mb-4">{siteData.testimonialsTitle}</h2>
@@ -37,19 +34,19 @@ const  siteData = getTranslatedData("siteData", currLocale)
 	<div class="relative mx-auto max-w-[1800px]">
 		<!-- left fade-out -->
 		<div
-			class="absolute -left-px top-0 z-20 h-full w-[10%] bg-gradient-to-r from-[var(--reviews-color-fade)] from-10% to-transparent dark:from-[var(--custom-color-fade-dark)]"
+			class="absolute top-0 -left-px z-20 h-full w-[10%] bg-gradient-to-r from-[var(--reviews-color-fade)] from-10% to-transparent dark:from-[var(--custom-color-fade-dark)]"
 		>
 		</div>
 		<!-- right fade-out -->
 		<div
-			class="absolute -right-px top-0 z-20 h-full w-[10%] bg-gradient-to-l from-[var(--reviews-color-fade)] to-transparent to-90% dark:from-[var(--custom-color-fade-dark)]"
+			class="absolute top-0 -right-px z-20 h-full w-[10%] bg-gradient-to-l from-[var(--reviews-color-fade)] to-transparent to-90% dark:from-[var(--custom-color-fade-dark)]"
 		>
 		</div>
 
 		<div class="relative h-full overflow-x-hidden py-4">
 			<div class="testimonial-marquee-top flex gap-6">
 				<div
-					class="flex min-w-full shrink-0 animate-marquee-testimonials items-start justify-around gap-6"
+					class="animate-marquee-testimonials flex min-w-full shrink-0 items-start justify-around gap-6"
 				>
 					{
 						testimonialData.map((testimonial, idx) => (
@@ -61,7 +58,7 @@ const  siteData = getTranslatedData("siteData", currLocale)
 				</div>
 				<div
 					aria-hidden="true"
-					class="flex min-w-full shrink-0 animate-marquee-testimonials items-start justify-around gap-6"
+					class="animate-marquee-testimonials flex min-w-full shrink-0 items-start justify-around gap-6"
 				>
 					{
 						testimonialData.map((testimonial, idx) => (
@@ -75,7 +72,7 @@ const  siteData = getTranslatedData("siteData", currLocale)
 
 			<div class="testimonial-marquee-bot flex gap-6 pt-6">
 				<div
-					class="flex min-w-full shrink-0 animate-marquee-testimonials items-start justify-around gap-6 [animation-direction:reverse]"
+					class="animate-marquee-testimonials flex min-w-full shrink-0 items-start justify-around gap-6 [animation-direction:reverse]"
 				>
 					{
 						testimonialData.map((testimonial, idx) => (
@@ -87,7 +84,7 @@ const  siteData = getTranslatedData("siteData", currLocale)
 				</div>
 				<div
 					aria-hidden="true"
-					class="flex min-w-full shrink-0 animate-marquee-testimonials items-start justify-around gap-6 [animation-direction:reverse]"
+					class="animate-marquee-testimonials flex min-w-full shrink-0 items-start justify-around gap-6 [animation-direction:reverse]"
 				>
 					{
 						testimonialData.map((testimonial, idx) => (
