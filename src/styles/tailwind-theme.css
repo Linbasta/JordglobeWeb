@@ -31,11 +31,13 @@
 	--color-base-950: var(--color-gray-950);
 
 	/* other theme settings */
+	/* Einar */
 	--color-gradient-1: #0014ff;
 	--color-gradient-2: #2500b1;
 	--color-gradient-3: #0014ff;
 	--button-transition-properties:
 		box-shadow, color, background-color, border-color, text-decoration-color, fill, stroke;
+	/* End Einar */
 
 	/* layout settings */
 	--breakpoint-xs: 400px;
