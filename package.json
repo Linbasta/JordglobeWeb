@@ -3,15 +3,16 @@
 	"type": "module",
 	"version": "3.0.0",
 	"scripts": {
-		"dev": "astro dev",
-		"start": "astro dev",
-		"build": "astro build",
+		"dev": "node ./scripts/copy-pages.js && astro dev",
+		"start": "node ./scripts/copy-pages.js && astro dev",
+		"build": "node ./scripts/copy-pages.js && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
 		"config-i18n": "node ./scripts/config-i18n.js",
 		"remove-keystatic": "node ./scripts/remove-keystatic.js",
-		"format": "prettier -w \"**/*\" --ignore-unknown --cache"
-	},
+		"format": "prettier -w \"**/*\" --ignore-unknown --cache",
+		"copy-pages": "node ./scripts/copy-pages.js"
+	  },
 	"dependencies": {
 		"@astrojs/mdx": "^4.0.8",
 		"@astrojs/netlify": "^6.1.0",

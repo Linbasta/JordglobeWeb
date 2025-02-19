@@ -3,12 +3,14 @@ import play from "@images/front/play.jpg";
 import learn from "@images/front/learn.png";
 import remember from "@images/front/Remember.png";
 
+
+
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
 	name: "Jordglobe",
 	// Your website's title and description (meta fields)
-	title: "JordGlobe - det ultimata geographiespelet",
-	description: "JordGlobe använder beroendeframkallande spelmekanik för att göra geografi roligt och enkelt att lära sig.",
+	title: "JordGlobe - the ultimate geography game",
+	description: "JordGlobe uses addictive gaming to make learning geography fun and effortless.",
 
 	// used on contact page and footer
 	contact: {
@@ -28,74 +30,84 @@ const siteData: SiteDataProps = {
 	// default image for meta tags if the page doesn't have an image already
 	defaultImage: {
 		src: "/images/jordglobe-logo.png",
-		alt: "JordGlobe logotyp",
+		alt: "JordGlobe logo",
 	},
 
 
 	featureBento: {
-		badgeText: "Lärande har kul",
-		sectionTitle: "Duolingo för geografi",
-		card1Title: "Länder & Flaggor",
-		card1Description: "Bemästra länder och deras flaggor - grundläggande kunskap som hjälper dig att förstå globala nyheter, internationella händelser och den föränderliga världskartan. Känn dig aldrig vilse i världens nyheter igen.",
-		card1ImageAlt: "länder och flaggor",
-		card1ImageAltLight: "länder och flaggor ljus",
-		card2Title: "Provinser & Städer",
-		card2Description: "Lär dig om städer och regioner för att förstå var händelser sker och varför de är viktiga. Från ekonomiska maktcentra till geopolitiska hotspots, att känna till platser hjälper dig att förstå internationella relationer och globala utvecklingar.",
-		card2ImageAlt: "provinser och städer",
-		card3Title: "Trivia bortom gränser",
-		card3Description: "Utmanar dig själv med rolig trivia som går bortom enbart geografi. Avslöja överraskande fakta som visar dolda samband mellan människor och platser, och påminner dig om att varje hörn i världen är sammankopplat.",
-		card3ImageAlt: "trivia bortom geografi",
-		ctaSrText: "Börja din globala resa",
-		learnMoreText: "Börja utforska",
-		paymentInfoText: "Bli en kunskapsexpert",
+		badgeText: "Learning Made Fun",
+		sectionTitle: "The Duolingo for Geography",
+		card1Title: "Countries & Flags",
+		card1Description: "Master countries and their flags - essential knowledge that helps you better understand global news, international events, and the changing world map. Never feel lost in world news again.",
+		card1ImageAlt: "countries and flags",
+		card1ImageAltLight: "countries and flags light",
+		card2Title: "Provinces & Cities",
+		card2Description: "Learn about cities and regions to grasp where events happen and why they matter. From economic powerhouses to geopolitical hotspots, knowing locations helps you understand international relations and global developments.",
+		card2ImageAlt: "provinces and cities",
+		card3Title: "Trivia Beyond Borders",
+		card3Description: "Challenge yourself with fun trivia that goes beyond mere geography. Uncover surprising facts that reveal hidden links between people and places, reminding you that every corner of the world is interconnected.",
+		card3ImageAlt: "trivia beyond geography",
+		ctaSrText: "Start your global journey",
+		learnMoreText: "Begin exploring",
+		paymentInfoText: "Become a knowledge master",
 	},
 
 	featureThreeImage: {
-		title: "Spela --> Lär --> Kom ihåg",
+		title: "Play --> Learn --> Remember",
 		cards: [
 			{
-				title: "SPELA",
-				text: `JordGlobe är ett avslappnat spel som gör det roligt och enkelt att lära sig om vår värld. Dess beroendeframkallande spelmekanik förvandlar avslappnat spelande till meningsfull skärmtid.`,
+				title: "PLAY",
+				text: `JordGlobe is a casual game that makes learning about our world fun and effortless. Its addictive gaming mechanics transform casual gaming into meaningful screen time.`,
 				image: play,
 			},
 			{
-				title: "LÄR",
-				text: `Spelet anpassar sig efter din färdighetsnivå och hjälper dig att lära dig av dina misstag. Komplexa ämnen som de 50 amerikanska delstaterna blir hanterbara genom korta sessioner. Spelet upprepar frågor strategiskt med fokus på det du behöver bemästra.`,
+				title: "LEARN",
+				text: `The game adapts to your skill level and helps you learn from mistakes. Complex topics like the 50 US states become manageable through bite-sized sessions. The game repeats questions strategically, focusing on what you need to master.`,
 				image: learn,
 			},
 			{
-				title: "KOM IHÅG",
-				text: `Minnesmedaljer belönar långsiktig inlärning genom att utmana dig med optimala intervaller. Med varje lyckad utmaning ökar tiden mellan repetitionerna. Bemästra kunskap permanent med minimal ansträngning.`,
+				title: "REMEMBER",
+				text: `Memory Medals reward long-term retention by challenging you at optimal intervals. With each successful challenge, the time between repetitions increases. Master knowledge permanently with minimal effort.`,
 				image: remember,
 			}],
 	},
-	featureCardsTitle: "Minnestekniker",
+	featureCardsTitle: "Mnemonic Techniques",
 	featureCardsSmall2: [
 		{
-			title: "Loci-metoden",
-			text: `Förvandla jordgloben till ditt minnespalats. Varje plats blir ett starkt ankare för kunskap, och gör geografin till en naturlig minneskarta.`,
+			title: "Method of Loci",
+			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
 		},
 		{
-			title: "Kontextuellt minne",
-			text: `Ju fler kopplingar ny kunskap har till befintliga minnen, desto lättare är det att skapa ett varaktigt minne.`,
+			title: "Contextual Memory",
+			text: `The more connections new knowledge has to existing memories, the easier it is to create a lasting memory.`,
 		},
 		{
-			title: "Intervallrepetition",
-			text: `Repetera kunskap med ökande intervaller för att bygga bestående minnen med minimal ansträngning.`,
+			title: "Spaced Repetition",
+			text: `Repeat knowledge at increasing intervals to build lasting memories with minimal effort.`,
 		},
 		{
-			title: "Dubbel kodning",
-			text: `Du lär dig bättre när kunskap presenteras i flera format samtidigt (t.ex. bild, text och karta).`,
+			title: "Dual Coding",
+			text: `You learn better when knowledge is presented in multiple formats at once (e.g., image, text, and map).`,
 		},
 		{
-			title: "Växlande",
-			text: `Vi kommer ihåg saker bättre när vi måste tillämpa ny kunskap i olika sammanhang.`,
+			title: "Interleaving",
+			text: `We remember things better when we are forced to apply new knowledge in various contexts.`,
 		},
 		{
-			title: "Avslappnat spelande",
-			text: `Belöningar, animationer och spelupplägg gör lärande beroendeframkallande.`,
+			title: "Casual Gaming",
+			text: `Rewards, animations, and game design make learning addictive.`,
 		}
-	]
+	],
+
+	testimonialsTitle: "User feedback",
+	testimonialsDescription: "What our users say about JordGlobe",
+
+	// Added featureVideo properties
+	featureVideo: {
+		title: "Gameplay video",
+		playButtonAriaLabel: "play video",
+		imageAlt: "trailer",
+	},
 };
 
 export default siteData;

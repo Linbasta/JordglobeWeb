@@ -39,6 +39,11 @@ import CtaCenter from "@components/Cta/CtaCenter.astro";
 import FaqAccordions from "@components/Faq/FaqAccordions.astro";
 import FaqCards from "@components/Faq/FaqCards.astro";
 
+import HeroVideo from '@components/Hero/HeroVideo.astro';
+import HeroDownload from '@components/Hero/HeroDownload.astro';
+import logoImage from '@images/jordglobe-logo.png';
+import posterImage from '@images/front/first-frame.jpg';
+
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
@@ -49,8 +54,20 @@ const siteData = getTranslatedData("siteData", currLocale);
 ---
 
 <BaseLayout title={siteData.title} description={siteData.description}>
-	<HeroSideImage />
+
+<HeroVideo
+  videoSrc="/assets/placeholder-space.mp4"
+  posterSrc={posterImage.src}
+  logoSrc={logoImage}
+  logoAlt="Your Logo"
+  overlayColor="rgb(0,0,0)"
+  overlayOpacity="0.43"
+/>
+	<!-- <HeroSideImage /> -->
 	<!-- <HeroBgImage /> -->
+	<HeroDownload/> 
+
+
 	<!-- <HeroCentered /> -->
 
 	<!-- <LogoCloudStatic /> -->
@@ -60,11 +77,11 @@ const siteData = getTranslatedData("siteData", currLocale);
 
 	<FeatureThreeImage />
 
-	<FeatureCardsMedium />
+	<!-- <FeatureCardsMedium /> -->
 
-	<!-- <FeatureCardsSmall2 /> -->
+	<FeatureCardsSmall2 />
 	<!-- <FeatureCardsSmall /> -->
-	<!-- <FeatureVideo /> -->
+	<FeatureVideo /> 
 
 	<!-- <ServicesSideImage /> -->
 	<!-- <ServicesIcon /> -->
@@ -77,15 +94,15 @@ const siteData = getTranslatedData("siteData", currLocale);
 
 	<!-- <FeatureToggleImage /> -->
 
-	<PricingTable />
+	<!-- <PricingTable /> -->
 	<!-- <PricingThreeCards /> -->
 	<!-- <PricingFourCards /> -->
 	<!-- <PricingOnePrice /> -->
 
 	<!-- <CtaCardSplit /> -->
 	<!-- <CtaCardLeft /> -->
-	<CtaCenter />
+	<!-- <CtaCenter /> -->
 
-	<!-- <FaqAccordions /> -->
-	<FaqCards />
+	<FaqAccordions />
+	<!-- <FaqCards /> -->
 </BaseLayout>
