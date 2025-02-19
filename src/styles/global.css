@@ -182,229 +182,111 @@
 		animation-play-state: paused !important;
 	}
 
-	/* Einar look here*/
-
-	#feature-download {
-		background-color: #031D5E;
+	/* Einar look here */
+	/* Game Theme Color Variables */
+	:root {
+		--game-primary: #0538B4;
+		--game-primary-dark: #031D5E;
+		--game-primary-light: #5582f5;
+		--game-accent: #d9ff00;
+		--game-card-bg: #36539c;
+		--game-card-border: #624fb0;
+		--game-text-primary: rgb(0, 229, 255);
+		--game-text-secondary: rgb(255, 0, 0);
+		--game-text-highlight: rgb(206, 206, 142);
+		--game-text-body: rgb(255, 0, 187);
+		--game-text-accent: rgb(134, 0, 0);
 	}
 
-	#feature-download h1 {
-		color: firebrick
+	/* Default styles for all sections */
+	[id^="feature-"],
+	[id^="testimonials-"],
+	[id^="faq-"],
+	#footer {
+		background-color: var(--game-primary-dark);
 	}
 
-	#feature-download h2 {
-
-		color: firebrick
+	/* Default heading styles */
+	[id^="feature-"] h1,
+	[id^="testimonials-"] h1,
+	[id^="faq-"] h1,
+	#footer h1 {
+		color: var(--game-text-primary);
 	}
 
-	#feature-download h3 {
-		color: yellow
+	[id^="feature-"] h2,
+	[id^="testimonials-"] h2,
+	[id^="faq-"] h2,
+	#footer h2 {
+		color: var(--game-text-secondary);
 	}
 
-	#feature-download p {
-		color: yellow
+	[id^="feature-"] h3,
+	[id^="testimonials-"] h3,
+	[id^="faq-"] h3,
+	#footer h3 {
+		color: var(--game-text-highlight);
 	}
 
-	#feature-three-image {
-		background-color: #031D5E;
+	[id^="feature-"] p,
+	[id^="testimonials-"] p,
+	[id^="faq-"] p,
+	#footer p {
+		color: var(--game-text-body);
 	}
 
-	#feature-three-image h1 {
-		color: firebrick
-	}
-
-	#feature-three-image h2 {
-
-		color: firebrick
-	}
-
-	#feature-three-image h3 {
-		color: yellow
-	}
-
-	#feature-three-image p {
-		color: yellow
-	}
-
+	/* Specific section overrides */
 	#feature-cards-small-2 {
-		background-color: rgb(0, 229, 255)
+		background-color: var(--game-text-primary);
 	}
 
-	#feature-cards-small-2 h1 {
-		color: rgb(0, 229, 255)
-	}
-
-	#feature-cards-small-2 h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#feature-cards-small-2 h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#feature-cards-small-2 p {
-		color: rgb(255, 0, 187)
-	}
-
-	#feature-bento {
-		background-color: #d9ff00;
-	}
-
-	#feature-bento h1 {
-		color: rgb(0, 229, 255)
-	}
-
-	#feature-bento h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#feature-bento h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#feature-bento p {
-		color: rgb(255, 0, 187)
-	}
-
-	#feature-bento .description {
-		color: rgb(134, 0, 0)
-	}
-
-
+	#feature-bento,
 	#feature-video {
-		background-color: #d9ff00;
+		background-color: var(--game-accent);
 	}
 
-	#feature-bento h1 {
-		color: rgb(0, 229, 255)
-	}
-
-	#feature-video h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#feature-video h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#feature-video p {
-		color: rgb(255, 0, 187)
-	}
-
+	#feature-bento .description,
 	#feature-video .description {
-		color: rgb(134, 0, 0)
+		color: var(--game-text-accent);
 	}
 
-
-	#testimonials-rows {
-		background-color: #031D5E;
-	}
-
-	#testimonials-rows h1 {
-		color: rgb(0, 229, 255)
-	}
-
-	#testimonials-rows h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#testimonials-rows h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#testimonials-rows p {
-		color: rgb(255, 0, 187)
-	}
-
+	/* Card styles */
 	.bg-testimonial-card {
-		background-color: #36539c;
-		border-color: #624fb0;
-		color: rgb(0, 229, 255)
+		background-color: var(--game-card-bg);
+		border-color: var(--game-card-border);
+		color: var(--game-text-primary);
 	}
 
 	.bg-testimonial-card:hover {
 		border-color: #ffffff;
 	}
 
-	.language-selector {
-		background-color: #36539c;
-		border-color: #624fb0;
-	}
-
-	/* styles navbar links */
-	.nav__link--base {
-		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
-	}
-
-	#faq-accordions {
-		background-color: #031D5E;
-	}
-
-	#faq-accordions h1 {
-		color: rgb(0, 229, 255)
-	}
-
-	#faq-accordions h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#faq-accordions h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#faq-accordions p {
-		color: rgb(255, 0, 187)
-	}
-
 	.faq-card {
-		background-color: #031D5E;
-		border-color: #624fb0;
+		background-color: var(--game-primary-dark);
+		border-color: var(--game-card-border);
 		color: #ffffff;
 	}
 
 	.faq-card:hover {
-		background-color: #5582f5;
-		border-color: #624fb0;
+		background-color: var(--game-primary-light);
+		border-color: var(--game-card-border);
 		color: #ffffff;
 	}
 
-	#footer {
-		background-color: #031D5E;
+	/* Navigation components */
+	.language-selector {
+		background-color: var(--game-card-bg);
+		border-color: var(--game-card-border);
 	}
 
-	#footer h1 {
-		color: rgb(0, 229, 255)
+	.nav__link--base {
+		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
 	}
 
-	#footer h2 {
-
-		color: rgb(255, 0, 0)
-	}
-
-	#footer h3 {
-		color: rgb(206, 206, 142)
-	}
-
-	#footer p {
-		color: rgb(255, 0, 187)
-	}
-
-	.mobile-menu {
-		background-color: #031D5E;
-		border-color: #624fb0;
-		color: #ff0000;
-	}
-
+	.mobile-menu,
 	.mobile-hamburger {
-		background-color: #031D5E;
-		border-color: #624fb0;
-		color: #ff0000;
+		background-color: var(--game-primary-dark);
+		border-color: var(--game-card-border);
+		color: var(--game-text-secondary);
 	}
-
-
 }
