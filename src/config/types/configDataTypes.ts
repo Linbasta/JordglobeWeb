@@ -93,6 +93,7 @@ export interface TestimonialItem {
 	name: string;
 	title: string;
 	testimonial: string;
+	avatarTintColor?: string; // new: optional tint color for the avatar image
 }
 
 // --------------------------------------------------------

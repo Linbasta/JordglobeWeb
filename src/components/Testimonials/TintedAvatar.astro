@@ -1,0 +1,20 @@
+---
+interface Props {
+	src: string;
+	alt: string;
+	tintColor?: string;
+	class?: string;
+}
+const { src, alt, tintColor, class: className } = Astro.props as Props;
+const style = tintColor
+	? `background-color: ${tintColor}; -webkit-mask: url('${src}') center/cover no-repeat; mask: url('${src}') center/cover no-repeat;`
+	: `background-image: url('${src}'); background-size: cover;`;
+---
+
+<div
+	class={`w-full h-full rounded-full ${className || ""}`}
+	style={`width: 100%; height: 100%; ${style}`}
+	role="img"
+	aria-label={alt}>
+	{/* The masked background renders the image */}
+</div>
