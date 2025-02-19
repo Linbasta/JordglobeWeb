@@ -101,6 +101,13 @@ const siteData: SiteDataProps = {
 
 	testimonialsTitle: "User feedback",
 	testimonialsDescription: "What our users say about JordGlobe",
+
+	// Added featureVideo properties
+	featureVideo: {
+		title: "Gameplay video",
+		playButtonAriaLabel: "play video",
+		imageAlt: "trailer",
+	},
 };
 
 export default siteData;

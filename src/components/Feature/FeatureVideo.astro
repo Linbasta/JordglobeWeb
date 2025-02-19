@@ -5,12 +5,18 @@
 
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+import siteData from "@config/en/siteData.json.ts";
 
 // components
 import Badge from "@components/Badge/Badge.astro";
 
 import videoPlaceholder from "@assets/images/house.jpg";
 import video from "@videos/placeholder-space.mp4";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+const localizedSiteData = getTranslatedData("siteData", currLocale);
 ---
 
 <section id="feature-video" class="overflow-x-clip py-16 md:py-24">
@@ -21,18 +27,18 @@ import video from "@videos/placeholder-space.mp4";
       </div> -->
 
 			<div class="mx-auto flex max-w-2xl justify-center text-center">
-				<h2 class="h2 relative mx-4">How we can help you</h2>
+				<h2 class="h2 relative mx-4">{localizedSiteData.featureVideo.title}</h2>
 			</div>
 			<div class="relative mx-auto mt-10 flex max-w-4xl justify-center">
 				<!-- Button to play video -->
 				<button
 					class="group relative h-full rounded-xl"
-					aria-label="play video"
+					aria-label={localizedSiteData.featureVideo.playButtonAriaLabel}
 					id="feature-video__play-button"
 				>
 					<Image
 						src={videoPlaceholder}
-						alt="logo"
+						alt={localizedSiteData.featureVideo.imageAlt}
 						loading="lazy"
 						height={1200}
 						class="z-10 mx-auto rounded-xl"

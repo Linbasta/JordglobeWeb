@@ -42,6 +42,12 @@ export interface SiteDataProps {
 	featureCardsTitle: string;
 	testimonialsTitle: string; // new property
 	testimonialsDescription: string; // new property
+	// Added featureVideo property
+	featureVideo: {
+		title: string;
+		playButtonAriaLabel: string;
+		imageAlt: string;
+	};
 }
 
 // --------------------------------------------------------
