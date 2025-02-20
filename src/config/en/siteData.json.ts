@@ -1,7 +1,7 @@
 import { type SiteDataProps } from "../types/configDataTypes";
 import play from "@images/front/play.jpg";
 import learn from "@images/front/learn.png";
-import remember from "@images/front/spaced_repetition.png";
+import remember from "@images/front/Remember.png";
 import contextualMemory from "@images/front/contextual_memory.png";
 import spacedRepetition from "@images/front/spaced_repetition.png";
 import dualCoding from "@images/front/dual_coding.png";
