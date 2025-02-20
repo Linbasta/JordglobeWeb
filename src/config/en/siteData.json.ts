@@ -50,7 +50,7 @@ const siteData: SiteDataProps = {
 	heroSide: {
 		title: "Hang Out with Fellow Life Long Learners",
 		description: "Exchange proven memory rules, share your ideas, and unlock early access to new releases and exclusive features such as making your own quizes.",
-		communityCtaText: "Join our vibrant community",
+		communityCtaText: "Join our community",
 		imageAlt: "hero software"
 	},
 
