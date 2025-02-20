@@ -191,7 +191,7 @@
 		--game-accent: #d9ff00;
 		--game-card-bg: #36539c;
 		--game-card-border: #624fb0;
-		--game-text-primary: rgb(0, 229, 255);
+		--game-text-primary: rgb(128, 0, 255);
 		--game-text-secondary: rgb(255, 0, 0);
 		--game-text-highlight: rgb(206, 206, 142);
 		--game-text-body: rgb(255, 0, 187);
@@ -237,12 +237,12 @@
 
 	/* Specific section overrides */
 	#feature-cards-small-2 {
-		background-color: var(--game-text-primary);
+		/* background-color: var(--game-text-primary); */
 	}
 
 	#feature-bento,
 	#feature-video {
-		background-color: var(--game-accent);
+		/* background-color: var(--game-accent); */
 	}
 
 	#feature-bento .description,
@@ -252,7 +252,7 @@
 
 	/* Card styles */
 	.bg-testimonial-card {
-		background-color: var(--game-card-bg);
+		/* background-color: var(--game-card-bg); */
 		border-color: var(--game-card-border);
 		color: var(--game-text-primary);
 	}
@@ -280,7 +280,11 @@
 	}
 
 	.nav__link--base {
-		@apply text-[#b7e57e] hover:text-[#624fb0] dark:text-base-300 dark:hover:text-base-100 font-medium tracking-tight transition-colors duration-300;
+		color:#b7e57e; 
+		@apply font-medium tracking-tight transition-colors duration-300;
+	}
+	.nav__link--base:hover {
+		color:#624fb0; 
 	}
 
 	.mobile-menu,
