@@ -200,6 +200,7 @@
 
 	/* Default styles for all sections */
 	[id^="feature-"],
+	[id^="hero-side"],
 	[id^="testimonials-"],
 	[id^="faq-"],
 	#footer {
@@ -208,6 +209,7 @@
 
 	/* Default heading styles */
 	[id^="feature-"] h1,
+	[id^="hero-side"],
 	[id^="testimonials-"] h1,
 	[id^="faq-"] h1,
 	#footer h1 {
@@ -215,6 +217,7 @@
 	}
 
 	[id^="feature-"] h2,
+	[id^="hero-side"],
 	[id^="testimonials-"] h2,
 	[id^="faq-"] h2,
 	#footer h2 {
@@ -222,6 +225,7 @@
 	}
 
 	[id^="feature-"] h3,
+	[id^="hero-side"],
 	[id^="testimonials-"] h3,
 	[id^="faq-"] h3,
 	#footer h3 {
@@ -229,6 +233,7 @@
 	}
 
 	[id^="feature-"] p,
+	[id^="hero-side"],
 	[id^="testimonials-"] p,
 	[id^="faq-"] p,
 	#footer p {
