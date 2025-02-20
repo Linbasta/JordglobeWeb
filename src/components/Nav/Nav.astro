@@ -8,6 +8,8 @@ import SiteLogo from "@components/SiteLogo/SiteLogo.astro";
 import Button from "@components/Button/Button.astro";
 import LanguageSelect from "@components/LanguageSelect/LanguageSelect.astro";
 import ThemeToggle from "@components/ThemeToggle/ThemeToggle.astro";
+import DiscordButton from "@components/DiscordButton/DiscordButton.astro";
+import DiscordLogo from "@images/front/discord.png";
 
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
@@ -82,7 +84,9 @@ import { locales } from "@config/siteSettings.json";
 					>
 					Download
 					</Button>
-
+					{/* Added Discord button */}
+					<DiscordButton />
+					
 					{locales.length > 1 && <LanguageSelect class="ml-4 hidden md:block" />}
 
 					<!-- mobile nav menu, only load on small screens where it is visible -->
