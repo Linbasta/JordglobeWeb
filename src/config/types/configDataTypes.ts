@@ -49,6 +49,8 @@ export interface SiteDataProps {
 		imageAlt: string;
 	};
 	heroDownload: HeroDownloadProps;
+	// Add heroSide property for HeroSide component strings
+	heroSide: HeroSideProps;
 }
 
 export interface HeroDownloadProps {
@@ -56,6 +58,14 @@ export interface HeroDownloadProps {
 	description: string;
 	appStoreAlt: string;
 	googlePlayAlt: string;
+}
+
+// Add new hero side types
+export interface HeroSideProps {
+	title: string;
+	description: string;
+	communityCtaText: string;
+	imageAlt: string;
 }
 
 // --------------------------------------------------------

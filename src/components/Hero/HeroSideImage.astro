@@ -10,19 +10,18 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 
 // components
 import Button from "@components/Button/Button.astro";
+import DiscordButton from "@components/DiscordButton/DiscordButton.astro";
 
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
-import { useTranslations } from "@js/translationUtils";
+import { getTranslatedData } from "@js/translationUtils";
 
 // images
-import person1 from "@images/ashton_blackwell.jpg";
-import person2 from "@images/nicola_harris.jpg";
-import person3 from "@images/nic_fassbender.jpg";
-import heroImage from "@assets/images/bg-gradient2.png";
+import heroImage from "@assets/images/front/community.webp";
 
 const currLocale = getLocaleFromUrl(Astro.url);
-const t = useTranslations(currLocale);
+const siteData = getTranslatedData("siteData", currLocale);
+const heroSide = siteData.heroSide;
 ---
 
 <section id="hero-side" class="mt-[4.5rem] overflow-clip bg-base-800 dark:bg-base-950">
@@ -41,7 +40,7 @@ const t = useTranslations(currLocale);
 						<Image
 							src={heroImage}
 							class="h-auto min-w-full object-cover"
-							alt="hero software"
+							 alt={heroSide.imageAlt}
 							loading="eager"
 							width={550}
 							densities={[1.5, 2]}
@@ -52,114 +51,17 @@ const t = useTranslations(currLocale);
 
 			<div class="w-full px-4 md:mb-auto md:mt-20 md:w-1/2 lg:pl-10">
 				<div data-aos="fade-left" data-aos-trigger="#hero-side">
-					<h1
-						class="mb-6 text-pretty font-serif text-4xl tracking-tighter text-base-900 md:text-6xl dark:text-base-100"
-					>
-						{t("hero_text")}
+					<h1 class="mb-6 text-pretty font-serif text-4xl tracking-tighter text-base-900 md:text-6xl dark:text-base-100">
+						{heroSide.title}
 					</h1>
 				</div>
-				<p
-					class="description mb-8 text-pretty lg:text-lg"
-					data-aos="fade-left"
-					data-aos-delay=".1"
-					data-aos-trigger="#hero-side"
-				>
-					{t("hero_description")}
+				<p class="description mb-8 text-pretty lg:text-lg" data-aos="fade-left" data-aos-delay=".1" data-aos-trigger="#hero-side">
+					{heroSide.description}
 				</p>
-				<div
-					class="mt-6 flex flex-wrap gap-4"
-					data-aos="fade-left"
-					data-aos-delay=".2"
-					data-aos-trigger="#hero-side"
-				>
-					<Button variant="primary" href={getRelativeLocaleUrl(currLocale, "/signup")}>
-						Try 14 Days Free Trial
-					</Button>
-					<Button
-						variant="outline"
-						href="https://cosmicthemes.com/themes/nova/"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Get Nova
-					</Button>
+				<div class="mt-6 flex items-center space-x-3" data-aos="fade-left" data-aos-delay=".2" data-aos-trigger="#hero-side">
+					<p class="text-base-900 dark:text-base-100">{heroSide.communityCtaText} --&gt;</p>
+					<DiscordButton />
 				</div>
-
-				<p
-					class="mt-8 text-sm text-base-300/60"
-					data-aos="fade-left"
-					data-aos-delay=".3"
-					data-aos-trigger="#hero-side"
-				>
-					No Credit Card Required / Cancel Anytime
-				</p>
-
-				<!-- social proof -->
-				<!-- <div
-          class="mr-auto mt-8 flex max-w-md"
-          data-aos="fade-left"
-          data-aos-delay=".3"
-          data-aos-trigger="#hero-side"
-        >
-          <div class="-m-1.5 flex flex-wrap items-center">
-            <div class="w-auto p-1.5">
-              <div class="flex flex-wrap">
-                <div
-                  class="aspect-square size-10 overflow-hidden rounded-full border-2 border-primary-500 bg-primary-500"
-                >
-                  <Image
-                    src={person1}
-                    class="object-cover"
-                    alt="reader"
-                    loading="eager"
-                    width={100}
-                  />
-                </div>
-                <div
-                  class="-ml-5 aspect-square size-10 overflow-hidden rounded-full border-2 border-primary-500 bg-primary-500"
-                >
-                  <Image
-                    src={person2}
-                    class="object-cover"
-                    alt="reader"
-                    loading="eager"
-                    width={100}
-                  />
-                </div>
-                <div
-                  class="-ml-5 aspect-square size-10 overflow-hidden rounded-full border-2 border-primary-500 bg-primary-500"
-                >
-                  <Image
-                    src={person3}
-                    class="object-cover"
-                    alt="reader"
-                    loading="eager"
-                    width={100}
-                  />
-                </div>
-                <div
-                  class="-ml-5 aspect-square size-10 overflow-hidden rounded-full border-2 border-primary-500 bg-primary-500"
-                >
-                  <Image
-                    src={person2}
-                    class="object-cover"
-                    alt="reader"
-                    loading="eager"
-                    width={100}
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="flex-1 p-1.5 text-left">
-              <p
-                class="description max-w-[14rem] text-sm leading-tight tracking-tight"
-              >
-                Join 200+ happy and<br />
-                satisfied customers.
-              </p>
-            </div>
-          </div>
-        </div> -->
 			</div>
 		</div>
 	</div>

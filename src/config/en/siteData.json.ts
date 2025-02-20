@@ -1,13 +1,13 @@
 import { type SiteDataProps } from "../types/configDataTypes";
 import play from "@images/front/play.jpg";
 import learn from "@images/front/learn.png";
-import remember from "@images/front/Remember.png";
-import contextualMemory from "@images/front/contextual_memory.jpg";
-import spacedRepetition from "@images/front/spaced_repetition.jpg";
-import dualCoding from "@images/front/dual_coding.jpg";
-import methodOfLoci from "@images/front/method_of_loci.jpg";
-import interleaving from "@images/front/itearleaving.jpg";
-import casualGaming from "@images/front/casual_gaming.jpg";
+import remember from "@images/front/spaced_repetition.png";
+import contextualMemory from "@images/front/contextual_memory.png";
+import spacedRepetition from "@images/front/spaced_repetition.png";
+import dualCoding from "@images/front/dual_coding.png";
+import methodOfLoci from "@images/front/method_of_loci.png";
+import interleaving from "@images/front/interleaving.png";
+import casualGaming from "@images/front/casual_gaming.png";
 
 
 
@@ -44,6 +44,14 @@ const siteData: SiteDataProps = {
 		description: "Download Jordglobe here and start your journey!",
 		appStoreAlt: "Download on the App Store",
 		googlePlayAlt: "Get it on Google Play"
+	},
+
+	// Add new heroSide property derived from HeroSideImage component
+	heroSide: {
+		title: "Hang Out with Fellow Life Long Learners",
+		description: "Exchange proven memory rules, share your ideas, and unlock early access to new releases and exclusive features such as making your own quizes.",
+		communityCtaText: "Join our vibrant community",
+		imageAlt: "hero software"
 	},
 
 	featureBento: {
