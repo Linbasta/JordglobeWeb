@@ -21,7 +21,7 @@
 @layer base {
 	:root {
 		/* Einar */
-		--background: #0538B4;
+		--background: #ffffff;
 		/* End Einar */
 		--foreground: var(--color-base-900);
 		--card: var(--color-base-50);
@@ -29,7 +29,7 @@
 		--popover: var(--color-base-50);
 		--popover-foreground: var(--color-base-950);
 		--primary: #0538B4;
-		--primary-dark: #031D5E;
+		--primary-dark: #020c24;
 		--primary-foreground: var(--color-base-50);
 		--secondary: var(--color-fuchsia-700);
 		--secondary-foreground: var(--color-base-50);
@@ -68,7 +68,7 @@
 		/* default font */
 		font-family: var(--font-sans);
 		/* add new custom fade colors */
-		--reviews-color-fade: #00d0ff;
+		--reviews-color-fade: #b6bcff;
 		/* example light fade color */
 	}
 
@@ -185,17 +185,17 @@
 	/* Einar look here */
 	/* Game Theme Color Variables */
 	:root {
-		--game-primary: #0538B4;
-		--game-primary-dark: #031D5E;
-		--game-primary-light: #5582f5;
-		--game-accent: #d9ff00;
-		--game-card-bg: #36539c;
-		--game-card-border: #624fb0;
-		--game-text-primary: rgb(128, 0, 255);
-		--game-text-secondary: rgb(255, 0, 0);
-		--game-text-highlight: rgb(206, 206, 142);
-		--game-text-body: rgb(255, 0, 187);
-		--game-text-accent: rgb(134, 0, 0);
+		--game-primary: #ffffff;
+		--game-primary-dark: #ffffff;
+		--game-primary-light: #0080ff;
+		--game-accent: #0044ff;
+		--game-card-bg: #ffffff;
+		--game-card-border: #79cbff;
+		--game-text-primary: rgb(0, 7, 103);
+		--game-text-secondary: rgb(0, 7, 103);
+		--game-text-highlight: rgb(0, 17, 255);
+		--game-text-body: rgb(0, 0, 0);
+		--game-text-accent: rgb(0, 0, 0);
 	}
 
 	/* Default styles for all sections */
@@ -258,13 +258,13 @@
 	}
 
 	.bg-testimonial-card:hover {
-		border-color: #ffffff;
+		border-color: #79cbff;
 	}
 
 	.faq-card {
 		background-color: var(--game-primary-dark);
 		border-color: var(--game-card-border);
-		color: #ffffff;
+		color: #000000;
 	}
 
 	.faq-card:hover {
@@ -280,11 +280,11 @@
 	}
 
 	.nav__link--base {
-		color:#b7e57e; 
+		color:rgb(0, 7, 103); 
 		@apply font-medium tracking-tight transition-colors duration-300;
 	}
 	.nav__link--base:hover {
-		color:#624fb0; 
+		color:#3467ff; 
 	}
 
 	.mobile-menu,
