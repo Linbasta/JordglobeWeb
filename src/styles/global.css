@@ -68,8 +68,9 @@
 		/* default font */
 		font-family: var(--font-sans);
 		/* add new custom fade colors */
-		--reviews-color-fade: #b6bcff;
+		--reviews-color-fade: #ffffff;
 		/* example light fade color */
+		--card-border-color: #0011ff; /* Default border color, change as needed */
 	}
 
 	.dark {
@@ -193,7 +194,7 @@
 		--game-card-border: #79cbff;
 		--game-text-primary: rgb(0, 7, 103);
 		--game-text-secondary: rgb(0, 7, 103);
-		--game-text-highlight: rgb(0, 17, 255);
+		--game-text-highlight: #0011ff;
 		--game-text-body: rgb(0, 0, 0);
 		--game-text-accent: rgb(0, 0, 0);
 	}
@@ -213,6 +214,7 @@
 	[id^="testimonials-"] h1,
 	[id^="faq-"] h1,
 	#footer h1 {
+		font-weight: 700;
 		color: var(--game-text-primary);
 	}
 
@@ -221,6 +223,8 @@
 	[id^="testimonials-"] h2,
 	[id^="faq-"] h2,
 	#footer h2 {
+		font-weight: 700;
+		letter-spacing: 0.0001em;
 		color: var(--game-text-secondary);
 	}
 
@@ -237,12 +241,14 @@
 	[id^="testimonials-"] p,
 	[id^="faq-"] p,
 	#footer p {
+		font-weight: 300;
+		letter-spacing: 0.04em;
 		color: var(--game-text-body);
 	}
 
 	/* Specific section overrides */
 	#feature-cards-small-2 {
-		/* background-color: var(--game-text-primary); */
+		background-color: var(--game-text-primary);
 	}
 
 	#feature-bento,
@@ -263,7 +269,7 @@
 	}
 
 	.bg-testimonial-card:hover {
-		border-color: #79cbff;
+		border-color: #aedbff;
 	}
 
 	.faq-card {

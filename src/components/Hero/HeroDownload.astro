@@ -10,21 +10,21 @@ const siteData = getTranslatedData("siteData", currLocale);
 const hero = siteData.heroDownload;
 ---
 
-<div id="feature-download" class="mx-auto max-w-2xl px-4 py-12">
-	<h1 class="h1 mb-6 text-5xl font-bold">{hero.title}</h1>
+<div id="feature-download" class="feature-section mx-auto max-w-2xl px-4 py-12 text-center">
+    <h2 class="h2 mb-6 font-bold" style="font-family: 'Delight', sans-serif;">{hero.title}</h2> <!-- Apply Delight font and bold weight -->
 
-	<h2 class="description mb-8 text-xl">{hero.description}</h2>
+    <p class="description mb-8 text-xl font-light" style="font-family: 'Delight', sans-serif;">{hero.description}</p> <!-- Apply Delight font and light weight -->
 
-	<div class="flex flex-wrap items-center gap-4">
-		<a href="https://apps.apple.com/se/app/jordglobe/id1599500931?l=en" class="h-auto w-40">
-			<img src={appStoreBadge.src} alt={hero.appStoreAlt} class="h-auto w-full" />
-		</a>
+    <div class="flex flex-wrap justify-center items-center gap-4">
+        <a href="https://apps.apple.com/se/app/jordglobe/id1599500931?l=en" class="h-auto">
+            <img src={appStoreBadge.src} alt={hero.appStoreAlt} class="h-12 w-auto" />
+        </a>
 
-		<a
-			href="https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo"
-			class="h-auto w-40"
-		>
-			<img src={googlePlayBadge.src} alt={hero.googlePlayAlt} class="h-auto w-full" />
-		</a>
-	</div>
+        <a
+            href="https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo"
+            class="h-auto"
+        >
+            <img src={googlePlayBadge.src} alt={hero.googlePlayAlt} class="h-12 w-auto" />
+        </a>
+    </div>
 </div>
