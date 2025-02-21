@@ -210,16 +210,17 @@
 
 	/* Default heading styles */
 	[id^="feature-"] h1,
-	[id^="hero-side"],
+	[id^="hero-side"] h1,
 	[id^="testimonials-"] h1,
 	[id^="faq-"] h1,
 	#footer h1 {
 		font-weight: 700;
+		letter-spacing: 0.0001em;
 		color: var(--game-text-primary);
 	}
 
 	[id^="feature-"] h2,
-	[id^="hero-side"],
+	[id^="hero-side"] h2,
 	[id^="testimonials-"] h2,
 	[id^="faq-"] h2,
 	#footer h2 {
@@ -229,7 +230,7 @@
 	}
 
 	[id^="feature-"] h3,
-	[id^="hero-side"],
+	[id^="hero-side"] h3,
 	[id^="testimonials-"] h3,
 	[id^="faq-"] h3,
 	#footer h3 {
@@ -237,7 +238,7 @@
 	}
 
 	[id^="feature-"] p,
-	[id^="hero-side"],
+	[id^="hero-side"] p,
 	[id^="testimonials-"] p,
 	[id^="faq-"] p,
 	#footer p {
