@@ -15,8 +15,8 @@ import casualGaming from "@images/front/casual_gaming.png";
 const siteData: SiteDataProps = {
 	name: "Jordglobe",
 	// Your website's title and description (meta fields)
-	title: "JordGlobe - the ultimate geography game",
-	description: "JordGlobe uses addictive gaming to make learning geography fun and effortless.",
+	title: "JordGlobe - det ultimata geografispelet",
+	description: "JordGlobe använder beroendeframkallande spelmekanik för att göra inlärning av geografi roligt och enkelt.",
 
 	// used on contact page and footer
 	contact: {
@@ -36,102 +36,102 @@ const siteData: SiteDataProps = {
 	// default image for meta tags if the page doesn't have an image already
 	defaultImage: {
 		src: "/images/jordglobe-logo.png",
-		alt: "JordGlobe logo",
+		alt: "JordGlobe logotyp",
 	},
 
 	heroDownload: {
-		title: "Play Jordglobe",
-		description: "Download Jordglobe here and start your journey!",
-		appStoreAlt: "Download on the App Store",
-		googlePlayAlt: "Get it on Google Play"
+		title: "Spela Jordglobe",
+		description: "Ladda ner Jordglobe här och börja din resa!",
+		appStoreAlt: "Ladda ner på App Store",
+		googlePlayAlt: "Hämta på Google Play"
 	},
 
 	// Add new heroSide property derived from HeroSideImage component
 	heroSide: {
-		title: "Hang Out with Fellow Life Long Learners",
-		description: "Exchange proven memory rules, share your ideas, and unlock early access to new releases and exclusive features such as making your own quizes.",
-		communityCtaText: "Join our vibrant community",
-		imageAlt: "hero software"
+		title: "Häng med andra livslånga lärande",
+		description: "Utbyt beprövade minnesregler, dela dina idéer och få tidig tillgång till nya utgåvor och exklusiva funktioner som att skapa dina egna frågesporter.",
+		communityCtaText: "Gå med i vår aktiva gemenskap",
+		imageAlt: "hero mjukvara"
 	},
 
 	featureBento: {
-		badgeText: "Learning Made Fun",
-		sectionTitle: "The Duolingo for Geography",
-		card1Title: "Countries & Flags",
-		card1Description: "Master countries and their flags - essential knowledge that helps you better understand global news, international events, and the changing world map. Never feel lost in world news again.",
-		card1ImageAlt: "countries and flags",
-		card1ImageAltLight: "countries and flags light",
-		card2Title: "Provinces & Cities",
-		card2Description: "Learn about cities and regions to grasp where events happen and why they matter. From economic powerhouses to geopolitical hotspots, knowing locations helps you understand international relations and global developments.",
-		card2ImageAlt: "provinces and cities",
-		card3Title: "Trivia Beyond Borders",
-		card3Description: "Challenge yourself with fun trivia that goes beyond mere geography. Uncover surprising facts that reveal hidden links between people and places, reminding you that every corner of the world is interconnected.",
-		card3ImageAlt: "trivia beyond geography",
-		ctaSrText: "Start your global journey",
-		learnMoreText: "Begin exploring",
-		paymentInfoText: "Become a knowledge master",
+		badgeText: "Lärande gjort roligt",
+		sectionTitle: "Duolingo för Geografi",
+		card1Title: "Länder & Flaggor",
+		card1Description: "Bemästra länder och deras flaggor - grundläggande kunskap som hjälper dig att bättre förstå globala nyheter, internationella händelser och den föränderliga världskartan. Känn dig aldrig vilsen i världsnyheter igen.",
+		card1ImageAlt: "länder och flaggor",
+		card1ImageAltLight: "länder och flaggor ljus",
+		card2Title: "Provinser & Städer",
+		card2Description: "Lär dig om städer och regioner för att förstå var händelser äger rum och varför de är viktiga. Från ekonomiska maktcentrum till geopolitiska brännpunkter, att känna till platser hjälper dig förstå internationella relationer och global utveckling.",
+		card2ImageAlt: "provinser och städer",
+		card3Title: "Kuriosa Bortom Gränserna",
+		card3Description: "Utmana dig själv med rolig kuriosa som går bortom ren geografi. Upptäck överraskande fakta som avslöjar dolda kopplingar mellan människor och platser, och påminner om att varje hörn av världen är sammankopplat.",
+		card3ImageAlt: "kuriosa bortom geografi",
+		ctaSrText: "Påbörja din globala resa",
+		learnMoreText: "Börja utforska",
+		paymentInfoText: "Bli en kunskapsmästare",
 	},
 
 	featureThreeImage: {
-		title: "Play --> Learn --> Remember",
+		title: "Spela --> Lär --> Kom ihåg",
 		cards: [
 			{
-				title: "PLAY",
-				text: `JordGlobe is a casual game that makes learning about our world fun and effortless. Its addictive gaming mechanics transform casual gaming into meaningful screen time.`,
+				title: "SPELA",
+				text: "JordGlobe är ett casual-spel som gör det roligt och enkelt att lära sig om vår värld. Dess beroendeframkallande spelmekanik förvandlar vardagligt spelande till meningsfull skärmtid.",
 				image: play,
 			},
 			{
-				title: "LEARN",
-				text: `The game adapts to your skill level and helps you learn from mistakes. Complex topics like the 50 US states become manageable through bite-sized sessions. The game repeats questions strategically, focusing on what you need to master.`,
+				title: "LÄR",
+				text: "Spelet anpassar sig efter din kunskapsnivå och hjälper dig lära av misstag. Komplexa ämnen som USA:s 50 delstater blir hanterbara genom korta spelsessioner. Spelet upprepar frågor strategiskt med fokus på det du behöver bemästra.",
 				image: learn,
 			},
 			{
-				title: "REMEMBER",
-				text: `Memory Medals reward long-term retention by challenging you at optimal intervals. With each successful challenge, the time between repetitions increases. Master knowledge permanently with minimal effort.`,
+				title: "KOM IHÅG",
+				text: "Minnesmedaljer belönar långsiktig retention genom att utmana dig vid optimala intervaller. Med varje framgångsrik utmaning ökar tiden mellan repetitionerna. Bemästra kunskap permanent med minimal ansträngning.",
 				image: remember,
 			}],
 	},
-	featureCardsTitle: "Mnemonic Techniques",
+	featureCardsTitle: "Minnestekniker",
 	featureCardsSmall2: [
 		{
-			title: "Method of Loci",
-			text: `Transform the world globe into your memory palace. Each location becomes a powerful anchor for knowledge, turning geography into a natural memory map.`,
+			title: "Loci-metoden",
+			text: "Förvandla världsgloben till ditt minnespalats. Varje plats blir ett kraftfullt ankare för kunskap, som förvandlar geografi till en naturlig minneskarta.",
 			image: methodOfLoci,
 		},
 		{
-			title: "Contextual Memory",
-			text: `The more connections new knowledge has to existing memories, the easier it is to create a lasting memory.`,
+			title: "Kontextuellt Minne",
+			text: "Ju fler kopplingar ny kunskap har till existerande minnen, desto lättare är det att skapa bestående minnen.",
 			image: contextualMemory,
 		},
 		{
-			title: "Spaced Repetition",
-			text: `Repeat knowledge at increasing intervals to build lasting memories with minimal effort.`,
+			title: "Intervallinlärning",
+			text: "Upprepa kunskap med ökande intervaller för att bygga bestående minnen med minimal ansträngning.",
 			image: spacedRepetition,
 		},
 		{
-			title: "Dual Coding",
-			text: `You learn better when knowledge is presented in multiple formats at once (e.g., image, text, and map).`,
+			title: "Dubbel Kodning",
+			text: "Du lär dig bättre när kunskap presenteras i flera format samtidigt (t.ex. bild, text och karta).",
 			image: dualCoding,
 		},
 		{
-			title: "Interleaving",
-			text: `We remember things better when we are forced to apply new knowledge in various contexts.`,
+			title: "Varierad Inlärning",
+			text: "Vi kommer ihåg saker bättre när vi tvingas använda ny kunskap i olika sammanhang.",
 			image: interleaving,
 		},
 		{
 			title: "Casual Gaming",
-			text: `Rewards, animations, and game design make learning addictive.`,
+			text: "Belöningar, animationer och speldesign gör lärandet beroendeframkallande.",
 			image: casualGaming,
 		}
 	],
 
-	testimonialsTitle: "User feedback",
-	testimonialsDescription: "What our users say about JordGlobe",
+	testimonialsTitle: "Användarfeedback",
+	testimonialsDescription: "Vad våra användare säger om JordGlobe",
 
 	// Added featureVideo properties
 	featureVideo: {
-		title: "Gameplay video",
-		playButtonAriaLabel: "play video",
+		title: "Trailer",
+		playButtonAriaLabel: "spela video",
 		imageAlt: "trailer",
 	},
 };
