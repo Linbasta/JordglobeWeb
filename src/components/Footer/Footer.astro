@@ -20,7 +20,8 @@ const today = new Date();
 
 <footer class="overflow-clip pt-24 pb-16">
 	<div id="footer" class="site-container">
-		<div class="border-b pb-20">
+		<!-- Wrap the top border section in a uniform container -->
+		<div class="mx-auto max-w-7xl px-4 border-b pb-20">
 			<div class="flex flex-wrap">
 				<div class="w-full p-2 md:w-1/2">
 					<div class="max-w-xs">
@@ -34,29 +35,30 @@ const today = new Date();
 					<div class="flex flex-wrap justify-between"></div>
 				</div>
 			</div>
-			<div class="py-6">
-				<div class="-m-4 flex flex-wrap items-center justify-between">
-					<div class="w-auto p-4">
-						<p class="tracking-tight">
-							&copy; {today.getFullYear()}
-							{" "}{siteData.name}. All rights reserved.
-						</p>
-					</div>
-					<div class="w-auto p-4">
-						<!-- Socials -->
-						<div class="flex flex-col">
-							<div class="flex gap-5">
-								<SocialIcon
-									href="https://twitter.com/ollelandin"
-									icon="tabler/brand-x"
-									social="twitter (x)"
-								/>
-								<!-- <SocialIcon
-								href="https://twitter.com/BowTiedWebReapr"
-								icon="tabler/brand-facebook"
-								social="facebook"
-							/> -->
-							</div>
+		</div>
+		<!-- Wrap the bottom section in the same container -->
+		<div class="mx-auto max-w-7xl px-4 py-6">
+			<div class="-m-4 flex flex-wrap items-center justify-between">
+				<div class="w-auto p-4">
+					<p class="tracking-tight">
+						&copy; {today.getFullYear()}
+						{" "}{siteData.name}. All rights reserved.
+					</p>
+				</div>
+				<div class="w-auto p-4">
+					<!-- Socials -->
+					<div class="flex flex-col">
+						<div class="flex gap-5">
+							<SocialIcon
+								href="https://twitter.com/ollelandin"
+								icon="tabler/brand-x"
+								social="twitter (x)"
+							/>
+							<!-- <SocialIcon
+							href="https://twitter.com/BowTiedWebReapr"
+							icon="tabler/brand-facebook"
+							social="facebook"
+						/> -->
 						</div>
 					</div>
 				</div>
