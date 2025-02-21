@@ -20,7 +20,7 @@ const {
     logoSrc,
     logoAlt,
     overlayColor = "rgb(0,0,0)",
-    overlayOpacity = "0.43",
+    overlayOpacity = "0",
 } = Astro.props;
 ---
 
@@ -43,8 +43,8 @@ const {
 
     <!-- Content -->
     <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
-        <div class="animate-fadeIn w-full max-w-[700px]" style="animation-duration: 3.5s;">
-            <Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={200} />
+        <div class="animate-fadeIn w-full max-w-[500px]" style="animation-duration: 1s;">
+            <Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={400} />
         </div>
     </div>
 </section>
