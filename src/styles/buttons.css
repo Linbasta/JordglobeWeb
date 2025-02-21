@@ -1,31 +1,37 @@
 /* buttons, 4 types "primary", "secondary", "outline", "ghost" */
 /* Einar */
 .button {
-	@apply flex items-center justify-center rounded-lg px-5 py-3 font-semibold tracking-tight transition-(--button-transition-properties) duration-200;
-	@apply focus:outline-none;
-	@apply disabled:pointer-events-none;
+    @apply flex items-center justify-center rounded-full px-5 py-3 font-semibold tracking-tight transition-(--button-transition-properties) duration-200;
+    @apply focus:outline-none;
+    @apply disabled:pointer-events-none;
 }
 
 .button--primary {
-	@apply bg-[#09b300] text-white;
-	@apply hover:bg-[#b7e57e];
-	@apply focus:ring-primary-300 focus:ring-4;
+    @apply bg-gradient-to-r from-[#00e004] to-[#008528] text-white; /* Custom gradient colors */
+    @apply hover:from-[#95ff87] hover:to-[#b0ff70]; /* Custom gradient colors on hover */
+    @apply hover:text-[#115e01]; /* Custom hover text color */
+    @apply focus:ring-primary-300 focus:ring-4;
 }
 
 .button--secondary {
-	@apply border-base-700 text-base-900 dark:border-base-300 dark:text-base-100 border bg-transparent;
-	@apply hover:bg-base-700 dark:hover:border-base-100 dark:hover:bg-base-100 dark:hover:text-base-900 hover:text-white;
-	@apply focus:ring-primary-500 focus:ring-4;
+    @apply border-base-700 text-base-900 dark:border-base-300 dark:text-base-100 border bg-transparent;
+    @apply hover:bg-base-700 dark:hover:border-base-100 dark:hover:bg-base-100 dark:hover:text-base-900 hover:text-white;
+    @apply focus:ring-primary-500 focus:ring-4;
 }
 
 .button--outline {
-	@apply border-base-300 bg-base-50 text-base-800 border;
-	@apply hover:bg-base-100;
-	@apply focus:ring-primary-500 focus:ring-4;
+    @apply border-base-300 bg-base-50 text-base-800 border;
+    @apply hover:bg-base-100;
+    @apply focus:ring-primary-500 focus:ring-4;
 }
 
 .button--ghost {
-	@apply text-primary-600 dark:text-primary-400 bg-transparent;
-	@apply hover:text-primary-700 dark:hover:text-primary-300;
-	@apply focus:ring-primary-500 focus:ring-4;
+    @apply text-primary-600 dark:text-primary-400 bg-transparent;
+    @apply hover:text-primary-700 dark:hover:text-primary-300;
+    @apply focus:ring-primary-500 focus:ring-4;
+}
+
+/* Custom class for Discord button */
+.discord-button {
+    @apply border border-primary-600 rounded-full p-2; /* Add border and padding with fully rounded corners */
 }

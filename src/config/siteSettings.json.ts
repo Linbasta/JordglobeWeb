@@ -19,9 +19,6 @@ export const localeMap = {
 export const languageSwitcherMap = {
 	en: "EN",
 	sv: "SV",
-	// fr: "FR",
-	// en: "English",
-	// fr: "Français",
 } as const;
 
 // site settings that don't change between languages

@@ -36,19 +36,18 @@ const fBent = siteData.featureBento;
                     <div class="-m-4 flex flex-wrap">
                         <!-- card 1 -->
                         <div class="w-full p-4">
-                            <div class="relative rounded-lg p-8" style="background: url({fBent.card1Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
+                            <div class="relative flex flex-col items-center justify-center rounded-lg p-8" style="background: url({fBent.card1Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
                                 <h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
                                     {fBent.card1Title}
                                 </h3>
-                                <p class="description mb-9 tracking-tight md:max-w-sm" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
+                                <p class="description mb-9 tracking-tight md:max-w-sm text-center" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
                                     {fBent.card1Description}
                                 </p>
                                 <Image
                                     src={card1img1}
                                     alt={fBent.card1ImageAlt}
                                     loading="lazy"
-                                    height={171}
-                                    class="relative -right-4 mb-10 ml-auto w-auto"
+                                    class="w-full max-w-xs h-auto mb-10"
                                 />
                                 <a
                                     class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 flex items-center font-semibold tracking-tight transition duration-200"
@@ -64,16 +63,23 @@ const fBent = siteData.featureBento;
                         </div>
                         <!-- card 2 -->
                         <div class="w-full p-4">
-                            <div class="relative overflow-hidden rounded-lg p-8" style="background: url({fBent.card2Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
+                            <div class="relative flex flex-col items-center justify-center overflow-hidden rounded-lg p-8" style="background: url({fBent.card2Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
                                 <h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
                                     {fBent.card2Title}
                                 </h3>
-                                <p class="description mb-36 tracking-tight md:max-w-sm" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
+                                <p class="description mb-4 tracking-tight md:max-w-sm text-center" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
                                     {fBent.card2Description}
                                 </p>
+                                <Image
+                                    src={card2img}
+                                    alt={fBent.card2ImageAlt}
+                                    loading="lazy"
+                                    class="w-full max-w-md h-auto mb-4"
+                                />
                                 <a
                                     class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 flex items-center font-semibold tracking-tight transition duration-200"
                                     href="/download"
+                                    style="letter-spacing: 0.5px;"
                                 >
                                     <span class="mr-2.5">
                                         <span class="sr-only">{fBent.ctaSrText}</span>
@@ -81,13 +87,6 @@ const fBent = siteData.featureBento;
                                     </span>
                                     <Icon name="nova/arrow-angled" aria-hidden="true" class="size-6" />
                                 </a>
-                                <Image
-                                    src={card2img}
-                                    alt={fBent.card2ImageAlt}
-                                    loading="lazy"
-                                    height={170}
-                                    class="absolute right-7 bottom-0"
-                                />
                             </div>
                         </div>
                     </div>
@@ -95,15 +94,15 @@ const fBent = siteData.featureBento;
 
                 <!-- card 3 -->
                 <div class="w-full p-4 md:w-1/2">
-                    <div class="relative h-full overflow-hidden rounded-lg p-8" style="background: url({fBent.card3Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
-                        <h3 class="h3 mb-4 font-semibold" style="letter-spacing: -0.5px;">
+                    <div class="relative h-full overflow-hidden rounded-lg p-8 flex flex-col items-center" style="background: url({fBent.card3Bg}) no-repeat center center; background-size: cover; border: 2px solid var(--card-border-color);">
+                        <h3 class="h3 mb-4 font-semibold text-center" style="letter-spacing: -0.5px;">
                             {fBent.card3Title}
                         </h3>
-                        <p class="description mb-10 tracking-tight md:max-w-sm" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
+                        <p class="description mb-10 tracking-tight md:max-w-sm text-center" style="line-height: 1.6 !important; letter-spacing: 0.5px !important;">
                             {fBent.card3Description}
                         </p>
                         <a
-                            class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 mb-4 flex items-center font-semibold tracking-tight transition duration-200"
+                            class="description hover:text-primary-500 dark:hover:text-primary-500 relative z-10 mb-4 flex items-center font-semibold tracking-tight transition duration-200 text-center"
                             href="/download"
                         >
                             <span class="mr-2.5">
@@ -112,24 +111,23 @@ const fBent = siteData.featureBento;
                             </span>
                             <Icon name="nova/arrow-angled" aria-hidden="true" class="size-6" />
                         </a>
-                        <div class="mx-auto max-w-max">
+                        <div class="mx-auto max-w-max flex-grow flex items-center">
                             <Image
                                 src={card3img}
                                 alt={fBent.card3ImageAlt}
                                 loading="lazy"
-                                height={377}
-                                class="mx-auto mb-3.5 transform transition duration-500 hover:-translate-y-2"
+                                class="w-full h-full object-contain transform transition duration-500 hover:-translate-y-2"
                             />
-                            <a
-                                class="from-gradient-1 via-gradient-2 to-gradient-3 focus:ring-primary-300 mb-6 flex w-full items-center rounded-lg bg-linear-40 px-3.5 py-5 font-medium tracking-tight text-white transition duration-500 focus:ring-4"
-                                href="/download"
-                            >
-                                <div class="mr-3 inline-block">
-                                    <Icon name="nova/circle-check" aria-hidden="true" class="size-6" />
-                                </div>
-                                <span>{fBent.paymentInfoText}</span>
-                            </a>
                         </div>
+                        <a
+                            class="from-gradient-1 via-gradient-2 to-gradient-3 focus:ring-primary-300 mb-6 flex w-full items-center rounded-lg bg-linear-40 px-3.5 py-5 font-medium tracking-tight text-white transition duration-500 focus:ring-4 text-center"
+                            href="/download"
+                        >
+                            <div class="mr-3 inline-block">
+                                <Icon name="nova/circle-check" aria-hidden="true" class="size-6" />
+                            </div>
+                            <span>{fBent.paymentInfoText}</span>
+                        </a>
                     </div>
                 </div>
             </div>

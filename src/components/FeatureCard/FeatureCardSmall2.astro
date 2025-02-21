@@ -8,26 +8,26 @@
  */
 
 interface Props {
-	title: string;
-	text: string;
-	image: string; // new image URL property
-	rest?: any; // catch-all for any additional parameters, such as "aria-label"
+    title: string;
+    text: string;
+    image: string; // new image URL property
+    rest?: any; // catch-all for any additional parameters, such as "aria-label"
 }
 
 const { title, text, image, ...rest } = Astro.props as Props;
 ---
 
 <div {...rest}>
-	<div class="h-full">
-		<div class="flex gap-3">
-			{/* Replace Icon with an image */}
-			<img src={image} alt={title} class="w-20 h-20 self-center object-cover" />
-			<div class="flex flex-col items-start">
-				<h3 class="inline text-lg font-semibold text-base-900 dark:text-base-100">
-					{title}
-				</h3>
-				<p class="description mt-2">{text}</p>
-			</div>
-		</div>
-	</div>
+    <div class="h-full">
+        <div class="flex gap-3">
+            {/* Replace Icon with an image */}
+            <img src={image} alt={title} class="w-24 h-24 self-center object-contain" />
+            <div class="flex flex-col items-start">
+                <h3 class="inline text-lg font-semibold text-base-900 dark:text-base-100">
+                    {title}
+                </h3>
+                <p class="description mt-2">{text}</p>
+            </div>
+        </div>
+    </div>
 </div>

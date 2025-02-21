@@ -77,7 +77,7 @@ const siteData: SiteDataProps = {
     },
 
     featureThreeImage: {
-		title: "Play --> Learn --> Remember",
+        title: "Play --> Learn --> Remember",
         cards: [
             {
                 title: "PLAY",

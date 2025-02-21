@@ -68,7 +68,7 @@
 		/* default font */
 		font-family: var(--font-sans);
 		/* add new custom fade colors */
-		--reviews-color-fade: #ffffff;
+		--reviews-color-fade: #000f46;
 		/* example light fade color */
 		--card-border-color: #0011ff; /* Default border color, change as needed */
 	}
@@ -188,7 +188,7 @@
 	:root {
 		--game-primary: #ffffff;
 		--game-primary-dark: #ffffff;
-		--game-primary-light: #0080ff;
+		--game-primary-light: #000f46;
 		--game-accent: #0044ff;
 		--game-card-bg: #ffffff;
 		--game-card-border: #79cbff;
@@ -249,7 +249,18 @@
 
 	/* Specific section overrides */
 	#feature-cards-small-2 {
-		background-color: var(--game-text-primary);
+		background: linear-gradient(to top, #0044ff, #000f46);
+		color: white; /* Set font color to white */
+	}
+
+	#feature-cards-small-2 p,
+	#feature-cards-small-2 h1,
+	#feature-cards-small-2 h2,
+	#feature-cards-small-2 h3,
+	#feature-cards-small-2 h4,
+	#feature-cards-small-2 h5,
+	#feature-cards-small-2 h6 {
+		color: white; /* Set title color to white */
 	}
 
 	#feature-bento,
@@ -257,9 +268,61 @@
 		/* background-color: var(--game-accent); */
 	}
 
+	#feature-video {
+		background: linear-gradient(to bottom, #0044ff, #000f46);
+		margin-top: 0; /* Set margin-top to 0 */
+		margin-bottom: 0; /* Set margin-bottom to 0 */
+		padding: 150px; /* Set padding to 150px */
+		color: white; /* Set font color to white */
+	}
+
+	#feature-video h1,
+	#feature-video h2,
+	#feature-video h3,
+	#feature-video h4,
+	#feature-video h5,
+	#feature-video h6 {
+		color: white; /* Set title color to white */
+	}
+
 	#feature-bento .description,
 	#feature-video .description {
 		color: var(--game-text-accent);
+	}
+
+	/* FAQ accordion background exception */
+	#faq-accordion {
+		background-color: #000f46; /* Set background color to #000f46 */
+		color: white; /* Set font color to white */
+	}
+
+	/* Testimonials rows background exception */
+	#testimonials-rows {
+		background-color: #000f46; /* Set background color to #000f46 */
+		color: white; /* Set font color to white */
+	}
+
+	#testimonials-rows p,
+	#testimonials-rows h1,
+	#testimonials-rows h2,
+	#testimonials-rows h3,
+	#testimonials-rows h4,
+	#testimonials-rows h5,
+	#testimonials-rows h6 {
+		color: white; /* Set title color to white */
+	}
+
+	/* Responsive padding adjustments */
+	@media (max-width: 1200px) {
+		#feature-video {
+			padding: 40px; /* Adjust padding for small screens */
+		}
+	}
+
+	@media (max-width: 480px) {
+		#feature-video {
+			padding: 10px; /* Adjust padding for extra small screens */
+		}
 	}
 
 	/* Card styles */
@@ -292,11 +355,12 @@
 	}
 
 	.nav__link--base {
-		color:rgb(0, 7, 103); 
+		color: rgb(0, 7, 103);
 		@apply font-medium tracking-tight transition-colors duration-300;
 	}
+
 	.nav__link--base:hover {
-		color:#3467ff; 
+		color: #00058e;
 	}
 
 	.mobile-menu,

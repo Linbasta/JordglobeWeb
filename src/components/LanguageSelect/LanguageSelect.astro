@@ -67,7 +67,7 @@ const currLocale = getLocaleFromUrl(Astro.url);
 				locales.map((lang) => (
 					<li class="flex w-full justify-center">
 						<a
-							class="nav__link--base relative block w-full py-1 leading-tight font-medium whitespace-nowrap transition duration-200"
+							class="nav__link--base relative block w-full py-1 leading-tight font-medium whitespace-nowrap transition duration-200 ml-4 letter-spacing"
 							href={getLocalizedPathname(lang, Astro.url)}
 							aria-label={`Change language to ${lang.toUpperCase()}`}
 							data-astro-reload
