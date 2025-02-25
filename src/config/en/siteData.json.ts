@@ -8,9 +8,6 @@ import dualCoding from "@images/front/dual_coding.png";
 import methodOfLoci from "@images/front/method_of_loci.png";
 import interleaving from "@images/front/interleaving.png";
 import casualGaming from "@images/front/casual_gaming.png";
-import card1bg from "@images/front/card1bg.png";
-import card2bg from "@images/front/card2bg.png";
-import card3bg from "@images/front/card3bg.png";
 
 // Update this file with your site specific information
 const siteData: SiteDataProps = {
@@ -62,15 +59,12 @@ const siteData: SiteDataProps = {
         card1Description: "Master countries and their flags - essential knowledge that helps you better understand global news, international events, and the changing world map. Never feel lost in world news again.",
         card1ImageAlt: "countries and flags",
         card1ImageAltLight: "countries and flags light",
-        card1Bg: card1bg,
         card2Title: "Provinces & Cities",
         card2Description: "Learn about cities and regions to grasp where events happen and why they matter. From economic powerhouses to geopolitical hotspots, knowing locations helps you understand international relations and global developments.",
         card2ImageAlt: "provinces and cities",
-        card2Bg: card2bg,
         card3Title: "Trivia Beyond Borders",
         card3Description: "Challenge yourself with fun trivia that goes beyond mere geography. Uncover surprising facts that reveal hidden links between people and places, reminding you that every corner of the world is interconnected.",
         card3ImageAlt: "trivia beyond geography",
-        card3Bg: card3bg,
         ctaSrText: "Start your global journey",
         learnMoreText: "Begin exploring",
         paymentInfoText: "Become a knowledge master",
