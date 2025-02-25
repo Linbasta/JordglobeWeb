@@ -1,8 +1,17 @@
 ---
+import LoadingDownload from '@components/LoadingDownload.astro';
 import { getDownloadUrl } from '@js/DownloadFromSite';
 
 const userAgent = Astro.request.headers.get('user-agent') || '';
-
-const redirectUrl = getDownloadUrl(userAgent, false);
-return Astro.redirect(redirectUrl);
+const downloadUrl = getDownloadUrl(userAgent, false);
 ---
+
+<LoadingDownload />
+
+<script define:vars={{ downloadUrl }}>
+  window.onload = () => {
+    setTimeout(() => {
+      window.location.href = downloadUrl;
+    }, 1000);
+  };
+</script>
