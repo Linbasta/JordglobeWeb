@@ -1,17 +1,20 @@
 ---
 import LoadingDownload from '@components/LoadingDownload.astro';
-import { getDownloadUrl } from '@js/DownloadFromSite';
-
-const userAgent = Astro.request.headers.get('user-agent') || '';
-const downloadUrl = getDownloadUrl(userAgent, false);
 ---
 
 <LoadingDownload />
 
-<script define:vars={{ downloadUrl }}>
-  window.onload = () => {
+<script>
+  // Get user agent from browser on client-side
+  const clientUserAgent = navigator.userAgent;
+  console.log('Client-side userAgent:', clientUserAgent);
+  
+  window.onload = async () => {
+    const { getDownloadUrl } = await import('@js/DownloadFromSite');
+    const url = await getDownloadUrl(clientUserAgent, false);
+    
     setTimeout(() => {
-      window.location.href = downloadUrl;
+      window.location.href = url;
     }, 1000);
   };
 </script>

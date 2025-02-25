@@ -7,6 +7,7 @@ import { Image } from "astro:assets";
 
 interface Props {
     videoSrc: string;
+    videoSrcMobile: string; // Add mobile video source
     posterSrc: string; // first frame image
     logoSrc: string;
     logoAlt: string;
@@ -16,6 +17,7 @@ interface Props {
 
 const {
     videoSrc,
+    videoSrcMobile,
     posterSrc,
     logoSrc,
     logoAlt,
@@ -24,11 +26,15 @@ const {
 } = Astro.props;
 ---
 
-<section id="feature-video" class="relative h-screen w-full overflow-hidden">
+<section id="feature-video" 
+    class="relative h-screen w-full overflow-hidden"
+    data-video-desktop={videoSrc}
+    data-video-mobile={videoSrcMobile}
+>
     <!-- Video Background -->
     <div class="absolute inset-0 h-full w-full">
         <video id="hero-video" autoplay loop muted playsinline class="h-full w-full object-cover">
-            <source src={videoSrc} type="video/mp4" />
+            <source id="video-source" src={videoSrc} type="video/mp4" />
             Your browser does not support the video tag.
         </video>
     </div>
@@ -50,9 +56,18 @@ const {
 </section>
 
 <script client:load>
+    const featureVideo = document.getElementById("feature-video");
     const video = document.getElementById("hero-video");
+    const videoSource = document.getElementById("video-source");
     const posterOverlay = document.getElementById("poster-overlay");
     const logo = document.querySelector(".animate-fadeIn");
+
+    // Set video source once based on initial screen width
+    const isMobile = window.innerWidth < 768;
+    videoSource.src = isMobile ? 
+        featureVideo.dataset.videoMobile : 
+        featureVideo.dataset.videoDesktop;
+    video.load();
 
     video.addEventListener("loadeddata", () => {
         if (posterOverlay) {
