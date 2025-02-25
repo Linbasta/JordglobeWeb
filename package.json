@@ -3,8 +3,8 @@
 	"type": "module",
 	"version": "3.0.0",
 	"scripts": {
-		"dev": "node ./scripts/copy-pages.js && astro dev -- --host",
-		"start": "node ./scripts/copy-pages.js && astro dev -- --host",
+		"dev": "node ./scripts/copy-pages.js && astro dev --host",
+		"start": "node ./scripts/copy-pages.js && astro dev --host",
 		"build": "node ./scripts/copy-pages.js && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
