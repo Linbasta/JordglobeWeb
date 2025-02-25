@@ -12,7 +12,7 @@ import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://nova.cosmicthemes.com",
+	site: "https://jordglobe.com",
 	adapter: netlify({
 		imageCDN: false,
 	}),
