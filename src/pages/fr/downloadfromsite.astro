@@ -2,7 +2,6 @@
 import { getDownloadUrl } from '@js/DownloadFromSite';
 
 const userAgent = Astro.request.headers.get('user-agent') || '';
-
-const redirectUrl = getDownloadUrl(userAgent, false);
+const redirectUrl = getDownloadUrl(userAgent, true);
 return Astro.redirect(redirectUrl);
 ---
