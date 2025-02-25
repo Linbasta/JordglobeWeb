@@ -22,53 +22,53 @@ import { locales } from "@config/siteSettings.json";
 ---
 
 <div
-    id="nav__container"
-    class="navbar--initial fixed top-0 left-0 z-30 flex w-full flex-col transition-all duration-300"
-    transition:name={`nav`}
+	id="nav__container"
+	class="navbar--initial fixed top-0 left-0 z-30 flex w-full flex-col transition-all duration-300"
+	transition:name={`nav`}
 >
-    <div class="mx-auto flex w-full">
-        <div class="site-container flex h-14 w-full items-center">
-            <header class="relative flex w-full items-center gap-2">
-                <!-- home button / image -->
-                <div class="flex flex-auto justify-start">
-                    <SiteLogo />
-                </div>
+	<div class="mx-auto flex w-full">
+		<div class="site-container flex h-14 w-full items-center">
+			<header class="relative flex w-full items-center gap-2">
+				<!-- home button / image -->
+				<div class="flex flex-auto justify-start">
+					<SiteLogo />
+				</div>
 
-                <!-- <div class="flex flex-auto justify-center">
+				<!-- <div class="flex flex-auto justify-center">
           
         </div> -->
 
-                <!-- desktop nav menu -->
-                <div class="flex flex-auto justify-end">
-                    <nav class="hidden items-center md:flex nav-font">
-                        <ul class="flex h-fit items-center px-4">
-                            {
-                                // if dropdown exists, setup the dropdown, otherwise it is just a link
-                                navData.map((navItem) =>
-                                    "dropdown" in navItem ? (
-                                        // non-mobile dropdown menu
-                                        <>
-                                            {/* <NavDropdown navItem={navItem} /> */}
-                                            <NavDropdownToggle navItem={navItem} />
-                                        </>
-                                    ) : "megaMenuColumns" in navItem ? (
-                                        <MegaMenuDropdownToggle {navItem} />
-                                    ) : (
-                                        // normal nav link
-                                        <NavLink {navItem} />
-                                    ),
-                                )
-                            }
-                        </ul>
-                    </nav>
+				<!-- desktop nav menu -->
+				<div class="flex flex-auto justify-end">
+					<nav class="nav-font hidden items-center md:flex">
+						<ul class="flex h-fit items-center px-4">
+							{
+								// if dropdown exists, setup the dropdown, otherwise it is just a link
+								navData.map((navItem) =>
+									"dropdown" in navItem ? (
+										// non-mobile dropdown menu
+										<>
+											{/* <NavDropdown navItem={navItem} /> */}
+											<NavDropdownToggle navItem={navItem} />
+										</>
+									) : "megaMenuColumns" in navItem ? (
+										<MegaMenuDropdownToggle {navItem} />
+									) : (
+										// normal nav link
+										<NavLink {navItem} />
+									),
+								)
+							}
+						</ul>
+					</nav>
 
-                    <!-- <ThemeToggle class="my-auto -ml-4 hidden md:block" /> -->
+					<!-- <ThemeToggle class="my-auto -ml-4 hidden md:block" /> -->
 
-                    <!-- spacer if desired -->
-                    <!-- <div class="mr-2 ml-4 my-2 border-l border-base-300 dark:border-base-700">
+					<!-- spacer if desired -->
+					<!-- <div class="mr-2 ml-4 my-2 border-l border-base-300 dark:border-base-700">
           </div> -->
 
-                    <!-- <Button
+					<!-- <Button
                         variant="ghost"
                         class="nav__link--base relative mr-2 hidden items-center gap-1.5 rounded-sm px-4 py-2 transition duration-200 md:flex"
                         href="/login"
@@ -76,52 +76,65 @@ import { locales } from "@config/siteSettings.json";
                         Login
                     </Button> -->
 
-                    <Button
-                        variant="primary"
-                        class="my-auto hidden px-4 py-2 md:block mr-4"
-                        href="/downloadfromsite"
-                    >
-                    Download
-                    </Button>
-                    {/* Added Discord button with margin */}
-                    <DiscordButton class="ml-4" />
-                    
-                    {locales.length > 1 && <LanguageSelect class="ml-4 hidden md:block" />}
+					<Button
+						variant="primary"
+						class="my-auto mr-4 hidden px-4 py-2 md:block"
+						href="/downloadfromsite"
+					>
+						Download
+					</Button>
+					{/* Added Discord button with margin */}
+					<DiscordButton class="ml-4" />
 
-                    <!-- mobile nav menu, only load on small screens where it is visible -->
-                    <div class="md:hidden">
-                        <MobileNav />
-                    </div>
-                </div>
-            </header>
-        </div>
-    </div>
+					{locales.length > 1 && <LanguageSelect class="ml-4 hidden md:block" />}
+
+					<!-- mobile nav menu, only load on small screens where it is visible -->
+					<div class="md:hidden">
+						<MobileNav />
+					</div>
+				</div>
+			</header>
+		</div>
+	</div>
 </div>
 
+<style>
+	@import "tailwindcss/theme" theme(reference);
+	@import "@/styles/tailwind-theme.css" theme(reference);
+
+	.navbar--scrolled {
+		@apply border-b-border bg-background;
+	}
+
+	.navbar--initial {
+		@apply border-b-transparent bg-transparent py-2;
+	}
+</style>
+
 <script>
-    let navbar: HTMLElement | null;
+	let navbar: HTMLElement | null;
 
-    function scrollHandler() {
-        if (navbar) {
-            if (window.scrollY > 50) {
-                // if we have scrolled down the page a bit, add a frosted-glass look to the navbar
-                navbar.classList.add("navbar--scrolled");
-                navbar.classList.remove("navbar--initial");
-            } else {
-                navbar.classList.add("navbar--initial");
-                navbar.classList.remove("navbar--scrolled");
-            }
-        }
-    }
+	function scrollHandler() {
+		if (navbar) {
+			if (window.scrollY > 50) {
+				// if we have scrolled down the page a bit, add a frosted-glass look to the navbar
+				navbar.classList.add("navbar--scrolled");
+				navbar.classList.remove("navbar--initial");
+			} else {
+				navbar.classList.add("navbar--initial");
+				navbar.classList.remove("navbar--scrolled");
+			}
+		}
+	}
 
-    function initNav() {
-        navbar = document.getElementById("nav__container");
-        window.addEventListener("scroll", scrollHandler, { passive: true });
-    }
+	function initNav() {
+		navbar = document.getElementById("nav__container");
+		window.addEventListener("scroll", scrollHandler, { passive: true });
+	}
 
-    // runs on initial page load
-    initNav();
+	// runs on initial page load
+	initNav();
 
-    // runs on view transitions navigation. Not needed if item has "transition:persist"
-    document.addEventListener("astro:after-swap", initNav);
+	// runs on view transitions navigation. Not needed if item has "transition:persist"
+	document.addEventListener("astro:after-swap", initNav);
 </script>
