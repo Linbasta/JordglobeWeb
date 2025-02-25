@@ -1,42 +1,64 @@
-import { detect } from 'detect-browser';
-
 export const STORE_URLS = {
     android: "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo",
     ios: "https://apps.apple.com/app/id1599500931",
-    // Universal links (if configured)
     universal: "jordglobe://open"
 } as const;
 
-export function getDownloadUrl(userAgent: string, fromSite: boolean = false): string {
-    const browser = detect();
+function isIOS(userAgent: string): boolean {
+    return /iPad|iPhone|iPod/.test(userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
 
-    // Try universal link first if on mobile
-    if ((browser?.os === 'iOS' || browser?.os === 'Android OS') && !fromSite) {
+function isAndroid(userAgent: string): boolean {
+    return /Android/.test(userAgent);
+}
+
+function handleUniversalLink(isiOS: boolean): Promise<boolean> {
+    return new Promise((resolve) => {
+        const fallbackTimer = setTimeout(() => {
+            resolve(false);
+        }, 2000);
+
+        window.addEventListener('blur', () => {
+            clearTimeout(fallbackTimer);
+            resolve(true);
+        }, { once: true });
+
+        window.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearTimeout(fallbackTimer);
+                resolve(true);
+            }
+        }, { once: true });
+
+        window.location.href = STORE_URLS.universal;
+    });
+}
+
+export async function getDownloadUrl(userAgent: string, fromSite: boolean = false): Promise<string> {
+    console.log('userAgent:', userAgent);
+    const isiOS = isIOS(userAgent);
+    const isAndroidDevice = isAndroid(userAgent);
+
+    // Only try universal links if coming from a mobile device and not directly from site
+    if ((isiOS || isAndroidDevice) && !fromSite) {
         try {
-            // Attempt to open app first
-            window.location.href = STORE_URLS.universal;
-            // Wait briefly then redirect to store
-            setTimeout(() => {
-                if (browser.os === 'iOS') {
-                    window.location.href = STORE_URLS.ios;
-                } else {
-                    window.location.href = STORE_URLS.android;
-                }
-            }, 500);
-            return STORE_URLS.universal;
+            const appOpened = await handleUniversalLink(isiOS);
+            if (appOpened) {
+                return STORE_URLS.universal;
+            }
         } catch (e) {
-            console.log('Universal link failed, falling back to store');
+            console.warn('Universal link handling failed:', e);
         }
     }
 
-    // Direct store links as fallback
-    if (browser?.os === 'iOS') {
+    // Fallback to appropriate store
+    if (isiOS) {
         return STORE_URLS.ios;
-    } else if (browser?.os === 'Android OS') {
-        return STORE_URLS.android;
-    } else if (fromSite) {
+    } else if (isAndroidDevice || fromSite) {
         return STORE_URLS.android;
     }
+
 
     return '/';
 }
