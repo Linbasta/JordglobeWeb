@@ -11,6 +11,17 @@
 
 Should you need any assistance, send me a message at support@cosmicthemes.com
 
+
+## Firebase Setup
+
+1. Copy `.firebaserc.example` to `.firebaserc`
+2. Update the project and target IDs in `.firebaserc`
+3. Run the following commands:
+```bash
+firebase target:apply hosting prod jordglobe
+firebase target:apply hosting stagejordglobe-stage
+```
+
 ## Code Intro
 
 I have created a few code tours to help introduce you to the codebase. You will need the extension [Code Tour](https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour) to view them in VSCode.
@@ -108,6 +119,7 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
+| `npm run deploy:prod` | Deploy to production                     |
 | `firebase deploy` | Deploy site to Firebase                     |
 
 ### 👀 Want to learn more?
