@@ -33,8 +33,8 @@ const siteData: SiteDataProps = {
 
     // default image for meta tags if the page doesn't have an image already
     defaultImage: {
-        src: "/images/jordglobe-logo.png",
-        alt: "JordGlobe logo",
+        src: "/images/share_image.png",
+        alt: "JordGlobe - the ultimate geography game",
     },
 
     heroDownload: {
