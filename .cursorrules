@@ -1,0 +1,78 @@
+# JordglobeSite Project Structure
+
+# Root Configuration Files
+*.config.*       # Configuration files (astro.config.mjs, tsconfig.json, etc.)
+package.json     # Node.js package configuration
+*.toml          # Deployment configurations
+*.json          # Various JSON configurations
+
+# Source Code Structure
+src/
+  ├── pages/           # Astro pages and routes
+  │   ├── [lang]/     # Language-specific routes
+  │   └── *.astro     # Page components
+  │
+  ├── components/      # Reusable UI components
+  │   ├── Hero/       # Hero section components
+  │   ├── Feature/    # Feature section components
+  │   ├── LogoCloud/  # Logo cloud components
+  │   └── */          # Other component categories
+  │
+  ├── layouts/        # Layout components
+  │   └── *.astro     # Base and other layouts
+  │
+  ├── js/            # JavaScript/TypeScript utilities
+  │   ├── localeUtils.ts    # Localization utilities
+  │   └── translationUtils.ts # Translation helpers
+  │
+  ├── styles/        # Global styles and CSS
+  │
+  ├── assets/        # Static assets
+  │   └── images/    # Image assets
+  │
+  ├── data/         # Data files and content
+  │
+  └── config/       # Application configuration
+
+# Public Assets
+public/
+  ├── assets/      # Public static assets
+  └── images/      # Public images
+
+# Build Output
+.astro/           # Astro build output
+dist/            # Production build output
+
+# Development Tools
+scripts/         # Build and development scripts
+.tours/          # VS Code tour files
+
+# Naming Conventions
+- Components: PascalCase (e.g., HeroVideo.astro)
+- Utilities: camelCase (e.g., localeUtils.ts)
+- Pages: kebab-case (e.g., about-us.astro)
+- Images: kebab-case (e.g., hero-image.png)
+
+# Import Aliases
+@components/     # Components directory
+@layouts/        # Layouts directory
+@js/            # JavaScript utilities
+@images/        # Image assets
+@styles/        # Style files
+
+# File Types
+*.astro         # Astro components
+*.tsx           # React components
+*.ts            # TypeScript files
+*.css          # Stylesheets
+*.png          # Images
+*.jpg          # Images
+*.svg          # Vector graphics
+
+# Ignored Paths
+node_modules/
+dist/
+.env
+*.log
+
+Never ever write any comments!

@@ -1,0 +1,120 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+// images
+import place1 from "@images/code.jpg";
+import place2 from "@images/LetterEasy.png";
+import place3 from "@images/LetterMedium.png";
+import place4 from "@images/LetterHard.png";
+import place5 from "@images/place-for-photo.png";
+import place6 from "@images/place-for-photo.png";
+import place7 from "@images/place-for-photo.png";
+import place8 from "@images/calendar.png";
+
+// data
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
+
+// Trivia items data
+const triviaItems = [
+  {
+    title: "Word Game EASY",
+    image: place2.src,
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=1",
+    description: "Combine the letters of cities around the world"
+  },
+  {
+    title: "Word Game MEDIUM",
+    image: place3.src,
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=3",
+    description: "Combine the letters of cities around the world"
+  },
+  {
+    title: "Word Game HARD",
+    image: place4.src,
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=5",
+    description: "Combine the letters of cities around the world"
+  },
+  {
+    title: "Food",
+    image: "https://storage.googleapis.com/geo-2020-bucket/4188e5d2de.jpeg",
+    link: "https://quiz.jordglobe.com/?id=food",
+    description: "Cuisine around the world"
+  },
+  {
+    title: "Alcoholic Beverages",
+    image: "https://storage.googleapis.com/geo-2020-bucket/ad1591813f.jpeg",
+    link: "https://quiz.jordglobe.com/?id=beverage",
+    description: "What are people drinking in different countries?"
+  },
+  {
+    title: "Wars",
+    image: "https://storage.googleapis.com/geo-2020-bucket/b770cda67d.jpg",
+    link: "https://quiz.jordglobe.com/?id=war",
+    description: "The geographic history of war"
+  },
+  {
+    title: "Coding",
+    image: place1.src,
+    link: "https://quiz.jordglobe.com/?id=programming-languages",
+    description: "Where were the most famous Programming languages developed?"
+  },
+  {
+    title: "Nyhetsåret 2024",
+    image: place8.src,
+    link: "https://quiz.jordglobe.com/?id=news2024",
+    description: "Vad hände 2024?"
+  }
+];
+---
+
+<BaseLayout title="Trivia - " + {siteData.title} description="Explore interesting trivia about our world">
+  <div class="container mx-auto px-4 py-16">
+    <h1 class="text-4xl font-bold text-center mb-12">World Trivia</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {triviaItems.map((item) => (
+        <a href={item.link} class="group">
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+            <div class="aspect-w-16 aspect-h-9">
+              <img
+                src={item.image}
+                alt={item.title}
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="p-6">
+              <h2 class="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
+                {item.title}
+              </h2>
+              <p class="text-gray-600">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .aspect-w-16 {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  }
+  
+  .aspect-w-16 img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style> 
