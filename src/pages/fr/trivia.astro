@@ -7,15 +7,14 @@ import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
 
 // images
-import place1 from "@images/aniket_p.jpg";
-import place2 from "@images/place-for-photo.png";
-import place3 from "@images/place-for-photo.png";
-import place4 from "@images/place-for-photo.png";
+import place1 from "@images/code.jpg";
+import place2 from "@images/LetterEasy.png";
+import place3 from "@images/LetterMedium.png";
+import place4 from "@images/LetterHard.png";
 import place5 from "@images/place-for-photo.png";
 import place6 from "@images/place-for-photo.png";
 import place7 from "@images/place-for-photo.png";
-import place8 from "@images/place-for-photo.png";
-import place9 from "@images/place-for-photo.png";
+import place8 from "@images/calendar.png";
 
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
@@ -24,58 +23,52 @@ const siteData = getTranslatedData("siteData", currLocale);
 // Trivia items data
 const triviaItems = [
   {
-    title: "Trivia 1",
-    image: place1.src,
-    link: "https://quiz.jordglobe.com",
-    description: "Interesting fact about trivia 1"
-  },
-  {
-    title: "Trivia 2",
+    title: "Word Game EASY",
     image: place2.src,
-    link: "/trivia/2",
-    description: "Interesting fact about trivia 2"
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=1",
+    description: "Combine the letters of cities around the world"
   },
   {
-    title: "Trivia 3",
+    title: "Word Game MEDIUM",
     image: place3.src,
-    link: "/trivia/3",
-    description: "Interesting fact about trivia 3"
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=3",
+    description: "Combine the letters of cities around the world"
   },
   {
-    title: "Trivia 4",
+    title: "Word Game HARD",
     image: place4.src,
-    link: "/trivia/4",
-    description: "Interesting fact about trivia 4"
+    link: "https://quiz.jordglobe.com/?mode=lettergame&diff=5",
+    description: "Combine the letters of cities around the world"
   },
   {
-    title: "Trivia 5",
-    image: place5.src,
-    link: "/trivia/5",
-    description: "Interesting fact about trivia 5"
+    title: "Food",
+    image: "https://storage.googleapis.com/geo-2020-bucket/4188e5d2de.jpeg",
+    link: "https://quiz.jordglobe.com/?id=food",
+    description: "Cuisine around the world"
   },
   {
-    title: "Trivia 6",
-    image: place6.src,
-    link: "/trivia/6",
-    description: "Interesting fact about trivia 6"
+    title: "Alcoholic Beverages",
+    image: "https://storage.googleapis.com/geo-2020-bucket/ad1591813f.jpeg",
+    link: "https://quiz.jordglobe.com/?id=beverage",
+    description: "What are people drinking in different countries?"
   },
   {
-    title: "Trivia 7",
-    image: place7.src,
-    link: "/trivia/7",
-    description: "Interesting fact about trivia 7"
+    title: "Wars",
+    image: "https://storage.googleapis.com/geo-2020-bucket/b770cda67d.jpg",
+    link: "https://quiz.jordglobe.com/?id=war",
+    description: "The geographic history of war"
   },
   {
-    title: "Trivia 8",
+    title: "Coding",
+    image: place1.src,
+    link: "https://quiz.jordglobe.com/?id=programming-languages",
+    description: "Where were the most famous Programming languages developed?"
+  },
+  {
+    title: "Nyhetsåret 2024",
     image: place8.src,
-    link: "/trivia/8",
-    description: "Interesting fact about trivia 8"
-  },
-  {
-    title: "Trivia 9",
-    image: place9.src,
-    link: "/trivia/9",
-    description: "Interesting fact about trivia 9"
+    link: "https://quiz.jordglobe.com/?id=news2024",
+    description: "Vad hände 2024?"
   }
 ];
 ---
