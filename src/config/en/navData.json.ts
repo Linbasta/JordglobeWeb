@@ -12,12 +12,7 @@ import { type navItem } from "../types/configDataTypes";
 
 // note: 1 level of dropdown is supported
 const navConfig: navItem[] = [
-	
-
-	{
-		text: "Blog",
-		link: "/blog",
-	},
+	// Blog button removed
 ];
 
 export default navConfig;

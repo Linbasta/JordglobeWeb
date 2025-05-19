@@ -15,62 +15,142 @@ import place5 from "@images/place-for-photo.png";
 import place6 from "@images/place-for-photo.png";
 import place7 from "@images/place-for-photo.png";
 import place8 from "@images/calendar.png";
+import place9 from "@images/place-for-photo.png";
+
+// Function to append language parameter to URL
+const appendLangToUrl = (url: string, lang: string) => {
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}lang=${lang}`;
+};
 
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
 const siteData = getTranslatedData("siteData", currLocale);
 
 // Trivia items data
-const triviaItems = [
+const allTriviaItems = [
   {
-    title: "Word Game EASY",
+    title: {
+      en: "Word Game EASY",
+      sv: "Ordspel LÄTT"
+    },
     image: place2.src,
     link: "https://quiz.jordglobe.com/?mode=lettergame&diff=1",
-    description: "Combine the letters of cities around the world"
+    description: {
+      en: "Combine the letters of cities around the world",
+      sv: "Kombinera bokstäverna till städer runt om i världen"
+    }
   },
   {
-    title: "Word Game MEDIUM",
+    title: {
+      en: "Word Game MEDIUM",
+      sv: "Ordspel MEDEL"
+    },
     image: place3.src,
     link: "https://quiz.jordglobe.com/?mode=lettergame&diff=3",
-    description: "Combine the letters of cities around the world"
+    description: {
+      en: "Combine the letters of cities around the world",
+      sv: "Kombinera bokstäverna till städer runt om i världen"
+    }
   },
   {
-    title: "Word Game HARD",
+    title: {
+      en: "Word Game HARD",
+      sv: "Ordspel SVÅR"
+    },
     image: place4.src,
     link: "https://quiz.jordglobe.com/?mode=lettergame&diff=5",
-    description: "Combine the letters of cities around the world"
+    description: {
+      en: "Combine the letters of cities around the world",
+      sv: "Kombinera bokstäverna till städer runt om i världen"
+    }
   },
   {
-    title: "Food",
+    title: {
+      en: "Food",
+      sv: "Mat"
+    },
     image: "https://storage.googleapis.com/geo-2020-bucket/4188e5d2de.jpeg",
     link: "https://quiz.jordglobe.com/?id=food",
-    description: "Cuisine around the world"
+    description: {
+      en: "Cuisine around the world",
+      sv: "Mat från hela världen"
+    }
   },
   {
-    title: "Alcoholic Beverages",
+    title: {
+      en: "Alcoholic Beverages",
+      sv: "Alkoholhaltiga drycker"
+    },
     image: "https://storage.googleapis.com/geo-2020-bucket/ad1591813f.jpeg",
     link: "https://quiz.jordglobe.com/?id=beverage",
-    description: "What are people drinking in different countries?"
+    description: {
+      en: "What are people drinking in different countries?",
+      sv: "Vad dricker folk i olika länder?"
+    }
   },
   {
-    title: "Wars",
+    title: {
+      en: "Wars",
+      sv: "Krig"
+    },
     image: "https://storage.googleapis.com/geo-2020-bucket/b770cda67d.jpg",
     link: "https://quiz.jordglobe.com/?id=war",
-    description: "The geographic history of war"
+    description: {
+      en: "The geographic history of war",
+      sv: "Krigets geografiska historia"
+    }
   },
   {
-    title: "Coding",
+    title: {
+      en: "Coding",
+      sv: "Programmering"
+    },
     image: place1.src,
     link: "https://quiz.jordglobe.com/?id=programming-languages",
-    description: "Where were the most famous Programming languages developed?"
+    description: {
+      en: "Where were the most famous Programming languages developed?",
+      sv: "Var utvecklades de mest kända programmeringsspråken?"
+    },
+    hideInLocales: ["en"]
   },
   {
-    title: "Nyhetsåret 2024",
+    title: {
+      en: "2024 News",
+      sv: "Nyhetsåret 2024"
+    },
     image: place8.src,
     link: "https://quiz.jordglobe.com/?id=news2024",
-    description: "Vad hände 2024?"
+    description: {
+      en: "What happened in 2024?",
+      sv: "Vad hände 2024?"
+    },
+    hideInLocales: ["en"]
+  },
+  {
+    title: {
+      en: "Greatest Swedish Sports Moments",
+      sv: "Sveriges största Sportögonblick"
+    },
+    image: "https://storage.googleapis.com/geo-2020-bucket/f2cead001e.jpeg",
+    link: "https://quiz.jordglobe.com/?id=sweden-sport-moments",
+    description: {
+      en: "Historic Swedish sports moments",
+      sv: "Historiska svenska idrottsögonblick"
+    },
+    hideInLocales: ["en"]
   }
 ];
+
+// Filter items based on locale and add language parameter to URLs
+const triviaItems = allTriviaItems
+  .filter(item => !item.hideInLocales || !item.hideInLocales.includes(currLocale))
+  .map(item => ({
+    ...item,
+    title: item.title[currLocale],
+    description: item.description[currLocale],
+    link: appendLangToUrl(item.link, currLocale)
+  }));
 ---
 
 <BaseLayout title="Trivia - " + {siteData.title} description="Explore interesting trivia about our world">

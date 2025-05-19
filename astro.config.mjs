@@ -65,9 +65,4 @@ export default defineConfig({
 			assetsInlineLimit: 0,
 		},
 	},
-	experimental: {
-		svg: {
-			mode: "sprite",
-		},
-	},
 });
