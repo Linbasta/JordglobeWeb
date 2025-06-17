@@ -9,6 +9,10 @@
         ],
         "rewrites": [
             {
+                "source": "/duel",
+                "destination": "/duel/index.html"
+            },
+            {
                 "source": "**",
                 "destination": "/index.html"
             }
@@ -44,6 +48,10 @@
         ],
         "rewrites": [
             {
+                "source": "/duel",
+                "destination": "/duel/index.html"
+            },
+            {
                 "source": "**",
                 "destination": "/index.html"
             }
@@ -68,5 +76,8 @@
                 ]
             }
         ]
-    }]
+    }],
+    "functions": {
+        "source": "functions"
+    }
 }
