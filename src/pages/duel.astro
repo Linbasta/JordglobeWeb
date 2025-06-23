@@ -75,29 +75,15 @@ import duelBannerImage from '@images/duel_banner.jpg';
         Click the button below to download the app.
       </p>
       <div class="button-container">
-        <a id="downloadAppButton" class="app-button" href="#" style="background-color: #28a745;">Download from Store</a>
+        <a id="downloadAppButton" class="app-button" href="https://apps.apple.com/app/id1599500931" style="background-color: #28a745;">Download from Store</a>
       </div>
     </div>
-
     <script>
-      window.onload = () => {
-        const downloadAppButton = document.getElementById('downloadAppButton');
-        
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const isAndroid = /Android/.test(navigator.userAgent);
-
-        let storeUrl = "https://apps.apple.com/app/id1599500931"; // Apple App Store
-        if (isAndroid) {
-            storeUrl = "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo"; // Google Play Store
-        }
-
-        downloadAppButton.href = storeUrl;
-        
-        // Also redirect automatically after a delay
-        setTimeout(() => {
-          window.location.href = storeUrl;
-        }, 2000);
-      };
+      const downloadAppButton = document.getElementById('downloadAppButton');
+      const isAndroid = /Android/.test(navigator.userAgent);
+      if (isAndroid) {
+        downloadAppButton.href = "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo";
+      }
     </script>
   </body>
 </html> 
