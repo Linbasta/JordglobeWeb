@@ -155,30 +155,13 @@ export class SoloGameController {
     // Public API - Core Access
     // =========================================================================
 
-    getScene(): Scene {
-        return this.globe.getScene();
-    }
-
-    getCamera(): ArcRotateCamera {
-        return this.globe.getCamera();
-    }
-
-    getEngine(): Engine {
-        return this.globe.getEngine();
-    }
-
-    getCanvas(): HTMLCanvasElement {
-        return this.globe.getCanvas();
-    }
-
-    getEarthSphere(): Mesh {
-        return this.globe.getEarthSphere();
-    }
-
-    getCountryPicker(): CountryPicker {
-        return this.globe.getCountryPicker();
-    }
-
+    /**
+     * Get the underlying EarthGlobe instance.
+     * Use this to access core globe functionality like:
+     * - getScene(), getCamera(), getEngine(), getCanvas()
+     * - getEarthSphere(), getCountryPicker()
+     * - Material creation, coordinate conversion, etc.
+     */
     getGlobe(): EarthGlobe {
         return this.globe;
     }
@@ -196,17 +179,15 @@ export class SoloGameController {
     }
 
     // =========================================================================
-    // Public API - Materials
+    // Public API - Solo Game Specific Methods
     // =========================================================================
 
-    createUnlitMaterial(originalMaterial: Material | null): ShaderMaterial {
-        return this.globe.createUnlitMaterial(originalMaterial);
-    }
-
-    // =========================================================================
-    // Public API - Coordinates
-    // =========================================================================
-
+    /**
+     * Enhanced positionAtLatLon with game-specific altitude logic.
+     * Use this instead of globe.positionAtLatLon() for game features like pins.
+     *
+     * @param aboveCountry - If true, positions above country polygons (default: true)
+     */
     positionAtLatLon(lat: number, lon: number, altitude?: number, aboveCountry: boolean = true): {
         position: import('@babylonjs/core/Maths/math').Vector3;
         normal: import('@babylonjs/core/Maths/math').Vector3;
@@ -216,24 +197,12 @@ export class SoloGameController {
         return this.globe.positionAtLatLon(lat, lon, finalAltitude);
     }
 
-    // =========================================================================
-    // Public API - Country Queries
-    // =========================================================================
-
-    getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null {
-        return this.globe.getCountryAtLatLon(lat, lon);
-    }
-
-    getAltitudeAtLatLon(lat: number, lon: number): number {
-        return this.globe.getAltitudeAtLatLon(lat, lon);
-    }
-
+    /**
+     * Get the currently hovered country (from selection behavior).
+     * Note: For raw country queries, use getGlobe().getCountryAtLatLon()
+     */
     getHoveredCountry(): CountryPolygon | null {
         return this.hoveredCountry;
-    }
-
-    getCountryByISO2(iso2: string): CountryData | undefined {
-        return this.globe.getCountryByISO2(iso2);
     }
 
     // =========================================================================
@@ -246,26 +215,6 @@ export class SoloGameController {
 
     setCountryHoveredCallback(callback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null): void {
         this.onCountryHovered = callback;
-    }
-
-    // =========================================================================
-    // Public API - Animation
-    // =========================================================================
-
-    setCountryAltitude(countryIndex: number, altitude: number): void {
-        this.globe.setCountryAltitude(countryIndex, altitude);
-    }
-
-    getCountryAltitude(countryIndex: number): number {
-        return this.globe.getCountryAltitude(countryIndex);
-    }
-
-    setCountrySaturation(countryIndex: number, saturation: number): void {
-        this.globe.setCountrySaturation(countryIndex, saturation);
-    }
-
-    getCountrySaturation(countryIndex: number): number {
-        return this.globe.getCountrySaturation(countryIndex);
     }
 
     // =========================================================================

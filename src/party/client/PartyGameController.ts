@@ -94,30 +94,13 @@ export class PartyGameController {
     // Public API - Core Access
     // =========================================================================
 
-    getScene(): Scene {
-        return this.globe.getScene();
-    }
-
-    getCamera(): ArcRotateCamera {
-        return this.globe.getCamera();
-    }
-
-    getEngine(): Engine {
-        return this.globe.getEngine();
-    }
-
-    getCanvas(): HTMLCanvasElement {
-        return this.globe.getCanvas();
-    }
-
-    getEarthSphere(): Mesh {
-        return this.globe.getEarthSphere();
-    }
-
-    getCountryPicker(): CountryPicker {
-        return this.globe.getCountryPicker();
-    }
-
+    /**
+     * Get the underlying EarthGlobe instance.
+     * Use this to access core globe functionality like:
+     * - getScene(), getCamera(), getEngine(), getCanvas()
+     * - getEarthSphere(), getCountryPicker()
+     * - Material creation, coordinate conversion, country queries, etc.
+     */
     getGlobe(): EarthGlobe {
         return this.globe;
     }
@@ -132,14 +115,6 @@ export class PartyGameController {
 
     getPinUI(): PinUI | null {
         return this.pinUI;
-    }
-
-    // =========================================================================
-    // Public API - Country Queries
-    // =========================================================================
-
-    getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null {
-        return this.globe.getCountryAtLatLon(lat, lon);
     }
 
     // =========================================================================

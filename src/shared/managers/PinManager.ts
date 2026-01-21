@@ -94,8 +94,6 @@ export class PinManager {
         if (this.onPlacingModeChangeCallback) {
             this.onPlacingModeChangeCallback(true);
         }
-
-        console.log('Entered placing mode - recording started');
     }
 
     exitPlacingMode(placePin: boolean = false): void {
@@ -122,21 +120,12 @@ export class PinManager {
             const latLon = cartesianToLatLon(pinPos.x, pinPos.y, pinPos.z);
             const country = this.countryPicker.getCountryAt(latLon);
 
-            if (country) {
-                console.log(`Pin placed in ${country.name} (${country.iso2})`);
-            } else {
-                console.log(`Pin placed in ocean`);
-            }
-
             if (this.onPinPlacedCallback) {
                 this.onPinPlacedCallback(country, latLon);
             }
-        } else {
-            console.log('Pin placement cancelled');
         }
 
         this.hoveredCountry = null;
-        console.log('Exited placing mode');
     }
 
     isPlacing(): boolean {
@@ -171,9 +160,8 @@ export class PinManager {
             const rootMesh = result.meshes[0];
             rootMesh.setEnabled(false);
             this.bossPinTemplate = rootMesh;
-            console.log('BossPin model loaded successfully');
         } catch (error) {
-            console.error('Failed to load BossPin model:', error);
+            console.error('[PinManager] Failed to load BossPin model:', error);
         }
     }
 
@@ -208,35 +196,28 @@ export class PinManager {
 
         this.previewPin = pinPivot;
         this.previewPin.setEnabled(false);
-        console.log('Preview pin created with', clonedMeshes.length, 'meshes');
     }
 
     private setupEventHandlers(): void {
-        console.log('[PinManager] Setting up event handlers on canvas:', this.canvas, 'id:', this.canvas.id, 'scene:', this.scene);
-
         this.canvas.addEventListener('pointermove', (e) => {
-            console.log('[PinManager] pointermove event - isPlacingMode:', this.isPlacingMode, 'previewPin:', !!this.previewPin);
             if (this.isPlacingMode && this.previewPin) {
                 this.updatePreviewPinPosition(e);
             }
         });
 
         this.canvas.addEventListener('pointerup', (e) => {
-            console.log('[PinManager] pointerup event - button:', e.button, 'isPlacingMode:', this.isPlacingMode);
             if (this.isPlacingMode && (e.button === 0 || e.button === 2)) {
                 this.exitPlacingMode(true);
             }
         });
 
         this.canvas.addEventListener('pointerleave', (e) => {
-            console.log('[PinManager] pointerleave event - isPlacingMode:', this.isPlacingMode);
             if (this.isPlacingMode) {
                 this.exitPlacingMode(false);
             }
         });
 
         this.canvas.addEventListener('pointerdown', (e) => {
-            console.log('[PinManager] pointerdown event - button:', e.button, 'isPlacingMode:', this.isPlacingMode);
             if (e.button === 2 && !this.isPlacingMode) {
                 const pickResult = this.scene.pick(e.clientX, e.clientY, (mesh) => mesh === this.earthSphere);
                 if (pickResult.hit) {
@@ -254,19 +235,8 @@ export class PinManager {
     private updatePreviewPinPosition(event: PointerEvent): void {
         if (!this.previewPin) return;
 
-        const rect = this.canvas.getBoundingClientRect();
-        console.log('[PinManager] updatePreviewPinPosition - clientX:', event.clientX, 'clientY:', event.clientY,
-            'canvas rect - left:', rect.left, 'top:', rect.top, 'width:', rect.width, 'height:', rect.height);
-
-        // Try picking without predicate first to see if ANYTHING is hit
-        const pickAny = this.scene.pick(event.clientX, event.clientY);
-        console.log('[PinManager] pick without filter - hit:', pickAny.hit, 'pickedMesh:', pickAny.pickedMesh?.name);
-
         // Pick only against the earth sphere for performance
         const pickResult = this.scene.pick(event.clientX, event.clientY, (mesh) => mesh === this.earthSphere);
-        console.log('[PinManager] pick with earthSphere filter - hit:', pickResult.hit,
-            'earthSphere.isPickable:', this.earthSphere.isPickable,
-            'earthSphere name:', this.earthSphere.name);
 
         if (pickResult.hit && pickResult.pickedPoint) {
             // Show the pin when we hit the globe

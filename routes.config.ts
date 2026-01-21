@@ -47,17 +47,17 @@ export const routes: RoutesConfig = {
       description: 'Simulate multiple players for testing'
     },
     {
-      path: '/test-arcs.html',
+      path: '/tests/test-arcs.html',
       title: 'Arc Drawer Test',
       description: 'Test geodesic arc animations'
     },
     {
-      path: '/test-water-shader.html',
+      path: '/tests/test-water-shader.html',
       title: 'Water Shader Test',
       description: 'Test ocean rendering effects'
     },
     {
-      path: '/test-pin-replay.html',
+      path: '/tests/test-pin-replay.html',
       title: 'Pin Replay Animation',
       description: 'Test pin movement recording/replay'
     },
