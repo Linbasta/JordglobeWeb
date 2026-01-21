@@ -92,16 +92,16 @@
     </div>
 
     <script type="module">
-        import { EarthGlobe } from './src/earthGlobe';
-        import { MultiPinManager } from './src/multiPinManager';
-        import { CorrectLocationMarker } from './src/correctLocationMarker';
+        import { EarthGlobe } from './src/earth-globe';
+        import { MultiPinManager } from './src/shared/managers/MultiPinManager';
+        import { CorrectLocationMarker } from './src/shared/visualizers/CorrectLocationMarker';
         import { getPlayerColor } from './shared/playerColors';
         import { enableInspector } from './shared/testUtils';
 
         const canvas = document.getElementById('renderCanvas');
 
         // Create EarthGlobe
-        const earthGlobe = new EarthGlobe('renderCanvas');
+        const earthGlobe = new EarthGlobe({ canvasId: 'renderCanvas' });
 
         // Wait for globe to load
         await new Promise(resolve => setTimeout(resolve, 2000));

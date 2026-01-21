@@ -5,7 +5,7 @@
  */
 
 import { Player } from './WaitingScreen';
-import { config } from '../config';
+import { config } from '../../config';
 
 type MessageHandler = {
     'joined': (data: { name: string; isFirst: boolean; players: Player[] }) => void;

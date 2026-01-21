@@ -3,12 +3,12 @@
  * Shows mock pin movement recordings for 3 players
  */
 
-import { EarthGlobe } from './earthGlobe';
-import { PinReplayAnimator } from './pinReplayAnimator';
-import type { PinRecording } from './pinRecorder';
+import { EarthGlobe } from './earth-globe';
+import { PinReplayAnimator } from './shared/animation/PinReplayAnimator';
+import type { PinRecording } from './shared/animation/PinRecorder';
 
 // Initialize EarthGlobe
-const globe = new EarthGlobe('renderCanvas');
+const globe = new EarthGlobe({ canvasId: 'renderCanvas' });
 (window as any).earthGlobe = globe;
 
 // Generate mock pin recording data

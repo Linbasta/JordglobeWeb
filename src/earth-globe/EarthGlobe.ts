@@ -19,6 +19,7 @@ import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Loading/loadingScreen';
 import '@babylonjs/loaders/glTF';
 import '@babylonjs/core/Materials/PBR/pbrMaterial';
+import '@babylonjs/core/Culling/ray';  // Required for scene.pick() to work!
 
 // Module imports
 import {

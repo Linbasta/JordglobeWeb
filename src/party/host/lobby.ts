@@ -2,11 +2,11 @@
  * Host Lobby - Shows QR code and player list, then game with globe + leaderboard
  */
 
-import QRCode from 'qrcode';
-import { EarthGlobe } from '../earthGlobe';
-import { RevealVisualizer } from './revealVisualizer';
-import { Confetti } from '../confetti';
-import { config } from '../config';
+import * as QRCode from 'qrcode';
+import { EarthGlobe } from '../../earth-globe';
+import { RevealVisualizer } from '../../shared/visualizers/RevealVisualizer';
+import { Confetti } from '../../confetti';
+import { config } from '../../config';
 
 interface Player {
     name: string;
@@ -141,22 +141,31 @@ class HostLobby {
         if (lobbyScreen) lobbyScreen.style.display = 'none';
         if (gameScreen) gameScreen.style.display = 'block';
 
-        this.globe = new EarthGlobe('renderCanvas', { showPinUI: false });
-        (window as unknown as { earthGlobe: EarthGlobe }).earthGlobe = this.globe;
+        // Wait for globe to initialize before accessing its methods
+        await new Promise<void>((resolve) => {
+            this.globe = new EarthGlobe({
+                canvasId: 'renderCanvas',
+                onReady: async () => {
+                    (window as unknown as { earthGlobe: EarthGlobe }).earthGlobe = this.globe!;
 
-        // Initialize reveal visualizer
-        this.revealVisualizer = new RevealVisualizer(
-            this.globe,
-            this.globe.getScene(),
-            this.globe.getCamera()
-        );
-        await this.revealVisualizer.init();
+                    // Initialize reveal visualizer (use this.globe which is the full instance)
+                    this.revealVisualizer = new RevealVisualizer(
+                        this.globe!,
+                        this.globe!.getScene(),
+                        this.globe!.getCamera()
+                    );
+                    await this.revealVisualizer.init();
 
-        this.createQuestionOverlay();
-        this.createResultsOverlay();
-        this.createFinalResultsOverlay();
-        this.players = this.players.map(p => ({ ...p, score: 0 }));
-        this.updateLeaderboard();
+                    this.createQuestionOverlay();
+                    this.createResultsOverlay();
+                    this.createFinalResultsOverlay();
+                    this.players = this.players.map(p => ({ ...p, score: 0 }));
+                    this.updateLeaderboard();
+
+                    resolve();
+                }
+            });
+        });
     }
 
     private createResultsOverlay(): void {

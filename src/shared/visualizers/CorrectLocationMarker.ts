@@ -14,7 +14,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Animation } from '@babylonjs/core/Animations/animation';
 import { CircleEase, EasingFunction } from '@babylonjs/core/Animations/easing';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
-import type { EarthGlobe } from './earthGlobe';
+import type { EarthGlobe } from '../../earth-globe';
 
 export class CorrectLocationMarker {
     private scene: Scene;

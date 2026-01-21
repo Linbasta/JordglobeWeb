@@ -16,7 +16,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
-import { hexToRgb } from '../shared/playerColors';
+import { hexToRgb } from '../../../shared/playerColors';
 
 const EARTH_RADIUS = 2.0;
 

@@ -1,4 +1,11 @@
 import { defineConfig } from 'vite';
+import { writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { routes } from './routes.config';
+import { generateLandingPage } from './scripts/generate-landing';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   server: {
@@ -17,17 +24,50 @@ export default defineConfig({
   appType: 'mpa',
   plugins: [
     {
-      name: 'rewrite-party',
+      name: 'routes-plugin',
       configureServer(server) {
+        // Generate landing page on startup
+        const html = generateLandingPage();
+        const indexPath = join(__dirname, 'index.html');
+        writeFileSync(indexPath, html, 'utf-8');
+        console.log('✓ Generated index.html from routes.config.ts');
+
+        // Watch routes.config.ts for changes
+        const routesConfigPath = join(__dirname, 'routes.config.ts');
+        server.watcher.add(routesConfigPath);
+
+        server.watcher.on('change', (file) => {
+          if (file === routesConfigPath) {
+            console.log('🔄 Routes config changed, regenerating index.html...');
+            const updatedHtml = generateLandingPage();
+            writeFileSync(indexPath, updatedHtml, 'utf-8');
+
+            // Trigger full reload for index.html
+            server.ws.send({
+              type: 'full-reload',
+              path: '/'
+            });
+            console.log('✓ Index.html regenerated and page reloaded');
+          }
+        });
+
+        // Auto-generate route rewrites from config
         server.middlewares.use((req, res, next) => {
-          if (req.url === '/party' || req.url === '/party/') {
-            req.url = '/party.html';
-          }
-          if (req.url === '/host' || req.url === '/host/') {
-            req.url = '/host.html';
-          }
+          routes.main.forEach(route => {
+            if (route.file && (req.url === route.path || req.url === route.path + '/')) {
+              req.url = '/' + route.file;
+            }
+          });
           next();
         });
+      },
+
+      // Also generate during build
+      buildStart() {
+        const html = generateLandingPage();
+        const indexPath = join(__dirname, 'index.html');
+        writeFileSync(indexPath, html, 'utf-8');
+        console.log('✓ Generated index.html for build');
       }
     }
   ]

@@ -77,16 +77,16 @@
     </div>
 
     <script type="module">
-        import { EarthGlobe } from './src/earthGlobe';
-        import { CorrectLocationMarker } from './src/correctLocationMarker';
-        import { MultiPinManager } from './src/multiPinManager';
+        import { EarthGlobe } from './src/earth-globe';
+        import { CorrectLocationMarker } from './src/shared/visualizers/CorrectLocationMarker';
+        import { MultiPinManager } from './src/shared/managers/MultiPinManager';
         import { getPlayerColor } from './shared/playerColors';
         import { enableInspector } from './shared/testUtils';
 
         const canvas = document.getElementById('renderCanvas');
 
         // Create EarthGlobe instance
-        const earthGlobe = new EarthGlobe('renderCanvas');
+        const earthGlobe = new EarthGlobe({ canvasId: 'renderCanvas' });
 
         // Wait for globe to load
         await new Promise(resolve => setTimeout(resolve, 2000));

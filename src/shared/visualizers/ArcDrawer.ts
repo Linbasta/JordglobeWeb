@@ -11,7 +11,7 @@ import { Color4 } from '@babylonjs/core/Maths/math.color';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
-import type { EarthGlobe } from './earthGlobe';
+import type { EarthGlobe } from '../../earth-globe';
 
 const EARTH_RADIUS = 2.0;
 const ARC_SEGMENTS = 64; // Number of points per arc (more = smoother)

@@ -4,8 +4,8 @@
 import { JoinScreen } from './JoinScreen';
 import { WaitingScreen } from './WaitingScreen';
 import { GameSocket } from './socket';
-import { EarthGlobe } from '../earthGlobe';
-import { Confetti } from '../confetti';
+import { PartyGameController } from './PartyGameController';
+import { Confetti } from '../../confetti';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {
@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Track current player state
     let myName = '';
     let isFirstPlayer = false;
-    let globe: EarthGlobe | null = null;
+    let controller: PartyGameController | null = null;
     let questionOverlay: HTMLElement | null = null;
     let resultsOverlay: HTMLElement | null = null;
     let finalResultsOverlay: HTMLElement | null = null;
@@ -281,31 +281,30 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         const gameScreen = document.getElementById('gameScreen');
         if (gameScreen) {
-            gameScreen.style.display = 'block';
+            gameScreen.classList.add('active');
         }
 
-        globe = new EarthGlobe('renderCanvas', {
-            disableSelectionBehavior: true,  // No country hover highlighting on party page
-            onReady: (globe) => {
-                // Globe is now fully initialized, safe to wire up callbacks
-                console.log('Globe ready, wiring pin placement callback');
+        // Create the party game controller
+        controller = new PartyGameController('renderCanvas', {
+            onReady: (ctrl) => {
+                console.log('[PartyClient] Controller ready, wiring up callbacks');
 
                 // Wire up pin placement to answer submission
-                const pinManager = globe.getPinManager();
-                pinManager.onPinPlaced((country, latLon) => {
+                ctrl.getPinManager().onPinPlaced((country, latLon) => {
                     console.log(`Pin placed at ${latLon.lat.toFixed(2)}, ${latLon.lon.toFixed(2)}`);
                     if (country) {
                         console.log(`Country: ${country.name} (${country.iso2})`);
                     }
                     // Get recorded positions
-                    const positions = pinManager.getRecordedPositions();
+                    const positions = ctrl.getPinManager().getRecordedPositions();
                     console.log(`Recorded ${positions.length} positions`);
                     handleAnswerSubmitted(latLon.lat, latLon.lon, positions);
                 });
             }
         });
 
-        (window as unknown as { earthGlobe: EarthGlobe }).earthGlobe = globe;
+        // Expose for debugging
+        (window as any).partyController = controller;
 
         createQuestionOverlay();
         createResultsOverlay();

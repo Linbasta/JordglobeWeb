@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+/**
+ * Landing Page Generator
+ * Generates index.html from routes.config.ts
+ */
+
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { routes, type Route } from '../routes.config';
+
+export function generateLandingPage(): string {
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -131,56 +141,14 @@
         <div class="section">
             <h2>Main Applications</h2>
             <div class="links-grid">
-                <a href="/country-game" class="link-card primary">
-                    <div class="link-title">Country Guessing Game</div>
-                    <div class="link-description">Solo mode - Explore and interact with the 3D globe</div>
-                </a>
-                <a href="/host" class="link-card primary">
-                    <div class="link-title">JordGlobe Party (Host)</div>
-                    <div class="link-description">Host a multiplayer game with leaderboard</div>
-                </a>
-                <a href="/party" class="link-card primary">
-                    <div class="link-title">JordGlobe Party (Player)</div>
-                    <div class="link-description">Join a multiplayer game on mobile</div>
-                </a>
+${routes.main.map(route => generateRouteCard(route, true)).join('\n')}
             </div>
         </div>
 
         <div class="section">
             <h2>Development & Testing</h2>
             <div class="links-grid">
-                <a href="/bot-panel.html" class="link-card">
-                    <div class="link-title">Bot Control Panel</div>
-                    <div class="link-description">Simulate multiple players for testing</div>
-                </a>
-                <a href="/test-arcs.html" class="link-card">
-                    <div class="link-title">Arc Drawer Test</div>
-                    <div class="link-description">Test geodesic arc animations</div>
-                </a>
-                <a href="/test-water-shader.html" class="link-card">
-                    <div class="link-title">Water Shader Test</div>
-                    <div class="link-description">Test ocean rendering effects</div>
-                </a>
-                <a href="/test-pin-replay.html" class="link-card">
-                    <div class="link-title">Pin Replay Animation</div>
-                    <div class="link-description">Test pin movement recording/replay</div>
-                </a>
-                <a href="/test-reveal-sequence.html" class="link-card">
-                    <div class="link-title">Reveal Sequence Test</div>
-                    <div class="link-description">Test multiplayer answer reveal flow</div>
-                </a>
-                <a href="/test-multi-pin.html" class="link-card">
-                    <div class="link-title">Multi-Pin Test</div>
-                    <div class="link-description">Test multiple pin placement</div>
-                </a>
-                <a href="/test-correct-marker.html" class="link-card">
-                    <div class="link-title">Correct Marker Test</div>
-                    <div class="link-description">Test correct answer marker display</div>
-                </a>
-                <a href="/client.html" class="link-card">
-                    <div class="link-title">Client Test Page</div>
-                    <div class="link-description">Test client-side functionality</div>
-                </a>
+${routes.dev.map(route => generateRouteCard(route, false)).join('\n')}
             </div>
         </div>
 
@@ -190,3 +158,24 @@
     </div>
 </body>
 </html>
+`;
+
+  return html;
+}
+
+function generateRouteCard(route: Route, isPrimary: boolean): string {
+  const classes = isPrimary ? 'link-card primary' : 'link-card';
+  return `                <a href="${route.path}" class="${classes}">
+                    <div class="link-title">${route.title}</div>
+                    <div class="link-description">${route.description}</div>
+                </a>`;
+}
+
+// When run directly, generate and write the file
+// Using import.meta.url for ESM compatibility
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const html = generateLandingPage();
+  const indexPath = join(process.cwd(), 'index.html');
+  writeFileSync(indexPath, html, 'utf-8');
+  console.log('✓ Generated index.html');
+}

@@ -12,9 +12,9 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
-import type { CountryPicker, CountryPolygon, LatLon } from './countryPicker';
-import { cartesianToLatLon } from './countryPicker';
-import { PinRecorder, type RecordedPosition } from './pinRecorder';
+import type { CountryPicker, CountryPolygon, LatLon } from '../../countryPicker';
+import { cartesianToLatLon } from '../../countryPicker';
+import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
 
 const EARTH_RADIUS = 2.0;
 
@@ -83,6 +83,8 @@ export class PinManager {
         if (!this.previewPin) return;
         this.isPlacingMode = true;
         document.body.classList.add('placing-mode');
+
+        // Detach camera controls to prevent rotation/zoom while placing pin
         this.camera.detachControl();
 
         // Start recording pin movements
@@ -99,6 +101,8 @@ export class PinManager {
     exitPlacingMode(placePin: boolean = false): void {
         this.isPlacingMode = false;
         document.body.classList.remove('placing-mode');
+
+        // Re-attach camera controls to allow rotation/zoom
         this.camera.attachControl(this.canvas, true);
 
         // Stop recording
@@ -208,25 +212,31 @@ export class PinManager {
     }
 
     private setupEventHandlers(): void {
+        console.log('[PinManager] Setting up event handlers on canvas:', this.canvas, 'id:', this.canvas.id, 'scene:', this.scene);
+
         this.canvas.addEventListener('pointermove', (e) => {
+            console.log('[PinManager] pointermove event - isPlacingMode:', this.isPlacingMode, 'previewPin:', !!this.previewPin);
             if (this.isPlacingMode && this.previewPin) {
                 this.updatePreviewPinPosition(e);
             }
         });
 
         this.canvas.addEventListener('pointerup', (e) => {
+            console.log('[PinManager] pointerup event - button:', e.button, 'isPlacingMode:', this.isPlacingMode);
             if (this.isPlacingMode && (e.button === 0 || e.button === 2)) {
                 this.exitPlacingMode(true);
             }
         });
 
         this.canvas.addEventListener('pointerleave', (e) => {
+            console.log('[PinManager] pointerleave event - isPlacingMode:', this.isPlacingMode);
             if (this.isPlacingMode) {
                 this.exitPlacingMode(false);
             }
         });
 
         this.canvas.addEventListener('pointerdown', (e) => {
+            console.log('[PinManager] pointerdown event - button:', e.button, 'isPlacingMode:', this.isPlacingMode);
             if (e.button === 2 && !this.isPlacingMode) {
                 const pickResult = this.scene.pick(e.clientX, e.clientY, (mesh) => mesh === this.earthSphere);
                 if (pickResult.hit) {
@@ -244,8 +254,19 @@ export class PinManager {
     private updatePreviewPinPosition(event: PointerEvent): void {
         if (!this.previewPin) return;
 
+        const rect = this.canvas.getBoundingClientRect();
+        console.log('[PinManager] updatePreviewPinPosition - clientX:', event.clientX, 'clientY:', event.clientY,
+            'canvas rect - left:', rect.left, 'top:', rect.top, 'width:', rect.width, 'height:', rect.height);
+
+        // Try picking without predicate first to see if ANYTHING is hit
+        const pickAny = this.scene.pick(event.clientX, event.clientY);
+        console.log('[PinManager] pick without filter - hit:', pickAny.hit, 'pickedMesh:', pickAny.pickedMesh?.name);
+
         // Pick only against the earth sphere for performance
         const pickResult = this.scene.pick(event.clientX, event.clientY, (mesh) => mesh === this.earthSphere);
+        console.log('[PinManager] pick with earthSphere filter - hit:', pickResult.hit,
+            'earthSphere.isPickable:', this.earthSphere.isPickable,
+            'earthSphere name:', this.earthSphere.name);
 
         if (pickResult.hit && pickResult.pickedPoint) {
             // Show the pin when we hit the globe
@@ -262,7 +283,7 @@ export class PinManager {
             }
 
             // Calculate surface normal
-            const normal = pickResult.pickedPoint.normalize();
+            const normal = pickResult.pickedPoint.normalizeToNew();
 
             // Position on globe surface at EARTH_RADIUS
             this.previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS);

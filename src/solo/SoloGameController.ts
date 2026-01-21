@@ -1,17 +1,12 @@
 /**
- * EarthGlobe - Main Application Class (Backward Compatible Wrapper)
+ * Solo Game Controller
  *
- * This file wraps the new earth-globe rendering module and adds game-specific
- * features like PinManager, CountrySelectionBehavior, and GUI elements.
- *
- * For pure rendering without game logic, use the earth-globe module directly:
- * import { EarthGlobe } from './earth-globe';
+ * Wraps the EarthGlobe core with solo game-specific features:
+ * - Pin placement and management
+ * - Country selection visual feedback
+ * - Pin UI (button and bottom panel)
+ * - Country label display
  */
-
-// Re-export from new module for direct access
-export { EarthGlobe as EarthGlobeCore } from './earth-globe';
-export type { LatLon, CountryPolygon, CountryData, EarthGlobeOptions as EarthGlobeCoreOptions } from './earth-globe';
-export { EARTH_RADIUS, COUNTRY_ALTITUDE } from './earth-globe';
 
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
@@ -19,64 +14,49 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Material } from '@babylonjs/core/Materials/material';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
-
-// GUI imports
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture';
-import { Control } from '@babylonjs/gui/2D/controls/control';
-import { Image } from '@babylonjs/gui/2D/controls/image';
-import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle';
 
-// Import from earth-globe module
 import {
-    EarthGlobe as EarthGlobeCore,
+    EarthGlobe,
     CountryPicker,
-    COUNTRY_ALTITUDE,
-    ANIMATION_AMPLITUDE
-} from './earth-globe';
-import type { LatLon, CountryPolygon, CountryData } from './earth-globe';
+    COUNTRY_ALTITUDE
+} from '../earth-globe';
+import type { LatLon, CountryPolygon, CountryData } from '../earth-globe';
 
-// Game-specific imports (these stay outside the module)
-import { CountrySelectionBehavior } from './countrySelectionBehavior';
-import { PinManager } from './pinManager';
-import { CountryLabelUI } from './countryLabelUI';
+import { CountrySelectionBehavior } from '../shared/behaviors/CountrySelectionBehavior';
+import { PinManager } from '../shared/managers/PinManager';
+import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
+import { PinUI } from '../shared/ui/PinUI';
 
-// ============================================================================
-// OPTIONS
-// ============================================================================
-
-export interface EarthGlobeOptions {
-    onReady?: (globe: EarthGlobe) => void;
+export interface SoloGameOptions {
+    onReady?: (controller: SoloGameController) => void;
     disableSelectionBehavior?: boolean;
     showCountryLabel?: boolean;
     showPinUI?: boolean;  // Show pin button and bottom panel (default: true)
 }
 
-// ============================================================================
-// EARTH GLOBE CLASS (Backward Compatible)
-// ============================================================================
-
 /**
- * EarthGlobe - Full application class with game-specific features
+ * Solo Game Controller
  *
- * This wraps the earth-globe rendering module and adds:
+ * This controller wraps the EarthGlobe core and adds solo game-specific features:
  * - PinManager for pin placement
  * - CountrySelectionBehavior for hover/click animations
- * - GUI elements (pin button, bottom panel)
+ * - PinUI for pin button and bottom panel
+ * - CountryLabelUI for displaying country names
  * - Inspector and debug shortcuts
  */
-export class EarthGlobe {
-    private core: EarthGlobeCore;
-    private options: EarthGlobeOptions;
+export class SoloGameController {
+    private globe: EarthGlobe;
+    private options: SoloGameOptions;
 
-    // Game-specific modules
+    // Modules
     private pinManager!: PinManager;
     private selectionBehavior: CountrySelectionBehavior | null = null;
     private countryLabelUI: CountryLabelUI | null = null;
+    private pinUI: PinUI | null = null;
 
     // GUI elements
     private advancedTexture: AdvancedDynamicTexture | null = null;
-    private pinButtonImage: Image | null = null;
-    private bottomPanel: Rectangle | null = null;
 
     // Loading screen elements
     private loadingProgress: HTMLElement | null;
@@ -88,7 +68,7 @@ export class EarthGlobe {
     private onCountryHovered: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private hoveredCountry: CountryPolygon | null = null;
 
-    constructor(canvasId: string = 'renderCanvas', options?: EarthGlobeOptions) {
+    constructor(canvasId: string = 'renderCanvas', options?: SoloGameOptions) {
         this.options = options || {};
 
         // Get loading screen elements
@@ -99,19 +79,19 @@ export class EarthGlobe {
         this.updateLoadingProgress(5, 'Initializing scene...');
 
         // Create the core globe
-        this.core = new EarthGlobeCore({
+        this.globe = new EarthGlobe({
             canvasId,
-            onReady: async (core) => {
+            onReady: async (globe) => {
                 this.updateLoadingProgress(75, 'Creating modules...');
 
                 // Create PinManager
                 this.pinManager = new PinManager(
-                    core.getScene(),
-                    core.getCamera(),
-                    core.getCanvas(),
-                    core.getCountryPicker(),
-                    core.getEarthSphere(),
-                    (material) => core.createUnlitMaterial(material)
+                    globe.getScene(),
+                    globe.getCamera(),
+                    globe.getCanvas(),
+                    globe.getCountryPicker(),
+                    globe.getEarthSphere(),
+                    (material) => globe.createUnlitMaterial(material)
                 );
                 await this.pinManager.init();
 
@@ -129,12 +109,12 @@ export class EarthGlobe {
                 // Create selection behavior (unless disabled)
                 if (this.advancedTexture && !this.options.disableSelectionBehavior) {
                     this.selectionBehavior = new CountrySelectionBehavior(
-                        core.getScene(),
+                        globe.getScene(),
                         this.advancedTexture,
-                        (countryIndex, altitude) => core.setCountryAltitude(countryIndex, altitude),
-                        (countryIndex) => core.getCountryAltitude(countryIndex),
-                        (countryIndex, saturation) => core.setCountrySaturation(countryIndex, saturation),
-                        (countryIndex) => core.getCountrySaturation(countryIndex)
+                        (countryIndex, altitude) => globe.setCountryAltitude(countryIndex, altitude),
+                        (countryIndex) => globe.getCountryAltitude(countryIndex),
+                        (countryIndex, saturation) => globe.setCountrySaturation(countryIndex, saturation),
+                        (countryIndex) => globe.getCountrySaturation(countryIndex)
                     );
 
                     // Wire PinManager to highlight countries
@@ -143,13 +123,10 @@ export class EarthGlobe {
                     });
                 }
 
-                // Setup pin button
-                this.setupPinButton();
-
                 // Wire PinManager to hide/show pin button
                 this.pinManager.onPlacingModeChange((isPlacing) => {
-                    if (this.pinButtonImage) {
-                        this.pinButtonImage.isVisible = !isPlacing;
+                    if (this.pinUI) {
+                        this.pinUI.setPinButtonVisible(!isPlacing);
                     }
                 });
 
@@ -179,27 +156,31 @@ export class EarthGlobe {
     // =========================================================================
 
     getScene(): Scene {
-        return this.core.getScene();
+        return this.globe.getScene();
     }
 
     getCamera(): ArcRotateCamera {
-        return this.core.getCamera();
+        return this.globe.getCamera();
     }
 
     getEngine(): Engine {
-        return this.core.getEngine();
+        return this.globe.getEngine();
     }
 
     getCanvas(): HTMLCanvasElement {
-        return this.core.getCanvas();
+        return this.globe.getCanvas();
     }
 
     getEarthSphere(): Mesh {
-        return this.core.getEarthSphere();
+        return this.globe.getEarthSphere();
     }
 
     getCountryPicker(): CountryPicker {
-        return this.core.getCountryPicker();
+        return this.globe.getCountryPicker();
+    }
+
+    getGlobe(): EarthGlobe {
+        return this.globe;
     }
 
     // =========================================================================
@@ -219,7 +200,7 @@ export class EarthGlobe {
     // =========================================================================
 
     createUnlitMaterial(originalMaterial: Material | null): ShaderMaterial {
-        return this.core.createUnlitMaterial(originalMaterial);
+        return this.globe.createUnlitMaterial(originalMaterial);
     }
 
     // =========================================================================
@@ -232,7 +213,7 @@ export class EarthGlobe {
     } {
         const defaultAltitude = aboveCountry ? COUNTRY_ALTITUDE + 0.01 : 0.01;
         const finalAltitude = altitude !== undefined ? altitude : defaultAltitude;
-        return this.core.positionAtLatLon(lat, lon, finalAltitude);
+        return this.globe.positionAtLatLon(lat, lon, finalAltitude);
     }
 
     // =========================================================================
@@ -240,11 +221,11 @@ export class EarthGlobe {
     // =========================================================================
 
     getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null {
-        return this.core.getCountryAtLatLon(lat, lon);
+        return this.globe.getCountryAtLatLon(lat, lon);
     }
 
     getAltitudeAtLatLon(lat: number, lon: number): number {
-        return this.core.getAltitudeAtLatLon(lat, lon);
+        return this.globe.getAltitudeAtLatLon(lat, lon);
     }
 
     getHoveredCountry(): CountryPolygon | null {
@@ -252,7 +233,7 @@ export class EarthGlobe {
     }
 
     getCountryByISO2(iso2: string): CountryData | undefined {
-        return this.core.getCountryByISO2(iso2);
+        return this.globe.getCountryByISO2(iso2);
     }
 
     // =========================================================================
@@ -272,19 +253,19 @@ export class EarthGlobe {
     // =========================================================================
 
     setCountryAltitude(countryIndex: number, altitude: number): void {
-        this.core.setCountryAltitude(countryIndex, altitude);
+        this.globe.setCountryAltitude(countryIndex, altitude);
     }
 
     getCountryAltitude(countryIndex: number): number {
-        return this.core.getCountryAltitude(countryIndex);
+        return this.globe.getCountryAltitude(countryIndex);
     }
 
     setCountrySaturation(countryIndex: number, saturation: number): void {
-        this.core.setCountrySaturation(countryIndex, saturation);
+        this.globe.setCountrySaturation(countryIndex, saturation);
     }
 
     getCountrySaturation(countryIndex: number): number {
-        return this.core.getCountrySaturation(countryIndex);
+        return this.globe.getCountrySaturation(countryIndex);
     }
 
     // =========================================================================
@@ -311,52 +292,18 @@ export class EarthGlobe {
     // =========================================================================
 
     private createGUI(): void {
-        this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.core.getScene());
+        this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.globe.getScene());
         this.advancedTexture.background = "";
 
         // Conditionally create pin UI
         if (this.options.showPinUI !== false) {
-            // Pin button
-            const pinScale = 0.5;
-            this.pinButtonImage = new Image("pinButton", "/DefaultPin.png");
-            this.pinButtonImage.width = `${196 * pinScale}px`;
-            this.pinButtonImage.height = `${900 * pinScale}px`;
-            this.pinButtonImage.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-            this.pinButtonImage.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-            this.pinButtonImage.top = "170px";
-            this.pinButtonImage.left = "50px";
-            this.pinButtonImage.rotation = 0.14;
-            this.pinButtonImage.isPointerBlocker = true;
-            this.advancedTexture.addControl(this.pinButtonImage);
-
-            // Bottom panel
-            this.bottomPanel = new Rectangle("bottomPanel");
-            this.bottomPanel.width = "600px";
-            this.bottomPanel.height = "150px";
-            this.bottomPanel.thickness = 0;
-            this.bottomPanel.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-            this.bottomPanel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-            this.bottomPanel.top = "30px";
-            this.bottomPanel.background = "#6496DC";
-            this.bottomPanel.alpha = 1.0;
-            this.bottomPanel.cornerRadius = 60;
-            this.advancedTexture.addControl(this.bottomPanel);
+            this.pinUI = new PinUI(this.advancedTexture);
+            this.pinUI.create({
+                onPinButtonPress: () => {
+                    this.pinManager.enterPlacingMode();
+                }
+            });
         }
-    }
-
-    private setupPinButton(): void {
-        if (!this.pinButtonImage) return;
-
-        this.pinButtonImage.onPointerDownObservable.add(() => {
-            this.pinButtonImage!.scaleX = 0.95;
-            this.pinButtonImage!.scaleY = 0.95;
-            this.pinManager.enterPlacingMode();
-        });
-
-        this.pinButtonImage.onPointerUpObservable.add(() => {
-            this.pinButtonImage!.scaleX = 1.0;
-            this.pinButtonImage!.scaleY = 1.0;
-        });
     }
 
     private recreateGUI(): void {
@@ -366,13 +313,17 @@ export class EarthGlobe {
             this.selectionBehavior = null;
         }
 
+        // Dispose old PinUI
+        if (this.pinUI) {
+            this.pinUI.dispose();
+            this.pinUI = null;
+        }
+
         // Dispose old GUI
         if (this.advancedTexture) {
             this.advancedTexture.dispose();
             this.advancedTexture = null;
         }
-        this.pinButtonImage = null;
-        this.bottomPanel = null;
 
         // Recreate GUI
         this.createGUI();
@@ -380,19 +331,17 @@ export class EarthGlobe {
         // Recreate selection behavior
         if (this.advancedTexture && !this.options.disableSelectionBehavior) {
             this.selectionBehavior = new CountrySelectionBehavior(
-                this.core.getScene(),
+                this.globe.getScene(),
                 this.advancedTexture,
-                (countryIndex, altitude) => this.core.setCountryAltitude(countryIndex, altitude),
-                (countryIndex) => this.core.getCountryAltitude(countryIndex),
-                (countryIndex, saturation) => this.core.setCountrySaturation(countryIndex, saturation),
-                (countryIndex) => this.core.getCountrySaturation(countryIndex)
+                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
+                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
+                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
+                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
             );
             this.pinManager.onCountryHover((country, latLon) => {
                 this.selectionBehavior?.onCountrySelected(country, latLon);
             });
         }
-
-        this.setupPinButton();
     }
 
     // =========================================================================
@@ -418,7 +367,7 @@ export class EarthGlobe {
             return;
         }
 
-        const scene = this.core.getScene();
+        const scene = this.globe.getScene();
         if (scene.debugLayer.isVisible()) {
             scene.debugLayer.hide();
         } else {
@@ -427,7 +376,7 @@ export class EarthGlobe {
     }
 
     private toggleWaterShaderControls(): void {
-        const waterMaterial = this.core.getWaterMaterial();
+        const waterMaterial = this.globe.getWaterMaterial();
         if (!waterMaterial) return;
 
         const existingPanel = document.getElementById('waterShaderPanel');

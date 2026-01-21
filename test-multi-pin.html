@@ -67,15 +67,15 @@
     </div>
 
     <script type="module">
-        import { EarthGlobe } from './src/earthGlobe';
-        import { MultiPinManager } from './src/multiPinManager';
+        import { EarthGlobe } from './src/earth-globe';
+        import { MultiPinManager } from './src/shared/managers/MultiPinManager';
         import { getPlayerColor } from './shared/playerColors';
         import { enableInspector } from './shared/testUtils';
 
         const canvas = document.getElementById('renderCanvas');
 
-        // Create EarthGlobe instance (reusing the actual globe from index.html!)
-        const earthGlobe = new EarthGlobe('renderCanvas');
+        // Create EarthGlobe instance
+        const earthGlobe = new EarthGlobe({ canvasId: 'renderCanvas' });
 
         // Wait for globe to fully load (it initializes in constructor but loads countries async)
         // We'll access it via the window object after a short delay
