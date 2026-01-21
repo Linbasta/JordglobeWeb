@@ -5,7 +5,7 @@ import { JoinScreen } from './JoinScreen';
 import { WaitingScreen } from './WaitingScreen';
 import { GameSocket } from './socket';
 import { PartyGameController } from './PartyGameController';
-import { Confetti } from '../../confetti';
+import { Confetti } from '../../shared/effects/Confetti';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {
@@ -202,7 +202,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('gameScreen')?.appendChild(finalResultsOverlay);
     }
 
-    function showFinalResults(players: { name: string; score: number }[]): void {
+    function showFinalResults(players: { name: string; score?: number }[]): void {
         if (!finalResultsOverlay) return;
 
         // Hide other overlays

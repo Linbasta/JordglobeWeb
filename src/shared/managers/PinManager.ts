@@ -12,8 +12,8 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
-import type { CountryPicker, CountryPolygon, LatLon } from '../../countryPicker';
-import { cartesianToLatLon } from '../../countryPicker';
+import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
+import { cartesianToLatLon } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
 
 const EARTH_RADIUS = 2.0;

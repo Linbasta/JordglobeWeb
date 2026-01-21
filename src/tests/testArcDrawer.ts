@@ -3,10 +3,10 @@
  * Draws geodesic arcs from various locations to a target (Paris)
  */
 
-import { EarthGlobe } from './earth-globe';
-import { ArcDrawer } from './shared/visualizers/ArcDrawer';
-import { CameraAnimator } from './shared/animation/CameraAnimator';
-import { PLAYER_COLORS } from '../shared/playerColors';
+import { EarthGlobe } from '../earth-globe';
+import { ArcDrawer } from '../shared/visualizers/ArcDrawer';
+import { CameraAnimator } from '../shared/animation/CameraAnimator';
+import { PLAYER_COLORS } from '../../shared/playerColors';
 
 // Initialize EarthGlobe
 const globe = new EarthGlobe({ canvasId: 'renderCanvas' });

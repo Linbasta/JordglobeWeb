@@ -5,7 +5,7 @@
 import * as QRCode from 'qrcode';
 import { EarthGlobe } from '../../earth-globe';
 import { RevealVisualizer } from '../../shared/visualizers/RevealVisualizer';
-import { Confetti } from '../../confetti';
+import { Confetti } from '../../shared/effects/Confetti';
 import { config } from '../../config';
 
 interface Player {

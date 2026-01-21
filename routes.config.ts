@@ -62,24 +62,9 @@ export const routes: RoutesConfig = {
       description: 'Test pin movement recording/replay'
     },
     {
-      path: '/test-reveal-sequence.html',
-      title: 'Reveal Sequence Test',
-      description: 'Test multiplayer answer reveal flow'
-    },
-    {
       path: '/test-multi-pin.html',
       title: 'Multi-Pin Test',
       description: 'Test multiple pin placement'
-    },
-    {
-      path: '/test-correct-marker.html',
-      title: 'Correct Marker Test',
-      description: 'Test correct answer marker display'
-    },
-    {
-      path: '/client.html',
-      title: 'Client Test Page',
-      description: 'Test client-side functionality'
     }
   ]
 };

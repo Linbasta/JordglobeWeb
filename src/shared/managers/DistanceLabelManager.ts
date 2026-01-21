@@ -4,7 +4,7 @@
 
 import { Scene, Camera, Vector3, Matrix } from '@babylonjs/core';
 import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
-import { calculateDistance } from '../shared/geo';
+import { calculateDistance } from '../../../shared/geo';
 
 export interface DistanceLabel {
     playerId: string;

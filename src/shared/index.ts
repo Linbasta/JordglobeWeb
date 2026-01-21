@@ -11,7 +11,6 @@ export type { PlayerPin } from './managers/MultiPinManager';
 
 // Visualizers
 export { ArcDrawer } from './visualizers/ArcDrawer';
-export { CorrectLocationMarker } from './visualizers/CorrectLocationMarker';
 export { RevealVisualizer } from './visualizers/RevealVisualizer';
 
 // Animation

@@ -14,7 +14,7 @@ import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture
 import { Control } from '@babylonjs/gui/2D/controls/control';
 import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle';
 import { TextBlock } from '@babylonjs/gui/2D/controls/textBlock';
-import type { CountryPolygon, LatLon } from '../../countryPicker';
+import type { CountryPolygon, LatLon } from '../../earth-globe';
 
 export interface SelectionBehaviorOptions {
     /** Default altitude for countries (0-1, default: 0.4 which equals 0.08 actual altitude) */
