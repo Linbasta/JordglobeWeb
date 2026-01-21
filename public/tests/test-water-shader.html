@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Water Shader Test</title>
     <style>
       body {
@@ -18,6 +19,10 @@
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
+    
+        <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
     <script type="module" src="/src/tests/testWaterShader.ts"></script>
-  </body>
+    
+        </body>
 </html>
