@@ -22,6 +22,7 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
 import { PinManager } from '../managers/PinManager';
 import { PinUI } from '../ui/PinUI';
+import { GlobeStateManager } from '../state';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -44,6 +45,9 @@ export abstract class BaseGameController {
     protected globe!: EarthGlobe;
     protected options: BaseGameOptions;
 
+    // State management
+    protected stateManager: GlobeStateManager;
+
     // Modules
     protected pinManager!: PinManager;
     protected pinUI: PinUI | null = null;
@@ -58,6 +62,9 @@ export abstract class BaseGameController {
 
     constructor(canvasId: string = 'renderCanvas', options?: BaseGameOptions) {
         this.options = options || {};
+
+        // Initialize state manager
+        this.stateManager = new GlobeStateManager();
 
         // Get loading screen elements
         this.loadingProgress = document.getElementById('loadingProgress');
@@ -85,6 +92,18 @@ export abstract class BaseGameController {
 
                 // Let subclass set up game-specific modules
                 await this.onGlobeReady(globe);
+
+                // Set up state sync loop (runs once per frame before render)
+                let lastFrameTime = performance.now();
+                globe.getScene().onBeforeRenderObservable.add(() => {
+                    const now = performance.now();
+                    const deltaTime = now - lastFrameTime;
+                    lastFrameTime = now;
+                    this.stateManager.sync(globe, deltaTime);
+                });
+
+                // Expose state manager for debugging
+                (window as any).__globeState = this.stateManager;
 
                 this.updateLoadingProgress(90, 'Setting up UI...');
 
@@ -174,6 +193,18 @@ export abstract class BaseGameController {
      */
     getGlobe(): EarthGlobe {
         return this.globe;
+    }
+
+    // =========================================================================
+    // Public API - State Management
+    // =========================================================================
+
+    /**
+     * Get the centralized state manager.
+     * Use this to read/write globe state in a controlled manner.
+     */
+    getStateManager(): GlobeStateManager {
+        return this.stateManager;
     }
 
     // =========================================================================
