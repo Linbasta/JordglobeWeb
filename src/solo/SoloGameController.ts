@@ -1,200 +1,126 @@
 /**
  * Solo Game Controller
  *
- * Wraps the EarthGlobe core with solo game-specific features:
- * - Pin placement and management
+ * Extends BaseGameController with solo game-specific features:
  * - Country selection visual feedback
- * - Pin UI (button and bottom panel)
  * - Country label display
+ * - Keyboard shortcuts (Inspector, Water shader controls)
  */
 
-import { Scene } from '@babylonjs/core/scene';
-import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
-import { Engine } from '@babylonjs/core/Engines/engine';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { Material } from '@babylonjs/core/Materials/material';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
-import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture';
 
-import {
-    EarthGlobe,
-    CountryPicker,
-    COUNTRY_ALTITUDE
-} from '../earth-globe';
-import type { LatLon, CountryPolygon, CountryData } from '../earth-globe';
+import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 
+import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
 import { CountrySelectionBehavior } from '../shared/behaviors/CountrySelectionBehavior';
-import { PinManager } from '../shared/managers/PinManager';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
-import { PinUI } from '../shared/ui/PinUI';
 
-export interface SoloGameOptions {
+export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
     disableSelectionBehavior?: boolean;
     showCountryLabel?: boolean;
-    showPinUI?: boolean;  // Show pin button and bottom panel (default: true)
 }
 
 /**
  * Solo Game Controller
  *
- * This controller wraps the EarthGlobe core and adds solo game-specific features:
- * - PinManager for pin placement
+ * Extends BaseGameController with solo game-specific features:
  * - CountrySelectionBehavior for hover/click animations
- * - PinUI for pin button and bottom panel
  * - CountryLabelUI for displaying country names
  * - Inspector and debug shortcuts
  */
-export class SoloGameController {
-    private globe: EarthGlobe;
-    private options: SoloGameOptions;
-
-    // Modules
-    private pinManager!: PinManager;
+export class SoloGameController extends BaseGameController {
+    // Solo-specific modules
     private selectionBehavior: CountrySelectionBehavior | null = null;
     private countryLabelUI: CountryLabelUI | null = null;
-    private pinUI: PinUI | null = null;
 
-    // GUI elements
-    private advancedTexture: AdvancedDynamicTexture | null = null;
-
-    // Loading screen elements
-    private loadingProgress: HTMLElement | null;
-    private loadingText: HTMLElement | null;
-    private loadingScreen: HTMLElement | null;
-
-    // Callbacks
+    // Solo-specific callbacks
     private onCountrySelected: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private onCountryHovered: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private hoveredCountry: CountryPolygon | null = null;
 
     constructor(canvasId: string = 'renderCanvas', options?: SoloGameOptions) {
-        this.options = options || {};
-
-        // Get loading screen elements
-        this.loadingProgress = document.getElementById('loadingProgress');
-        this.loadingText = document.getElementById('loadingText');
-        this.loadingScreen = document.getElementById('loadingScreen');
-
-        this.updateLoadingProgress(5, 'Initializing scene...');
-
-        // Create the core globe
-        this.globe = new EarthGlobe({
-            canvasId,
-            onReady: async (globe) => {
-                this.updateLoadingProgress(75, 'Creating modules...');
-
-                // Create PinManager
-                this.pinManager = new PinManager(
-                    globe.getScene(),
-                    globe.getCamera(),
-                    globe.getCanvas(),
-                    globe.getCountryPicker(),
-                    globe.getEarthSphere(),
-                    (material) => globe.createUnlitMaterial(material)
-                );
-                await this.pinManager.init();
-
-                this.updateLoadingProgress(90, 'Setting up UI...');
-
-                // Create GUI
-                this.createGUI();
-
-                // Create country label UI (optional)
-                if (this.options?.showCountryLabel && this.advancedTexture) {
-                    this.countryLabelUI = new CountryLabelUI(this.advancedTexture);
-                    this.countryLabelUI.show('Sweden');
-                }
-
-                // Create selection behavior (unless disabled)
-                if (this.advancedTexture && !this.options.disableSelectionBehavior) {
-                    this.selectionBehavior = new CountrySelectionBehavior(
-                        globe.getScene(),
-                        this.advancedTexture,
-                        (countryIndex, altitude) => globe.setCountryAltitude(countryIndex, altitude),
-                        (countryIndex) => globe.getCountryAltitude(countryIndex),
-                        (countryIndex, saturation) => globe.setCountrySaturation(countryIndex, saturation),
-                        (countryIndex) => globe.getCountrySaturation(countryIndex)
-                    );
-
-                    // Wire PinManager to highlight countries
-                    this.pinManager.onCountryHover((country, latLon) => {
-                        this.selectionBehavior?.onCountrySelected(country, latLon);
-                    });
-                }
-
-                // Wire PinManager to hide/show pin button
-                this.pinManager.onPlacingModeChange((isPlacing) => {
-                    if (this.pinUI) {
-                        this.pinUI.setPinButtonVisible(!isPlacing);
-                    }
-                });
-
-                // Setup keyboard shortcuts
-                this.setupKeyboardShortcuts();
-
-                this.updateLoadingProgress(100, 'Complete!');
-
-                // Call ready callback
-                if (this.options.onReady) {
-                    this.options.onReady(this);
-                }
-
-                // Hide loading screen
-                setTimeout(() => this.hideLoadingScreen(), 300);
-            }
-        });
-
-        // Handle resize
-        window.addEventListener('resize', () => {
-            this.recreateGUI();
-        });
+        super(canvasId, options);
+        // Setup keyboard shortcuts
+        this.setupKeyboardShortcuts();
     }
 
     // =========================================================================
-    // Public API - Core Access
+    // BaseGameController Hooks
     // =========================================================================
 
-    /**
-     * Get the underlying EarthGlobe instance.
-     * Use this to access core globe functionality like:
-     * - getScene(), getCamera(), getEngine(), getCanvas()
-     * - getEarthSphere(), getCountryPicker()
-     * - Material creation, coordinate conversion, etc.
-     */
-    getGlobe(): EarthGlobe {
-        return this.globe;
+    protected async onGlobeReady(globe: EarthGlobeAPI): Promise<void> {
+        // Base class has already created PinManager at this point
+        // Now we create solo-specific modules
+    }
+
+    protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
+        // Delegate to user callback if set
+        if (this.onCountrySelected) {
+            this.onCountrySelected(country, latLon);
+        }
+    }
+
+    protected setupAdditionalUI(): void {
+        if (!this.advancedTexture) return;
+
+        // Create country label UI (optional)
+        if ((this.options as SoloGameOptions)?.showCountryLabel) {
+            this.countryLabelUI = new CountryLabelUI(this.advancedTexture);
+            this.countryLabelUI.show('Sweden');
+        }
+
+        // Create selection behavior (unless disabled)
+        if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
+            this.selectionBehavior = new CountrySelectionBehavior(
+                this.globe.getScene(),
+                this.advancedTexture,
+                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
+                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
+                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
+                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
+            );
+
+            // Wire PinManager to highlight countries
+            this.pinManager.onCountryHover((country, latLon) => {
+                this.selectionBehavior?.onCountrySelected(country, latLon);
+            });
+        }
+    }
+
+    protected recreateAdditionalUI(): void {
+        if (!this.advancedTexture) return;
+
+        // Recreate selection behavior
+        if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
+            this.selectionBehavior = new CountrySelectionBehavior(
+                this.globe.getScene(),
+                this.advancedTexture,
+                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
+                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
+                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
+                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
+            );
+            this.pinManager.onCountryHover((country, latLon) => {
+                this.selectionBehavior?.onCountrySelected(country, latLon);
+            });
+        }
+    }
+
+    protected disposeAdditionalUI(): void {
+        // Dispose old selection behavior
+        if (this.selectionBehavior) {
+            this.selectionBehavior.dispose();
+            this.selectionBehavior = null;
+        }
     }
 
     // =========================================================================
-    // Public API - Game-Specific Modules
+    // Public API - Solo-Specific Methods
     // =========================================================================
-
-    getPinManager(): PinManager {
-        return this.pinManager;
-    }
 
     getSelectionBehavior(): CountrySelectionBehavior | null {
         return this.selectionBehavior;
-    }
-
-    // =========================================================================
-    // Public API - Solo Game Specific Methods
-    // =========================================================================
-
-    /**
-     * Enhanced positionAtLatLon with game-specific altitude logic.
-     * Use this instead of globe.positionAtLatLon() for game features like pins.
-     *
-     * @param aboveCountry - If true, positions above country polygons (default: true)
-     */
-    positionAtLatLon(lat: number, lon: number, altitude?: number, aboveCountry: boolean = true): {
-        position: import('@babylonjs/core/Maths/math').Vector3;
-        normal: import('@babylonjs/core/Maths/math').Vector3;
-    } {
-        const defaultAltitude = aboveCountry ? COUNTRY_ALTITUDE + 0.01 : 0.01;
-        const finalAltitude = altitude !== undefined ? altitude : defaultAltitude;
-        return this.globe.positionAtLatLon(lat, lon, finalAltitude);
     }
 
     /**
@@ -215,82 +141,6 @@ export class SoloGameController {
 
     setCountryHoveredCallback(callback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null): void {
         this.onCountryHovered = callback;
-    }
-
-    // =========================================================================
-    // Private - Loading Screen
-    // =========================================================================
-
-    private updateLoadingProgress(percent: number, text: string): void {
-        if (this.loadingProgress) {
-            this.loadingProgress.style.width = `${percent}%`;
-        }
-        if (this.loadingText) {
-            this.loadingText.textContent = text;
-        }
-    }
-
-    private hideLoadingScreen(): void {
-        if (this.loadingScreen) {
-            this.loadingScreen.classList.add('hidden');
-        }
-    }
-
-    // =========================================================================
-    // Private - GUI
-    // =========================================================================
-
-    private createGUI(): void {
-        this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.globe.getScene());
-        this.advancedTexture.background = "";
-
-        // Conditionally create pin UI
-        if (this.options.showPinUI !== false) {
-            this.pinUI = new PinUI(this.advancedTexture);
-            this.pinUI.create({
-                onPinButtonPress: () => {
-                    this.pinManager.enterPlacingMode();
-                }
-            });
-        }
-    }
-
-    private recreateGUI(): void {
-        // Dispose old selection behavior
-        if (this.selectionBehavior) {
-            this.selectionBehavior.dispose();
-            this.selectionBehavior = null;
-        }
-
-        // Dispose old PinUI
-        if (this.pinUI) {
-            this.pinUI.dispose();
-            this.pinUI = null;
-        }
-
-        // Dispose old GUI
-        if (this.advancedTexture) {
-            this.advancedTexture.dispose();
-            this.advancedTexture = null;
-        }
-
-        // Recreate GUI
-        this.createGUI();
-
-        // Recreate selection behavior
-        if (this.advancedTexture && !this.options.disableSelectionBehavior) {
-            this.selectionBehavior = new CountrySelectionBehavior(
-                this.globe.getScene(),
-                this.advancedTexture,
-                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
-                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
-                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
-                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
-            );
-            this.pinManager.onCountryHover((country, latLon) => {
-                this.selectionBehavior?.onCountrySelected(country, latLon);
-            });
-        }
     }
 
     // =========================================================================

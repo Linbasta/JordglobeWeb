@@ -3,6 +3,10 @@
  * Central export point for all shared components used by solo and party applications
  */
 
+// Controllers
+export { BaseGameController } from './controllers/BaseGameController';
+export type { BaseGameOptions } from './controllers/BaseGameController';
+
 // Managers
 export { PinManager } from './managers/PinManager';
 export { MultiPinManager } from './managers/MultiPinManager';
