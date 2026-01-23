@@ -28,7 +28,7 @@
  */
 
 // Main class
-export { EarthGlobe } from './EarthGlobe';
+export { EarthGlobe, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './EarthGlobe';
 
 // Types
 export type {

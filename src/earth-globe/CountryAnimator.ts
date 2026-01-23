@@ -1,10 +1,12 @@
 /**
  * Earth Globe Module - Country Animator
  *
- * Handles animated transitions for country altitude and saturation values.
+ * Handles animated transitions for country altitude and blend values.
  */
 
-import { AnimationTexture } from './AnimationTexture';
+import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './AnimationTexture';
+
+export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 
 interface AnimationState {
     startValue: number;
@@ -23,8 +25,8 @@ export class CountryAnimator {
     /** Active altitude animations by country index */
     private altitudeAnimations: Map<number, AnimationState> = new Map();
 
-    /** Active saturation animations by country index */
-    private saturationAnimations: Map<number, AnimationState> = new Map();
+    /** Active blend factor animations by country index */
+    private blendAnimations: Map<number, AnimationState> = new Map();
 
     /** Segment animation index mappings (segment -> country indices) */
     private segmentCountryMap: Map<number, number[]> = new Map();
@@ -70,30 +72,30 @@ export class CountryAnimator {
     }
 
     /**
-     * Animate a country's saturation from current value to target
+     * Animate a country's blend factor from current value to target
      * @param countryIndex Country index
-     * @param targetSaturation Target saturation (0-1)
+     * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
      * @param durationMs Animation duration in milliseconds
      * @returns Promise that resolves when animation completes
      */
-    animateSaturation(countryIndex: number, targetSaturation: number, durationMs: number): Promise<void> {
+    animateBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void> {
         return new Promise((resolve) => {
             // Cancel any existing animation for this country
-            const existing = this.saturationAnimations.get(countryIndex);
+            const existing = this.blendAnimations.get(countryIndex);
             if (existing) {
                 existing.resolve();
             }
 
-            const startValue = this.animationTexture.getSaturation(countryIndex);
+            const startValue = this.animationTexture.getBlend(countryIndex);
             const animation: AnimationState = {
                 startValue,
-                endValue: targetSaturation,
+                endValue: targetBlend,
                 startTime: performance.now(),
                 duration: durationMs,
                 resolve
             };
 
-            this.saturationAnimations.set(countryIndex, animation);
+            this.blendAnimations.set(countryIndex, animation);
         });
     }
 
@@ -119,24 +121,38 @@ export class CountryAnimator {
     }
 
     /**
-     * Set immediate saturation value (no animation)
+     * Set immediate state value (no animation)
      */
-    setSaturation(countryIndex: number, saturation: number): void {
-        // Cancel any active animation
-        const existing = this.saturationAnimations.get(countryIndex);
-        if (existing) {
-            existing.resolve();
-            this.saturationAnimations.delete(countryIndex);
-        }
-
-        this.animationTexture.setSaturation(countryIndex, saturation);
+    setState(countryIndex: number, state: number): void {
+        this.animationTexture.setState(countryIndex, state);
     }
 
     /**
-     * Get current saturation value
+     * Get current state value
      */
-    getSaturation(countryIndex: number): number {
-        return this.animationTexture.getSaturation(countryIndex);
+    getState(countryIndex: number): number {
+        return this.animationTexture.getState(countryIndex);
+    }
+
+    /**
+     * Set immediate blend value (no animation)
+     */
+    setBlend(countryIndex: number, blend: number): void {
+        // Cancel any active animation
+        const existing = this.blendAnimations.get(countryIndex);
+        if (existing) {
+            existing.resolve();
+            this.blendAnimations.delete(countryIndex);
+        }
+
+        this.animationTexture.setBlend(countryIndex, blend);
+    }
+
+    /**
+     * Get current blend value
+     */
+    getBlend(countryIndex: number): number {
+        return this.animationTexture.getBlend(countryIndex);
     }
 
     /**
@@ -165,8 +181,8 @@ export class CountryAnimator {
             }
         }
 
-        // Process saturation animations
-        for (const [countryIndex, anim] of this.saturationAnimations) {
+        // Process blend animations
+        for (const [countryIndex, anim] of this.blendAnimations) {
             const elapsed = now - anim.startTime;
             const progress = Math.min(1, elapsed / anim.duration);
 
@@ -174,12 +190,12 @@ export class CountryAnimator {
             const eased = 1 - Math.pow(1 - progress, 3);
             const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
-            this.animationTexture.setSaturation(countryIndex, value);
+            this.animationTexture.setBlend(countryIndex, value);
             needsUpdate = true;
 
             if (progress >= 1) {
                 anim.resolve();
-                this.saturationAnimations.delete(countryIndex);
+                this.blendAnimations.delete(countryIndex);
             }
         }
 
@@ -203,7 +219,7 @@ export class CountryAnimator {
      * Check if any animations are currently active
      */
     hasActiveAnimations(): boolean {
-        return this.altitudeAnimations.size > 0 || this.saturationAnimations.size > 0;
+        return this.altitudeAnimations.size > 0 || this.blendAnimations.size > 0;
     }
 
     /**
@@ -215,10 +231,10 @@ export class CountryAnimator {
         }
         this.altitudeAnimations.clear();
 
-        for (const anim of this.saturationAnimations.values()) {
+        for (const anim of this.blendAnimations.values()) {
             anim.resolve();
         }
-        this.saturationAnimations.clear();
+        this.blendAnimations.clear();
     }
 
     /**

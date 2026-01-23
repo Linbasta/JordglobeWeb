@@ -224,15 +224,19 @@ export interface EarthGlobeAPI {
     getCountryByIndex(index: number): CountryData | undefined;
     getAltitudeAtLatLon(lat: number, lon: number): number;
 
-    // Animation control
+    // Animation control - Altitude
     setCountryAltitude(countryIndex: number, altitude: number): void;
     getCountryAltitude(countryIndex: number): number;
-    setCountrySaturation(countryIndex: number, saturation: number): void;
-    getCountrySaturation(countryIndex: number): number;
-
-    // Animated changes
     animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number): Promise<void>;
-    animateCountrySaturation(countryIndex: number, targetSaturation: number, durationMs: number): Promise<void>;
+
+    // Animation control - State (STATE_NORMAL, STATE_DISABLED, STATE_CLEARED)
+    setCountryState(countryIndex: number, state: number): void;
+    getCountryState(countryIndex: number): number;
+
+    // Animation control - Blend (0 = full state effect, 1 = normal appearance)
+    setCountryBlend(countryIndex: number, blend: number): void;
+    getCountryBlend(countryIndex: number): number;
+    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void>;
 
     // Event callbacks
     onCountryHover(callback: (event: CountryHoverEvent) => void): void;

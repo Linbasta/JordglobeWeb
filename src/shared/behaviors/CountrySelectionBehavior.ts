@@ -15,6 +15,7 @@ import { Control } from '@babylonjs/gui/2D/controls/control';
 import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle';
 import { TextBlock } from '@babylonjs/gui/2D/controls/textBlock';
 import type { CountryPolygon, LatLon } from '../../earth-globe';
+import { STATE_CLEARED } from '../../earth-globe';
 
 export interface SelectionBehaviorOptions {
     /** Default altitude for countries (0-1, default: 0.4 which equals 0.08 actual altitude) */
@@ -49,11 +50,17 @@ export type SetAltitudeCallback = (countryIndex: number, altitude: number) => vo
 /** Callback type for getting country altitude */
 export type GetAltitudeCallback = (countryIndex: number) => number;
 
-/** Callback type for setting country saturation */
-export type SetSaturationCallback = (countryIndex: number, saturation: number) => void;
+/** Callback type for setting country state */
+export type SetStateCallback = (countryIndex: number, state: number) => void;
 
-/** Callback type for getting country saturation */
-export type GetSaturationCallback = (countryIndex: number) => number;
+/** Callback type for getting country state */
+export type GetStateCallback = (countryIndex: number) => number;
+
+/** Callback type for setting country blend factor */
+export type SetBlendCallback = (countryIndex: number, blend: number) => void;
+
+/** Callback type for getting country blend factor */
+export type GetBlendCallback = (countryIndex: number) => number;
 
 // Max countries we can animate (matches MAX_ANIMATION_COUNTRIES in main.ts)
 const MAX_ANIMATED = 256;
@@ -67,8 +74,10 @@ export class CountrySelectionBehavior {
     private options: Required<SelectionBehaviorOptions>;
     private setAltitude: SetAltitudeCallback;
     private getAltitude: GetAltitudeCallback;
-    private setSaturation: SetSaturationCallback;
-    private getSaturation: GetSaturationCallback;
+    private setState: SetStateCallback;
+    private getState: GetStateCallback;
+    private setBlend: SetBlendCallback;
+    private getBlend: GetBlendCallback;
 
     private selectedCountry: CountryPolygon | null = null;
     private countryLabel: TextBlock | null = null;
@@ -79,9 +88,9 @@ export class CountrySelectionBehavior {
     private animAltitudeTargets: Float32Array;    // Target altitude for each country (-1 = no animation)
     private animAltitudeStartValues: Float32Array; // Start altitude when animation began
     private animAltitudeStartTimes: Float32Array;  // Start time (ms) for each animation
-    private animSaturationTargets: Float32Array;    // Target saturation for each country (-1 = no animation)
-    private animSaturationStartValues: Float32Array; // Start saturation when animation began
-    private animSaturationStartTimes: Float32Array;  // Start time (ms) for each animation
+    private animBlendTargets: Float32Array;    // Target blend for each country (-1 = no animation)
+    private animBlendStartValues: Float32Array; // Start blend when animation began
+    private animBlendStartTimes: Float32Array;  // Start time (ms) for each animation
     private animCount: number = 0;         // Number of active animations
 
     constructor(
@@ -89,16 +98,20 @@ export class CountrySelectionBehavior {
         advancedTexture: AdvancedDynamicTexture,
         setAltitude: SetAltitudeCallback,
         getAltitude: GetAltitudeCallback,
-        setSaturation: SetSaturationCallback,
-        getSaturation: GetSaturationCallback,
+        setState: SetStateCallback,
+        getState: GetStateCallback,
+        setBlend: SetBlendCallback,
+        getBlend: GetBlendCallback,
         options: SelectionBehaviorOptions = {}
     ) {
         this.scene = scene;
         this.advancedTexture = advancedTexture;
         this.setAltitude = setAltitude;
         this.getAltitude = getAltitude;
-        this.setSaturation = setSaturation;
-        this.getSaturation = getSaturation;
+        this.setState = setState;
+        this.getState = getState;
+        this.setBlend = setBlend;
+        this.getBlend = getBlend;
         this.options = { ...DEFAULT_OPTIONS, ...options };
 
         // Pre-allocate animation arrays for altitude
@@ -107,11 +120,11 @@ export class CountrySelectionBehavior {
         this.animAltitudeStartTimes = new Float32Array(MAX_ANIMATED);
         this.animAltitudeTargets.fill(-1);  // -1 = no animation
 
-        // Pre-allocate animation arrays for saturation
-        this.animSaturationTargets = new Float32Array(MAX_ANIMATED);
-        this.animSaturationStartValues = new Float32Array(MAX_ANIMATED);
-        this.animSaturationStartTimes = new Float32Array(MAX_ANIMATED);
-        this.animSaturationTargets.fill(-1);  // -1 = no animation
+        // Pre-allocate animation arrays for blend
+        this.animBlendTargets = new Float32Array(MAX_ANIMATED);
+        this.animBlendStartValues = new Float32Array(MAX_ANIMATED);
+        this.animBlendStartTimes = new Float32Array(MAX_ANIMATED);
+        this.animBlendTargets.fill(-1);  // -1 = no animation
 
         this.createLabel();
     }
@@ -292,19 +305,19 @@ export class CountrySelectionBehavior {
                     }
                 }
 
-                // Animate saturation
-                const saturationTarget = this.animSaturationTargets[i];
-                if (saturationTarget >= 0) {  // Has active animation
-                    const elapsed = now - this.animSaturationStartTimes[i];
+                // Animate blend
+                const blendTarget = this.animBlendTargets[i];
+                if (blendTarget >= 0) {  // Has active animation
+                    const elapsed = now - this.animBlendStartTimes[i];
                     const progress = Math.min(elapsed / duration, 1);
                     const eased = 1 - Math.pow(1 - progress, 3);  // Ease out cubic
 
-                    const startValue = this.animSaturationStartValues[i];
-                    const currentValue = startValue + (saturationTarget - startValue) * eased;
-                    this.setSaturation(i, currentValue);
+                    const startValue = this.animBlendStartValues[i];
+                    const currentValue = startValue + (blendTarget - startValue) * eased;
+                    this.setBlend(i, currentValue);
 
                     if (progress >= 1) {
-                        this.animSaturationTargets[i] = -1;  // Clear animation
+                        this.animBlendTargets[i] = -1;  // Clear animation
                         this.animCount--;
                     }
                 }
@@ -327,41 +340,41 @@ export class CountrySelectionBehavior {
 
     private stopAllAnimations(): void {
         this.animAltitudeTargets.fill(-1);
-        this.animSaturationTargets.fill(-1);
+        this.animBlendTargets.fill(-1);
         this.animCount = 0;
         this.stopAnimationLoop();
     }
 
     /**
-     * Animate saturation for a country
+     * Animate blend factor for a country
      * @param countryIndex The country index
-     * @param targetValue Target saturation value (0-1)
+     * @param targetValue Target blend value (0 = full state effect, 1 = normal appearance)
      * @param animate Whether to animate (true) or jump immediately (false)
      */
-    private animateSaturation(countryIndex: number, targetValue: number, animate: boolean = true): void {
+    private animateBlend(countryIndex: number, targetValue: number, animate: boolean = true): void {
         if (countryIndex < 0 || countryIndex >= MAX_ANIMATED) return;
 
         // Immediate jump - no animation
         if (!animate) {
             // Clear any pending animation for this country
-            if (this.animSaturationTargets[countryIndex] >= 0) {
-                this.animSaturationTargets[countryIndex] = -1;
+            if (this.animBlendTargets[countryIndex] >= 0) {
+                this.animBlendTargets[countryIndex] = -1;
                 this.animCount--;
             }
-            this.setSaturation(countryIndex, targetValue);
+            this.setBlend(countryIndex, targetValue);
             return;
         }
 
-        // Get current saturation as start value (handles interrupting ongoing animations)
-        const currentSaturation = this.getSaturation(countryIndex);
+        // Get current blend as start value (handles interrupting ongoing animations)
+        const currentBlend = this.getBlend(countryIndex);
 
         // Check if this is a new animation
-        const isNew = this.animSaturationTargets[countryIndex] < 0;
+        const isNew = this.animBlendTargets[countryIndex] < 0;
 
         // Set animation state in pre-allocated arrays
-        this.animSaturationTargets[countryIndex] = targetValue;
-        this.animSaturationStartValues[countryIndex] = currentSaturation;
-        this.animSaturationStartTimes[countryIndex] = performance.now();
+        this.animBlendTargets[countryIndex] = targetValue;
+        this.animBlendStartValues[countryIndex] = currentBlend;
+        this.animBlendStartTimes[countryIndex] = performance.now();
 
         if (isNew) {
             this.animCount++;
@@ -376,9 +389,11 @@ export class CountrySelectionBehavior {
      * @param countryIndex The country index
      */
     public animateToCleared(countryIndex: number): void {
+        // Set state to CLEARED (this controls the visual appearance when blend is 0)
+        this.setState(countryIndex, STATE_CLEARED);
         // Animate altitude from current (0.5 when hovered) to cleared altitude (slightly above surface)
         this.animateAltitude(countryIndex, this.options.clearedAltitude, true);
-        // Animate saturation from current (1.0 = colored) to 0 (grey)
-        this.animateSaturation(countryIndex, 0, true);
+        // Animate blend from 1.0 (normal appearance) to 0.0 (full state effect = grey)
+        this.animateBlend(countryIndex, 0, true);
     }
 }

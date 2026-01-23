@@ -77,8 +77,10 @@ export class SoloGameController extends BaseGameController {
                 this.advancedTexture,
                 (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
                 (countryIndex) => this.globe.getCountryAltitude(countryIndex),
-                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
-                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
+                (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
+                (countryIndex) => this.globe.getCountryState(countryIndex),
+                (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
+                (countryIndex) => this.globe.getCountryBlend(countryIndex)
             );
 
             // Wire PinManager to highlight countries
@@ -98,8 +100,10 @@ export class SoloGameController extends BaseGameController {
                 this.advancedTexture,
                 (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
                 (countryIndex) => this.globe.getCountryAltitude(countryIndex),
-                (countryIndex, saturation) => this.globe.setCountrySaturation(countryIndex, saturation),
-                (countryIndex) => this.globe.getCountrySaturation(countryIndex)
+                (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
+                (countryIndex) => this.globe.getCountryState(countryIndex),
+                (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
+                (countryIndex) => this.globe.getCountryBlend(countryIndex)
             );
             this.pinManager.onCountryHover((country, latLon) => {
                 this.selectionBehavior?.onCountrySelected(country, latLon);

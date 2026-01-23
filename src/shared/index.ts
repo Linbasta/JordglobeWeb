@@ -25,7 +25,7 @@ export type { PinRecording, RecordedPosition } from './animation/PinRecorder';
 
 // Behaviors
 export { CountrySelectionBehavior } from './behaviors/CountrySelectionBehavior';
-export type { SelectionBehaviorOptions, SetAltitudeCallback, GetAltitudeCallback, SetSaturationCallback, GetSaturationCallback } from './behaviors/CountrySelectionBehavior';
+export type { SelectionBehaviorOptions, SetAltitudeCallback, GetAltitudeCallback, SetStateCallback, GetStateCallback, SetBlendCallback, GetBlendCallback } from './behaviors/CountrySelectionBehavior';
 
 // UI
 export { CountryLabelUI } from './ui/CountryLabelUI';

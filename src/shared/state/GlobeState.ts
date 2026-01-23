@@ -36,7 +36,7 @@ export interface Animation<T> {
  */
 export interface CountryAnimationState {
     altitude: Animation<number> | null;
-    saturation: Animation<number> | null;
+    blend: Animation<number> | null;
 }
 
 // ============================================================================
@@ -373,30 +373,30 @@ export class GlobeState {
     }
 
     /**
-     * Start a saturation animation for a country
+     * Start a blend animation for a country
      */
-    animateCountrySaturation(
+    animateCountryBlend(
         countryIndex: number,
-        targetSaturation: number,
+        targetBlend: number,
         duration: number = DEFAULT_ANIMATION_DURATION
     ): void {
         const now = performance.now();
-        const currentSaturation = this.getCountryAnimationCurrentSaturation(countryIndex);
+        const currentBlend = this.getCountryAnimationCurrentBlend(countryIndex);
 
         const animation: Animation<number> = {
-            startValue: currentSaturation,
-            endValue: targetSaturation,
+            startValue: currentBlend,
+            endValue: targetBlend,
             startTime: now,
             duration,
             progress: 0,
-            currentValue: currentSaturation
+            currentValue: currentBlend
         };
 
         this.ensureCountryAnimationState(countryIndex);
         const countryState = this.countryAnimations.get(countryIndex)!;
-        countryState.saturation = animation;
+        countryState.blend = animation;
 
-        this.logChange(`countryAnimations[${countryIndex}].saturation`, null, animation);
+        this.logChange(`countryAnimations[${countryIndex}].blend`, null, animation);
         this.dirty.add('countryAnimations');
     }
 
@@ -524,7 +524,7 @@ export class GlobeState {
         if (!this.countryAnimations.has(countryIndex)) {
             this.countryAnimations.set(countryIndex, {
                 altitude: null,
-                saturation: null
+                blend: null
             });
         }
     }
@@ -537,16 +537,16 @@ export class GlobeState {
         return DEFAULT_ALTITUDE;
     }
 
-    private getCountryAnimationCurrentSaturation(countryIndex: number): number {
-        const anim = this.countryAnimations.get(countryIndex)?.saturation;
+    private getCountryAnimationCurrentBlend(countryIndex: number): number {
+        const anim = this.countryAnimations.get(countryIndex)?.blend;
         if (anim) {
             return anim.currentValue;
         }
-        return 1.0; // Default saturation
+        return 1.0; // Default blend (normal appearance)
     }
 
     private updateAnimations(globe: any, now: number): void {
-        const completedAnimations: { countryIndex: number; type: 'altitude' | 'saturation' }[] = [];
+        const completedAnimations: { countryIndex: number; type: 'altitude' | 'blend' }[] = [];
 
         for (const [countryIndex, animState] of this.countryAnimations) {
             // Update altitude animation
@@ -569,9 +569,9 @@ export class GlobeState {
                 }
             }
 
-            // Update saturation animation
-            if (animState.saturation) {
-                const anim = animState.saturation;
+            // Update blend animation
+            if (animState.blend) {
+                const anim = animState.blend;
                 const elapsed = now - anim.startTime;
                 const progress = Math.min(1, elapsed / anim.duration);
 
@@ -581,11 +581,11 @@ export class GlobeState {
                 anim.currentValue = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
                 // Apply to globe
-                globe.setCountrySaturation(countryIndex, anim.currentValue);
+                globe.setCountryBlend(countryIndex, anim.currentValue);
 
                 // Mark as completed
                 if (progress >= 1) {
-                    completedAnimations.push({ countryIndex, type: 'saturation' });
+                    completedAnimations.push({ countryIndex, type: 'blend' });
                 }
             }
         }
@@ -597,11 +597,11 @@ export class GlobeState {
                 if (type === 'altitude') {
                     animState.altitude = null;
                 } else {
-                    animState.saturation = null;
+                    animState.blend = null;
                 }
 
                 // Remove entry if no more animations
-                if (!animState.altitude && !animState.saturation) {
+                if (!animState.altitude && !animState.blend) {
                     this.countryAnimations.delete(countryIndex);
                 }
             }

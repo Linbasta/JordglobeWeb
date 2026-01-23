@@ -4,8 +4,15 @@
  * Manages the dynamic texture that stores per-country animation data.
  * The texture is a 1D texture (width x 1) where each pixel stores:
  * - R channel: altitude animation value (0-1)
- * - G channel: saturation value (0 = grayscale, 1 = full color)
+ * - G channel: state enum (0.00=Normal, 0.25=Disabled, 0.50=Cleared)
+ * - B channel: blend factor (0.0=full state effect, 1.0=normal appearance)
+ * - A channel: reserved (255)
  */
+
+// State constants for G channel encoding
+export const STATE_NORMAL = 0.0;
+export const STATE_DISABLED = 0.25;
+export const STATE_CLEARED = 0.50;
 
 import { Scene } from '@babylonjs/core/scene';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
@@ -23,8 +30,11 @@ export class AnimationTexture {
     /** Animation/altitude values for each country (index 0 to countryCount-1) */
     private altitudeData: Float32Array;
 
-    /** Saturation values for each country (1.0 = colored, 0.0 = grayscale) */
-    private saturationData: Float32Array;
+    /** State values for each country (STATE_NORMAL, STATE_DISABLED, STATE_CLEARED) */
+    private stateData: Float32Array;
+
+    /** Blend factor for each country (0.0 = full state effect, 1.0 = normal appearance) */
+    private blendData: Float32Array;
 
     /** Number of entries used in the texture */
     private entriesUsed: number = 0;
@@ -50,8 +60,11 @@ export class AnimationTexture {
 
         // Initialize data arrays
         this.altitudeData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
-        this.saturationData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
-        this.saturationData.fill(1.0); // Default to full saturation
+        this.stateData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
+        this.blendData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
+        // Default: STATE_NORMAL (0.0), blend = 1.0 (normal appearance)
+        this.stateData.fill(STATE_NORMAL);
+        this.blendData.fill(1.0);
     }
 
     /**
@@ -91,22 +104,43 @@ export class AnimationTexture {
     }
 
     /**
-     * Set saturation value for an index
+     * Set state value for an index
      * @param index Country index
-     * @param saturation Value between 0 (grayscale) and 1 (full color)
+     * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
      */
-    setSaturation(index: number, saturation: number): void {
+    setState(index: number, state: number): void {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            this.saturationData[index] = Math.max(0, Math.min(1, saturation));
+            this.stateData[index] = Math.max(0, Math.min(1, state));
         }
     }
 
     /**
-     * Get saturation value for an index
+     * Get state value for an index
      */
-    getSaturation(index: number): number {
+    getState(index: number): number {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            return this.saturationData[index];
+            return this.stateData[index];
+        }
+        return STATE_NORMAL;
+    }
+
+    /**
+     * Set blend factor for an index
+     * @param index Country index
+     * @param blend Value between 0 (full state effect) and 1 (normal appearance)
+     */
+    setBlend(index: number, blend: number): void {
+        if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
+            this.blendData[index] = Math.max(0, Math.min(1, blend));
+        }
+    }
+
+    /**
+     * Get blend factor for an index
+     */
+    getBlend(index: number): number {
+        if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
+            return this.blendData[index];
         }
         return 1.0;
     }
@@ -120,24 +154,33 @@ export class AnimationTexture {
     }
 
     /**
-     * Get direct access to saturation data array
+     * Get direct access to state data array
      * Use with care - call update() after modifications
      */
-    getSaturationData(): Float32Array {
-        return this.saturationData;
+    getStateData(): Float32Array {
+        return this.stateData;
+    }
+
+    /**
+     * Get direct access to blend data array
+     * Use with care - call update() after modifications
+     */
+    getBlendData(): Float32Array {
+        return this.blendData;
     }
 
     /**
      * Update the GPU texture from the data arrays
-     * Call this after modifying altitude or saturation values
+     * Call this after modifying altitude, state, or blend values
      */
     update(): void {
         // Update buffer from data arrays
         for (let i = 0; i < this.entriesUsed; i++) {
             const pixelIndex = i * 4;
             this.buffer[pixelIndex] = this.altitudeData[i] * 255;     // R = altitude
-            this.buffer[pixelIndex + 1] = this.saturationData[i] * 255; // G = saturation
-            // B already 0, A already 255
+            this.buffer[pixelIndex + 1] = this.stateData[i] * 255;    // G = state
+            this.buffer[pixelIndex + 2] = this.blendData[i] * 255;    // B = blend
+            // A already 255
         }
 
         // Update texture from buffer
@@ -153,7 +196,8 @@ export class AnimationTexture {
      */
     reset(): void {
         this.altitudeData.fill(0);
-        this.saturationData.fill(1.0);
+        this.stateData.fill(STATE_NORMAL);
+        this.blendData.fill(1.0);
         this.update();
     }
 
@@ -165,10 +209,17 @@ export class AnimationTexture {
     }
 
     /**
-     * Set all saturations to a specific value
+     * Set all states to a specific value
      */
-    setAllSaturations(value: number): void {
-        this.saturationData.fill(Math.max(0, Math.min(1, value)));
+    setAllStates(state: number): void {
+        this.stateData.fill(Math.max(0, Math.min(1, state)));
+    }
+
+    /**
+     * Set all blend factors to a specific value
+     */
+    setAllBlends(blend: number): void {
+        this.blendData.fill(Math.max(0, Math.min(1, blend)));
     }
 
     /**

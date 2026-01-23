@@ -39,8 +39,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 advancedTexture,
                 (countryIndex, altitude) => globeInstance.setCountryAltitude(countryIndex, altitude),
                 (countryIndex) => globeInstance.getCountryAltitude(countryIndex),
-                (countryIndex, saturation) => globeInstance.setCountrySaturation(countryIndex, saturation),
-                (countryIndex) => globeInstance.getCountrySaturation(countryIndex)
+                (countryIndex, state) => globeInstance.setCountryState(countryIndex, state),
+                (countryIndex) => globeInstance.getCountryState(countryIndex),
+                (countryIndex, blend) => globeInstance.setCountryBlend(countryIndex, blend),
+                (countryIndex) => globeInstance.getCountryBlend(countryIndex)
             );
 
             // Create and start game (host-specific logic)

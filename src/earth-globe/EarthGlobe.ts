@@ -44,8 +44,10 @@ import { GlobeSphere } from './GlobeSphere';
 import { CountryRenderer } from './CountryRenderer';
 import { BorderRenderer } from './BorderRenderer';
 import { Skybox } from './Skybox';
-import { AnimationTexture } from './AnimationTexture';
+import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './AnimationTexture';
 import { CountryAnimator } from './CountryAnimator';
+
+export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './ShaderFactory';
 
 import type {
@@ -419,20 +421,37 @@ export class EarthGlobe {
     }
 
     /**
-     * Set the saturation value for a country (instant)
+     * Set the state value for a country (instant)
      * @param countryIndex Country index
-     * @param saturation Value between 0 (grayscale) and 1 (full color)
+     * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
      */
-    setCountrySaturation(countryIndex: number, saturation: number): void {
-        this.countryAnimator.setSaturation(countryIndex, saturation);
+    setCountryState(countryIndex: number, state: number): void {
+        this.countryAnimator.setState(countryIndex, state);
         this.animationTexture.update();
     }
 
     /**
-     * Get the current saturation value for a country
+     * Get the current state value for a country
      */
-    getCountrySaturation(countryIndex: number): number {
-        return this.countryAnimator.getSaturation(countryIndex);
+    getCountryState(countryIndex: number): number {
+        return this.countryAnimator.getState(countryIndex);
+    }
+
+    /**
+     * Set the blend factor for a country (instant)
+     * @param countryIndex Country index
+     * @param blend Value between 0 (full state effect) and 1 (normal appearance)
+     */
+    setCountryBlend(countryIndex: number, blend: number): void {
+        this.countryAnimator.setBlend(countryIndex, blend);
+        this.animationTexture.update();
+    }
+
+    /**
+     * Get the current blend factor for a country
+     */
+    getCountryBlend(countryIndex: number): number {
+        return this.countryAnimator.getBlend(countryIndex);
     }
 
     /**
@@ -446,13 +465,13 @@ export class EarthGlobe {
     }
 
     /**
-     * Animate a country's saturation over time
+     * Animate a country's blend factor over time
      * @param countryIndex Country index
-     * @param targetSaturation Target saturation (0-1)
+     * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
      * @param durationMs Animation duration in milliseconds
      */
-    animateCountrySaturation(countryIndex: number, targetSaturation: number, durationMs: number): Promise<void> {
-        return this.countryAnimator.animateSaturation(countryIndex, targetSaturation, durationMs);
+    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void> {
+        return this.countryAnimator.animateBlend(countryIndex, targetBlend, durationMs);
     }
 
     // =========================================================================
