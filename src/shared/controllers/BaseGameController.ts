@@ -22,7 +22,7 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
 import { PinManager } from '../managers/PinManager';
 import { PinUI } from '../ui/PinUI';
-import { GlobeStateManager } from '../state';
+import { GlobeState } from '../state';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -46,7 +46,7 @@ export abstract class BaseGameController {
     protected options: BaseGameOptions;
 
     // State management
-    protected stateManager: GlobeStateManager;
+    protected stateManager: GlobeState;
 
     // Modules
     protected pinManager!: PinManager;
@@ -64,7 +64,7 @@ export abstract class BaseGameController {
         this.options = options || {};
 
         // Initialize state manager
-        this.stateManager = new GlobeStateManager();
+        this.stateManager = new GlobeState();
 
         // Get loading screen elements
         this.loadingProgress = document.getElementById('loadingProgress');
@@ -203,7 +203,7 @@ export abstract class BaseGameController {
      * Get the centralized state manager.
      * Use this to read/write globe state in a controlled manner.
      */
-    getStateManager(): GlobeStateManager {
+    getStateManager(): GlobeState {
         return this.stateManager;
     }
 

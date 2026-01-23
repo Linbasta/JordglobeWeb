@@ -5,4 +5,3 @@
  */
 
 export * from './GlobeState';
-export * from './GlobeStateManager';
