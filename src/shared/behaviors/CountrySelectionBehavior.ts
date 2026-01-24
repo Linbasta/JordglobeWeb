@@ -3,8 +3,8 @@
  *
  * Handles visual feedback when a country is selected:
  * - Increases selected country's altitude (extrusion)
- * - Shows country name label
- * - On deselection: resets altitude and hides label
+ * - On deselection: resets altitude
+ * - Label display is now handled separately by CountryLabelUI
  */
 
 import { Scene } from '@babylonjs/core/scene';
@@ -15,7 +15,7 @@ import { Control } from '@babylonjs/gui/2D/controls/control';
 import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle';
 import { TextBlock } from '@babylonjs/gui/2D/controls/textBlock';
 import type { CountryPolygon, LatLon } from '../../earth-globe';
-import { STATE_CLEARED } from '../../earth-globe';
+import { STATE_CLEARED, STATE_DISABLED } from '../../earth-globe';
 
 export interface SelectionBehaviorOptions {
     /** Default altitude for countries (0-1, default: 0.4 which equals 0.08 actual altitude) */
@@ -141,8 +141,6 @@ export class CountrySelectionBehavior {
 
         if (country) {
             this.selectCountry(country, latLon);
-        } else {
-            this.hideLabel();
         }
     }
 
@@ -154,7 +152,6 @@ export class CountrySelectionBehavior {
             this.deselectCountry(this.selectedCountry);
             this.selectedCountry = null;
         }
-        this.hideLabel();
     }
 
     /**
@@ -165,12 +162,11 @@ export class CountrySelectionBehavior {
     }
 
     /**
-     * Clear selection state (hide label and clear reference) without resetting altitude
+     * Clear selection state (clear reference) without resetting altitude
      * Used when transitioning to cleared animation
      */
     public clearSelectionState(): void {
         this.selectedCountry = null;
-        this.hideLabel();
     }
 
     /**
@@ -221,13 +217,15 @@ export class CountrySelectionBehavior {
     }
 
     private selectCountry(country: CountryPolygon, latLon: LatLon): void {
+        // Check if country is disabled - if so, don't select it
+        const countryState = this.getState(country.countryIndex);
+        if (countryState === STATE_DISABLED) {
+            return;
+        }
+
         this.selectedCountry = country;
 
-        // Show and update label
-        if (this.countryLabel && this.labelContainer) {
-            this.countryLabel.text = country.name;
-            this.labelContainer.isVisible = true;
-        }
+        // Legacy label feature removed - label is now only controlled by CountryLabelUI
 
         // Set altitude immediately (no animation for hover feedback)
         this.animateAltitude(country.countryIndex, this.options.selectedAltitude, false);

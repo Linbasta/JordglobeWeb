@@ -110,4 +110,42 @@ export class CameraAnimator {
         // Default position: looking at globe from distance
         return this.animateToLocation(0, 0, 10, duration);
     }
+
+    /**
+     * Camera shake effect for wrong answers
+     * @param duration Duration in ms (default 300)
+     * @param intensity Shake intensity (default 0.02)
+     */
+    async cameraShake(duration: number = 300, intensity: number = 0.02): Promise<void> {
+        const camera = this.camera;
+        const originalAlpha = camera.alpha;
+        const originalBeta = camera.beta;
+
+        const startTime = performance.now();
+
+        return new Promise((resolve) => {
+            const shake = () => {
+                const elapsed = performance.now() - startTime;
+                const progress = elapsed / duration;
+
+                if (progress >= 1) {
+                    camera.alpha = originalAlpha;
+                    camera.beta = originalBeta;
+                    resolve();
+                    return;
+                }
+
+                // Decay shake over time
+                const decay = 1 - progress;
+                const offsetAlpha = (Math.random() - 0.5) * intensity * decay;
+                const offsetBeta = (Math.random() - 0.5) * intensity * decay;
+
+                camera.alpha = originalAlpha + offsetAlpha;
+                camera.beta = originalBeta + offsetBeta;
+
+                requestAnimationFrame(shake);
+            };
+            shake();
+        });
+    }
 }

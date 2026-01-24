@@ -14,6 +14,7 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
 import { CountrySelectionBehavior } from '../shared/behaviors/CountrySelectionBehavior';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
+import { CountryQuizGame, QuizGameConfig } from '../shared/games/CountryQuizGame';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -33,6 +34,7 @@ export class SoloGameController extends BaseGameController {
     // Solo-specific modules
     private selectionBehavior: CountrySelectionBehavior | null = null;
     private countryLabelUI: CountryLabelUI | null = null;
+    private quizGame: CountryQuizGame | null = null;
 
     // Solo-specific callbacks
     private onCountrySelected: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
@@ -133,6 +135,49 @@ export class SoloGameController extends BaseGameController {
      */
     getHoveredCountry(): CountryPolygon | null {
         return this.hoveredCountry;
+    }
+
+    /**
+     * Start a country quiz game
+     */
+    startQuizGame(config: QuizGameConfig): void {
+        this.quizGame = new CountryQuizGame(this.globe, config);
+
+        // Hook into pin placement to check quiz answers
+        this.pinManager.onPinPlaced(async (country, latLon) => {
+            if (this.quizGame && !this.quizGame.isComplete()) {
+                const result = await this.quizGame.checkAnswer(country);
+
+                // If result is null, it means a disabled country was clicked - ignore it
+                if (result === null) {
+                    return;
+                }
+
+                // Update label with current question
+                const question = this.quizGame.getCurrentQuestion();
+                if (question && this.countryLabelUI) {
+                    this.countryLabelUI.show(`Find: ${question}`);
+                }
+            } else {
+                // Normal click handling (not in quiz mode or quiz complete)
+                this.onPinPlaced(country, latLon);
+            }
+        });
+
+        this.quizGame.start();
+
+        // Show first question
+        const question = this.quizGame.getCurrentQuestion();
+        if (question && this.countryLabelUI) {
+            this.countryLabelUI.show(`Find: ${question}`);
+        }
+    }
+
+    /**
+     * Get the active quiz game
+     */
+    getQuizGame(): CountryQuizGame | null {
+        return this.quizGame;
     }
 
     // =========================================================================
