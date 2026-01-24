@@ -2,9 +2,9 @@
   "zoom": {
     "threshold": 10.0,
     "pinScale": {
-      "closeValue": 15,
+      "closeValue": 10,
       "farValue": 150,
-      "easing": "InCubic"
+      "easing": "Linear"
     }
   }
 }

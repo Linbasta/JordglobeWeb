@@ -86,7 +86,8 @@ export abstract class BaseGameController {
                     globe.getCanvas(),
                     globe.getCountryPicker(),
                     globe.getEarthSphere(),
-                    (material) => globe.createUnlitMaterial(material)
+                    (material) => globe.createUnlitMaterial(material),
+                    (countryIndex) => globe.getCountryAltitude(countryIndex)
                 );
                 await this.pinManager.init();
 

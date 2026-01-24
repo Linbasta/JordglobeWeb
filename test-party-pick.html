@@ -182,7 +182,8 @@
                 globe.getCanvas(),
                 globe.getCountryPicker(),
                 globe.getEarthSphere(),
-                (material) => globe.createUnlitMaterial(material)
+                (material) => globe.createUnlitMaterial(material),
+                (countryIndex) => globe.getCountryAltitude(countryIndex)
             );
             await pinManager.init();
 

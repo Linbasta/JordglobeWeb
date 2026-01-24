@@ -13,7 +13,7 @@ import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
-import { cartesianToLatLon } from '../../earth-globe';
+import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
 import { ZoomBasedValue } from '../animation/CameraAnimator';
 import { getConfig } from '../config/GlobalConfig';
@@ -27,6 +27,7 @@ export class PinManager {
     private countryPicker: CountryPicker;
     private earthSphere: Mesh;
     private createUnlitMaterial: (originalMaterial: Material | null) => Material;
+    private getCountryAltitude: (countryIndex: number) => number;
 
     // Pin meshes
     private bossPinTemplate: AbstractMesh | null = null;
@@ -55,7 +56,8 @@ export class PinManager {
         canvas: HTMLCanvasElement,
         countryPicker: CountryPicker,
         earthSphere: Mesh,
-        createUnlitMaterial: (originalMaterial: Material | null) => Material
+        createUnlitMaterial: (originalMaterial: Material | null) => Material,
+        getCountryAltitude: (countryIndex: number) => number
     ) {
         this.scene = scene;
         this.camera = camera;
@@ -63,6 +65,7 @@ export class PinManager {
         this.countryPicker = countryPicker;
         this.earthSphere = earthSphere;
         this.createUnlitMaterial = createUnlitMaterial;
+        this.getCountryAltitude = getCountryAltitude;
         this.pinRecorder = new PinRecorder();
         this.zoomScaler = new ZoomBasedValue(camera);
     }
@@ -264,18 +267,23 @@ export class PinManager {
             // Calculate surface normal
             const normal = pickResult.pickedPoint.normalizeToNew();
 
-            // Position on globe surface at EARTH_RADIUS
-            this.previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS);
+            // Detect which country the pin is over
+            const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
+            const country = this.countryPicker.getCountryAt(latLon);
+
+            // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
+            // Note: altitude is normalized (0-1), multiply by ANIMATION_AMPLITUDE for world space
+            const altitudeNormalized = country ? this.getCountryAltitude(country.countryIndex) : 0.0;
+            const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
+
+            // Position pin at globe surface + country altitude
+            this.previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS + altitudeWorldSpace);
 
             // Orient the pivot so its local Y-axis points along the normal
             const upVector = Vector3.Up();
             const quaternion = new Quaternion();
             Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
             this.previewPin.rotationQuaternion = quaternion;
-
-            // Detect which country the pin is over
-            const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
-            const country = this.countryPicker.getCountryAt(latLon);
 
             // Record this position
             this.pinRecorder.recordPosition(latLon.lat, latLon.lon);

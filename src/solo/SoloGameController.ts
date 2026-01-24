@@ -339,5 +339,13 @@ export class SoloGameController extends BaseGameController {
         console.log(`  Alpha: ${camera.alpha.toFixed(2)}`);
         console.log(`  Beta: ${camera.beta.toFixed(2)}`);
         console.log(`  Pin Scale: ${pinScale.toFixed(2)} (close=${config.zoom.pinScale.closeValue}, far=${config.zoom.pinScale.farValue}, threshold=${config.zoom.threshold})`);
+
+        // Show pin altitude if hovering over a country
+        const previewPin = this.pinManager.getPreviewPin();
+        if (previewPin && previewPin.isEnabled()) {
+            const pos = previewPin.position;
+            const pinRadius = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
+            console.log(`  Pin Position Radius: ${pinRadius.toFixed(4)} (EARTH_RADIUS=2.0, altitude=${(pinRadius - 2.0).toFixed(4)})`);
+        }
     }
 }

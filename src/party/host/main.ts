@@ -28,7 +28,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 globeInstance.getCanvas(),
                 globeInstance.getCountryPicker(),
                 globeInstance.getEarthSphere(),
-                (material) => globeInstance.createUnlitMaterial(material)
+                (material) => globeInstance.createUnlitMaterial(material),
+                (countryIndex) => globeInstance.getCountryAltitude(countryIndex)
             );
             await pinManager.init();
 
