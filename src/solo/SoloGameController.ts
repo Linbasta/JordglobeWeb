@@ -156,7 +156,7 @@ export class SoloGameController extends BaseGameController {
                 // Update label with current question
                 const question = this.quizGame.getCurrentQuestion();
                 if (question && this.countryLabelUI) {
-                    this.countryLabelUI.show(`Find: ${question}`);
+                    this.countryLabelUI.show(question);
                 }
             } else {
                 // Normal click handling (not in quiz mode or quiz complete)
@@ -169,7 +169,7 @@ export class SoloGameController extends BaseGameController {
         // Show first question
         const question = this.quizGame.getCurrentQuestion();
         if (question && this.countryLabelUI) {
-            this.countryLabelUI.show(`Find: ${question}`);
+            this.countryLabelUI.show(question);
         }
     }
 

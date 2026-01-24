@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Quiz Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        body.placing-mode {
+            cursor: none;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 100;
+            max-width: 300px;
+        }
+
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 100;
+            line-height: 1.6;
+        }
+
+        #error-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(220, 38, 38, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            z-index: 1000;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            display: none;
+        }
+
+        #error-toast.show {
+            display: block;
+        }
+
+        #error-toast h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        #error-toast pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loadingScreen h2 {
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="loadingScreen">
+        <h2>Loading Quiz Game</h2>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Initializing...</div>
+    </div>
+
+    <canvas id="renderCanvas"></canvas>
+    <div id="stats">
+        <div><strong>Score:</strong> <span id="correct">0</span> / <span id="total">0</span></div>
+        <div><strong>Wrong:</strong> <span id="wrong">0</span></div>
+    </div>
+
+    <div id="error-toast">
+        <h3>Shader Compilation Error</h3>
+        <pre id="error-message"></pre>
+    </div>
+
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+
+    <script type="module">
+        import { SoloGameController } from './src/solo/SoloGameController.ts';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Optionally load inspector in dev
+            if (import.meta.env.DEV) {
+                await import('@babylonjs/core/Debug/debugLayer');
+                await import('@babylonjs/inspector');
+            }
+
+            // Create the Solo Game
+            const game = new SoloGameController('renderCanvas', {
+                showCountryLabel: true,  // Enable the question label at top
+                onReady: (controller) => {
+                    console.log('Quiz game ready!');
+
+                    // Start quiz with European countries
+                    controller.startQuizGame({
+                        countries: [
+                            'SE', 'NO', 'FI', 'DK', 'IS',  // Nordic
+                            'GB', 'IE', 'FR', 'ES', 'PT',  // Western Europe
+                            'DE', 'NL', 'BE', 'LU', 'CH', 'AT',  // Central Europe
+                            'IT', 'GR', 'MT', 'CY',  // Southern Europe
+                            'PL', 'CZ', 'SK', 'HU', 'RO', 'BG',  // Eastern Europe
+                            'EE', 'LV', 'LT',  // Baltics
+                        ],
+                        revealCorrectOnWrong: false,  // Mode B: just shake
+                        removeOnWrong: false,
+                        onQuestionChanged: (name, i, total) => {
+                            console.log(`Question ${i}/${total}: Find ${name}`);
+                            document.getElementById('total').textContent = total;
+                        },
+                        onCorrectAnswer: (name) => {
+                            console.log(`✓ Correct! ${name}`);
+                            const quiz = controller.getQuizGame();
+                            if (quiz) {
+                                const score = quiz.getScore();
+                                document.getElementById('correct').textContent = score.correct;
+                                document.getElementById('wrong').textContent = score.wrong;
+                            }
+                        },
+                        onWrongAnswer: (wrong, correct) => {
+                            console.log(`✗ Wrong! Clicked ${wrong}, answer was ${correct}`);
+                            const quiz = controller.getQuizGame();
+                            if (quiz) {
+                                const score = quiz.getScore();
+                                document.getElementById('correct').textContent = score.correct;
+                                document.getElementById('wrong').textContent = score.wrong;
+                            }
+                        },
+                        onGameComplete: (score, total) => {
+                            console.log(`Game over! Score: ${score}/${total}`);
+                            alert(`Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+                        }
+                    });
+                }
+            });
+
+            // Make game available for debugging
+            window.soloGame = game;
+        });
+    </script>
+</body>
+
+</html>
