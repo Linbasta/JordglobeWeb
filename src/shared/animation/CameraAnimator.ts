@@ -4,6 +4,9 @@
  */
 
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { getConfig } from '../config/GlobalConfig';
+import { easedValue, getEasingFunction } from '../utils/Easing';
+import { CAMERA_LOWER_RADIUS } from '../../earth-globe';
 
 /**
  * Easing function for smooth animations (ease-in-out cubic)
@@ -147,5 +150,51 @@ export class CameraAnimator {
             };
             shake();
         });
+    }
+}
+
+/**
+ * Zoom-Based Value Calculator
+ *
+ * Provides dynamic interpolation between two values based on camera zoom level.
+ * Useful for scaling UI elements, speeds, and other parameters based on camera distance.
+ */
+export class ZoomBasedValue {
+    private camera: ArcRotateCamera;
+
+    constructor(camera: ArcRotateCamera) {
+        this.camera = camera;
+    }
+
+    /**
+     * Get an interpolated value based on current camera zoom
+     * @param closeValue Value when camera is zoomed in (close to globe)
+     * @param farValue Value when camera is zoomed out (far from globe)
+     * @param easingName Name of easing function (default: 'OutSine')
+     * @returns Interpolated value based on current camera distance
+     */
+    getValue(closeValue: number, farValue: number, easingName: string = 'OutSine'): number {
+        const config = getConfig();
+        const threshold = config.zoom.threshold;
+
+        // Get current camera distance
+        const currentDistance = this.camera.radius;
+
+        // Get easing function
+        const easing = getEasingFunction(easingName);
+
+        // Interpolate: CAMERA_LOWER_RADIUS = close, threshold = far
+        return easedValue(currentDistance, CAMERA_LOWER_RADIUS, threshold, closeValue, farValue, easing);
+    }
+
+    /**
+     * Get the normalized zoom scale (0-1)
+     * 0 = camera at globe surface, 1 = camera at threshold distance or beyond
+     */
+    getZoomScale(): number {
+        const config = getConfig();
+        const threshold = config.zoom.threshold;
+        const scale = this.camera.radius / threshold;
+        return Math.max(0, Math.min(1, scale));
     }
 }

@@ -1,0 +1,10 @@
+{
+  "zoom": {
+    "threshold": 10.0,
+    "pinScale": {
+      "closeValue": 15,
+      "farValue": 150,
+      "easing": "InCubic"
+    }
+  }
+}

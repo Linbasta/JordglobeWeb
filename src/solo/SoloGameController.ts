@@ -14,12 +14,16 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
 import { CountrySelectionBehavior } from '../shared/behaviors/CountrySelectionBehavior';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
+import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
 import { CountryQuizGame, QuizGameConfig } from '../shared/games/CountryQuizGame';
+import { reloadConfig, getConfig } from '../shared/config/GlobalConfig';
+import { ZoomBasedValue } from '../shared/animation/CameraAnimator';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
     disableSelectionBehavior?: boolean;
     showCountryLabel?: boolean;
+    showHoverLabel?: boolean;
 }
 
 /**
@@ -34,6 +38,7 @@ export class SoloGameController extends BaseGameController {
     // Solo-specific modules
     private selectionBehavior: CountrySelectionBehavior | null = null;
     private countryLabelUI: CountryLabelUI | null = null;
+    private hoverCountryLabel: HoverCountryLabel | null = null;
     private quizGame: CountryQuizGame | null = null;
 
     // Solo-specific callbacks
@@ -72,6 +77,16 @@ export class SoloGameController extends BaseGameController {
             this.countryLabelUI.show('Sweden');
         }
 
+        // Create hover country label (shows at pin location) - optional
+        const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
+        if (showHoverLabel) {
+            this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
+            const previewPin = this.pinManager.getPreviewPin();
+            if (previewPin) {
+                this.hoverCountryLabel.linkToNode(previewPin);
+            }
+        }
+
         // Create selection behavior (unless disabled)
         if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
             this.selectionBehavior = new CountrySelectionBehavior(
@@ -85,15 +100,32 @@ export class SoloGameController extends BaseGameController {
                 (countryIndex) => this.globe.getCountryBlend(countryIndex)
             );
 
-            // Wire PinManager to highlight countries
+            // Wire PinManager to highlight countries and show hover label
             this.pinManager.onCountryHover((country, latLon) => {
                 this.selectionBehavior?.onCountrySelected(country, latLon);
+
+                // Update hover label
+                if (country) {
+                    this.hoverCountryLabel?.show(country.name);
+                } else {
+                    this.hoverCountryLabel?.hide();
+                }
             });
         }
     }
 
     protected recreateAdditionalUI(): void {
         if (!this.advancedTexture) return;
+
+        // Recreate hover country label - optional
+        const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
+        if (showHoverLabel) {
+            this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
+            const previewPin = this.pinManager.getPreviewPin();
+            if (previewPin) {
+                this.hoverCountryLabel.linkToNode(previewPin);
+            }
+        }
 
         // Recreate selection behavior
         if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
@@ -109,6 +141,13 @@ export class SoloGameController extends BaseGameController {
             );
             this.pinManager.onCountryHover((country, latLon) => {
                 this.selectionBehavior?.onCountrySelected(country, latLon);
+
+                // Update hover label
+                if (country) {
+                    this.hoverCountryLabel?.show(country.name);
+                } else {
+                    this.hoverCountryLabel?.hide();
+                }
             });
         }
     }
@@ -118,6 +157,12 @@ export class SoloGameController extends BaseGameController {
         if (this.selectionBehavior) {
             this.selectionBehavior.dispose();
             this.selectionBehavior = null;
+        }
+
+        // Dispose hover country label
+        if (this.hoverCountryLabel) {
+            this.hoverCountryLabel.dispose();
+            this.hoverCountryLabel = null;
         }
     }
 
@@ -206,6 +251,14 @@ export class SoloGameController extends BaseGameController {
             if (e.key === 'w' || e.key === 'W') {
                 this.toggleWaterShaderControls();
             }
+            // Reload config (Z key)
+            if (e.key === 'z' || e.key === 'Z') {
+                this.reloadConfigShortcut();
+            }
+            // Log camera info (C key)
+            if (e.key === 'c' || e.key === 'C') {
+                this.logCameraInfo();
+            }
         });
     }
 
@@ -263,5 +316,28 @@ export class SoloGameController extends BaseGameController {
         panel.appendChild(info);
 
         document.body.appendChild(panel);
+    }
+
+    private async reloadConfigShortcut(): Promise<void> {
+        console.log('⚙️ Reloading configuration...');
+        const config = await reloadConfig();
+        console.log('✓ Configuration reloaded:', config);
+    }
+
+    private logCameraInfo(): void {
+        const camera = this.globe.getCamera();
+        const config = getConfig();
+        const zoomScaler = new ZoomBasedValue(camera);
+        const pinScale = zoomScaler.getValue(
+            config.zoom.pinScale.closeValue,
+            config.zoom.pinScale.farValue,
+            config.zoom.pinScale.easing
+        );
+
+        console.log('📷 Camera Info:');
+        console.log(`  Radius: ${camera.radius.toFixed(2)}`);
+        console.log(`  Alpha: ${camera.alpha.toFixed(2)}`);
+        console.log(`  Beta: ${camera.beta.toFixed(2)}`);
+        console.log(`  Pin Scale: ${pinScale.toFixed(2)} (close=${config.zoom.pinScale.closeValue}, far=${config.zoom.pinScale.farValue}, threshold=${config.zoom.threshold})`);
     }
 }

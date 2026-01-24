@@ -17,6 +17,8 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { hexToRgb } from '../../../shared/playerColors';
+import { ZoomBasedValue } from '../animation/CameraAnimator';
+import { getConfig } from '../config/GlobalConfig';
 
 const EARTH_RADIUS = 2.0;
 
@@ -37,6 +39,9 @@ export class MultiPinManager {
     private bossPinTemplate: AbstractMesh | null = null;
     private pins: Map<string, PlayerPin> = new Map();
 
+    // Zoom-based scaling
+    private zoomScaler: ZoomBasedValue;
+
     constructor(
         scene: Scene,
         camera: ArcRotateCamera,
@@ -45,6 +50,7 @@ export class MultiPinManager {
         this.scene = scene;
         this.camera = camera;
         this.createUnlitMaterial = createUnlitMaterial;
+        this.zoomScaler = new ZoomBasedValue(camera);
     }
 
     async init(): Promise<void> {
@@ -167,8 +173,13 @@ export class MultiPinManager {
         const pinContainer = new TransformNode(`pinContainer_${Date.now()}`, this.scene);
         pinContainer.parent = pinPivot;
 
-        // Scale the pin
-        const pinScale = 150;
+        // Scale the pin (using config values)
+        const config = getConfig();
+        const pinScale = this.zoomScaler.getValue(
+            config.zoom.pinScale.closeValue,
+            config.zoom.pinScale.farValue,
+            config.zoom.pinScale.easing
+        );
         pinContainer.scaling = new Vector3(pinScale, pinScale, pinScale);
 
         // Clone all child meshes from the template
@@ -224,10 +235,13 @@ export class MultiPinManager {
         Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
         pinMesh.rotationQuaternion = quaternion;
 
-        // Scale based on camera distance
-        const baseScale = 150;
-        const referenceRadius = 10;
-        const pinScale = baseScale * (this.camera.radius / referenceRadius);
+        // Scale based on camera distance (using config values)
+        const config = getConfig();
+        const pinScale = this.zoomScaler.getValue(
+            config.zoom.pinScale.closeValue,
+            config.zoom.pinScale.farValue,
+            config.zoom.pinScale.easing
+        );
 
         // Apply scale to the container (first child)
         const container = pinMesh.getChildren()[0] as TransformNode;
@@ -241,9 +255,12 @@ export class MultiPinManager {
      * Call this in the render loop if you want pins to scale dynamically
      */
     updatePinScales(): void {
-        const baseScale = 150;
-        const referenceRadius = 10;
-        const pinScale = baseScale * (this.camera.radius / referenceRadius);
+        const config = getConfig();
+        const pinScale = this.zoomScaler.getValue(
+            config.zoom.pinScale.closeValue,
+            config.zoom.pinScale.farValue,
+            config.zoom.pinScale.easing
+        );
 
         this.pins.forEach(pin => {
             const container = pin.mesh.getChildren()[0] as TransformNode;

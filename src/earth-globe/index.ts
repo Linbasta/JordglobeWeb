@@ -73,6 +73,7 @@ export {
     ANIMATION_AMPLITUDE,
     MAX_COUNTRIES,
     MAX_ANIMATION_COUNTRIES,
+    CAMERA_LOWER_RADIUS,
 } from './constants';
 
 // Utilities

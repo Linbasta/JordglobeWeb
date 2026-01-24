@@ -164,8 +164,12 @@
 
     <script type="module">
         import { SoloGameController } from './src/solo/SoloGameController.ts';
+        import { loadConfig } from './src/shared/config/GlobalConfig.ts';
 
         window.addEventListener('DOMContentLoaded', async () => {
+            // Load configuration first
+            await loadConfig();
+
             // Optionally load inspector in dev
             if (import.meta.env.DEV) {
                 await import('@babylonjs/core/Debug/debugLayer');
@@ -175,6 +179,7 @@
             // Create the Solo Game
             const game = new SoloGameController('renderCanvas', {
                 showCountryLabel: true,  // Enable the question label at top
+                showHoverLabel: false,   // Disable the hover label at pin
                 onReady: (controller) => {
                     console.log('Quiz game ready!');
 
