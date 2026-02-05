@@ -29,7 +29,7 @@ export class CountryQuizGame {
     private globe: EarthGlobeAPI;
     private config: QuizGameConfig;
     private cameraAnimator: CameraAnimator;
-    private arcDrawer: ArcDrawer | null = null;
+    private arcDrawer: ArcDrawer;
 
     private gameCountries: CountryData[] = [];
     private remainingCountries: CountryData[] = [];
@@ -42,6 +42,7 @@ export class CountryQuizGame {
         this.globe = globe;
         this.config = config;
         this.cameraAnimator = new CameraAnimator(globe.getCamera());
+        this.arcDrawer = new ArcDrawer(globe.getScene(), globe);
     }
 
     /**
@@ -119,20 +120,40 @@ export class CountryQuizGame {
         this.config.onWrongAnswer?.(wrongCountry.name, correctCountry.name);
 
         if (this.config.revealCorrectOnWrong) {
-            // Mode A: Reveal correct answer
+            // Mode A: Reveal correct answer with full choreography
 
-            // 1. Wrong country pops briefly
+            // 1. Sink wrong country
             await animateWrong(this.globe, wrongCountry.countryIndex, this.config.removeOnWrong);
 
-            // TODO: 2. Draw arc from wrong to correct (need lat/lon for both)
-            // TODO: Need to get center lat/lon for countries
-            // if (this.arcDrawer) {
-            //     this.arcDrawer.addArc(wrongLat, wrongLon, correctLat, correctLon);
-            // }
+            // 2. Draw arc from wrong to correct
+            const wrongCenter = this.getCountryCenter(wrongCountry.countryIndex);
+            const correctCenter = this.getCountryCenter(correctCountry.index);
 
-            // TODO: 3. Fly camera to correct country
-            // TODO: Get center lat/lon for correct country
-            // await this.cameraAnimator.animateToLocation(lat, lon, radius, 800);
+            const arcId = this.arcDrawer.addArc(
+                wrongCenter.lat,
+                wrongCenter.lon,
+                correctCenter.lat,
+                correctCenter.lon,
+                '#ff6b6b', // Red-ish color for wrong → correct arc
+                0.3 // Arc altitude
+            );
+
+            // Animate arc drawing (parallel with camera movement start)
+            const arcAnimationPromise = this.arcDrawer.animateArc(arcId, 800);
+
+            // 3. Fly camera to correct country (frame it perfectly)
+            const allPolygons = this.globe.getCountryPicker().getAllPolygons();
+            const correctPolygons = allPolygons.filter(p => p.countryIndex === correctCountry.index);
+
+            const cameraFlyPromise = this.cameraAnimator.frameCountry(
+                correctPolygons,
+                correctCountry.name,
+                800, // 800ms camera animation
+                0.8  // 80% margin
+            );
+
+            // Wait for both arc and camera to complete
+            await Promise.all([arcAnimationPromise, cameraFlyPromise]);
 
             // 4. Show correct country elevated
             await animateShowCorrect(this.globe, correctCountry.index);
@@ -142,6 +163,9 @@ export class CountryQuizGame {
 
             // 6. Animate correct to cleared
             await animateToCleared(this.globe, correctCountry.index);
+
+            // 7. Clean up arc
+            this.arcDrawer.removeArc(arcId);
 
         } else {
             // Mode B: Just shake and brief pop
@@ -187,5 +211,63 @@ export class CountryQuizGame {
 
     isComplete(): boolean {
         return this.remainingCountries.length === 0 && !this.isProcessingAnswer;
+    }
+
+    /**
+     * Calculate the spherical center of a country
+     * Uses 3D Cartesian averaging to handle antimeridian and polar regions correctly
+     */
+    private getCountryCenter(countryIndex: number): { lat: number; lon: number } {
+        // Get all polygons for this country
+        const allPolygons = this.globe.getCountryPicker().getAllPolygons();
+        const countryPolygons = allPolygons.filter(p => p.countryIndex === countryIndex);
+
+        if (countryPolygons.length === 0) {
+            console.error('No polygons found for country index:', countryIndex);
+            return { lat: 0, lon: 0 };
+        }
+
+        // Collect all points from all polygons
+        const allPoints: Array<{ lat: number; lon: number }> = [];
+        for (const polygon of countryPolygons) {
+            allPoints.push(...polygon.points);
+        }
+
+        if (allPoints.length === 0) {
+            return { lat: 0, lon: 0 };
+        }
+
+        // Convert all points to Cartesian and average in 3D space
+        let sumX = 0, sumY = 0, sumZ = 0;
+
+        for (const point of allPoints) {
+            const latRad = point.lat * (Math.PI / 180);
+            const lonRad = point.lon * (Math.PI / 180);
+
+            const x = Math.cos(latRad) * Math.cos(lonRad);
+            const y = Math.sin(latRad);
+            const z = Math.cos(latRad) * Math.sin(lonRad);
+
+            sumX += x;
+            sumY += y;
+            sumZ += z;
+        }
+
+        // Average
+        const avgX = sumX / allPoints.length;
+        const avgY = sumY / allPoints.length;
+        const avgZ = sumZ / allPoints.length;
+
+        // Normalize to sphere surface
+        const length = Math.sqrt(avgX * avgX + avgY * avgY + avgZ * avgZ);
+        const normalizedX = avgX / length;
+        const normalizedY = avgY / length;
+        const normalizedZ = avgZ / length;
+
+        // Convert back to lat/lon
+        const lat = Math.asin(normalizedY) * (180 / Math.PI);
+        const lon = Math.atan2(normalizedZ, normalizedX) * (180 / Math.PI);
+
+        return { lat, lon };
     }
 }

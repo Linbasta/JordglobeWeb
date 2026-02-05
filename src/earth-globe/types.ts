@@ -222,6 +222,7 @@ export interface EarthGlobeAPI {
     getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null;
     getCountryByISO2(iso2: string): CountryData | undefined;
     getCountryByIndex(index: number): CountryData | undefined;
+    getAllCountries(): CountryData[];
     getAltitudeAtLatLon(lat: number, lon: number): number;
 
     // Animation control - Altitude

@@ -11,7 +11,7 @@ import { Color4 } from '@babylonjs/core/Maths/math.color';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
-import type { EarthGlobe } from '../../earth-globe';
+import type { EarthGlobeAPI } from '../../earth-globe';
 
 const EARTH_RADIUS = 2.0;
 const ARC_SEGMENTS = 64; // Number of points per arc (more = smoother)
@@ -35,11 +35,11 @@ interface Arc {
 
 export class ArcDrawer {
     private scene: Scene;
-    private globe: EarthGlobe;
+    private globe: EarthGlobeAPI;
     private arcs: Map<string, Arc> = new Map();
     private arcIdCounter: number = 0;
 
-    constructor(scene: Scene, globe: EarthGlobe) {
+    constructor(scene: Scene, globe: EarthGlobeAPI) {
         this.scene = scene;
         this.globe = globe;
     }
