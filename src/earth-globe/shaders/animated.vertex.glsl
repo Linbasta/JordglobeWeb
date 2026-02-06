@@ -12,6 +12,7 @@ uniform mat4 world;
 uniform sampler2D animationTexture;
 uniform float animationTextureWidth;
 uniform float animationAmplitude;
+uniform float thicknessOffset;
 
 // Varyings (will be injected)
 // VARYINGS_PLACEHOLDER
@@ -28,6 +29,10 @@ void main(void) {
     vec3 centerDir = normalize(position);
     float topFactor = uv.y;  // 0 = bottom (fixed), 1 = top (animates)
     animatedPosition += centerDir * animValue * animationAmplitude * topFactor;
+
+    // Scale tube thickness along tube's radial direction
+    // normal points away from tube axis, so offsetting along it changes tube thickness
+    animatedPosition += normal * thicknessOffset;
 
     gl_Position = worldViewProjection * vec4(animatedPosition, 1.0);
 

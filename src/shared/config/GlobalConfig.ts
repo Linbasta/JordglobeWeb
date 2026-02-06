@@ -14,6 +14,7 @@ export interface ZoomBasedConfig {
 export interface ZoomConfig {
     threshold: number;
     pinScale: ZoomBasedConfig;
+    borderThickness: ZoomBasedConfig;
 }
 
 export interface GlobalConfig {
@@ -28,6 +29,11 @@ const DEFAULT_CONFIG: GlobalConfig = {
             closeValue: 75,
             farValue: 300,
             easing: 'OutSine'
+        },
+        borderThickness: {
+            closeValue: 0.5,
+            farValue: 2.0,
+            easing: 'Linear'
         }
     }
 };

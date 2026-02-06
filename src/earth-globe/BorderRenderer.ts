@@ -301,7 +301,7 @@ export class BorderRenderer {
                     "segmentBorder",
                     {
                         path: segment.points,
-                        radius: TUBE_RADIUS * 1.2,
+                        radius: TUBE_RADIUS * 0.8,
                         tessellation: TUBE_TESSELLATION,
                         cap: Mesh.CAP_ALL
                     },

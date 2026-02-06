@@ -74,6 +74,9 @@ export const COUNTRY_HSV_VALUE = 0.9;
 /** White border color */
 export const BORDER_COLOR_WHITE = new Color3(1, 1, 1);
 
+/** Black border color for segment borders */
+export const BORDER_COLOR_BLACK = new Color3(0, 0, 0);
+
 /** Gray border color for extruded borders */
 export const BORDER_COLOR_GRAY = new Color3(0.9, 0.9, 0.9);
 

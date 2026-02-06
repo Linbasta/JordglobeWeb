@@ -18,6 +18,7 @@ import {
     ANIMATION_AMPLITUDE,
     ANIMATION_TEXTURE_WIDTH,
     BORDER_COLOR_WHITE,
+    BORDER_COLOR_BLACK,
     BORDER_COLOR_GRAY,
     OUTLINE_COLOR
 } from './constants';
@@ -81,7 +82,7 @@ export class ShaderFactory {
             fragment: name,
         }, {
             attributes: ["position", "normal", "uv", "countryIndex"],
-            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", ...uniforms],
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
             samplers: ["animationTexture", ...extraSamplers]
         });
 
@@ -97,6 +98,7 @@ export class ShaderFactory {
         }
         shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("thicknessOffset", 0.0);
         shaderMaterial.backFaceCulling = false;
 
         return shaderMaterial;
@@ -155,7 +157,7 @@ export class ShaderFactory {
      * Create the segment border shader material (white)
      */
     createSegmentBorderMaterial(): ShaderMaterial {
-        return this.createBorderShaderMaterial("segmentBorderShader", BORDER_COLOR_WHITE);
+        return this.createBorderShaderMaterial("segmentBorderShader", BORDER_COLOR_BLACK);
     }
 
     /**

@@ -253,7 +253,7 @@ function createWaterMaterial(
 
     // Water colors
     material.setVector3("shallowColor", new Vector3(0.4, 0.8, 0.95));
-    material.setVector3("waterColor", new Vector3(0.46, 0.79, 1.0));
+    material.setVector3("waterColor", new Vector3(0.15, 0.63, 0.95));
     material.setVector3("deepColor", new Vector3(0.02, 0.08, 0.25));
     material.setVector3("causticColor", new Vector3(1.0, 1.0, 1.0));
 

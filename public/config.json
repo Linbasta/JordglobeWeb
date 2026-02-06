@@ -5,6 +5,11 @@
       "closeValue": 10,
       "farValue": 150,
       "easing": "Linear"
+    },
+    "borderThickness": {
+      "closeValue": 0.5,
+      "farValue": 1.0,
+      "easing": "Linear"
     }
   }
 }

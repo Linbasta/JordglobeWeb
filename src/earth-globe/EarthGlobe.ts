@@ -36,7 +36,8 @@ import {
     CAMERA_PANNING_SENSITIVITY,
     PICKER_CELL_SIZE,
     DEFAULT_ASSETS,
-    MAX_ANIMATION_COUNTRIES
+    MAX_ANIMATION_COUNTRIES,
+    TUBE_RADIUS
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './GeoMath';
 import { CountryPicker } from './CountryPicker';
@@ -51,6 +52,8 @@ import { CountryAnimator } from './CountryAnimator';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './ShaderFactory';
+import { getConfig } from '../shared/config/GlobalConfig';
+import { getZoomValue } from '../shared/animation/cameraUtils';
 
 import type {
     EarthGlobeOptions,
@@ -101,6 +104,7 @@ export class EarthGlobe {
 
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;
+    private segmentBorderMaterial: ShaderMaterial | null = null;
 
     // Data
     private countryPicker: CountryPicker;
@@ -226,10 +230,11 @@ export class EarthGlobe {
 
             // Render segment borders
             if (this.segmentData) {
+                this.segmentBorderMaterial = this.shaderFactory.createSegmentBorderMaterial();
                 this.borderRenderer.renderSegmentBorders(
                     this.segmentData,
                     this.countryRenderer.getCountriesData(),
-                    this.shaderFactory.createSegmentBorderMaterial()
+                    this.segmentBorderMaterial
                 );
 
                 // Set up segment animation mapping
@@ -271,6 +276,15 @@ export class EarthGlobe {
     private update(): void {
         // Update animations
         this.countryAnimator.update();
+
+        // Update border thickness based on camera zoom
+        if (this.segmentBorderMaterial) {
+            const config = getConfig();
+            const bt = config.zoom.borderThickness;
+            const scale = getZoomValue(this.camera, bt.closeValue, bt.farValue, bt.easing);
+            const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
+            this.segmentBorderMaterial.setFloat("thicknessOffset", offset);
+        }
     }
 
     // =========================================================================
