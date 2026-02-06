@@ -7,21 +7,19 @@ if (import.meta.env.DEV) {
 }
 
 import { EarthGlobe } from '../../earth-globe';
-import { PinManager } from '../../shared/managers/PinManager';
+import { initPinManager, onPinPlaced } from '../../shared/managers/PinManager';
 import { animateToCleared } from '../../shared/animations/CountryAnimations';
 import { Game } from './game';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', () => {
-    let pinManager: PinManager;
-
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
         onReady: async (globeInstance) => {
             // Globe is now fully initialized, safe to wire up callbacks
 
-            // Create PinManager
-            pinManager = new PinManager(
+            // Initialize PinManager
+            await initPinManager(
                 globeInstance.getScene(),
                 globeInstance.getCamera(),
                 globeInstance.getCanvas(),
@@ -30,14 +28,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 (material) => globeInstance.createUnlitMaterial(material),
                 (countryIndex) => globeInstance.getCountryAltitude(countryIndex)
             );
-            await pinManager.init();
 
             // Create and start game (host-specific logic)
             const game = new Game();
             game.start();
 
             // Wire PinManager to Game for pin placement
-            pinManager.onPinPlaced((country, latLon) => {
+            onPinPlaced((country, latLon) => {
                 game.handlePinPlaced(country, latLon);
             });
 

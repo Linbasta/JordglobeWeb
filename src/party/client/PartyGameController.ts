@@ -49,7 +49,6 @@ export class PartyGameController extends BaseGameController {
 
     // All public API methods are inherited from BaseGameController:
     // - getGlobe()
-    // - getPinManager()
     // - getPinUI()
     // - positionAtLatLon()
 }

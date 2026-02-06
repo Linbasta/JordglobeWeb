@@ -18,14 +18,8 @@ if (typeof window !== 'undefined') {
         await loadConfig();
 
         const controller = new SoloGameController('renderCanvas', {
-            onReady: (controller) => {
+            onReady: () => {
                 console.log('Solo game ready!');
-
-                // Example: Access the globe
-                const globe = controller.getGlobe();
-
-                // Example: Access pin manager
-                const pinManager = controller.getPinManager();
             }
         });
 

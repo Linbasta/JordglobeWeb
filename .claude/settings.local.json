@@ -38,7 +38,11 @@
       "Bash(xargs sed:*)",
       "Bash(yes:*)",
       "Bash(grep:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(magick:*)",
+      "Bash(jq:*)"
     ],
     "deny": [],
     "ask": []

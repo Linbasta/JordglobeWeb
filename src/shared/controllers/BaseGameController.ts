@@ -20,7 +20,7 @@ import {
 } from '../../earth-globe';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
-import { PinManager } from '../managers/PinManager';
+import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode } from '../managers/PinManager';
 import { PinUI } from '../ui/PinUI';
 import { GlobeState } from '../state';
 
@@ -49,7 +49,6 @@ export abstract class BaseGameController {
     protected stateManager: GlobeState;
 
     // Modules
-    protected pinManager!: PinManager;
     protected pinUI: PinUI | null = null;
 
     // GUI elements
@@ -79,8 +78,8 @@ export abstract class BaseGameController {
             onReady: async (globe) => {
                 this.updateLoadingProgress(75, 'Creating modules...');
 
-                // Create PinManager
-                this.pinManager = new PinManager(
+                // Initialize PinManager
+                await initPinManager(
                     globe.getScene(),
                     globe.getCamera(),
                     globe.getCanvas(),
@@ -89,7 +88,6 @@ export abstract class BaseGameController {
                     (material) => globe.createUnlitMaterial(material),
                     (countryIndex) => globe.getCountryAltitude(countryIndex)
                 );
-                await this.pinManager.init();
 
                 // Let subclass set up game-specific modules
                 await this.onGlobeReady(globe);
@@ -112,14 +110,14 @@ export abstract class BaseGameController {
                 this.createGUI();
 
                 // Wire PinManager to hide/show pin button
-                this.pinManager.onPlacingModeChange((isPlacing) => {
+                onPlacingModeChange((placing) => {
                     if (this.pinUI) {
-                        this.pinUI.setPinButtonVisible(!isPlacing);
+                        this.pinUI.setPinButtonVisible(!placing);
                     }
                 });
 
                 // Wire PinManager placement callback
-                this.pinManager.onPinPlaced((country, latLon) => {
+                onPinPlacedCb((country, latLon) => {
                     this.onPinPlaced(country, latLon);
                 });
 
@@ -212,10 +210,6 @@ export abstract class BaseGameController {
     // Public API - Game-Specific Modules
     // =========================================================================
 
-    getPinManager(): PinManager {
-        return this.pinManager;
-    }
-
     getPinUI(): PinUI | null {
         return this.pinUI;
     }
@@ -271,7 +265,7 @@ export abstract class BaseGameController {
             this.pinUI = new PinUI(this.advancedTexture);
             this.pinUI.create({
                 onPinButtonPress: () => {
-                    this.pinManager.enterPlacingMode();
+                    enterPlacingMode();
                 }
             });
         }

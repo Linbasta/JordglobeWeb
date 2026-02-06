@@ -1,6 +1,8 @@
 /**
  * Pin Manager Module
  * Handles pin placement mode, preview pin, and pin events
+ *
+ * Module-level singleton state — only one pin manager per page.
  */
 
 import { Scene } from '@babylonjs/core/scene';
@@ -12,6 +14,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
+import '@babylonjs/loaders/glTF';
 import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
@@ -20,291 +23,264 @@ import { getConfig } from '../config/GlobalConfig';
 
 const EARTH_RADIUS = 2.0;
 
-export class PinManager {
-    private scene: Scene;
-    private camera: ArcRotateCamera;
-    private canvas: HTMLCanvasElement;
-    private countryPicker: CountryPicker;
-    private earthSphere: Mesh;
-    private createUnlitMaterial: (originalMaterial: Material | null) => Material;
-    private getCountryAltitude: (countryIndex: number) => number;
+// --- Module-level state ---
 
-    // Pin meshes
-    private bossPinTemplate: AbstractMesh | null = null;
-    private placedPins: AbstractMesh[] = [];
-    private previewPin: TransformNode | null = null;
-    private previewPinContainer: TransformNode | null = null;
+let scene: Scene;
+let camera: ArcRotateCamera;
+let canvas: HTMLCanvasElement;
+let countryPicker: CountryPicker;
+let earthSphere: Mesh;
+let createUnlitMaterial: (mat: Material | null) => Material;
+let getCountryAltitude: (idx: number) => number;
 
-    // State
-    private isPlacingMode: boolean = false;
-    private hoveredCountry: CountryPolygon | null = null;
+let bossPinTemplate: AbstractMesh | null = null;
+let previewPin: TransformNode | null = null;
+let previewPinContainer: TransformNode | null = null;
+let isPlacingMode = false;
+let hoveredCountry: CountryPolygon | null = null;
+let pinRecorder = new PinRecorder();
 
-    // Pin recording
-    private pinRecorder: PinRecorder;
+let onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
+let onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
+let onPlacingModeChangeCallback: ((isPlacing: boolean) => void) | null = null;
 
-    // Callbacks
-    private onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
-    private onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
-    private onPlacingModeChangeCallback: ((isPlacing: boolean) => void) | null = null;
+// --- Private functions ---
 
-    constructor(
-        scene: Scene,
-        camera: ArcRotateCamera,
-        canvas: HTMLCanvasElement,
-        countryPicker: CountryPicker,
-        earthSphere: Mesh,
-        createUnlitMaterial: (originalMaterial: Material | null) => Material,
-        getCountryAltitude: (countryIndex: number) => number
-    ) {
-        this.scene = scene;
-        this.camera = camera;
-        this.canvas = canvas;
-        this.countryPicker = countryPicker;
-        this.earthSphere = earthSphere;
-        this.createUnlitMaterial = createUnlitMaterial;
-        this.getCountryAltitude = getCountryAltitude;
-        this.pinRecorder = new PinRecorder();
-    }
-
-    async init(): Promise<void> {
-        await this.loadBossPinModel();
-        this.createPreviewPin();
-        this.setupEventHandlers();
-    }
-
-    onPinPlaced(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
-        this.onPinPlacedCallback = callback;
-    }
-
-    onCountryHover(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
-        this.onCountryHoverCallback = callback;
-    }
-
-    onPlacingModeChange(callback: (isPlacing: boolean) => void): void {
-        this.onPlacingModeChangeCallback = callback;
-    }
-
-    enterPlacingMode(): void {
-        if (!this.previewPin) return;
-        this.isPlacingMode = true;
-        document.body.classList.add('placing-mode');
-
-        // Detach camera controls to prevent rotation/zoom while placing pin
-        this.camera.detachControl();
-
-        // Start recording pin movements
-        this.pinRecorder.startRecording();
-
-        // Notify that we entered placing mode
-        if (this.onPlacingModeChangeCallback) {
-            this.onPlacingModeChangeCallback(true);
+async function loadBossPinModel(): Promise<void> {
+    try {
+        const result = await SceneLoader.ImportMeshAsync("", "/", "BossPin.glb", scene);
+        if (result.meshes.length === 0) {
+            console.error('No meshes found in BossPin model');
+            return;
         }
+        const rootMesh = result.meshes[0];
+        rootMesh.setEnabled(false);
+        bossPinTemplate = rootMesh;
+    } catch (error) {
+        console.error('[PinManager] Failed to load BossPin model:', error);
     }
+}
 
-    exitPlacingMode(placePin: boolean = false): void {
-        this.isPlacingMode = false;
-        document.body.classList.remove('placing-mode');
+function createPreviewPin(): void {
+    if (!bossPinTemplate) return;
 
-        // Re-attach camera controls to allow rotation/zoom
-        this.camera.attachControl(this.canvas, true);
+    // Create pivot transform node
+    const pinPivot = new TransformNode("previewPinPivot", scene);
 
-        // Stop recording
-        this.pinRecorder.stopRecording();
+    // Create container for the pin meshes
+    previewPinContainer = new TransformNode("previewPinContainer", scene);
+    previewPinContainer.parent = pinPivot;
 
-        // Notify that we exited placing mode
-        if (this.onPlacingModeChangeCallback) {
-            this.onPlacingModeChangeCallback(false);
+    // Scale the pin (adjust based on your model size)
+    const pinScale = 150;
+    previewPinContainer.scaling = new Vector3(pinScale, pinScale, pinScale);
+
+    // Clone all child meshes from the template and apply unlit material
+    bossPinTemplate.getChildMeshes().forEach(mesh => {
+        const cloned = mesh.clone("previewPinMesh", previewPinContainer);
+        if (cloned) {
+            cloned.setEnabled(true);
+            const unlitMaterial = createUnlitMaterial(mesh.material);
+            cloned.material = unlitMaterial;
         }
+    });
 
-        if (this.previewPin) {
-            this.previewPin.setEnabled(false);
+    previewPin = pinPivot;
+    previewPin.setEnabled(false);
+}
+
+function setupEventHandlers(): void {
+    canvas.addEventListener('pointermove', (e) => {
+        if (isPlacingMode && previewPin) {
+            updatePreviewPinPosition(e);
         }
+    });
 
-        if (placePin && this.previewPin) {
-            const pinPos = this.previewPin.position;
-            const latLon = cartesianToLatLon(pinPos.x, pinPos.y, pinPos.z);
-            const country = this.countryPicker.getCountryAt(latLon);
+    canvas.addEventListener('pointerup', (e) => {
+        if (isPlacingMode && (e.button === 0 || e.button === 2)) {
+            exitPlacingMode(true);
+        }
+    });
 
-            if (this.onPinPlacedCallback) {
-                this.onPinPlacedCallback(country, latLon);
+    canvas.addEventListener('pointerleave', () => {
+        if (isPlacingMode) {
+            exitPlacingMode(false);
+        }
+    });
+
+    canvas.addEventListener('pointerdown', (e) => {
+        if (e.button === 2 && !isPlacingMode) {
+            const pickResult = scene.pick(e.clientX, e.clientY, (mesh) => mesh === earthSphere);
+            if (pickResult.hit) {
+                enterPlacingMode();
+                updatePreviewPinPosition(e);
             }
         }
+    });
 
-        this.hoveredCountry = null;
-    }
+    canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+}
 
-    isPlacing(): boolean {
-        return this.isPlacingMode;
-    }
+function updatePreviewPinPosition(event: PointerEvent): void {
+    if (!previewPin) return;
 
-    getPreviewPin(): TransformNode | null {
-        return this.previewPin;
-    }
+    const pickResult = scene.pick(event.clientX, event.clientY, (mesh) => mesh === earthSphere);
 
-    /**
-     * Get the recorded pin positions from the last placement
-     */
-    getRecordedPositions(): RecordedPosition[] {
-        return this.pinRecorder.createRecording('', '', '').positions;
-    }
-
-    /**
-     * Clear the recorded positions
-     */
-    clearRecordedPositions(): void {
-        this.pinRecorder.clear();
-    }
-
-    private async loadBossPinModel(): Promise<void> {
-        try {
-            const result = await SceneLoader.ImportMeshAsync("", "/", "BossPin.glb", this.scene);
-            if (result.meshes.length === 0) {
-                console.error('No meshes found in BossPin model');
-                return;
-            }
-            const rootMesh = result.meshes[0];
-            rootMesh.setEnabled(false);
-            this.bossPinTemplate = rootMesh;
-        } catch (error) {
-            console.error('[PinManager] Failed to load BossPin model:', error);
+    if (pickResult.hit && pickResult.pickedPoint) {
+        // Show the pin when we hit the globe
+        if (!previewPin.isEnabled()) {
+            previewPin.setEnabled(true);
         }
-    }
 
-    private createPreviewPin(): void {
-        if (!this.bossPinTemplate) return;
+        // Scale pin based on camera zoom (using config values)
+        if (previewPinContainer) {
+            const config = getConfig();
+            const pinScale = getZoomValue(
+                camera,
+                config.zoom.pinScale.closeValue,
+                config.zoom.pinScale.farValue,
+                config.zoom.pinScale.easing
+            );
+            previewPinContainer.scaling.setAll(pinScale);
+        }
 
-        // Create pivot transform node
-        const pinPivot = new TransformNode("previewPinPivot", this.scene);
+        // Calculate surface normal
+        const normal = pickResult.pickedPoint.normalizeToNew();
 
-        // Create container for the pin meshes
-        this.previewPinContainer = new TransformNode("previewPinContainer", this.scene);
-        this.previewPinContainer.parent = pinPivot;
+        // Detect which country the pin is over
+        const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
+        const country = countryPicker.getCountryAt(latLon);
 
-        // Scale the pin (adjust based on your model size)
-        const pinScale = 150;
-        this.previewPinContainer.scaling = new Vector3(pinScale, pinScale, pinScale);
+        // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
+        const altitudeNormalized = country ? getCountryAltitude(country.countryIndex) : 0.0;
+        const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
 
-        // Clone all child meshes from the template and apply unlit material
-        const clonedMeshes: AbstractMesh[] = [];
-        this.bossPinTemplate.getChildMeshes().forEach(mesh => {
-            const cloned = mesh.clone("previewPinMesh", this.previewPinContainer);
-            if (cloned) {
-                cloned.setEnabled(true);
+        // Position pin at globe surface + country altitude
+        previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS + altitudeWorldSpace);
 
-                // Apply unlit material to make it bright and visible
-                const unlitMaterial = this.createUnlitMaterial(mesh.material);
-                cloned.material = unlitMaterial;
+        // Orient the pivot so its local Y-axis points along the normal
+        const upVector = Vector3.Up();
+        const quaternion = new Quaternion();
+        Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
+        previewPin.rotationQuaternion = quaternion;
 
-                clonedMeshes.push(cloned);
+        // Record this position
+        pinRecorder.recordPosition(latLon.lat, latLon.lon);
+
+        // Update hovered country and trigger callback if changed
+        if (country !== hoveredCountry) {
+            hoveredCountry = country;
+            if (onCountryHoverCallback) {
+                onCountryHoverCallback(country, latLon);
             }
-        });
+        }
+    } else {
+        // Not over globe - hide pin
+        if (previewPin.isEnabled()) {
+            previewPin.setEnabled(false);
+        }
 
-        this.previewPin = pinPivot;
-        this.previewPin.setEnabled(false);
-    }
-
-    private setupEventHandlers(): void {
-        this.canvas.addEventListener('pointermove', (e) => {
-            if (this.isPlacingMode && this.previewPin) {
-                this.updatePreviewPinPosition(e);
-            }
-        });
-
-        this.canvas.addEventListener('pointerup', (e) => {
-            if (this.isPlacingMode && (e.button === 0 || e.button === 2)) {
-                this.exitPlacingMode(true);
-            }
-        });
-
-        this.canvas.addEventListener('pointerleave', (e) => {
-            if (this.isPlacingMode) {
-                this.exitPlacingMode(false);
-            }
-        });
-
-        this.canvas.addEventListener('pointerdown', (e) => {
-            if (e.button === 2 && !this.isPlacingMode) {
-                const pickResult = this.scene.pick(e.clientX, e.clientY, (mesh) => mesh === this.earthSphere);
-                if (pickResult.hit) {
-                    this.enterPlacingMode();
-                    this.updatePreviewPinPosition(e);
-                }
-            }
-        });
-
-        this.canvas.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-        });
-    }
-
-    private updatePreviewPinPosition(event: PointerEvent): void {
-        if (!this.previewPin) return;
-
-        // Pick only against the earth sphere for performance
-        const pickResult = this.scene.pick(event.clientX, event.clientY, (mesh) => mesh === this.earthSphere);
-
-        if (pickResult.hit && pickResult.pickedPoint) {
-            // Show the pin when we hit the globe
-            if (!this.previewPin.isEnabled()) {
-                this.previewPin.setEnabled(true);
-            }
-
-            // Scale pin based on camera zoom (using config values)
-            if (this.previewPinContainer) {
-                const config = getConfig();
-                const pinScale = getZoomValue(
-                    this.camera,
-                    config.zoom.pinScale.closeValue,
-                    config.zoom.pinScale.farValue,
-                    config.zoom.pinScale.easing
-                );
-                this.previewPinContainer.scaling.setAll(pinScale);
-            }
-
-            // Calculate surface normal
-            const normal = pickResult.pickedPoint.normalizeToNew();
-
-            // Detect which country the pin is over
-            const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
-            const country = this.countryPicker.getCountryAt(latLon);
-
-            // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
-            // Note: altitude is normalized (0-1), multiply by ANIMATION_AMPLITUDE for world space
-            const altitudeNormalized = country ? this.getCountryAltitude(country.countryIndex) : 0.0;
-            const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
-
-            // Position pin at globe surface + country altitude
-            this.previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS + altitudeWorldSpace);
-
-            // Orient the pivot so its local Y-axis points along the normal
-            const upVector = Vector3.Up();
-            const quaternion = new Quaternion();
-            Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
-            this.previewPin.rotationQuaternion = quaternion;
-
-            // Record this position
-            this.pinRecorder.recordPosition(latLon.lat, latLon.lon);
-
-            // Update hovered country and trigger callback if changed
-            if (country !== this.hoveredCountry) {
-                this.hoveredCountry = country;
-                if (this.onCountryHoverCallback) {
-                    this.onCountryHoverCallback(country, latLon);
-                }
-            }
-        } else {
-            // Not over globe - hide pin
-            if (this.previewPin.isEnabled()) {
-                this.previewPin.setEnabled(false);
-            }
-
-            // Clear hovered country
-            if (this.hoveredCountry) {
-                this.hoveredCountry = null;
-                if (this.onCountryHoverCallback) {
-                    this.onCountryHoverCallback(null, { lat: 0, lon: 0 });
-                }
+        // Clear hovered country
+        if (hoveredCountry) {
+            hoveredCountry = null;
+            if (onCountryHoverCallback) {
+                onCountryHoverCallback(null, { lat: 0, lon: 0 });
             }
         }
     }
+}
+
+// --- Exported functions ---
+
+export async function initPinManager(
+    _scene: Scene,
+    _camera: ArcRotateCamera,
+    _canvas: HTMLCanvasElement,
+    _countryPicker: CountryPicker,
+    _earthSphere: Mesh,
+    _createUnlitMaterial: (mat: Material | null) => Material,
+    _getCountryAltitude: (idx: number) => number
+): Promise<void> {
+    scene = _scene;
+    camera = _camera;
+    canvas = _canvas;
+    countryPicker = _countryPicker;
+    earthSphere = _earthSphere;
+    createUnlitMaterial = _createUnlitMaterial;
+    getCountryAltitude = _getCountryAltitude;
+
+    await loadBossPinModel();
+    createPreviewPin();
+    setupEventHandlers();
+}
+
+export function enterPlacingMode(): void {
+    if (!previewPin) return;
+    isPlacingMode = true;
+    document.body.classList.add('placing-mode');
+
+    camera.detachControl();
+    pinRecorder.startRecording();
+
+    if (onPlacingModeChangeCallback) {
+        onPlacingModeChangeCallback(true);
+    }
+}
+
+export function exitPlacingMode(placePin: boolean = false): void {
+    isPlacingMode = false;
+    document.body.classList.remove('placing-mode');
+
+    camera.attachControl(canvas, true);
+    pinRecorder.stopRecording();
+
+    if (onPlacingModeChangeCallback) {
+        onPlacingModeChangeCallback(false);
+    }
+
+    if (previewPin) {
+        previewPin.setEnabled(false);
+    }
+
+    if (placePin && previewPin) {
+        const pinPos = previewPin.position;
+        const latLon = cartesianToLatLon(pinPos.x, pinPos.y, pinPos.z);
+        const country = countryPicker.getCountryAt(latLon);
+
+        if (onPinPlacedCallback) {
+            onPinPlacedCallback(country, latLon);
+        }
+    }
+
+    hoveredCountry = null;
+}
+
+export function isPlacing(): boolean {
+    return isPlacingMode;
+}
+
+export function getPreviewPin(): TransformNode | null {
+    return previewPin;
+}
+
+export function getRecordedPositions(): RecordedPosition[] {
+    return pinRecorder.createRecording('', '', '').positions;
+}
+
+export function clearRecordedPositions(): void {
+    pinRecorder.clear();
+}
+
+export function onPinPlaced(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
+    onPinPlacedCallback = callback;
+}
+
+export function onCountryHover(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
+    onCountryHoverCallback = callback;
+}
+
+export function onPlacingModeChange(callback: (isPlacing: boolean) => void): void {
+    onPlacingModeChangeCallback = callback;
 }

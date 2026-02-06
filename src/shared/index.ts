@@ -8,7 +8,7 @@ export { BaseGameController } from './controllers/BaseGameController';
 export type { BaseGameOptions } from './controllers/BaseGameController';
 
 // Managers
-export { PinManager } from './managers/PinManager';
+export { initPinManager, enterPlacingMode, exitPlacingMode, isPlacing, getPreviewPin, getRecordedPositions, clearRecordedPositions, onPinPlaced, onCountryHover, onPlacingModeChange } from './managers/PinManager';
 export { MultiPinManager } from './managers/MultiPinManager';
 export { DistanceLabelManager } from './managers/DistanceLabelManager';
 export type { PlayerPin } from './managers/MultiPinManager';

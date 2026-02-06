@@ -5,6 +5,7 @@ import { JoinScreen } from './JoinScreen';
 import { WaitingScreen } from './WaitingScreen';
 import { GameSocket } from './socket';
 import { PartyGameController } from './PartyGameController';
+import { onPinPlaced, getRecordedPositions } from '../../shared/managers/PinManager';
 import { Confetti } from '../../shared/effects/Confetti';
 
 // Initialize the application when page loads
@@ -286,17 +287,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         // Create the party game controller
         controller = new PartyGameController('renderCanvas', {
-            onReady: (ctrl) => {
+            onReady: () => {
                 console.log('[PartyClient] Controller ready, wiring up callbacks');
 
                 // Wire up pin placement to answer submission
-                ctrl.getPinManager().onPinPlaced((country, latLon) => {
+                onPinPlaced((country, latLon) => {
                     console.log(`Pin placed at ${latLon.lat.toFixed(2)}, ${latLon.lon.toFixed(2)}`);
                     if (country) {
                         console.log(`Country: ${country.name} (${country.iso2})`);
                     }
                     // Get recorded positions
-                    const positions = ctrl.getPinManager().getRecordedPositions();
+                    const positions = getRecordedPositions();
                     console.log(`Recorded ${positions.length} positions`);
                     handleAnswerSubmitted(latLon.lat, latLon.lon, positions);
                 });

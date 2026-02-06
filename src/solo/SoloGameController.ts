@@ -12,6 +12,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
+import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/PinManager';
 import { handleHover, clearSelection } from '../shared/behaviors/countrySelection';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
 import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
@@ -81,7 +82,7 @@ export class SoloGameController extends BaseGameController {
         const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
         if (showHoverLabel) {
             this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
-            const previewPin = this.pinManager.getPreviewPin();
+            const previewPin = getPreviewPin();
             if (previewPin) {
                 this.hoverCountryLabel.linkToNode(previewPin);
             }
@@ -90,7 +91,7 @@ export class SoloGameController extends BaseGameController {
         // Wire hover selection (unless disabled)
         if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
             this.selectionEnabled = true;
-            this.pinManager.onCountryHover((country, latLon) => {
+            onCountryHover((country, latLon) => {
                 handleHover(this.globe, country, latLon);
 
                 // Update hover label
@@ -110,7 +111,7 @@ export class SoloGameController extends BaseGameController {
         const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
         if (showHoverLabel) {
             this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
-            const previewPin = this.pinManager.getPreviewPin();
+            const previewPin = getPreviewPin();
             if (previewPin) {
                 this.hoverCountryLabel.linkToNode(previewPin);
             }
@@ -118,7 +119,7 @@ export class SoloGameController extends BaseGameController {
 
         // Rewire hover selection
         if (this.selectionEnabled) {
-            this.pinManager.onCountryHover((country, latLon) => {
+            onCountryHover((country, latLon) => {
                 handleHover(this.globe, country, latLon);
 
                 // Update hover label
@@ -160,7 +161,7 @@ export class SoloGameController extends BaseGameController {
         this.quizGame = new CountryQuizGame(this.globe, config);
 
         // Hook into pin placement to check quiz answers
-        this.pinManager.onPinPlaced(async (country, latLon) => {
+        onPinPlaced(async (country, latLon) => {
             if (this.quizGame && !this.quizGame.isComplete()) {
                 const result = await this.quizGame.checkAnswer(country);
 
@@ -312,7 +313,7 @@ export class SoloGameController extends BaseGameController {
         console.log(`  Pin Scale: ${pinScale.toFixed(2)} (close=${config.zoom.pinScale.closeValue}, far=${config.zoom.pinScale.farValue}, threshold=${config.zoom.threshold})`);
 
         // Show pin altitude if hovering over a country
-        const previewPin = this.pinManager.getPreviewPin();
+        const previewPin = getPreviewPin();
         if (previewPin && previewPin.isEnabled()) {
             const pos = previewPin.position;
             const pinRadius = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
