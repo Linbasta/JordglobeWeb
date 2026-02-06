@@ -4,7 +4,7 @@
 
 Run these in **separate terminal tabs/windows**:
 
-### Terminal 1 - Frontend Dev Server (Port 3000)
+### Terminal 1 - Frontend Dev Server (Port 3001)
 ```bash
 npm run frontend
 ```
@@ -30,9 +30,9 @@ Starts all 3 servers in one terminal (harder to see individual logs).
 
 ## Accessing the Game
 
-- **Host Display**: http://localhost:3000/host.html
-- **Mobile Players**: http://localhost:3000/party
-- **Bot Panel** (testing): http://localhost:3000/bot-panel.html
+- **Host Display**: http://localhost:3001/host.html
+- **Mobile Players**: http://localhost:3001/party
+- **Bot Panel** (testing): http://localhost:3001/bot-panel.html
 
 ## Logs
 

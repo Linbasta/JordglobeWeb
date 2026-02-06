@@ -186,7 +186,7 @@ The user manages all servers manually. Claude should only:
 |--------|------|-----------|---------|
 | Browser Console Logger | **9999** | `npm run dev` | Browser debugging |
 | WebSocket Game Server | **3003** | `npm run dev` | Multiplayer coordination |
-| Vite Dev Server | **3000** | `npm run dev` | Web app hosting |
+| Vite Dev Server | **3001** | `npm run dev` | Web app hosting |
 
 ### Current Running Servers
 
@@ -203,7 +203,7 @@ When you run `npm run dev`, THREE servers start automatically:
    - Server file: `server/index.mjs`
    - **Logging**: Writes to `game-server.log` + stdout
 
-3. **Vite Dev Server** - http://localhost:3000
+3. **Vite Dev Server** - http://localhost:3001
    - Serves the web application
    - Hot Module Reloading (HMR) - auto-reloads on file changes
    - Serves: `/party.html` (players), `/host.html` (leaderboard), `/bot-panel.html` (testing)
@@ -212,7 +212,7 @@ When you run `npm run dev`, THREE servers start automatically:
 
 | Server | Port | Log Location | How to View |
 |--------|------|--------------|-------------|
-| Vite | 3000 | stdout | Terminal where `npm run dev` runs |
+| Vite | 3001 | stdout | Terminal where `npm run dev` runs |
 | WebSocket Game | 3003 | **`game-server.log`** + stdout | `tail -f game-server.log` |
 | Browser Console | 9999 | `browser-console.log` | `tail -f browser-console.log` |
 
@@ -236,7 +236,7 @@ grep "Bot Alice" game-server.log
 
 The development servers are **always running** in the background via `npm run dev`:
 
-- **Web Server URL**: `http://localhost:3000/`
+- **Web Server URL**: `http://localhost:3001/`
 - **WebSocket Server**: `ws://localhost:3003/`
 - **Hot Module Reloading**:
   - Vite HMR: Browser code reloads automatically
@@ -265,7 +265,7 @@ This allows Claude to:
 
 ### Testing Workflow
 
-**Important**: Claude should **NOT** attempt to open the browser using `open http://localhost:3000/`.
+**Important**: Claude should **NOT** attempt to open the browser using `open http://localhost:3001/`.
 
 **Correct workflow:**
 1. Claude makes code changes

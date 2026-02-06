@@ -119,7 +119,7 @@ gcloud run logs read jordglobe --region us-central1 --limit 100
 # Terminal 1: Dev server (Vite + hot reload)
 npm run dev
 
-# Access at: http://localhost:3000
+# Access at: http://localhost:3001
 # WebSocket at: ws://localhost:3003
 ```
 

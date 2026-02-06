@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 3001,
     open: true,
     proxy: {
       // Rewrite /party to /party.html

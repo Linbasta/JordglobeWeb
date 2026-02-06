@@ -28,7 +28,7 @@ function detectEnvironment(): EnvironmentConfig {
     if (isDevelopment) {
         // Development: separate WebSocket server on port 3003
         websocketUrl = `ws://${hostname}:3003`;
-        baseUrl = `http://${hostname}:${port || 3000}`;
+        baseUrl = `http://${hostname}:${port || 3001}`;
     } else {
         // Production: same server, WebSocket on same port (8080), use wss://
         websocketUrl = `wss://${hostname}`;
