@@ -18,7 +18,8 @@ import {
     COUNTRY_HSV_SATURATION,
     COUNTRY_HSV_VALUE,
     BORDER_COLOR_WHITE,
-    BORDER_COLOR_GRAY
+    BORDER_COLOR_GRAY,
+    OUTLINE_COLOR
 } from './constants';
 
 // Import shaders
@@ -141,6 +142,13 @@ export class ShaderFactory {
      */
     createSegmentBorderMaterial(): ShaderMaterial {
         return this.createBorderShaderMaterial("segmentBorderShader", BORDER_COLOR_WHITE);
+    }
+
+    /**
+     * Create the outline shader material (gold)
+     */
+    createOutlineMaterial(): ShaderMaterial {
+        return this.createBorderShaderMaterial("outlineShader", OUTLINE_COLOR);
     }
 
     /**

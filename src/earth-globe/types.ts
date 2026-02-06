@@ -239,6 +239,10 @@ export interface EarthGlobeAPI {
     getCountryBlend(countryIndex: number): number;
     animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void>;
 
+    // Country outline
+    showCountryOutline(countryIndex: number): void;
+    clearCountryOutline(): void;
+
     // Event callbacks
     onCountryHover(callback: (event: CountryHoverEvent) => void): void;
     onCountryClick(callback: (event: CountryClickEvent) => void): void;

@@ -43,6 +43,7 @@ import { loadSegments } from './SegmentLoader';
 import { GlobeSphere } from './GlobeSphere';
 import { CountryRenderer } from './CountryRenderer';
 import { BorderRenderer } from './BorderRenderer';
+import { OutlineRenderer } from './OutlineRenderer';
 import { Skybox } from './Skybox';
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './AnimationTexture';
 import { CountryAnimator } from './CountryAnimator';
@@ -89,12 +90,16 @@ export class EarthGlobe {
     private globeSphere: GlobeSphere;
     private countryRenderer: CountryRenderer;
     private borderRenderer: BorderRenderer;
+    private outlineRenderer: OutlineRenderer;
     private skybox: Skybox;
     private shaderFactory: ShaderFactory;
 
     // Animation
     private animationTexture: AnimationTexture;
     private countryAnimator: CountryAnimator;
+
+    // Materials
+    private outlineMaterial: ShaderMaterial | null = null;
 
     // Data
     private countryPicker: CountryPicker;
@@ -150,6 +155,7 @@ export class EarthGlobe {
         this.globeSphere = new GlobeSphere(this.scene, this.assets);
         this.countryRenderer = new CountryRenderer(this.scene, this.shaderFactory);
         this.borderRenderer = new BorderRenderer(this.scene);
+        this.outlineRenderer = new OutlineRenderer(this.scene);
         this.skybox = new Skybox(this.scene, this.assets);
 
         // Start initialization
@@ -226,6 +232,9 @@ export class EarthGlobe {
                     this.borderRenderer.getSegmentAnimationIndices()
                 );
             }
+
+            // Create outline material (once, reused for all outlines)
+            this.outlineMaterial = this.shaderFactory.createOutlineMaterial();
 
             // Log statistics
             const pickerStats = this.countryPicker.getStats();
@@ -475,6 +484,35 @@ export class EarthGlobe {
     }
 
     // =========================================================================
+    // Public API - Country Outline
+    // =========================================================================
+
+    /**
+     * Show an outline around a country
+     * @param countryIndex Country index
+     */
+    showCountryOutline(countryIndex: number): void {
+        if (!this.outlineMaterial) return;
+
+        const countryData = this.countryRenderer.getCountryByIndex(countryIndex);
+        if (!countryData) return;
+
+        const polygonsData = this.countryRenderer.getPolygonsData();
+        const borderPointArrays = countryData.polygonIndices.map(
+            idx => polygonsData[idx].borderPoints
+        );
+
+        this.outlineRenderer.showOutline(countryIndex, borderPointArrays, this.outlineMaterial);
+    }
+
+    /**
+     * Clear the country outline
+     */
+    clearCountryOutline(): void {
+        this.outlineRenderer.clearOutline();
+    }
+
+    // =========================================================================
     // Public API - Event Callbacks
     // =========================================================================
 
@@ -530,6 +568,7 @@ export class EarthGlobe {
         this.globeSphere.dispose();
         this.countryRenderer.dispose();
         this.borderRenderer.dispose();
+        this.outlineRenderer.dispose();
         this.skybox.dispose();
         this.animationTexture.dispose();
 

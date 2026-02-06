@@ -97,7 +97,11 @@ export class SoloGameController extends BaseGameController {
                 (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
                 (countryIndex) => this.globe.getCountryState(countryIndex),
                 (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
-                (countryIndex) => this.globe.getCountryBlend(countryIndex)
+                (countryIndex) => this.globe.getCountryBlend(countryIndex),
+                {
+                    showOutline: (countryIndex) => this.globe.showCountryOutline(countryIndex),
+                    clearOutline: () => this.globe.clearCountryOutline()
+                }
             );
 
             // Wire PinManager to highlight countries and show hover label
@@ -137,7 +141,11 @@ export class SoloGameController extends BaseGameController {
                 (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
                 (countryIndex) => this.globe.getCountryState(countryIndex),
                 (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
-                (countryIndex) => this.globe.getCountryBlend(countryIndex)
+                (countryIndex) => this.globe.getCountryBlend(countryIndex),
+                {
+                    showOutline: (countryIndex) => this.globe.showCountryOutline(countryIndex),
+                    clearOutline: () => this.globe.clearCountryOutline()
+                }
             );
             this.pinManager.onCountryHover((country, latLon) => {
                 this.selectionBehavior?.onCountrySelected(country, latLon);

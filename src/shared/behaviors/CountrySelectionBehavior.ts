@@ -32,9 +32,13 @@ export interface SelectionBehaviorOptions {
     labelColor?: string;
     /** Label background color (default: "rgba(0,0,0,0.7)") */
     labelBackground?: string;
+    /** Callback to show outline around a country */
+    showOutline?: (countryIndex: number) => void;
+    /** Callback to clear the country outline */
+    clearOutline?: () => void;
 }
 
-const DEFAULT_OPTIONS: Required<SelectionBehaviorOptions> = {
+const DEFAULT_OPTIONS: Required<Omit<SelectionBehaviorOptions, 'showOutline' | 'clearOutline'>> = {
     defaultAltitude: 0.4,  // 0.4 * 0.2 (ANIMATION_AMPLITUDE) = 0.08 actual altitude
     selectedAltitude: 0.5,
     clearedAltitude: 0.1,  // 0.1 * 0.2 (ANIMATION_AMPLITUDE) = 0.02 actual altitude
@@ -71,7 +75,7 @@ const MAX_ANIMATED = 256;
 export class CountrySelectionBehavior {
     private scene: Scene;
     private advancedTexture: AdvancedDynamicTexture;
-    private options: Required<SelectionBehaviorOptions>;
+    private options: Required<Omit<SelectionBehaviorOptions, 'showOutline' | 'clearOutline'>> & Pick<SelectionBehaviorOptions, 'showOutline' | 'clearOutline'>;
     private setAltitude: SetAltitudeCallback;
     private getAltitude: GetAltitudeCallback;
     private setState: SetStateCallback;
@@ -151,6 +155,9 @@ export class CountrySelectionBehavior {
         if (this.selectedCountry) {
             this.deselectCountry(this.selectedCountry);
             this.selectedCountry = null;
+        } else {
+            // Clear outline even if no selected country tracked
+            this.options.clearOutline?.();
         }
     }
 
@@ -173,6 +180,7 @@ export class CountrySelectionBehavior {
      * Clean up resources
      */
     public dispose(): void {
+        this.options.clearOutline?.();
         this.stopAllAnimations();
         if (this.labelContainer) {
             this.advancedTexture.removeControl(this.labelContainer);
@@ -225,7 +233,8 @@ export class CountrySelectionBehavior {
 
         this.selectedCountry = country;
 
-        // Legacy label feature removed - label is now only controlled by CountryLabelUI
+        // Show outline around selected country
+        this.options.showOutline?.(country.countryIndex);
 
         // Set altitude immediately (no animation for hover feedback)
         this.animateAltitude(country.countryIndex, this.options.selectedAltitude, false);
@@ -233,6 +242,9 @@ export class CountrySelectionBehavior {
     }
 
     private deselectCountry(country: CountryPolygon): void {
+        // Clear outline
+        this.options.clearOutline?.();
+
         // Reset altitude to default (no animation for hover feedback)
         this.animateAltitude(country.countryIndex, this.options.defaultAltitude, false);
         console.log(`Deselected: ${country.name} (${country.iso2})`);

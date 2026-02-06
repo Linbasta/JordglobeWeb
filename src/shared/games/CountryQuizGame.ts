@@ -105,6 +105,9 @@ export class CountryQuizGame {
         // Callback
         this.config.onCorrectAnswer?.(country.name);
 
+        // Clear outline before animation
+        this.globe.clearCountryOutline();
+
         // Play correct animation (pop up + gray out + sink)
         await animateCorrect(this.globe, country.countryIndex);
 
@@ -122,7 +125,8 @@ export class CountryQuizGame {
         if (this.config.revealCorrectOnWrong) {
             // Mode A: Reveal correct answer with full choreography
 
-            // 1. Sink wrong country
+            // 1. Clear outline on wrong country and sink it
+            this.globe.clearCountryOutline();
             await animateWrong(this.globe, wrongCountry.countryIndex, this.config.removeOnWrong);
 
             // 2. Draw arc from wrong to correct
@@ -164,17 +168,20 @@ export class CountryQuizGame {
             // 4. Remove arc (it has served its purpose - pointing to correct country)
             this.arcDrawer.removeArc(arcId);
 
-            // 5. Show correct country elevated
+            // 5. Show outline on correct country and elevate it
+            this.globe.showCountryOutline(correctCountry.index);
             await animateShowCorrect(this.globe, correctCountry.index);
 
             // 6. Hold for a moment
             await new Promise(r => setTimeout(r, 1500));
 
-            // 7. Animate correct to cleared
+            // 7. Clear outline and animate correct to cleared
+            this.globe.clearCountryOutline();
             await animateToCleared(this.globe, correctCountry.index);
 
         } else {
             // Mode B: Just shake and brief pop
+            this.globe.clearCountryOutline();
             await Promise.all([
                 this.cameraAnimator.cameraShake(300, 0.02),
                 animateWrong(this.globe, wrongCountry.countryIndex, this.config.removeOnWrong)

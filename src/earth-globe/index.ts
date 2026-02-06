@@ -75,6 +75,8 @@ export {
     MAX_ANIMATION_COUNTRIES,
     CAMERA_LOWER_RADIUS,
     CAMERA_UPPER_RADIUS,
+    OUTLINE_TUBE_RADIUS,
+    OUTLINE_COLOR,
 } from './constants';
 
 // Utilities
@@ -121,6 +123,7 @@ export { cdt2d, filterTriangles, pointInPolygon as triangulationPointInPolygon }
 export { GlobeSphere } from './GlobeSphere';
 export { CountryRenderer } from './CountryRenderer';
 export { BorderRenderer } from './BorderRenderer';
+export { OutlineRenderer } from './OutlineRenderer';
 export { Skybox } from './Skybox';
 export { AnimationTexture } from './AnimationTexture';
 export { CountryAnimator } from './CountryAnimator';
