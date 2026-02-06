@@ -82,7 +82,7 @@ export abstract class BaseGameController {
                 this.updateLoadingProgress(75, 'Creating modules...');
 
                 // Create CameraAnimator
-                this.cameraAnimator = new CameraAnimator(globe.getCamera());
+                this.cameraAnimator = new CameraAnimator(globe.getCamera(), globe);
 
                 // Create PinManager
                 this.pinManager = new PinManager(

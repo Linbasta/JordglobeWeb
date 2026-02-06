@@ -41,7 +41,7 @@ export class CountryQuizGame {
     constructor(globe: EarthGlobeAPI, config: QuizGameConfig) {
         this.globe = globe;
         this.config = config;
-        this.cameraAnimator = new CameraAnimator(globe.getCamera());
+        this.cameraAnimator = new CameraAnimator(globe.getCamera(), globe);
         this.arcDrawer = new ArcDrawer(globe.getScene(), globe);
     }
 
@@ -134,12 +134,13 @@ export class CountryQuizGame {
                 wrongCenter.lon,
                 correctCenter.lat,
                 correctCenter.lon,
-                '#ff6b6b', // Red-ish color for wrong → correct arc
-                0.3 // Arc altitude
+                '#ffffff', // White color for wrong → correct arc
+                0.3, // Arc altitude
+                0 // Target altitude offset (normal surface altitude)
             );
 
-            // Animate arc drawing (parallel with camera movement start)
-            const arcAnimationPromise = this.arcDrawer.animateArc(arcId, 800);
+            // Animate arc drawing (parallel with camera movement start) - faster animation
+            const arcAnimationPromise = this.arcDrawer.animateArc(arcId, 500);
 
             // 3. Fly camera to correct country (frame it perfectly)
             const allPolygons = this.globe.getCountryPicker().getAllPolygons();
@@ -149,23 +150,28 @@ export class CountryQuizGame {
                 correctPolygons,
                 correctCountry.name,
                 800, // 800ms camera animation
-                0.8  // 80% margin
+                0.8, // 80% margin
+                undefined, // No viewport region
+                undefined, // Default max iterations
+                {
+                    overrideAltitude: 0.5 // Always frame at normal altitude (0.5 normalized = 0.1 world)
+                }
             );
 
             // Wait for both arc and camera to complete
             await Promise.all([arcAnimationPromise, cameraFlyPromise]);
 
-            // 4. Show correct country elevated
+            // 4. Remove arc (it has served its purpose - pointing to correct country)
+            this.arcDrawer.removeArc(arcId);
+
+            // 5. Show correct country elevated
             await animateShowCorrect(this.globe, correctCountry.index);
 
-            // 5. Hold for a moment
+            // 6. Hold for a moment
             await new Promise(r => setTimeout(r, 1500));
 
-            // 6. Animate correct to cleared
+            // 7. Animate correct to cleared
             await animateToCleared(this.globe, correctCountry.index);
-
-            // 7. Clean up arc
-            this.arcDrawer.removeArc(arcId);
 
         } else {
             // Mode B: Just shake and brief pop

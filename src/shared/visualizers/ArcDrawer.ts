@@ -16,7 +16,7 @@ import type { EarthGlobeAPI } from '../../earth-globe';
 const EARTH_RADIUS = 2.0;
 const ARC_SEGMENTS = 64; // Number of points per arc (more = smoother)
 const DEFAULT_ARC_ALTITUDE = 0.3; // How high the arc peaks above globe surface
-const ARC_THICKNESS = 0.008; // Radius of the tube (thickness)
+const ARC_THICKNESS = 0.004; // Radius of the tube (thickness)
 
 interface Arc {
     id: string;
@@ -46,6 +46,7 @@ export class ArcDrawer {
 
     /**
      * Add an arc from start to end location
+     * @param endAltitudeOffset Additional altitude offset for the endpoint (e.g., for elevated countries)
      * @returns Arc ID for future reference
      */
     addArc(
@@ -54,7 +55,8 @@ export class ArcDrawer {
         endLat: number,
         endLon: number,
         color: string,
-        altitude: number = DEFAULT_ARC_ALTITUDE
+        altitude: number = DEFAULT_ARC_ALTITUDE,
+        endAltitudeOffset: number = 0
     ): string {
         const id = `arc_${this.arcIdCounter++}`;
 
@@ -63,7 +65,8 @@ export class ArcDrawer {
             startLat, startLon,
             endLat, endLon,
             altitude,
-            ARC_SEGMENTS
+            ARC_SEGMENTS,
+            endAltitudeOffset
         );
 
         const arc: Arc = {
@@ -206,13 +209,14 @@ export class ArcDrawer {
         endLat: number,
         endLon: number,
         maxAltitude: number,
-        numPoints: number
+        numPoints: number,
+        endAltitudeOffset: number = 0
     ): Vector3[] {
         const points: Vector3[] = [];
 
         // Get surface altitude at start and end points (land vs ocean)
         const startSurfaceAltitude = this.globe.getAltitudeAtLatLon(startLat, startLon);
-        const endSurfaceAltitude = this.globe.getAltitudeAtLatLon(endLat, endLon);
+        const endSurfaceAltitude = this.globe.getAltitudeAtLatLon(endLat, endLon) + endAltitudeOffset;
 
         // Convert to radians
         const lat1 = startLat * (Math.PI / 180);

@@ -62,7 +62,7 @@ export class RevealVisualizer {
         );
 
         this.arcDrawer = new ArcDrawer(scene, globe);
-        this.cameraAnimator = new CameraAnimator(camera);
+        this.cameraAnimator = new CameraAnimator(camera, globe);
         this.pinReplayAnimator = new PinReplayAnimator(scene, camera);
     }
 

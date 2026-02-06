@@ -561,7 +561,11 @@
             if (viewportRegion) {
                 const coarseGridSize = parseInt(document.getElementById('coarseGridSlider').value);
                 const fineGridSize = parseInt(document.getElementById('fineGridSlider').value);
-                gridConfig = { coarseGridSize, fineGridSize };
+                gridConfig = {
+                    coarseGridSize,
+                    fineGridSize,
+                    showDebugVisualization: true  // Show debug frames in test page
+                };
             }
 
             console.log(`Auto-framing ${selectedCountry.name} (${countryPolygons.length} polygons) over ${duration}ms`);

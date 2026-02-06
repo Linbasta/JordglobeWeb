@@ -8,7 +8,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import { getConfig } from '../config/GlobalConfig';
 import { easedValue, getEasingFunction } from '../utils/Easing';
-import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS } from '../../earth-globe';
+import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import type { CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';
 
@@ -34,9 +34,11 @@ function easeInOutCubic(t: number): number {
 
 export class CameraAnimator {
     private camera: ArcRotateCamera;
+    private globe?: any; // Optional: for getting current country altitudes
 
-    constructor(camera: ArcRotateCamera) {
+    constructor(camera: ArcRotateCamera, globe?: any) {
         this.camera = camera;
+        this.globe = globe;
     }
 
     /**
@@ -355,8 +357,10 @@ export class CameraAnimator {
         gridConfig?: {
             coarseGridSize?: number;  // Default: 6 (6×6×6 = 216 checks)
             fineGridSize?: number;    // Default: 6 (6×6×6 = 216 checks)
-            alphaRangeDegrees?: number; // Default: 15 (±15°)
-            betaRangeDegrees?: number;  // Default: 30 (±30°)
+            alphaRangeDegrees?: number; // Default: 5 (±5°)
+            betaRangeDegrees?: number;  // Default: 10 (±10°)
+            showDebugVisualization?: boolean; // Default: false (hide debug frames)
+            overrideAltitude?: number; // Optional: use specific altitude instead of current (normalized 0-1)
         }
     ): Promise<{
         iterations: number;
@@ -366,10 +370,26 @@ export class CameraAnimator {
     }> {
         if (polygons.length === 0) {
             console.error('No polygons provided for framing');
-            return;
+            return {
+                iterations: 0,
+                finalError: 1.0,
+                solveTime: 0,
+                converged: false
+            };
         }
 
-        const COUNTRY_ALTITUDE = 0.1; // Countries are rendered ~0.1 units above sea level due to shader displacement
+        // Get country index from first polygon (all polygons belong to same country)
+        const countryIndex = polygons[0].countryIndex;
+
+        // Get altitude to use for framing
+        // If override provided, use that; otherwise get current altitude from globe
+        const altitudeNormalized = gridConfig?.overrideAltitude !== undefined
+            ? gridConfig.overrideAltitude
+            : (this.globe?.getCountryAltitude(countryIndex) ?? 0.5); // Default to 0.5 if globe not available
+        const actualAltitude = altitudeNormalized * ANIMATION_AMPLITUDE; // ANIMATION_AMPLITUDE = 0.2
+
+        const altitudeSource = gridConfig?.overrideAltitude !== undefined ? 'override' : 'current';
+        console.log(`\n=== Framing ${countryName} (altitude: ${actualAltitude.toFixed(4)}, source: ${altitudeSource}) ===`);
 
         // STEP 1: Collect all points from all polygons
         const allPoints: LatLon[] = [];
@@ -377,7 +397,7 @@ export class CameraAnimator {
             allPoints.push(...polygon.points);
         }
 
-        console.log(`\n=== Framing ${countryName} (${allPoints.length} points) ===`);
+        console.log(`Points: ${allPoints.length}, normalized altitude: ${altitudeNormalized.toFixed(2)}, world altitude: ${actualAltitude.toFixed(4)}`);
 
         // STEP 2: Calculate spherical center using 3D averaging (handles antimeridian)
         let sumX = 0, sumY = 0, sumZ = 0;
@@ -451,7 +471,7 @@ export class CameraAnimator {
                 const testRadius = (minRadius + maxRadius) / 2;
 
                 const projectedXY = this.projectWorldToScreenXY(
-                    allPoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+                    allPoints.map(p => ({ ...p, altitude: actualAltitude })),
                     alpha,
                     beta,
                     testRadius
@@ -593,9 +613,9 @@ export class CameraAnimator {
 
                             checksPerformed++;
 
-                            // Project SAMPLE points with altitude = 0.1
+                            // Project SAMPLE points with actual country altitude
                             const projectedXY = this.projectWorldToScreenXY(
-                                samplePoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+                                samplePoints.map(p => ({ ...p, altitude: actualAltitude })),
                                 alpha,
                                 beta,
                                 radius
@@ -746,7 +766,7 @@ export class CameraAnimator {
 
             // Calculate final centering error
             const finalProjection = this.projectWorldToScreenXY(
-                samplePoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+                samplePoints.map(p => ({ ...p, altitude: actualAltitude })),
                 bestSolution.alpha,
                 bestSolution.beta,
                 bestSolution.radius
@@ -805,7 +825,7 @@ export class CameraAnimator {
         console.log(`Camera: alpha=${(this.camera.alpha * 180 / Math.PI).toFixed(2)}°, beta=${(this.camera.beta * 180 / Math.PI).toFixed(2)}°, radius=${this.camera.radius.toFixed(4)}`);
 
         const verifiedProjection = this.projectWorldToScreenXY(
-            allPoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+            allPoints.map(p => ({ ...p, altitude: actualAltitude })),
             this.camera.alpha,
             this.camera.beta,
             this.camera.radius
@@ -818,8 +838,10 @@ export class CameraAnimator {
             lon: allPoints[i].lon
         }));
 
-        // Draw debug visualization with VERIFIED projections
-        this.drawProjectionDebug(verifiedPoints, viewportRegion);
+        // Draw debug visualization with VERIFIED projections (if enabled)
+        if (gridConfig?.showDebugVisualization) {
+            this.drawProjectionDebug(verifiedPoints, viewportRegion);
+        }
 
         // Return performance stats
         return stats;

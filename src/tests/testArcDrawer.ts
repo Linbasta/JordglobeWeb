@@ -17,7 +17,7 @@ setTimeout(() => {
     const scene = globe.getScene();
     const camera = globe.getCamera();
     const arcDrawer = new ArcDrawer(scene, globe);
-    const cameraAnimator = new CameraAnimator(camera);
+    const cameraAnimator = new CameraAnimator(camera, globe);
     (window as any).arcDrawer = arcDrawer;
     (window as any).cameraAnimator = cameraAnimator;
 
