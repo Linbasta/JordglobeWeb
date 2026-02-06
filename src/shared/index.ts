@@ -24,8 +24,7 @@ export { CameraAnimator } from './animation/CameraAnimator';
 export type { PinRecording, RecordedPosition } from './animation/PinRecorder';
 
 // Behaviors
-export { CountrySelectionBehavior } from './behaviors/CountrySelectionBehavior';
-export type { SelectionBehaviorOptions, SetAltitudeCallback, GetAltitudeCallback, SetStateCallback, GetStateCallback, SetBlendCallback, GetBlendCallback } from './behaviors/CountrySelectionBehavior';
+export { handleHover, clearSelection } from './behaviors/countrySelection';
 
 // UI
 export { CountryLabelUI } from './ui/CountryLabelUI';

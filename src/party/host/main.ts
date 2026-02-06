@@ -8,13 +8,12 @@ if (import.meta.env.DEV) {
 
 import { EarthGlobe } from '../../earth-globe';
 import { PinManager } from '../../shared/managers/PinManager';
-import { CountrySelectionBehavior } from '../../shared/behaviors/CountrySelectionBehavior';
+import { animateToCleared } from '../../shared/animations/CountryAnimations';
 import { Game } from './game';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', () => {
     let pinManager: PinManager;
-    let selectionBehavior: CountrySelectionBehavior;
 
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
@@ -33,19 +32,6 @@ window.addEventListener('DOMContentLoaded', () => {
             );
             await pinManager.init();
 
-            // Create SelectionBehavior (for animateToCleared)
-            const advancedTexture = (await import('@babylonjs/gui/2D/advancedDynamicTexture')).AdvancedDynamicTexture.CreateFullscreenUI("UI", true, globeInstance.getScene());
-            selectionBehavior = new CountrySelectionBehavior(
-                globeInstance.getScene(),
-                advancedTexture,
-                (countryIndex, altitude) => globeInstance.setCountryAltitude(countryIndex, altitude),
-                (countryIndex) => globeInstance.getCountryAltitude(countryIndex),
-                (countryIndex, state) => globeInstance.setCountryState(countryIndex, state),
-                (countryIndex) => globeInstance.getCountryState(countryIndex),
-                (countryIndex, blend) => globeInstance.setCountryBlend(countryIndex, blend),
-                (countryIndex) => globeInstance.getCountryBlend(countryIndex)
-            );
-
             // Create and start game (host-specific logic)
             const game = new Game();
             game.start();
@@ -57,10 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // Wire Game to globe animations when country is cleared
             game.onCountryCleared((country) => {
-                if (selectionBehavior) {
-                    selectionBehavior.animateToCleared(country.countryIndex);
-                    selectionBehavior.clearSelectionState();
-                }
+                animateToCleared(globeInstance, country.countryIndex);
             });
         }
     });

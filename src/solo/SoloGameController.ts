@@ -12,7 +12,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
-import { CountrySelectionBehavior } from '../shared/behaviors/CountrySelectionBehavior';
+import { handleHover, clearSelection } from '../shared/behaviors/countrySelection';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
 import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
 import { CountryQuizGame, QuizGameConfig } from '../shared/games/CountryQuizGame';
@@ -30,13 +30,13 @@ export interface SoloGameOptions extends BaseGameOptions {
  * Solo Game Controller
  *
  * Extends BaseGameController with solo game-specific features:
- * - CountrySelectionBehavior for hover/click animations
+ * - Country hover selection (altitude raise + outline)
  * - CountryLabelUI for displaying country names
  * - Inspector and debug shortcuts
  */
 export class SoloGameController extends BaseGameController {
     // Solo-specific modules
-    private selectionBehavior: CountrySelectionBehavior | null = null;
+    private selectionEnabled = false;
     private countryLabelUI: CountryLabelUI | null = null;
     private hoverCountryLabel: HoverCountryLabel | null = null;
     private quizGame: CountryQuizGame | null = null;
@@ -87,26 +87,11 @@ export class SoloGameController extends BaseGameController {
             }
         }
 
-        // Create selection behavior (unless disabled)
+        // Wire hover selection (unless disabled)
         if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
-            this.selectionBehavior = new CountrySelectionBehavior(
-                this.globe.getScene(),
-                this.advancedTexture,
-                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
-                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
-                (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
-                (countryIndex) => this.globe.getCountryState(countryIndex),
-                (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
-                (countryIndex) => this.globe.getCountryBlend(countryIndex),
-                {
-                    showOutline: (countryIndex) => this.globe.showCountryOutline(countryIndex),
-                    clearOutline: () => this.globe.clearCountryOutline()
-                }
-            );
-
-            // Wire PinManager to highlight countries and show hover label
+            this.selectionEnabled = true;
             this.pinManager.onCountryHover((country, latLon) => {
-                this.selectionBehavior?.onCountrySelected(country, latLon);
+                handleHover(this.globe, country, latLon);
 
                 // Update hover label
                 if (country) {
@@ -131,24 +116,10 @@ export class SoloGameController extends BaseGameController {
             }
         }
 
-        // Recreate selection behavior
-        if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
-            this.selectionBehavior = new CountrySelectionBehavior(
-                this.globe.getScene(),
-                this.advancedTexture,
-                (countryIndex, altitude) => this.globe.setCountryAltitude(countryIndex, altitude),
-                (countryIndex) => this.globe.getCountryAltitude(countryIndex),
-                (countryIndex, state) => this.globe.setCountryState(countryIndex, state),
-                (countryIndex) => this.globe.getCountryState(countryIndex),
-                (countryIndex, blend) => this.globe.setCountryBlend(countryIndex, blend),
-                (countryIndex) => this.globe.getCountryBlend(countryIndex),
-                {
-                    showOutline: (countryIndex) => this.globe.showCountryOutline(countryIndex),
-                    clearOutline: () => this.globe.clearCountryOutline()
-                }
-            );
+        // Rewire hover selection
+        if (this.selectionEnabled) {
             this.pinManager.onCountryHover((country, latLon) => {
-                this.selectionBehavior?.onCountrySelected(country, latLon);
+                handleHover(this.globe, country, latLon);
 
                 // Update hover label
                 if (country) {
@@ -161,11 +132,7 @@ export class SoloGameController extends BaseGameController {
     }
 
     protected disposeAdditionalUI(): void {
-        // Dispose old selection behavior
-        if (this.selectionBehavior) {
-            this.selectionBehavior.dispose();
-            this.selectionBehavior = null;
-        }
+        clearSelection(this.globe);
 
         // Dispose hover country label
         if (this.hoverCountryLabel) {
@@ -177,10 +144,6 @@ export class SoloGameController extends BaseGameController {
     // =========================================================================
     // Public API - Solo-Specific Methods
     // =========================================================================
-
-    getSelectionBehavior(): CountrySelectionBehavior | null {
-        return this.selectionBehavior;
-    }
 
     /**
      * Get the currently hovered country (from selection behavior).
