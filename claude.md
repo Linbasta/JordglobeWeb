@@ -165,6 +165,40 @@ try {
 
 **Default to CLI testing** unless visual/interactive verification is required. This creates a faster, more reliable development workflow for both Claude and the developer.
 
+## Code Architecture Principles (Handmade Philosophy)
+
+**Write simple, direct code that you understand completely.**
+
+### Core Rules:
+
+1. **Understand the machine** - Know what your code actually does at runtime
+2. **Measure, don't assume** - Profile before optimizing, benchmark before claiming "better"
+3. **Minimize dependencies** - Each dependency is a liability; write it yourself when practical
+4. **Avoid abstraction layers** - Add abstractions only when duplication proves painful
+5. **Make it work, then make it fast** - Simple working code beats elegant broken code
+6. **Question frameworks** - Use libraries for hard problems (3D, networking), not simple ones
+
+### In Practice:
+
+**Prefer:**
+- Plain functions over classes
+- Direct data access over getters/setters
+- Explicit code over "magic"
+- 100 lines you understand over 10 lines you don't
+- Copying small utilities over importing packages
+
+**Avoid:**
+- Deep inheritance hierarchies
+- Over-engineered "future-proof" designs
+- Premature abstractions
+- Framework churn and rewrites
+- Clever code that requires comments to understand
+
+**When adding code, ask:**
+- Can I see exactly what this does?
+- Could I rewrite this from scratch in an hour?
+- Does this make the program faster or slower?
+
 ## Development Server Architecture
 
 ### IMPORTANT: Server Management Rules

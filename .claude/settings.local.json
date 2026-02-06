@@ -42,7 +42,8 @@
       "Bash(find:*)",
       "Bash(wc:*)",
       "Bash(magick:*)",
-      "Bash(jq:*)"
+      "Bash(jq:*)",
+      "Bash(npm run test:quiz-runner:*)"
     ],
     "deny": [],
     "ask": []

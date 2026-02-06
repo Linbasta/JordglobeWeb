@@ -16,9 +16,13 @@ import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/P
 import { handleHover, clearSelection } from '../shared/behaviors/countrySelection';
 import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
 import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
-import { CountryQuizGame, QuizGameConfig } from '../shared/games/CountryQuizGame';
 import { reloadConfig, getConfig } from '../shared/config/GlobalConfig';
 import { getZoomValue } from '../shared/animation/cameraUtils';
+
+// New quiz pipeline
+import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/QuizUIAdapter';
+import { QuizDebugManager } from '../shared/quiz/QuizDebugManager';
+import { getDebugState } from '../shared/quiz/quizRunner';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -40,7 +44,10 @@ export class SoloGameController extends BaseGameController {
     private selectionEnabled = false;
     private countryLabelUI: CountryLabelUI | null = null;
     private hoverCountryLabel: HoverCountryLabel | null = null;
-    private quizGame: CountryQuizGame | null = null;
+
+    // Quiz adapters
+    private quizAdapter: QuizUIAdapter | null = null;
+    private quizDebugManager: QuizDebugManager | null = null;
 
     // Solo-specific callbacks
     private onCountrySelected: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
@@ -60,12 +67,31 @@ export class SoloGameController extends BaseGameController {
     protected async onGlobeReady(globe: EarthGlobeAPI): Promise<void> {
         // Base class has already created PinManager at this point
         // Now we create solo-specific modules
+
+        // Wire the quiz tick loop into the render loop
+        globe.getScene().onBeforeRenderObservable.add(() => {
+            if (this.quizAdapter) {
+                const now = performance.now();
+                this.quizAdapter.tick(now);
+
+                // Update debug panel if visible
+                if (this.quizDebugManager && import.meta.env.DEV) {
+                    this.quizDebugManager.update(getDebugState());
+                }
+            }
+        });
     }
 
     protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
-        // Delegate to user callback if set
-        if (this.onCountrySelected) {
-            this.onCountrySelected(country, latLon);
+        // Check if we're in quiz mode
+        if (this.quizAdapter && country) {
+            // Submit answer to quiz adapter
+            this.quizAdapter.submitAnswer(country.countryIndex);
+        } else {
+            // Normal mode - delegate to user callback if set
+            if (this.onCountrySelected) {
+                this.onCountrySelected(country, latLon);
+            }
         }
     }
 
@@ -101,6 +127,12 @@ export class SoloGameController extends BaseGameController {
                     this.hoverCountryLabel?.hide();
                 }
             });
+        }
+
+        // Create debug manager in dev mode
+        if (import.meta.env.DEV) {
+            this.quizDebugManager = new QuizDebugManager();
+            // Hidden by default (constructor sets display: none)
         }
     }
 
@@ -140,6 +172,18 @@ export class SoloGameController extends BaseGameController {
             this.hoverCountryLabel.dispose();
             this.hoverCountryLabel = null;
         }
+
+        // Dispose debug manager
+        if (this.quizDebugManager) {
+            this.quizDebugManager.dispose();
+            this.quizDebugManager = null;
+        }
+
+        // Dispose quiz adapter
+        if (this.quizAdapter) {
+            this.quizAdapter.dispose();
+            this.quizAdapter = null;
+        }
     }
 
     // =========================================================================
@@ -155,46 +199,30 @@ export class SoloGameController extends BaseGameController {
     }
 
     /**
-     * Start a country quiz game
+     * Start a country quiz game (new pipeline)
      */
-    startQuizGame(config: QuizGameConfig): void {
-        this.quizGame = new CountryQuizGame(this.globe, config);
+    startQuizGame(config: QuizConfig): void {
+        // Create quiz adapter
+        this.quizAdapter = new QuizUIAdapter(this.globe, this.countryLabelUI);
+        this.quizAdapter.startQuiz(config);
 
-        // Hook into pin placement to check quiz answers
-        onPinPlaced(async (country, latLon) => {
-            if (this.quizGame && !this.quizGame.isComplete()) {
-                const result = await this.quizGame.checkAnswer(country);
-
-                // If result is null, it means a disabled country was clicked - ignore it
-                if (result === null) {
-                    return;
-                }
-
-                // Update label with current question
-                const question = this.quizGame.getCurrentQuestion();
-                if (question && this.countryLabelUI) {
-                    this.countryLabelUI.show(question);
-                }
-            } else {
-                // Normal click handling (not in quiz mode or quiz complete)
-                this.onPinPlaced(country, latLon);
-            }
-        });
-
-        this.quizGame.start();
-
-        // Show first question
-        const question = this.quizGame.getCurrentQuestion();
-        if (question && this.countryLabelUI) {
-            this.countryLabelUI.show(question);
+        // Show debug panel in dev mode
+        if (this.quizDebugManager && import.meta.env.DEV) {
+            this.quizDebugManager.show();
         }
     }
 
     /**
-     * Get the active quiz game
+     * Get quiz state
      */
-    getQuizGame(): CountryQuizGame | null {
-        return this.quizGame;
+    getQuizState() {
+        return this.quizAdapter?.getState() || {
+            active: false,
+            score: 0,
+            total: 0,
+            done: false,
+            waiting: false
+        };
     }
 
     // =========================================================================
@@ -231,7 +259,15 @@ export class SoloGameController extends BaseGameController {
             if (e.key === 'c' || e.key === 'C') {
                 this.logCameraInfo();
             }
+            // Toggle debug panel (D key) - dev only
+            if ((e.key === 'd' || e.key === 'D') && import.meta.env.DEV) {
+                this.toggleDebugPanel();
+            }
         });
+    }
+
+    private toggleDebugPanel(): void {
+        this.quizDebugManager?.toggle();
     }
 
     private async toggleInspector(): Promise<void> {

@@ -136,6 +136,16 @@
             font-size: 14px;
         }
 
+        .debug-hint {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 100;
+        }
+
     </style>
 </head>
 
@@ -153,6 +163,8 @@
         <div><strong>Score:</strong> <span id="correct">0</span> / <span id="total">0</span></div>
         <div><strong>Wrong:</strong> <span id="wrong">0</span></div>
     </div>
+
+    <div class="debug-hint">Press D to toggle debug panel</div>
 
     <div id="error-toast">
         <h3>Shader Compilation Error</h3>
@@ -183,39 +195,47 @@
                 onReady: (controller) => {
                     console.log('Quiz game ready!');
 
-                    // Start quiz with European countries
+                    // Define quiz questions (new pipeline)
+                    const countries = [
+                        'SE', 'NO', 'FI', 'DK', 'IS',  // Nordic
+                        'GB', 'IE', 'FR', 'ES', 'PT',  // Western Europe
+                        'DE', 'NL', 'BE', 'LU', 'CH', 'AT',  // Central Europe
+                        'IT', 'GR', 'MT', 'CY',  // Southern Europe
+                        'PL', 'CZ', 'SK', 'HU', 'RO', 'BG',  // Eastern Europe
+                        'EE', 'LV', 'LT',  // Baltics
+                    ];
+
+                    // Convert to Question objects
+                    const questions = countries.map(iso2 => {
+                        const country = controller.getGlobe().getCountryByISO2(iso2);
+                        return {
+                            type: 'country',
+                            countryISO2: iso2,
+                            prompt: country?.name || iso2
+                        };
+                    });
+
+                    // Shuffle questions
+                    questions.sort(() => Math.random() - 0.5);
+
+                    // Start quiz with new pipeline
                     controller.startQuizGame({
-                        countries: [
-                            'SE', 'NO', 'FI', 'DK', 'IS',  // Nordic
-                            'GB', 'IE', 'FR', 'ES', 'PT',  // Western Europe
-                            'DE', 'NL', 'BE', 'LU', 'CH', 'AT',  // Central Europe
-                            'IT', 'GR', 'MT', 'CY',  // Southern Europe
-                            'PL', 'CZ', 'SK', 'HU', 'RO', 'BG',  // Eastern Europe
-                            'EE', 'LV', 'LT',  // Baltics
-                        ],
+                        questions,
                         revealCorrectOnWrong: true,  // Mode A: reveal with camera animation
                         removeOnWrong: false,
-                        onQuestionChanged: (name, i, total) => {
-                            console.log(`Question ${i}/${total}: Find ${name}`);
+                        onQuestionChanged: (prompt, i, total) => {
+                            console.log(`Question ${i}/${total}: ${prompt}`);
                             document.getElementById('total').textContent = total;
                         },
-                        onCorrectAnswer: (name) => {
-                            console.log(`✓ Correct! ${name}`);
-                            const quiz = controller.getQuizGame();
-                            if (quiz) {
-                                const score = quiz.getScore();
-                                document.getElementById('correct').textContent = score.correct;
-                                document.getElementById('wrong').textContent = score.wrong;
-                            }
+                        onCorrectAnswer: (prompt) => {
+                            console.log(`✓ Correct! ${prompt}`);
+                            const state = controller.getQuizState();
+                            document.getElementById('correct').textContent = state.score;
                         },
                         onWrongAnswer: (wrong, correct) => {
                             console.log(`✗ Wrong! Clicked ${wrong}, answer was ${correct}`);
-                            const quiz = controller.getQuizGame();
-                            if (quiz) {
-                                const score = quiz.getScore();
-                                document.getElementById('correct').textContent = score.correct;
-                                document.getElementById('wrong').textContent = score.wrong;
-                            }
+                            const state = controller.getQuizState();
+                            document.getElementById('wrong').textContent = state.total - state.score;
                         },
                         onGameComplete: (score, total) => {
                             console.log(`Game over! Score: ${score}/${total}`);

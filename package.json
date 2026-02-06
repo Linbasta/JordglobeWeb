@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "test": "node test_neighbors_new.cjs",
     "test:segments": "tsx scripts/test-segment-loader.ts",
+    "test:quiz-runner": "tsx scripts/test-quiz-runner.ts",
     "generate-borders": "node scripts/generate_borders.mjs",
     "generate-segments": "tsx scripts/generate-segments.ts",
     "enrich-countries": "tsx scripts/enrich-countries.ts"
