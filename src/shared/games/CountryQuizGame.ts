@@ -1,5 +1,5 @@
 import type { EarthGlobeAPI, CountryPolygon, CountryData } from '../../earth-globe';
-import { STATE_DISABLED } from '../../earth-globe';
+import { STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
 import {
     animateCorrect,
     animateToCleared,
@@ -81,7 +81,7 @@ export class CountryQuizGame {
 
         // Ignore disabled countries - return null to signal "no action"
         const countryState = this.globe.getCountryState(clickedCountry.countryIndex);
-        if (countryState === STATE_DISABLED) {
+        if (countryState === STATE_DISABLED || countryState === STATE_CLEARED) {
             return null;
         }
 

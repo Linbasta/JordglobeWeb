@@ -227,7 +227,7 @@ export class CountrySelectionBehavior {
     private selectCountry(country: CountryPolygon, latLon: LatLon): void {
         // Check if country is disabled - if so, don't select it
         const countryState = this.getState(country.countryIndex);
-        if (countryState === STATE_DISABLED) {
+        if (countryState === STATE_DISABLED || countryState === STATE_CLEARED) {
             return;
         }
 
@@ -245,8 +245,11 @@ export class CountrySelectionBehavior {
         // Clear outline
         this.options.clearOutline?.();
 
-        // Reset altitude to default (no animation for hover feedback)
-        this.animateAltitude(country.countryIndex, this.options.defaultAltitude, false);
+        // Don't reset altitude for cleared/disabled countries - they should stay sunk
+        const countryState = this.getState(country.countryIndex);
+        if (countryState !== STATE_CLEARED && countryState !== STATE_DISABLED) {
+            this.animateAltitude(country.countryIndex, this.options.defaultAltitude, false);
+        }
         console.log(`Deselected: ${country.name} (${country.iso2})`);
     }
 
