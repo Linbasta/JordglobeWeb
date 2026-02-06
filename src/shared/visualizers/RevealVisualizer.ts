@@ -9,7 +9,7 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import type { EarthGlobe } from '../../earth-globe';
 import { MultiPinManager } from '../managers/MultiPinManager';
 import { ArcDrawer } from './ArcDrawer';
-import { CameraAnimator } from '../animation/CameraAnimator';
+import { animateToLocation } from '../animation/cameraUtils';
 import { PinReplayAnimator } from '../animation/PinReplayAnimator';
 import type { PinRecording } from '../animation/PinRecorder';
 import { getPlayerColor } from '../../../shared/playerColors';
@@ -43,7 +43,6 @@ export class RevealVisualizer {
 
     private pinManager: MultiPinManager;
     private arcDrawer: ArcDrawer;
-    private cameraAnimator: CameraAnimator;
     private pinReplayAnimator: PinReplayAnimator;
 
     private currentArcIds: string[] = [];
@@ -62,7 +61,6 @@ export class RevealVisualizer {
         );
 
         this.arcDrawer = new ArcDrawer(scene, globe);
-        this.cameraAnimator = new CameraAnimator(camera, globe);
         this.pinReplayAnimator = new PinReplayAnimator(scene, camera);
     }
 
@@ -106,7 +104,8 @@ export class RevealVisualizer {
         await this.delay(ARC_START_DELAY);
         await Promise.all([
             this.animateArcs(ARC_ANIMATION_DURATION),
-            this.cameraAnimator.animateToLocation(
+            animateToLocation(
+                this.camera,
                 data.correct.lat,
                 data.correct.lon,
                 CAMERA_TARGET_RADIUS,

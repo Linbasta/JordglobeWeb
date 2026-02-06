@@ -121,6 +121,7 @@ export const DEFAULT_ASSETS = {
     spaceTextureMid: '/SpaceMidTexture.png',
     spaceTextureTop: '/SpaceTop.png',
     spaceTextureBottom: '/SpaceBottom.png',
+    worldTexture: '/WorldTexture.png',
 } as const;
 
 // ============================================================================

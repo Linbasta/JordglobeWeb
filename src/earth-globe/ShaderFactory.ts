@@ -12,11 +12,11 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import { Material } from '@babylonjs/core/Materials/material';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+
 import {
     ANIMATION_AMPLITUDE,
     ANIMATION_TEXTURE_WIDTH,
-    COUNTRY_HSV_SATURATION,
-    COUNTRY_HSV_VALUE,
     BORDER_COLOR_WHITE,
     BORDER_COLOR_GRAY,
     OUTLINE_COLOR
@@ -64,7 +64,8 @@ export class ShaderFactory {
         fragmentShader: string,
         uniforms: string[],
         varyings: string = "",
-        varyingAssignments: string = ""
+        varyingAssignments: string = "",
+        extraSamplers: string[] = []
     ): ShaderMaterial {
         // Setup vertex shader with injected varyings
         const vertexShader = animatedVertexShader
@@ -81,7 +82,7 @@ export class ShaderFactory {
         }, {
             attributes: ["position", "normal", "uv", "countryIndex"],
             uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", ...uniforms],
-            samplers: ["animationTexture"]
+            samplers: ["animationTexture", ...extraSamplers]
         });
 
         // Setup compilation callbacks
@@ -105,16 +106,29 @@ export class ShaderFactory {
      * Create the country surface shader material
      * @returns Configured ShaderMaterial for countries
      */
-    createCountryShaderMaterial(): ShaderMaterial {
+    createCountryShaderMaterial(worldTexture: Texture): ShaderMaterial {
+        const varyings = [
+            "varying float vCountryIndex;",
+            "varying vec2 vTexUV;"
+        ].join("\n");
+
+        const varyingAssignments = [
+            "vCountryIndex = countryIndex;",
+            "vec3 dir = normalize(position);",
+            "float lon = atan(dir.z, dir.x);",
+            "float lat = asin(dir.y);",
+            "vTexUV = vec2(lon / 6.28318530 + 0.5, lat / 3.14159265 + 0.5);"
+        ].join("\n    ");
+
         const material = this.createShaderMaterial(
             "countryShader",
             countryFragmentShader,
-            ["countryHsvSaturation", "countryHsvValue"],
-            "varying float vCountryIndex;",
-            "vCountryIndex = countryIndex;"
+            [],
+            varyings,
+            varyingAssignments,
+            ["worldTexture"]
         );
-        material.setFloat("countryHsvSaturation", COUNTRY_HSV_SATURATION);
-        material.setFloat("countryHsvValue", COUNTRY_HSV_VALUE);
+        material.setTexture("worldTexture", worldTexture);
         return material;
     }
 

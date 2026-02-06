@@ -151,6 +151,7 @@ export interface AssetPaths {
     spaceTextureMid?: string;
     spaceTextureTop?: string;
     spaceTextureBottom?: string;
+    worldTexture?: string;
 }
 
 /**

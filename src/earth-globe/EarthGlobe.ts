@@ -13,6 +13,7 @@ import { Vector3, Color4 } from '@babylonjs/core/Maths/math';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Material } from '@babylonjs/core/Materials/material';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
 // Side effect imports
 import '@babylonjs/core/Meshes/meshBuilder';
@@ -212,8 +213,12 @@ export class EarthGlobe {
             this.animationTexture.setEntriesUsed(countryCount + segmentCount);
             this.animationTexture.update();
 
+            // Load world texture
+            const worldTextureUrl = this.assets.worldTexture || DEFAULT_ASSETS.worldTexture;
+            const worldTexture = new Texture(worldTextureUrl, this.scene, false, true);
+
             // Merge meshes for performance
-            this.countryRenderer.mergeCountries(this.shaderFactory.createCountryShaderMaterial());
+            this.countryRenderer.mergeCountries(this.shaderFactory.createCountryShaderMaterial(worldTexture));
             this.borderRenderer.mergeExtrudedBorders(
                 this.countryRenderer.getPolygonsData(),
                 this.shaderFactory.createExtrudedBorderMaterial()

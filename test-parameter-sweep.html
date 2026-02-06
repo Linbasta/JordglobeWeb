@@ -260,6 +260,7 @@
     <script type="module">
         import { SoloGameController } from './src/solo/SoloGameController.ts';
         import { loadConfig } from './src/shared/config/GlobalConfig.ts';
+        import { frameCountry } from './src/shared/animation/cameraUtils.ts';
 
         let game = null;
         let testResults = [];
@@ -356,8 +357,9 @@
 
             const viewport = { x: 0.25, y: 0, width: 0.5, height: 0.4 };
 
-            const cameraAnimator = game.getCameraAnimator();
-            const stats = await cameraAnimator.frameCountry(
+            const stats = await frameCountry(
+                game.getGlobe().getCamera(),
+                game.getGlobe(),
                 polygons,
                 countryName,
                 1000, // duration

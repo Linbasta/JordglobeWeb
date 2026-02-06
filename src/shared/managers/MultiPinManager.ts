@@ -17,7 +17,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { hexToRgb } from '../../../shared/playerColors';
-import { ZoomBasedValue } from '../animation/CameraAnimator';
+import { getZoomValue } from '../animation/cameraUtils';
 import { getConfig } from '../config/GlobalConfig';
 
 const EARTH_RADIUS = 2.0;
@@ -39,9 +39,6 @@ export class MultiPinManager {
     private bossPinTemplate: AbstractMesh | null = null;
     private pins: Map<string, PlayerPin> = new Map();
 
-    // Zoom-based scaling
-    private zoomScaler: ZoomBasedValue;
-
     constructor(
         scene: Scene,
         camera: ArcRotateCamera,
@@ -50,7 +47,6 @@ export class MultiPinManager {
         this.scene = scene;
         this.camera = camera;
         this.createUnlitMaterial = createUnlitMaterial;
-        this.zoomScaler = new ZoomBasedValue(camera);
     }
 
     async init(): Promise<void> {
@@ -175,7 +171,8 @@ export class MultiPinManager {
 
         // Scale the pin (using config values)
         const config = getConfig();
-        const pinScale = this.zoomScaler.getValue(
+        const pinScale = getZoomValue(
+            this.camera,
             config.zoom.pinScale.closeValue,
             config.zoom.pinScale.farValue,
             config.zoom.pinScale.easing
@@ -237,7 +234,8 @@ export class MultiPinManager {
 
         // Scale based on camera distance (using config values)
         const config = getConfig();
-        const pinScale = this.zoomScaler.getValue(
+        const pinScale = getZoomValue(
+            this.camera,
             config.zoom.pinScale.closeValue,
             config.zoom.pinScale.farValue,
             config.zoom.pinScale.easing
@@ -256,7 +254,8 @@ export class MultiPinManager {
      */
     updatePinScales(): void {
         const config = getConfig();
-        const pinScale = this.zoomScaler.getValue(
+        const pinScale = getZoomValue(
+            this.camera,
             config.zoom.pinScale.closeValue,
             config.zoom.pinScale.farValue,
             config.zoom.pinScale.easing

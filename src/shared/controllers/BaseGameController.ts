@@ -23,7 +23,6 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 import { PinManager } from '../managers/PinManager';
 import { PinUI } from '../ui/PinUI';
 import { GlobeState } from '../state';
-import { CameraAnimator } from '../animation/CameraAnimator';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -52,7 +51,6 @@ export abstract class BaseGameController {
     // Modules
     protected pinManager!: PinManager;
     protected pinUI: PinUI | null = null;
-    protected cameraAnimator!: CameraAnimator;
 
     // GUI elements
     protected advancedTexture: AdvancedDynamicTexture | null = null;
@@ -80,9 +78,6 @@ export abstract class BaseGameController {
             canvasId,
             onReady: async (globe) => {
                 this.updateLoadingProgress(75, 'Creating modules...');
-
-                // Create CameraAnimator
-                this.cameraAnimator = new CameraAnimator(globe.getCamera(), globe);
 
                 // Create PinManager
                 this.pinManager = new PinManager(
@@ -223,10 +218,6 @@ export abstract class BaseGameController {
 
     getPinUI(): PinUI | null {
         return this.pinUI;
-    }
-
-    getCameraAnimator(): CameraAnimator {
-        return this.cameraAnimator;
     }
 
     // =========================================================================

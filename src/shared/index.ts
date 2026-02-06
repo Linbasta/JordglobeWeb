@@ -20,7 +20,8 @@ export { RevealVisualizer } from './visualizers/RevealVisualizer';
 // Animation
 export { PinRecorder } from './animation/PinRecorder';
 export { PinReplayAnimator } from './animation/PinReplayAnimator';
-export { CameraAnimator } from './animation/CameraAnimator';
+export { animateToLocation, frameCountry, cameraShake, getZoomValue } from './animation/cameraUtils';
+export type { ViewportRegion } from './animation/cameraUtils';
 export type { PinRecording, RecordedPosition } from './animation/PinRecorder';
 
 // Behaviors

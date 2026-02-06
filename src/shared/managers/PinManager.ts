@@ -15,7 +15,7 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
-import { ZoomBasedValue } from '../animation/CameraAnimator';
+import { getZoomValue } from '../animation/cameraUtils';
 import { getConfig } from '../config/GlobalConfig';
 
 const EARTH_RADIUS = 2.0;
@@ -42,9 +42,6 @@ export class PinManager {
     // Pin recording
     private pinRecorder: PinRecorder;
 
-    // Zoom-based scaling
-    private zoomScaler: ZoomBasedValue;
-
     // Callbacks
     private onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
@@ -67,7 +64,6 @@ export class PinManager {
         this.createUnlitMaterial = createUnlitMaterial;
         this.getCountryAltitude = getCountryAltitude;
         this.pinRecorder = new PinRecorder();
-        this.zoomScaler = new ZoomBasedValue(camera);
     }
 
     async init(): Promise<void> {
@@ -256,7 +252,8 @@ export class PinManager {
             // Scale pin based on camera zoom (using config values)
             if (this.previewPinContainer) {
                 const config = getConfig();
-                const pinScale = this.zoomScaler.getValue(
+                const pinScale = getZoomValue(
+                    this.camera,
                     config.zoom.pinScale.closeValue,
                     config.zoom.pinScale.farValue,
                     config.zoom.pinScale.easing

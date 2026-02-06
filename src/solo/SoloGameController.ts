@@ -17,7 +17,7 @@ import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
 import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
 import { CountryQuizGame, QuizGameConfig } from '../shared/games/CountryQuizGame';
 import { reloadConfig, getConfig } from '../shared/config/GlobalConfig';
-import { ZoomBasedValue } from '../shared/animation/CameraAnimator';
+import { getZoomValue } from '../shared/animation/cameraUtils';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -298,8 +298,8 @@ export class SoloGameController extends BaseGameController {
     private logCameraInfo(): void {
         const camera = this.globe.getCamera();
         const config = getConfig();
-        const zoomScaler = new ZoomBasedValue(camera);
-        const pinScale = zoomScaler.getValue(
+        const pinScale = getZoomValue(
+            camera,
             config.zoom.pinScale.closeValue,
             config.zoom.pinScale.farValue,
             config.zoom.pinScale.easing

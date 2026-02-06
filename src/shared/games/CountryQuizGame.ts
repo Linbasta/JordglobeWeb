@@ -8,7 +8,7 @@ import {
     animateToNormal,
     setDisabledImmediate
 } from '../animations/CountryAnimations';
-import { CameraAnimator } from '../animation/CameraAnimator';
+import { frameCountry, cameraShake } from '../animation/cameraUtils';
 import { ArcDrawer } from '../visualizers/ArcDrawer';
 
 export interface QuizGameConfig {
@@ -28,7 +28,6 @@ export interface QuizGameConfig {
 export class CountryQuizGame {
     private globe: EarthGlobeAPI;
     private config: QuizGameConfig;
-    private cameraAnimator: CameraAnimator;
     private arcDrawer: ArcDrawer;
 
     private gameCountries: CountryData[] = [];
@@ -41,7 +40,6 @@ export class CountryQuizGame {
     constructor(globe: EarthGlobeAPI, config: QuizGameConfig) {
         this.globe = globe;
         this.config = config;
-        this.cameraAnimator = new CameraAnimator(globe.getCamera(), globe);
         this.arcDrawer = new ArcDrawer(globe.getScene(), globe);
     }
 
@@ -150,7 +148,9 @@ export class CountryQuizGame {
             const allPolygons = this.globe.getCountryPicker().getAllPolygons();
             const correctPolygons = allPolygons.filter(p => p.countryIndex === correctCountry.index);
 
-            const cameraFlyPromise = this.cameraAnimator.frameCountry(
+            const cameraFlyPromise = frameCountry(
+                this.globe.getCamera(),
+                this.globe,
                 correctPolygons,
                 correctCountry.name,
                 800, // 800ms camera animation
@@ -183,7 +183,7 @@ export class CountryQuizGame {
             // Mode B: Just shake and brief pop
             this.globe.clearCountryOutline();
             await Promise.all([
-                this.cameraAnimator.cameraShake(300, 0.02),
+                cameraShake(this.globe.getCamera(), 300, 0.02),
                 animateWrong(this.globe, wrongCountry.countryIndex, this.config.removeOnWrong)
             ]);
         }

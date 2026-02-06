@@ -5,7 +5,7 @@
 
 import { EarthGlobe } from '../earth-globe';
 import { ArcDrawer } from '../shared/visualizers/ArcDrawer';
-import { CameraAnimator } from '../shared/animation/CameraAnimator';
+import { animateToLocation } from '../shared/animation/cameraUtils';
 import { PLAYER_COLORS } from '../../shared/playerColors';
 
 // Initialize EarthGlobe
@@ -17,9 +17,7 @@ setTimeout(() => {
     const scene = globe.getScene();
     const camera = globe.getCamera();
     const arcDrawer = new ArcDrawer(scene, globe);
-    const cameraAnimator = new CameraAnimator(camera, globe);
     (window as any).arcDrawer = arcDrawer;
-    (window as any).cameraAnimator = cameraAnimator;
 
     // Test locations
     const paris = { lat: 48.8584, lon: 2.2945 }; // Target (correct answer)
@@ -78,7 +76,7 @@ setTimeout(() => {
         // Run arc animation and camera animation in parallel
         await Promise.all([
             arcDrawer.animateArcs(1200),
-            cameraAnimator.animateToLocation(paris.lat, paris.lon, 6, 1200)
+            animateToLocation(camera, paris.lat, paris.lon, 6, 1200)
         ]);
 
         updateStatus('Animation complete!');

@@ -226,6 +226,7 @@
     <script type="module">
         import { SoloGameController } from './src/solo/SoloGameController.ts';
         import { loadConfig } from './src/shared/config/GlobalConfig.ts';
+        import { animateToLocation, frameCountry } from './src/shared/animation/cameraUtils.ts';
         import { Vector3 } from '@babylonjs/core/Maths/math.vector';
         import { Matrix } from '@babylonjs/core/Maths/math.vector';
 
@@ -338,8 +339,9 @@
 
                     console.log(`Auto-framing ${testCountry.name} with viewport region:`, viewportRegion);
 
-                    const cameraAnimator = controller.getCameraAnimator();
-                    const stats = await cameraAnimator.frameCountry(
+                    const stats = await frameCountry(
+                        controller.getGlobe().getCamera(),
+                        controller.getGlobe(),
                         testPolygons,
                         testCountry.name,
                         1000,
@@ -502,8 +504,8 @@
 
             console.log(`Animating to ${selectedCountry.name} at radius ${targetRadius} over ${duration}ms`);
 
-            const cameraAnimator = game.getCameraAnimator();
-            await cameraAnimator.animateToLocation(
+            await animateToLocation(
+                game.getGlobe().getCamera(),
                 selectedLatLon.lat,
                 selectedLatLon.lon,
                 targetRadius,
@@ -574,8 +576,9 @@
             }
 
             const startTime = performance.now();
-            const cameraAnimator = game.getCameraAnimator();
-            const stats = await cameraAnimator.frameCountry(
+            const stats = await frameCountry(
+                game.getGlobe().getCamera(),
+                game.getGlobe(),
                 countryPolygons,
                 selectedCountry.name,
                 duration,
@@ -635,8 +638,7 @@
             const duration = parseInt(document.getElementById('durationSlider').value);
             console.log('Resetting camera...');
 
-            const cameraAnimator = game.getCameraAnimator();
-            await cameraAnimator.reset(duration);
+            await animateToLocation(game.getGlobe().getCamera(), 0, 0, 10, duration);
 
             console.log('Camera reset!');
         });
@@ -650,7 +652,6 @@
 
             const globe = game.getGlobe();
             const camera = globe.getCamera();
-            const cameraAnimator = game.getCameraAnimator();
 
             // Get viewport region settings
             const useRegion = document.getElementById('useViewportRegion').checked;
