@@ -27,27 +27,43 @@ export default defineConfig({
       name: 'routes-plugin',
       configureServer(server) {
         // Generate landing page on startup
-        const html = generateLandingPage();
+        const html = generateLandingPage(__dirname);
         const indexPath = join(__dirname, 'index.html');
         writeFileSync(indexPath, html, 'utf-8');
         console.log('✓ Generated index.html from routes.config.ts');
 
-        // Watch routes.config.ts for changes
+        // Watch routes.config.ts and test files for changes
         const routesConfigPath = join(__dirname, 'routes.config.ts');
         server.watcher.add(routesConfigPath);
+
+        const regenerate = () => {
+          const updatedHtml = generateLandingPage(__dirname);
+          writeFileSync(indexPath, updatedHtml, 'utf-8');
+          server.ws.send({ type: 'full-reload', path: '/' });
+          console.log('✓ Index.html regenerated and page reloaded');
+        };
+
+        const isTestFile = (file: string) =>
+          dirname(file) === __dirname && file.endsWith('.html') && file.includes('/test-');
 
         server.watcher.on('change', (file) => {
           if (file === routesConfigPath) {
             console.log('🔄 Routes config changed, regenerating index.html...');
-            const updatedHtml = generateLandingPage();
-            writeFileSync(indexPath, updatedHtml, 'utf-8');
+            regenerate();
+          }
+        });
 
-            // Trigger full reload for index.html
-            server.ws.send({
-              type: 'full-reload',
-              path: '/'
-            });
-            console.log('✓ Index.html regenerated and page reloaded');
+        server.watcher.on('add', (file) => {
+          if (isTestFile(file)) {
+            console.log('🔄 New test file detected, regenerating index.html...');
+            regenerate();
+          }
+        });
+
+        server.watcher.on('unlink', (file) => {
+          if (isTestFile(file)) {
+            console.log('🔄 Test file removed, regenerating index.html...');
+            regenerate();
           }
         });
 
@@ -64,7 +80,7 @@ export default defineConfig({
 
       // Also generate during build
       buildStart() {
-        const html = generateLandingPage();
+        const html = generateLandingPage(__dirname);
         const indexPath = join(__dirname, 'index.html');
         writeFileSync(indexPath, html, 'utf-8');
         console.log('✓ Generated index.html for build');

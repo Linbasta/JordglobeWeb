@@ -36,35 +36,23 @@ export const routes: RoutesConfig = {
       file: 'party.html',
       title: 'JordGlobe Party (Player)',
       description: 'Join a multiplayer game on mobile'
+    },
+    {
+      path: '/quiz',
+      file: 'quiz.html',
+      title: 'Country Quiz',
+      description: 'Test your geography knowledge'
     }
   ],
 
   // Development and testing pages
+  // Note: files in public/tests/*.html are auto-discovered
+  // Note: test-*.html files in project root are auto-discovered
   dev: [
     {
       path: '/bot-panel.html',
       title: 'Bot Control Panel',
       description: 'Simulate multiple players for testing'
-    },
-    {
-      path: '/tests/test-arcs.html',
-      title: 'Arc Drawer Test',
-      description: 'Test geodesic arc animations'
-    },
-    {
-      path: '/tests/test-water-shader.html',
-      title: 'Water Shader Test',
-      description: 'Test ocean rendering effects'
-    },
-    {
-      path: '/tests/test-pin-replay.html',
-      title: 'Pin Replay Animation',
-      description: 'Test pin movement recording/replay'
-    },
-    {
-      path: '/test-multi-pin.html',
-      title: 'Multi-Pin Test',
-      description: 'Test multiple pin placement'
     }
   ]
 };

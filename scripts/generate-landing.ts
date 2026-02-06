@@ -3,11 +3,31 @@
  * Generates index.html from routes.config.ts
  */
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { routes, type Route } from '../routes.config';
 
-export function generateLandingPage(): string {
+function discoverTestFiles(projectRoot: string): Route[] {
+  // Auto-discover test-*.html files in project root
+  try {
+    const files = readdirSync(projectRoot)
+      .filter(f => f.startsWith('test-') && f.endsWith('.html'))
+      .sort();
+    return files
+      .filter(f => !routes.dev.some(r => r.path === `/${f}`))
+      .map(file => ({
+        path: `/${file}`,
+        title: file.replace('.html', ''),
+        description: ''
+      }));
+  } catch {
+    return [];
+  }
+}
+
+export function generateLandingPage(projectRoot?: string): string {
+  const root = projectRoot || process.cwd();
+  const testRoutes = discoverTestFiles(root);
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,6 +169,7 @@ ${routes.main.map(route => generateRouteCard(route, true)).join('\n')}
             <h2>Development & Testing</h2>
             <div class="links-grid">
 ${routes.dev.map(route => generateRouteCard(route, false)).join('\n')}
+${testRoutes.map(route => generateTestCard(route)).join('\n')}
             </div>
         </div>
 
@@ -168,6 +189,12 @@ function generateRouteCard(route: Route, isPrimary: boolean): string {
   return `                <a href="${route.path}" class="${classes}">
                     <div class="link-title">${route.title}</div>
                     <div class="link-description">${route.description}</div>
+                </a>`;
+}
+
+function generateTestCard(route: Route): string {
+  return `                <a href="${route.path}" class="link-card">
+                    <div class="link-title">${route.title}</div>
                 </a>`;
 }
 

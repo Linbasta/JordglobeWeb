@@ -36,7 +36,9 @@
       "Bash(npm run generate-html:*)",
       "Bash(npm run inject-console:*)",
       "Bash(xargs sed:*)",
-      "Bash(yes:*)"
+      "Bash(yes:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
