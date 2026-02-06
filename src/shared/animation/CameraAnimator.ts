@@ -329,7 +329,12 @@ export class CameraAnimator {
      *
      * Uses two different algorithms:
      * - No viewport region: Simple binary search on radius (camera points at center)
-     * - With viewport region: 3D grid search over (alpha, beta, radius) to center within region
+     * - With viewport region: Smart initialization + two-stage grid search
+     *   1. Binary search for optimal radius (based on viewport size)
+     *   2. Calculate camera angle adjustments (based on viewport position)
+     *   3. Coarse grid search around smart estimate (±5° alpha, ±10° beta, ±20% radius)
+     *   4. Fine refinement with tighter tolerance
+     *   5. Fallback to wider ranges if smart initialization fails
      *
      * @param polygons All polygons belonging to the country (for multi-part countries like Russia)
      * @param countryName Name of the country for logging
@@ -337,7 +342,8 @@ export class CameraAnimator {
      * @param margin UNUSED - kept for API compatibility
      * @param viewportRegion Optional viewport region constraint (normalized 0-1 coordinates)
      * @param maxIterations UNUSED - kept for API compatibility
-     * @returns Promise that resolves when animation completes
+     * @param gridConfig Optional grid search configuration for performance tuning
+     * @returns Promise with performance stats
      */
     async frameCountry(
         polygons: CountryPolygon[],
@@ -345,8 +351,19 @@ export class CameraAnimator {
         duration: number,
         margin: number = 0.8,
         viewportRegion?: ViewportRegion,
-        maxIterations: number = 100
-    ): Promise<void> {
+        maxIterations: number = 100,
+        gridConfig?: {
+            coarseGridSize?: number;  // Default: 6 (6×6×6 = 216 checks)
+            fineGridSize?: number;    // Default: 6 (6×6×6 = 216 checks)
+            alphaRangeDegrees?: number; // Default: 15 (±15°)
+            betaRangeDegrees?: number;  // Default: 30 (±30°)
+        }
+    ): Promise<{
+        iterations: number;
+        finalError: number;
+        solveTime: number;
+        converged: boolean;
+    }> {
         if (polygons.length === 0) {
             console.error('No polygons provided for framing');
             return;
@@ -406,29 +423,40 @@ export class CameraAnimator {
             radius: number;
         } | null = null;
 
-        // ====================
-        // NO VIEWPORT REGION: Simple binary search on radius only
-        // ====================
-        if (!viewportRegion) {
-            console.log(`No viewport region - using simple binary search on radius`);
+        let stats = {
+            iterations: 0,
+            finalError: 0,
+            solveTime: 0,
+            converged: false
+        };
 
+        // Helper: Binary search for optimal radius given viewport bounds
+        const binarySearchRadius = (
+            alpha: number,
+            beta: number,
+            vLeft: number,
+            vTop: number,
+            vRight: number,
+            vBottom: number
+        ): number => {
             let minRadius = CAMERA_LOWER_RADIUS;
             let maxRadius = 10.0;
-            const TARGET_FILL = 0.95; // Fill 95% of screen
-            const ITERATIONS = 20;
+            const TARGET_FILL = 0.95;
+            const MAX_ITERATIONS = 20;
+            const vWidth = vRight - vLeft;
+            const vHeight = vBottom - vTop;
 
-            for (let iter = 0; iter < ITERATIONS; iter++) {
+            for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+                stats.iterations++;
                 const testRadius = (minRadius + maxRadius) / 2;
 
-                // Project all points at center position (no offsets!)
                 const projectedXY = this.projectWorldToScreenXY(
                     allPoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
-                    baseAlpha, // No alpha offset
-                    baseBeta,  // No beta offset
+                    alpha,
+                    beta,
                     testRadius
                 );
 
-                // Get bounding box
                 const xs = projectedXY.map(p => p.x);
                 const ys = projectedXY.map(p => p.y);
                 const minX = Math.min(...xs);
@@ -436,55 +464,47 @@ export class CameraAnimator {
                 const minY = Math.min(...ys);
                 const maxY = Math.max(...ys);
 
-                // Check if all points fit on screen [0, 1]
-                const allFit = minX >= 0 && maxX <= 1 && minY >= 0 && maxY <= 1;
+                // Check if all points fit in viewport bounds
+                const allFit = minX >= vLeft && maxX <= vRight && minY >= vTop && maxY <= vBottom;
 
                 if (!allFit) {
-                    // Doesn't fit - zoom out
                     minRadius = testRadius;
-                    console.log(`  Iter ${iter + 1}: radius=${testRadius.toFixed(4)} - doesn't fit, zooming out`);
                 } else {
-                    // Fits! Check fill ratio
                     const width = maxX - minX;
                     const height = maxY - minY;
-                    const fillRatio = Math.min(width, height); // Most constrained dimension
-
-                    console.log(`  Iter ${iter + 1}: radius=${testRadius.toFixed(4)} - fits, fill=${(fillRatio * 100).toFixed(1)}%`);
+                    const fillRatio = Math.min(width / vWidth, height / vHeight);
 
                     if (fillRatio >= TARGET_FILL) {
-                        // Good enough!
-                        bestSolution = { alpha: baseAlpha, beta: baseBeta, radius: testRadius };
-                        break;
+                        return testRadius;
                     } else {
-                        // Can zoom in more
                         maxRadius = testRadius;
                     }
                 }
             }
 
-            // Use the last valid solution
-            if (!bestSolution) {
-                bestSolution = { alpha: baseAlpha, beta: baseBeta, radius: minRadius };
-            }
+            return minRadius;
+        };
 
-            const solveTime = performance.now() - startSolveTime;
-            console.log(`Binary search complete in ${solveTime.toFixed(1)}ms`);
+        // ====================
+        // NO VIEWPORT REGION: Simple binary search on radius only
+        // ====================
+        if (!viewportRegion) {
+            console.log(`No viewport region - using binary search on radius`);
+
+            const optimalRadius = binarySearchRadius(baseAlpha, baseBeta, 0, 0, 1, 1);
+            bestSolution = { alpha: baseAlpha, beta: baseBeta, radius: optimalRadius };
+            stats.converged = true;
+
+            stats.solveTime = performance.now() - startSolveTime;
+            stats.finalError = 0;
+            console.log(`Binary search complete in ${stats.solveTime.toFixed(1)}ms - radius=${optimalRadius.toFixed(4)}`);
         }
 
         // ====================
-        // WITH VIEWPORT REGION: 3D grid search over (alpha, beta, radius)
+        // WITH VIEWPORT REGION: Two-stage coarse-to-fine grid search
         // ====================
         else {
-            console.log(`Viewport region specified - using 3D grid search`);
-
-            // Grid dimensions - higher resolution for better centering
-            const ALPHA_SAMPLES = 60;   // Horizontal rotation samples (finer for X centering)
-            const BETA_SAMPLES = 60;    // Vertical angle samples (finer for Y centering)
-            const RADIUS_SAMPLES = 50;  // Zoom level samples
-            const ALPHA_RANGE = 15 * (Math.PI / 180); // ±15 degrees horizontal
-            const BETA_RANGE = 30 * (Math.PI / 180);  // ±30 degrees vertical
-            const MIN_RADIUS = CAMERA_LOWER_RADIUS; // Respect camera limits!
-            const MAX_RADIUS = 10.0;
+            console.log(`Viewport region specified - using two-stage grid search`);
 
             // For large countries, only use a sample of points for the grid search
             const MAX_SAMPLE_POINTS = 100;
@@ -494,93 +514,227 @@ export class CameraAnimator {
 
             console.log(`Using ${samplePoints.length} of ${allPoints.length} points for grid search`);
 
-            // Track best solution for grid search
-            let gridBestSolution: {
-                alpha: number;
-                beta: number;
-                radius: number;
-                score: number;
-            } | null = null;
+            // SMART INITIALIZATION: Reduce search space before brute force
+            console.log(`\n=== Smart Initialization ===`);
+
+            // Step 1: Binary search for optimal radius (for viewport SIZE, not position)
+            const centeredLeft = 0.5 - viewportWidth / 2;
+            const centeredTop = 0.5 - viewportHeight / 2;
+            const centeredRight = centeredLeft + viewportWidth;
+            const centeredBottom = centeredTop + viewportHeight;
+
+            const optimalRadius = binarySearchRadius(baseAlpha, baseBeta,
+                centeredLeft, centeredTop, centeredRight, centeredBottom);
+            console.log(`  Optimal radius for viewport size: ${optimalRadius.toFixed(4)}`);
+
+            // Step 2: Calculate camera angle adjustments based on viewport offset
+            const screenCenterX = 0.5;
+            const screenCenterY = 0.5;
+            const offsetX = viewportCenterX - screenCenterX;
+            const offsetY = viewportCenterY - screenCenterY;
+
+            // Heuristic: viewport offset → camera angle adjustment
+            // These coefficients are rough estimates based on typical camera projection
+            const alphaAdjustment = offsetX * 0.3;  // Horizontal offset → alpha
+            const betaAdjustment = -offsetY * 0.5;  // Vertical offset → beta (inverted)
+
+            const smartAlpha = baseAlpha + alphaAdjustment;
+            const smartBeta = baseBeta + betaAdjustment;
+
+            console.log(`  Viewport offset: (${(offsetX * 100).toFixed(1)}%, ${(offsetY * 100).toFixed(1)}%)`);
+            console.log(`  Camera adjustments: alpha ${alphaAdjustment >= 0 ? '+' : ''}${(alphaAdjustment * 180 / Math.PI).toFixed(2)}°, beta ${betaAdjustment >= 0 ? '+' : ''}${(betaAdjustment * 180 / Math.PI).toFixed(2)}°`);
+
+            // Step 3: Narrow search ranges around smart estimate
+            const alphaRangeDeg = gridConfig?.alphaRangeDegrees ?? 5;  // Reduced from 15°
+            const betaRangeDeg = gridConfig?.betaRangeDegrees ?? 10;   // Reduced from 30°
+            const ALPHA_RANGE = alphaRangeDeg * (Math.PI / 180);
+            const BETA_RANGE = betaRangeDeg * (Math.PI / 180);
+
+            // Search radius ±20% around optimal
+            const RADIUS_RANGE_FRACTION = 0.20;
+            const MIN_RADIUS = Math.max(CAMERA_LOWER_RADIUS, optimalRadius * (1 - RADIUS_RANGE_FRACTION));
+            const MAX_RADIUS = Math.min(10.0, optimalRadius * (1 + RADIUS_RANGE_FRACTION));
+
+            console.log(`  Search ranges: alpha ${(smartAlpha * 180 / Math.PI).toFixed(2)}° ± ${alphaRangeDeg}°, beta ${(smartBeta * 180 / Math.PI).toFixed(2)}° ± ${betaRangeDeg}°, radius [${MIN_RADIUS.toFixed(2)}, ${MAX_RADIUS.toFixed(2)}]`);
+            console.log(`=== Starting Grid Search ===\n`);
 
             let checksPerformed = 0;
-            const TOTAL_CHECKS = ALPHA_SAMPLES * BETA_SAMPLES * RADIUS_SAMPLES;
 
-            console.log(`Starting 3D grid search: ${ALPHA_SAMPLES} alpha × ${BETA_SAMPLES} beta × ${RADIUS_SAMPLES} radius = ${TOTAL_CHECKS} combinations`);
+            // Helper function for grid search
+            const searchGrid = (
+                alphaCenter: number,
+                alphaRange: number,
+                alphaSamples: number,
+                betaCenter: number,
+                betaRange: number,
+                betaSamples: number,
+                minRadius: number,
+                maxRadius: number,
+                radiusSamples: number,
+                maxCenterError: number,
+                stageName: string
+            ): { alpha: number; beta: number; radius: number; score: number } | null => {
+                let bestSolution: { alpha: number; beta: number; radius: number; score: number } | null = null;
+                const stageStartChecks = checksPerformed;
 
-        // Iterate over all combinations
-        for (let alphaIdx = 0; alphaIdx < ALPHA_SAMPLES; alphaIdx++) {
-            // Sample alpha from (baseAlpha - 15°) to (baseAlpha + 15°)
-            const alphaProgress = alphaIdx / (ALPHA_SAMPLES - 1);
-            const alpha = baseAlpha - ALPHA_RANGE + (2 * ALPHA_RANGE * alphaProgress);
+                for (let alphaIdx = 0; alphaIdx < alphaSamples; alphaIdx++) {
+                    const alphaProgress = alphaSamples === 1 ? 0.5 : alphaIdx / (alphaSamples - 1);
+                    const alpha = alphaCenter - alphaRange + (2 * alphaRange * alphaProgress);
 
-            for (let betaIdx = 0; betaIdx < BETA_SAMPLES; betaIdx++) {
-                // Sample beta from (baseBeta - 30°) to (baseBeta + 30°)
-                const betaProgress = betaIdx / (BETA_SAMPLES - 1);
-                const beta = baseBeta - BETA_RANGE + (2 * BETA_RANGE * betaProgress);
+                    for (let betaIdx = 0; betaIdx < betaSamples; betaIdx++) {
+                        const betaProgress = betaSamples === 1 ? 0.5 : betaIdx / (betaSamples - 1);
+                        const beta = betaCenter - betaRange + (2 * betaRange * betaProgress);
 
-                for (let radiusIdx = 0; radiusIdx < RADIUS_SAMPLES; radiusIdx++) {
-                    // Sample radius from MAX_RADIUS down to MIN_RADIUS
-                    const radiusProgress = radiusIdx / (RADIUS_SAMPLES - 1);
-                    const radius = MAX_RADIUS - (MAX_RADIUS - MIN_RADIUS) * radiusProgress;
+                        // Iterate radius from SMALL to LARGE (zoom in to zoom out)
+                        // This way we find the most zoomed-in solution first
+                        for (let radiusIdx = radiusSamples - 1; radiusIdx >= 0; radiusIdx--) {
+                            const radiusProgress = radiusSamples === 1 ? 0.5 : radiusIdx / (radiusSamples - 1);
+                            const radius = maxRadius - (maxRadius - minRadius) * radiusProgress;
 
-                    checksPerformed++;
+                            checksPerformed++;
 
-                    // Project SAMPLE points with altitude = 0.1
-                    const projectedXY = this.projectWorldToScreenXY(
-                        samplePoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
-                        alpha,
-                        beta,
-                        radius
-                    );
+                            // Project SAMPLE points with altitude = 0.1
+                            const projectedXY = this.projectWorldToScreenXY(
+                                samplePoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+                                alpha,
+                                beta,
+                                radius
+                            );
 
-                    // Check if ALL sample points are inside viewport
-                    const allInside = projectedXY.every(p =>
-                        p.x >= viewportLeft &&
-                        p.x <= viewportRight &&
-                        p.y >= viewportTop &&
-                        p.y <= viewportBottom
-                    );
+                            // Check if ALL sample points are inside viewport
+                            const allInside = projectedXY.every(p =>
+                                p.x >= viewportLeft &&
+                                p.x <= viewportRight &&
+                                p.y >= viewportTop &&
+                                p.y <= viewportBottom
+                            );
 
-                    if (!allInside) continue;
+                            if (!allInside) continue;
 
-                    // Calculate BOUNDING BOX center (not center of mass!)
-                    const minX = Math.min(...projectedXY.map(p => p.x));
-                    const maxX = Math.max(...projectedXY.map(p => p.x));
-                    const minY = Math.min(...projectedXY.map(p => p.y));
-                    const maxY = Math.max(...projectedXY.map(p => p.y));
+                            // Calculate BOUNDING BOX center
+                            const minX = Math.min(...projectedXY.map(p => p.x));
+                            const maxX = Math.max(...projectedXY.map(p => p.x));
+                            const minY = Math.min(...projectedXY.map(p => p.y));
+                            const maxY = Math.max(...projectedXY.map(p => p.y));
 
-                    const bboxCenterX = (minX + maxX) / 2;
-                    const bboxCenterY = (minY + maxY) / 2;
+                            const bboxCenterX = (minX + maxX) / 2;
+                            const bboxCenterY = (minY + maxY) / 2;
 
-                    // Check if bounding box center is within 1% of viewport center
-                    const centerErrorX = Math.abs(bboxCenterX - viewportCenterX);
-                    const centerErrorY = Math.abs(bboxCenterY - viewportCenterY);
-                    const maxCenterError = 0.01; // 1% tolerance for tight centering
+                            // Check if bounding box center is within tolerance
+                            const centerErrorX = Math.abs(bboxCenterX - viewportCenterX);
+                            const centerErrorY = Math.abs(bboxCenterY - viewportCenterY);
 
-                    if (centerErrorX > maxCenterError || centerErrorY > maxCenterError) continue;
+                            if (centerErrorX > maxCenterError || centerErrorY > maxCenterError) continue;
 
-                    // Valid solution! Score = radius (lower is better = more zoomed in)
-                    const score = radius;
+                            // Valid solution! Keep checking for more zoomed-in solutions
+                            // Score = radius (lower is better = more zoomed in)
+                            const score = radius;
 
-                    if (gridBestSolution === null || score < gridBestSolution.score) {
-                        gridBestSolution = { alpha, beta, radius, score };
+                            if (bestSolution === null || score < bestSolution.score) {
+                                bestSolution = { alpha, beta, radius, score };
+                            }
+                        }
                     }
+                }
 
-                    // Log progress every 50000 samples
-                    if (checksPerformed % 50000 === 0) {
-                        const progress = (checksPerformed / TOTAL_CHECKS * 100).toFixed(1);
-                        const elapsed = performance.now() - startSolveTime;
-                        console.log(`Progress: ${progress}% (${checksPerformed}/${TOTAL_CHECKS}) - ${elapsed.toFixed(0)}ms elapsed - Best radius: ${gridBestSolution?.radius.toFixed(4) ?? 'none'}`);
+                const stageChecks = checksPerformed - stageStartChecks;
+                console.log(`  ${stageName}: ${stageChecks.toLocaleString()} checks, best radius: ${bestSolution?.radius.toFixed(4) ?? 'none'}`);
+                return bestSolution;
+            };
+
+            // STAGE 1: Coarse grid search with loose tolerance
+            const COARSE_GRID_SIZE = gridConfig?.coarseGridSize ?? 6;
+            const coarseChecks = COARSE_GRID_SIZE ** 3;
+            console.log(`Stage 1: Coarse search (${COARSE_GRID_SIZE}×${COARSE_GRID_SIZE}×${COARSE_GRID_SIZE} = ${coarseChecks.toLocaleString()} checks)...`);
+
+            let gridBestSolution = searchGrid(
+                smartAlpha, ALPHA_RANGE, COARSE_GRID_SIZE,  // Use smart estimate, not base angles
+                smartBeta, BETA_RANGE, COARSE_GRID_SIZE,
+                MIN_RADIUS, MAX_RADIUS, COARSE_GRID_SIZE,
+                0.05, // 5% tolerance for coarse
+                'Coarse'
+            );
+
+            // STAGE 2: Fine refinement around coarse solution
+            if (gridBestSolution) {
+                const FINE_GRID_SIZE = gridConfig?.fineGridSize ?? 6;
+                const fineChecks = FINE_GRID_SIZE ** 3;
+                console.log(`Stage 2: Fine refinement (${FINE_GRID_SIZE}×${FINE_GRID_SIZE}×${FINE_GRID_SIZE} = ${fineChecks.toLocaleString()} checks)...`);
+
+                // Fine search window: fixed percentage of total parameter range
+                // This ensures consistent refinement regardless of coarse grid size
+                const FINE_RANGE_FRACTION = 0.30; // Search ±30% of total range
+                const fineAlphaRange = ALPHA_RANGE * FINE_RANGE_FRACTION;
+                const fineBetaRange = BETA_RANGE * FINE_RANGE_FRACTION;
+                const fineRadiusRange = (MAX_RADIUS - MIN_RADIUS) * FINE_RANGE_FRACTION;
+
+                const fineMinRadius = Math.max(MIN_RADIUS, gridBestSolution.radius - fineRadiusRange);
+                const fineMaxRadius = Math.min(MAX_RADIUS, gridBestSolution.radius + fineRadiusRange);
+
+                const fineResult = searchGrid(
+                    gridBestSolution.alpha, fineAlphaRange, FINE_GRID_SIZE,
+                    gridBestSolution.beta, fineBetaRange, FINE_GRID_SIZE,
+                    fineMinRadius, fineMaxRadius, FINE_GRID_SIZE,
+                    0.01, // 1% tolerance for fine
+                    'Fine'
+                );
+
+                if (fineResult) {
+                    gridBestSolution = fineResult;
+                }
+            }
+
+            // FALLBACK: If smart initialization failed, retry with wider ranges
+            if (!gridBestSolution) {
+                console.warn(`⚠ Smart initialization failed to find solution. Retrying with 3x wider ranges...`);
+
+                const FALLBACK_ALPHA_RANGE = ALPHA_RANGE * 3;
+                const FALLBACK_BETA_RANGE = BETA_RANGE * 3;
+                const FALLBACK_MIN_RADIUS = CAMERA_LOWER_RADIUS;
+                const FALLBACK_MAX_RADIUS = 10.0;
+
+                gridBestSolution = searchGrid(
+                    smartAlpha, FALLBACK_ALPHA_RANGE, COARSE_GRID_SIZE,
+                    smartBeta, FALLBACK_BETA_RANGE, COARSE_GRID_SIZE,
+                    FALLBACK_MIN_RADIUS, FALLBACK_MAX_RADIUS, COARSE_GRID_SIZE,
+                    0.05,
+                    'Fallback Coarse'
+                );
+
+                if (gridBestSolution) {
+                    console.log(`✓ Fallback succeeded`);
+                    // Try fine refinement on fallback solution
+                    const FINE_GRID_SIZE = gridConfig?.fineGridSize ?? 6;
+                    const FINE_RANGE_FRACTION = 0.30;
+                    const fineAlphaRange = FALLBACK_ALPHA_RANGE * FINE_RANGE_FRACTION;
+                    const fineBetaRange = FALLBACK_BETA_RANGE * FINE_RANGE_FRACTION;
+                    const fineRadiusRange = (FALLBACK_MAX_RADIUS - FALLBACK_MIN_RADIUS) * FINE_RANGE_FRACTION;
+
+                    const fineMinRadius = Math.max(FALLBACK_MIN_RADIUS, gridBestSolution.radius - fineRadiusRange);
+                    const fineMaxRadius = Math.min(FALLBACK_MAX_RADIUS, gridBestSolution.radius + fineRadiusRange);
+
+                    const fineResult = searchGrid(
+                        gridBestSolution.alpha, fineAlphaRange, FINE_GRID_SIZE,
+                        gridBestSolution.beta, fineBetaRange, FINE_GRID_SIZE,
+                        fineMinRadius, fineMaxRadius, FINE_GRID_SIZE,
+                        0.01,
+                        'Fallback Fine'
+                    );
+
+                    if (fineResult) {
+                        gridBestSolution = fineResult;
                     }
                 }
             }
-        }
 
-            const solveTime = performance.now() - startSolveTime;
+            stats.solveTime = performance.now() - startSolveTime;
+            stats.iterations = checksPerformed;
 
             if (!gridBestSolution) {
-                console.error(`No valid solution found after ${checksPerformed} checks in ${solveTime.toFixed(1)}ms`);
-                return;
+                console.error(`❌ No valid solution found after ${checksPerformed} checks in ${stats.solveTime.toFixed(1)}ms`);
+                stats.converged = false;
+                stats.finalError = 1.0; // Maximum error
+                return stats;
             }
 
             // Assign to bestSolution
@@ -590,9 +744,26 @@ export class CameraAnimator {
                 radius: gridBestSolution.radius
             };
 
+            // Calculate final centering error
+            const finalProjection = this.projectWorldToScreenXY(
+                samplePoints.map(p => ({ ...p, altitude: COUNTRY_ALTITUDE })),
+                bestSolution.alpha,
+                bestSolution.beta,
+                bestSolution.radius
+            );
+            const finalXs = finalProjection.map(p => p.x);
+            const finalYs = finalProjection.map(p => p.y);
+            const finalBboxCenterX = (Math.min(...finalXs) + Math.max(...finalXs)) / 2;
+            const finalBboxCenterY = (Math.min(...finalYs) + Math.max(...finalYs)) / 2;
+            const errorX = Math.abs(finalBboxCenterX - viewportCenterX);
+            const errorY = Math.abs(finalBboxCenterY - viewportCenterY);
+            stats.finalError = Math.max(errorX, errorY);
+            stats.converged = stats.finalError <= 0.01; // Within 1% tolerance
+
             console.log(`\n=== Grid Search Solution Found ===`);
-            console.log(`Checked ${checksPerformed} combinations in ${solveTime.toFixed(1)}ms`);
+            console.log(`Checked ${checksPerformed} combinations in ${stats.solveTime.toFixed(1)}ms`);
             console.log(`Best: alpha=${(bestSolution.alpha * 180 / Math.PI).toFixed(2)}°, beta=${(bestSolution.beta * 180 / Math.PI).toFixed(2)}°, radius=${bestSolution.radius.toFixed(4)}`);
+            console.log(`Final centering error: ${(stats.finalError * 100).toFixed(2)}%`);
         }
 
         // ====================
@@ -600,7 +771,9 @@ export class CameraAnimator {
         // ====================
         if (!bestSolution) {
             console.error(`No valid solution found`);
-            return;
+            stats.converged = false;
+            stats.finalError = 1.0;
+            return stats;
         }
 
         console.log(`\n=== Solution Found ===`);
@@ -647,6 +820,9 @@ export class CameraAnimator {
 
         // Draw debug visualization with VERIFIED projections
         this.drawProjectionDebug(verifiedPoints, viewportRegion);
+
+        // Return performance stats
+        return stats;
     }
 
     /**

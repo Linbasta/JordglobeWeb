@@ -169,9 +169,28 @@
             </div>
 
             <div class="control-group">
-                <label>Max Iterations: <span id="maxIterationsValue">20</span></label>
-                <input type="range" id="maxIterationsSlider" min="1" max="30" step="1" value="20">
-                <div class="value-display">Higher = more accurate, slower</div>
+                <label>Performance Mode:</label>
+                <select id="performanceMode">
+                    <option value="quality">Quality (20×20 + 15×15) ~11k checks</option>
+                    <option value="balanced" selected>Balanced (10×10 + 8×8) ~1.5k checks</option>
+                    <option value="fast">Fast (8×8 + 6×6) ~728 checks</option>
+                    <option value="ultra">Ultra Fast (6×6 + 5×5) ~341 checks</option>
+                    <option value="custom">Custom...</option>
+                </select>
+            </div>
+
+            <div id="customGridControls" style="display: none;">
+                <div class="control-group">
+                    <label>Coarse Grid Size: <span id="coarseGridValue">10</span></label>
+                    <input type="range" id="coarseGridSlider" min="4" max="20" step="1" value="10">
+                    <div class="value-display">Checks: <span id="coarseChecks">1,000</span></div>
+                </div>
+
+                <div class="control-group">
+                    <label>Fine Grid Size: <span id="fineGridValue">8</span></label>
+                    <input type="range" id="fineGridSlider" min="3" max="15" step="1" value="8">
+                    <div class="value-display">Checks: <span id="fineChecks">512</span></div>
+                </div>
             </div>
         </div>
 
@@ -193,9 +212,10 @@
         <div style="margin-top: 10px;"><strong>Target:</strong></div>
         <div>Country: <span id="targetCountry">-</span></div>
         <div>Lat/Lon: <span id="targetLatLon">-</span></div>
-        <div style="margin-top: 10px;"><strong>Convergence:</strong></div>
-        <div>Iterations: <span id="convergenceIterations">-</span></div>
-        <div>Error: <span id="convergenceError">-</span></div>
+        <div style="margin-top: 10px;"><strong>Performance:</strong></div>
+        <div>Grid: <span id="gridSizes">-</span></div>
+        <div>Checks: <span id="convergenceIterations">-</span></div>
+        <div>Center Error: <span id="convergenceError" style="font-weight: bold;">-</span></div>
         <div>Solve time: <span id="convergenceSolveTime">-</span></div>
         <div>Status: <span id="convergenceStatus">-</span></div>
     </div>
@@ -399,8 +419,46 @@
             updateViewportOverlay();
         });
 
-        document.getElementById('maxIterationsSlider').addEventListener('input', (e) => {
-            document.getElementById('maxIterationsValue').textContent = e.target.value;
+        // Performance mode controls
+        document.getElementById('performanceMode').addEventListener('change', (e) => {
+            const customControls = document.getElementById('customGridControls');
+            const mode = e.target.value;
+
+            if (mode === 'custom') {
+                customControls.style.display = 'block';
+            } else {
+                customControls.style.display = 'none';
+
+                // Set preset values
+                const presets = {
+                    quality: { coarse: 20, fine: 15 },
+                    balanced: { coarse: 10, fine: 8 },
+                    fast: { coarse: 8, fine: 6 },
+                    ultra: { coarse: 6, fine: 5 }
+                };
+
+                if (presets[mode]) {
+                    document.getElementById('coarseGridSlider').value = presets[mode].coarse;
+                    document.getElementById('coarseGridValue').textContent = presets[mode].coarse;
+                    document.getElementById('coarseChecks').textContent = (presets[mode].coarse ** 3).toLocaleString();
+
+                    document.getElementById('fineGridSlider').value = presets[mode].fine;
+                    document.getElementById('fineGridValue').textContent = presets[mode].fine;
+                    document.getElementById('fineChecks').textContent = (presets[mode].fine ** 3).toLocaleString();
+                }
+            }
+        });
+
+        document.getElementById('coarseGridSlider').addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            document.getElementById('coarseGridValue').textContent = value;
+            document.getElementById('coarseChecks').textContent = (value ** 3).toLocaleString();
+        });
+
+        document.getElementById('fineGridSlider').addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            document.getElementById('fineGridValue').textContent = value;
+            document.getElementById('fineChecks').textContent = (value ** 3).toLocaleString();
         });
 
         // Update overlay on window resize
@@ -498,10 +556,18 @@
                 console.log('Using viewport region:', viewportRegion);
             }
 
-            // Get max iterations if viewport region is enabled
-            const maxIterations = viewportRegion ? parseInt(document.getElementById('maxIterationsSlider').value) : 5;
+            // Get grid configuration
+            let gridConfig = undefined;
+            if (viewportRegion) {
+                const coarseGridSize = parseInt(document.getElementById('coarseGridSlider').value);
+                const fineGridSize = parseInt(document.getElementById('fineGridSlider').value);
+                gridConfig = { coarseGridSize, fineGridSize };
+            }
 
-            console.log(`Auto-framing ${selectedCountry.name} (${countryPolygons.length} polygons) over ${duration}ms, maxIterations: ${maxIterations}`);
+            console.log(`Auto-framing ${selectedCountry.name} (${countryPolygons.length} polygons) over ${duration}ms`);
+            if (gridConfig) {
+                console.log(`Grid config: ${gridConfig.coarseGridSize}×${gridConfig.coarseGridSize}×${gridConfig.coarseGridSize} + ${gridConfig.fineGridSize}×${gridConfig.fineGridSize}×${gridConfig.fineGridSize}`);
+            }
 
             const startTime = performance.now();
             const cameraAnimator = game.getCameraAnimator();
@@ -511,24 +577,51 @@
                 duration,
                 0.8,  // margin
                 viewportRegion,
-                maxIterations
+                100,  // maxIterations (unused)
+                gridConfig
             );
             const totalTime = performance.now() - startTime;
 
             console.log('Framing complete!', stats);
 
-            // Update convergence display
-            if (viewportRegion && stats) {
-                document.getElementById('convergenceIterations').textContent = stats.iterations;
-                document.getElementById('convergenceError').textContent = (stats.finalError * 100).toFixed(2) + '%';
-                document.getElementById('convergenceSolveTime').textContent = stats.solveTime.toFixed(2) + 'ms';
-                document.getElementById('convergenceStatus').textContent = stats.converged ? '✓ Converged' : '✗ Not converged';
-                document.getElementById('convergenceStatus').style.color = stats.converged ? '#4CAF50' : '#f44336';
+            // Update performance display (always show stats now)
+            if (stats) {
+                // Show grid sizes used
+                if (gridConfig) {
+                    document.getElementById('gridSizes').textContent = `${gridConfig.coarseGridSize}×${gridConfig.coarseGridSize}×${gridConfig.coarseGridSize} + ${gridConfig.fineGridSize}×${gridConfig.fineGridSize}×${gridConfig.fineGridSize}`;
+                } else {
+                    document.getElementById('gridSizes').textContent = 'Binary search';
+                }
+
+                document.getElementById('convergenceIterations').textContent = stats.iterations.toLocaleString();
+
+                // Color-code error: green <1%, yellow 1-2%, red >2%
+                const errorPercent = stats.finalError * 100;
+                const errorEl = document.getElementById('convergenceError');
+                errorEl.textContent = errorPercent.toFixed(2) + '%';
+                if (errorPercent < 1) {
+                    errorEl.style.color = '#4CAF50'; // green
+                } else if (errorPercent < 2) {
+                    errorEl.style.color = '#FFC107'; // yellow
+                } else {
+                    errorEl.style.color = '#f44336'; // red
+                }
+
+                document.getElementById('convergenceSolveTime').textContent = stats.solveTime.toFixed(1) + 'ms';
+
+                if (viewportRegion) {
+                    document.getElementById('convergenceStatus').textContent = stats.converged ? '✓ Centered' : '✗ Not centered';
+                    document.getElementById('convergenceStatus').style.color = stats.converged ? '#4CAF50' : '#f44336';
+                } else {
+                    document.getElementById('convergenceStatus').textContent = '✓ Complete';
+                    document.getElementById('convergenceStatus').style.color = '#4CAF50';
+                }
             } else {
-                document.getElementById('convergenceIterations').textContent = 'N/A';
-                document.getElementById('convergenceError').textContent = 'N/A';
-                document.getElementById('convergenceSolveTime').textContent = 'N/A';
-                document.getElementById('convergenceStatus').textContent = 'No region';
+                document.getElementById('gridSizes').textContent = '-';
+                document.getElementById('convergenceIterations').textContent = '-';
+                document.getElementById('convergenceError').textContent = '-';
+                document.getElementById('convergenceSolveTime').textContent = '-';
+                document.getElementById('convergenceStatus').textContent = '-';
                 document.getElementById('convergenceStatus').style.color = '#ccc';
             }
         });
