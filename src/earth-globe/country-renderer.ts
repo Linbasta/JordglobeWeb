@@ -22,10 +22,10 @@ import {
     COUNTRY_HSV_VALUE,
     TRIANGULATION_GRID_SPACING
 } from './constants';
-import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './GeoMath';
-import { cdt2d, filterTriangles } from './Triangulation';
-import { ShaderFactory } from './ShaderFactory';
-import { CountryPicker, calculateBoundingBox } from './CountryPicker';
+import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
+import { cdt2d, filterTriangles } from './triangulation';
+import { ShaderFactory } from './shader-factory';
+import { CountryPicker, calculateBoundingBox } from './country-picker';
 import type { LatLonPoint, PolygonData, CountryData, CountryJSON, TriangulationResult } from './types';
 
 /**

@@ -20,8 +20,8 @@ import {
 } from '../../earth-globe';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
-import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode } from '../managers/PinManager';
-import { PinUI } from '../ui/PinUI';
+import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode } from '../managers/pin-manager';
+import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 
 export interface BaseGameOptions {

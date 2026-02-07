@@ -7,11 +7,11 @@
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import type { EarthGlobe } from '../../earth-globe';
-import { MultiPinManager } from '../managers/MultiPinManager';
-import { ArcDrawer } from './ArcDrawer';
-import { animateToLocation } from '../animation/cameraUtils';
-import { PinReplayAnimator } from '../animation/PinReplayAnimator';
-import type { PinRecording } from '../animation/PinRecorder';
+import { MultiPinManager } from '../managers/multi-pin-manager';
+import { ArcDrawer } from './arc-drawer';
+import { animateToLocation } from '../animation/camera-utils';
+import { PinReplayAnimator } from '../animation/pin-replay-animator';
+import type { PinRecording } from '../animation/pin-recorder';
 import { getPlayerColor } from '../../../shared/playerColors';
 
 const ARC_ANIMATION_DURATION = 2000; // 2 seconds

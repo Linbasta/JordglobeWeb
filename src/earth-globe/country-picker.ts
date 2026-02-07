@@ -6,7 +6,7 @@
  */
 
 import { PICKER_CELL_SIZE } from './constants';
-import { pointInBoundingBox, pointInPolygon, calculateBoundingBox } from './GeoMath';
+import { pointInBoundingBox, pointInPolygon, calculateBoundingBox } from './geo-math';
 import type { LatLon, CountryPolygon, BoundingBox, GridCell } from './types';
 
 /**
@@ -116,5 +116,5 @@ export class CountryPicker {
 }
 
 // Re-export utility functions for backward compatibility
-export { calculateBoundingBox, pointInPolygon, pointInBoundingBox } from './GeoMath';
-export { cartesianToLatLon } from './GeoMath';
+export { calculateBoundingBox, pointInPolygon, pointInBoundingBox } from './geo-math';
+export { cartesianToLatLon } from './geo-math';

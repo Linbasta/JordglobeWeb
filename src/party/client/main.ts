@@ -1,12 +1,12 @@
 // Client Entry Point
 // Mobile player app - join screen and globe with pin placement
 
-import { JoinScreen } from './JoinScreen';
-import { WaitingScreen } from './WaitingScreen';
+import { JoinScreen } from './join-screen';
+import { WaitingScreen } from './waiting-screen';
 import { GameSocket } from './socket';
-import { PartyGameController } from './PartyGameController';
-import { onPinPlaced, getRecordedPositions } from '../../shared/managers/PinManager';
-import { Confetti } from '../../shared/effects/Confetti';
+import { PartyGameController } from './party-game-controller';
+import { onPinPlaced, getRecordedPositions } from '../../shared/managers/pin-manager';
+import { Confetti } from '../../shared/effects/confetti';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {

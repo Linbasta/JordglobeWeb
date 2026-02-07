@@ -43,7 +43,9 @@
       "Bash(wc:*)",
       "Bash(magick:*)",
       "Bash(jq:*)",
-      "Bash(npm run test:quiz-runner:*)"
+      "Bash(npm run test:quiz-runner:*)",
+      "WebSearch",
+      "Bash({} ;)"
     ],
     "deny": [],
     "ask": []

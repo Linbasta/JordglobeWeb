@@ -28,7 +28,7 @@
  */
 
 // Main class
-export { EarthGlobe, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './EarthGlobe';
+export { EarthGlobe, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './earth-globe';
 
 // Types
 export type {
@@ -102,10 +102,10 @@ export {
 
     // Border comparison
     sharesBorderPoint,
-} from './GeoMath';
+} from './geo-math';
 
 // Country Picker
-export { CountryPicker } from './CountryPicker';
+export { CountryPicker } from './country-picker';
 
 // Segment Loader
 export {
@@ -114,17 +114,17 @@ export {
     getSharedSegments,
     getSegmentsBetween,
     getSegmentStats,
-} from './SegmentLoader';
+} from './segment-loader';
 
 // Triangulation
-export { cdt2d, filterTriangles, pointInPolygon as triangulationPointInPolygon } from './Triangulation';
+export { cdt2d, filterTriangles, pointInPolygon as triangulationPointInPolygon } from './triangulation';
 
 // Individual renderers (for advanced customization)
-export { GlobeSphere } from './GlobeSphere';
-export { CountryRenderer } from './CountryRenderer';
-export { BorderRenderer } from './BorderRenderer';
-export { OutlineRenderer } from './OutlineRenderer';
-export { Skybox } from './Skybox';
-export { AnimationTexture } from './AnimationTexture';
-export { CountryAnimator } from './CountryAnimator';
-export { ShaderFactory } from './ShaderFactory';
+export { GlobeSphere } from './globe-sphere';
+export { CountryRenderer } from './country-renderer';
+export { BorderRenderer } from './border-renderer';
+export { OutlineRenderer } from './outline-renderer';
+export { Skybox } from './skybox';
+export { AnimationTexture } from './animation-texture';
+export { CountryAnimator } from './country-animator';
+export { ShaderFactory } from './shader-factory';

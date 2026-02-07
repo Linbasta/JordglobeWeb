@@ -16,7 +16,7 @@ import {
     OUTLINE_TUBE_RADIUS,
     TUBE_TESSELLATION
 } from './constants';
-import { latLonToSphere } from './GeoMath';
+import { latLonToSphere } from './geo-math';
 import type { LatLonPoint } from './types';
 
 /**

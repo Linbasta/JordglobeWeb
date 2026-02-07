@@ -4,30 +4,30 @@
  */
 
 // Controllers
-export { BaseGameController } from './controllers/BaseGameController';
-export type { BaseGameOptions } from './controllers/BaseGameController';
+export { BaseGameController } from './controllers/base-game-controller';
+export type { BaseGameOptions } from './controllers/base-game-controller';
 
 // Managers
-export { initPinManager, enterPlacingMode, exitPlacingMode, isPlacing, getPreviewPin, getRecordedPositions, clearRecordedPositions, onPinPlaced, onCountryHover, onPlacingModeChange } from './managers/PinManager';
-export { MultiPinManager } from './managers/MultiPinManager';
-export { DistanceLabelManager } from './managers/DistanceLabelManager';
-export type { PlayerPin } from './managers/MultiPinManager';
+export { initPinManager, enterPlacingMode, exitPlacingMode, isPlacing, getPreviewPin, getRecordedPositions, clearRecordedPositions, onPinPlaced, onCountryHover, onPlacingModeChange } from './managers/pin-manager';
+export { MultiPinManager } from './managers/multi-pin-manager';
+export { DistanceLabelManager } from './managers/distance-label-manager';
+export type { PlayerPin } from './managers/multi-pin-manager';
 
 // Visualizers
-export { ArcDrawer } from './visualizers/ArcDrawer';
-export { RevealVisualizer } from './visualizers/RevealVisualizer';
+export { ArcDrawer } from './visualizers/arc-drawer';
+export { RevealVisualizer } from './visualizers/reveal-visualizer';
 
 // Animation
-export { PinRecorder } from './animation/PinRecorder';
-export { PinReplayAnimator } from './animation/PinReplayAnimator';
-export { animateToLocation, frameCountry, cameraShake, getZoomValue } from './animation/cameraUtils';
-export type { ViewportRegion } from './animation/cameraUtils';
-export type { PinRecording, RecordedPosition } from './animation/PinRecorder';
+export { PinRecorder } from './animation/pin-recorder';
+export { PinReplayAnimator } from './animation/pin-replay-animator';
+export { animateToLocation, frameCountry, cameraShake, getZoomValue } from './animation/camera-utils';
+export type { ViewportRegion } from './animation/camera-utils';
+export type { PinRecording, RecordedPosition } from './animation/pin-recorder';
 
 // Behaviors
-export { handleHover, clearSelection } from './behaviors/countrySelection';
+export { handleHover, clearSelection } from './behaviors/country-selection';
 
 // UI
-export { CountryLabelUI } from './ui/CountryLabelUI';
-export { PinUI } from './ui/PinUI';
-export type { PinUIElements, PinUICallbacks } from './ui/PinUI';
+export { CountryLabelUI } from './ui/country-label-ui';
+export { PinUI } from './ui/pin-ui';
+export type { PinUIElements, PinUICallbacks } from './ui/pin-ui';

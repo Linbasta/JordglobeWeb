@@ -7,8 +7,8 @@ if (import.meta.env.DEV) {
 }
 
 import { EarthGlobe } from '../../earth-globe';
-import { initPinManager, onPinPlaced } from '../../shared/managers/PinManager';
-import { animateToCleared } from '../../shared/animations/CountryAnimations';
+import { initPinManager, onPinPlaced } from '../../shared/managers/pin-manager';
+import { animateToCleared } from '../../shared/animations/country-animations';
 import { Game } from './game';
 
 // Initialize the application when page loads

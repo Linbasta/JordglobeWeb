@@ -22,8 +22,8 @@ import {
     TUBE_TESSELLATION,
     MAX_ANIMATION_COUNTRIES
 } from './constants';
-import { latLonToSphere } from './GeoMath';
-import { getSharedSegments } from './SegmentLoader';
+import { latLonToSphere } from './geo-math';
+import { getSharedSegments } from './segment-loader';
 import type { LatLonPoint, PolygonData, CountryData, SegmentData, Segment3D } from './types';
 
 /**

@@ -4,7 +4,7 @@
  * Handles animated transitions for country altitude and blend values.
  */
 
-import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './AnimationTexture';
+import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 

@@ -5,8 +5,8 @@
  * Pure functions - no state, no side effects.
  */
 
-import type { Question, Step } from './quizTypes'
-import { StepOp } from './quizTypes'
+import type { Question, Step } from './quiz-types'
+import { StepOp } from './quiz-types'
 
 /**
  * Generate the main quiz flow steps

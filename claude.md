@@ -378,3 +378,59 @@ const normal = position.normalizeToNew();
 3. Search codebase for `.normalize(` - should probably be `.normalizeToNew()`
 
 **Other methods to watch:** `scale()`, `add()`, `subtract()`, `multiply()` - all have `InPlace` variants
+
+## Naming Conventions
+
+Follow these naming conventions consistently across the codebase.
+
+### Files & Directories
+
+| Type | Convention | Example |
+|------|------------|---------|
+| TypeScript source files | kebab-case | `quiz-debug-manager.ts`, `earth-globe.ts` |
+| Script files | kebab-case | `generate-segments.ts`, `test-quiz-runner.ts` |
+| HTML files | kebab-case | `quiz.html`, `test-arcs.html` |
+| Data files | kebab-case | `countries-enriched.json`, `segments.json` |
+| Directories | lowercase | `earth-globe/`, `quiz/`, `shared/` |
+| Shader files | lowercase.type.glsl | `country.fragment.glsl`, `water.vertex.glsl` |
+
+**Special cases:**
+- `index.ts` - always lowercase (barrel exports)
+- `types.ts` - always lowercase (type definitions)
+- `constants.ts` - always lowercase (constants)
+
+### Code Constructs
+
+| Construct | Convention | Example |
+|-----------|------------|---------|
+| Classes | PascalCase | `class QuizDebugManager`, `class EarthGlobe` |
+| Interfaces | PascalCase, NO "I" prefix | `interface CountryData`, `interface QuizConfig` |
+| Types | PascalCase | `type Question`, `type LatLon` |
+| Enums | PascalCase (name & values) | `enum StepOp { ShowQuestion, WaitPinPlacement }` |
+| Functions | camelCase | `function tickQuiz()`, `function getCountryByISO2()` |
+| Methods | camelCase | `startGame()`, `getScore()`, `private updateUI()` |
+| Variables | camelCase | `let questionIndex`, `const scoreData` |
+| Parameters | camelCase | `(globe: EarthGlobeAPI, countryIndex: number)` |
+| Constants (compile-time) | SCREAMING_SNAKE_CASE | `const EARTH_RADIUS = 2.0`, `const STATE_DISABLED = 0.25` |
+| Constants (runtime config) | camelCase | `const config = {...}`, `const defaultOptions = {...}` |
+| Private/Protected members | camelCase, NO underscore | `private panel: HTMLElement`, `protected globe` |
+
+### Key Rules
+
+1. **No "I" prefix for interfaces** - Modern TypeScript convention
+   - ✓ `interface CountryData`
+   - ✗ `interface ICountryData`
+
+2. **No underscore prefix for private members** - TypeScript has `private` keyword
+   - ✓ `private panel: HTMLElement`
+   - ✗ `private _panel: HTMLElement`
+
+3. **File names use kebab-case** - Consistent, URL-friendly, case-insensitive safe
+   - ✓ `quiz-debug-manager.ts`
+   - ✗ `QuizDebugManager.ts`, `quizDebugManager.ts`
+
+4. **Constants distinction:**
+   - Compile-time immutable values → `SCREAMING_SNAKE_CASE`
+   - Runtime configuration objects → `camelCase`
+
+These conventions match the **Google TypeScript Style Guide** and are standard across the TypeScript ecosystem.

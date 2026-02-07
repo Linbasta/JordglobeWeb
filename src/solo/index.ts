@@ -3,5 +3,5 @@
  * Exports for the solo country guessing game
  */
 
-export { SoloGameController } from './SoloGameController';
-export type { SoloGameOptions } from './SoloGameController';
+export { SoloGameController } from './solo-game-controller';
+export type { SoloGameOptions } from './solo-game-controller';

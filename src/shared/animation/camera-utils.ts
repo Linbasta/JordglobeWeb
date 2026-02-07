@@ -6,8 +6,8 @@
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
-import { getConfig } from '../config/GlobalConfig';
-import { easedValue, getEasingFunction } from '../utils/Easing';
+import { getConfig } from '../config/global-config';
+import { easedValue, getEasingFunction } from '../utils/easing';
 import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import type { CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';

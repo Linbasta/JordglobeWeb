@@ -6,18 +6,18 @@
  */
 
 import type { EarthGlobeAPI, CountryData } from '../../earth-globe/types'
-import type { Question, Step, DebugState } from './quizTypes'
-import { StepOp } from './quizTypes'
-import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from './quizFlow'
+import type { Question, Step, DebugState } from './quiz-types'
+import { StepOp } from './quiz-types'
+import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from './quiz-flow'
 import {
     animateCorrect,
     animateWrong,
     animateShowCorrect,
     animateToCleared,
     setDisabledImmediate
-} from '../animations/CountryAnimations'
-import { frameCountry, cameraShake } from '../animation/cameraUtils'
-import { ArcDrawer } from '../visualizers/ArcDrawer'
+} from '../animations/country-animations'
+import { frameCountry, cameraShake } from '../animation/camera-utils'
+import { ArcDrawer } from '../visualizers/arc-drawer'
 
 // ============================================================================
 // Module State

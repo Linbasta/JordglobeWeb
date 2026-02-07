@@ -4,12 +4,12 @@
  * Initializes the solo country guessing game
  */
 
-import { SoloGameController } from './SoloGameController';
-import { loadConfig } from '../shared/config/GlobalConfig';
+import { SoloGameController } from './solo-game-controller';
+import { loadConfig } from '../shared/config/global-config';
 
 // Export for external use
-export { SoloGameController } from './SoloGameController';
-export type { SoloGameOptions } from './SoloGameController';
+export { SoloGameController } from './solo-game-controller';
+export type { SoloGameOptions } from './solo-game-controller';
 
 // Auto-initialize when loaded directly in browser
 if (typeof window !== 'undefined') {

@@ -206,7 +206,7 @@ export interface EarthGlobeAPI {
     getEngine(): Engine;
     getCanvas(): HTMLCanvasElement;
     getEarthSphere(): Mesh;
-    getCountryPicker(): import('./CountryPicker').CountryPicker;
+    getCountryPicker(): import('./country-picker').CountryPicker;
 
     // Material creation
     createUnlitMaterial(originalMaterial: import('@babylonjs/core/Materials/material').Material | null): import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial;

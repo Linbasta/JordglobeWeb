@@ -17,9 +17,9 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
-import { PinRecorder, type RecordedPosition } from '../animation/PinRecorder';
-import { getZoomValue } from '../animation/cameraUtils';
-import { getConfig } from '../config/GlobalConfig';
+import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
+import { getZoomValue } from '../animation/camera-utils';
+import { getConfig } from '../config/global-config';
 
 const EARTH_RADIUS = 2.0;
 

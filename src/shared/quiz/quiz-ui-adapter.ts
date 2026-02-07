@@ -8,9 +8,9 @@
  */
 
 import type { EarthGlobeAPI } from '../../earth-globe/types'
-import type { CountryLabelUI } from '../ui/CountryLabelUI'
-import type { Question } from './quizTypes'
-import { StepOp } from './quizTypes'
+import type { CountryLabelUI } from '../ui/country-label-ui'
+import type { Question } from './quiz-types'
+import { StepOp } from './quiz-types'
 import {
     startQuiz,
     tickQuiz,
@@ -21,7 +21,7 @@ import {
     isWaiting,
     getCurrentStep,
     getQuestion
-} from './quizRunner'
+} from './quiz-runner'
 
 /**
  * Quiz configuration

@@ -39,21 +39,21 @@ import {
     MAX_ANIMATION_COUNTRIES,
     TUBE_RADIUS
 } from './constants';
-import { latLonToSphere, positionToLatLon } from './GeoMath';
-import { CountryPicker } from './CountryPicker';
-import { loadSegments } from './SegmentLoader';
-import { GlobeSphere } from './GlobeSphere';
-import { CountryRenderer } from './CountryRenderer';
-import { BorderRenderer } from './BorderRenderer';
-import { OutlineRenderer } from './OutlineRenderer';
-import { Skybox } from './Skybox';
-import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './AnimationTexture';
-import { CountryAnimator } from './CountryAnimator';
+import { latLonToSphere, positionToLatLon } from './geo-math';
+import { CountryPicker } from './country-picker';
+import { loadSegments } from './segment-loader';
+import { GlobeSphere } from './globe-sphere';
+import { CountryRenderer } from './country-renderer';
+import { BorderRenderer } from './border-renderer';
+import { OutlineRenderer } from './outline-renderer';
+import { Skybox } from './skybox';
+import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
+import { CountryAnimator } from './country-animator';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
-import { ShaderFactory } from './ShaderFactory';
-import { getConfig } from '../shared/config/GlobalConfig';
-import { getZoomValue } from '../shared/animation/cameraUtils';
+import { ShaderFactory } from './shader-factory';
+import { getConfig } from '../shared/config/global-config';
+import { getZoomValue } from '../shared/animation/camera-utils';
 
 import type {
     EarthGlobeOptions,

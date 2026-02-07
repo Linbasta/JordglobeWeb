@@ -12,18 +12,18 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 import { STATE_DISABLED } from '../earth-globe';
 
-import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
-import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/PinManager';
-import { handleHover, clearSelection } from '../shared/behaviors/countrySelection';
-import { CountryLabelUI } from '../shared/ui/CountryLabelUI';
-import { HoverCountryLabel } from '../shared/ui/HoverCountryLabel';
-import { reloadConfig, getConfig } from '../shared/config/GlobalConfig';
-import { getZoomValue } from '../shared/animation/cameraUtils';
+import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
+import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/pin-manager';
+import { handleHover, clearSelection } from '../shared/behaviors/country-selection';
+import { CountryLabelUI } from '../shared/ui/country-label-ui';
+import { HoverCountryLabel } from '../shared/ui/hover-country-label';
+import { reloadConfig, getConfig } from '../shared/config/global-config';
+import { getZoomValue } from '../shared/animation/camera-utils';
 
 // New quiz pipeline
-import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/QuizUIAdapter';
-import { QuizDebugManager } from '../shared/quiz/QuizDebugManager';
-import { getDebugState } from '../shared/quiz/quizRunner';
+import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
+import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
+import { getDebugState } from '../shared/quiz/quiz-runner';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;

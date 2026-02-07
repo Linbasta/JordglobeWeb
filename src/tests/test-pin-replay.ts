@@ -4,8 +4,8 @@
  */
 
 import { EarthGlobe } from '../earth-globe';
-import { PinReplayAnimator } from '../shared/animation/PinReplayAnimator';
-import type { PinRecording } from '../shared/animation/PinRecorder';
+import { PinReplayAnimator } from '../shared/animation/pin-replay-animator';
+import type { PinRecording } from '../shared/animation/pin-recorder';
 
 // Initialize EarthGlobe
 const globe = new EarthGlobe({ canvasId: 'renderCanvas' });

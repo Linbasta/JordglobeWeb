@@ -15,7 +15,7 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { hexToRgb } from '../../../shared/playerColors';
-import type { PinRecording } from './PinRecorder';
+import type { PinRecording } from './pin-recorder';
 
 const EARTH_RADIUS = 2.0;
 const ANIMATION_SPEED = 1.0; // 1.0 = real-time, 2.0 = 2x speed, etc.

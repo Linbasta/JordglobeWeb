@@ -4,7 +4,7 @@
  * Handles communication with the game server.
  */
 
-import { Player } from './WaitingScreen';
+import { Player } from './waiting-screen';
 import { config } from '../../config';
 
 type MessageHandler = {

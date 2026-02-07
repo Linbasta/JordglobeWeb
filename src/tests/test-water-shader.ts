@@ -9,7 +9,7 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Vector3, Color4 } from '@babylonjs/core/Maths/math';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Meshes/meshBuilder';
-import { createWaterMaterial } from "../earth-globe/WaterShader";
+import { createWaterMaterial } from "../earth-globe/water-shader";
 
 const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
 const engine = new Engine(canvas, true);

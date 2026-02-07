@@ -3,7 +3,7 @@
  * Simulates 4 players joining and playing JordGlobe
  */
 
-import { generateBotMovementToTarget } from './botMovementGenerator';
+import { generateBotMovementToTarget } from './bot-movement-generator';
 
 interface BotPlayer {
     name: string;

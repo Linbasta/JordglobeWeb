@@ -4,8 +4,8 @@
  */
 
 import { EarthGlobe } from '../earth-globe';
-import { ArcDrawer } from '../shared/visualizers/ArcDrawer';
-import { animateToLocation } from '../shared/animation/cameraUtils';
+import { ArcDrawer } from '../shared/visualizers/arc-drawer';
+import { animateToLocation } from '../shared/animation/camera-utils';
 import { PLAYER_COLORS } from '../../shared/playerColors';
 
 // Initialize EarthGlobe

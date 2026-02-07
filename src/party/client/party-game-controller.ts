@@ -8,7 +8,7 @@
 
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
-import { BaseGameController, BaseGameOptions } from '../../shared/controllers/BaseGameController';
+import { BaseGameController, BaseGameOptions } from '../../shared/controllers/base-game-controller';
 
 export interface PartyGameOptions extends BaseGameOptions {
     onReady?: (controller: PartyGameController) => void;

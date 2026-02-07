@@ -17,8 +17,8 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { hexToRgb } from '../../../shared/playerColors';
-import { getZoomValue } from '../animation/cameraUtils';
-import { getConfig } from '../config/GlobalConfig';
+import { getZoomValue } from '../animation/camera-utils';
+import { getConfig } from '../config/global-config';
 
 const EARTH_RADIUS = 2.0;
 

@@ -5,8 +5,8 @@
  * DOM management has been moved to QuizDebugManager.
  */
 
-import type { Step } from './quizTypes'
-import { StepOp } from './quizTypes'
+import type { Step } from './quiz-types'
+import { StepOp } from './quiz-types'
 
 /**
  * Format a step for display in debug output

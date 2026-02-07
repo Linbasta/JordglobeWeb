@@ -5,9 +5,9 @@
  * Can be created/destroyed without affecting the quiz runner.
  */
 
-import type { DebugState } from './quizTypes'
-import { formatStep } from './quizDebug'
-import { debugJumpToStep, debugStepForward, debugStepBackward } from './quizRunner'
+import type { DebugState } from './quiz-types'
+import { formatStep } from './quiz-debug'
+import { debugJumpToStep, debugStepForward, debugStepBackward } from './quiz-runner'
 
 /**
  * Manages the debug panel UI element and its updates
