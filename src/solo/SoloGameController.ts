@@ -10,6 +10,7 @@
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
+import { STATE_DISABLED } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/BaseGameController';
 import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/PinManager';
@@ -85,6 +86,12 @@ export class SoloGameController extends BaseGameController {
     protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
         // Check if we're in quiz mode
         if (this.quizAdapter && country) {
+            // Don't submit answer if country is disabled
+            const state = this.globe.getCountryState(country.countryIndex);
+            if (state === STATE_DISABLED) {
+                return;  // Ignore disabled countries
+            }
+
             // Submit answer to quiz adapter
             this.quizAdapter.submitAnswer(country.countryIndex);
         } else {
