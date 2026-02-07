@@ -15,6 +15,7 @@ export interface ZoomConfig {
     threshold: number;
     pinScale: ZoomBasedConfig;
     borderThickness: ZoomBasedConfig;
+    markerScale: ZoomBasedConfig;
 }
 
 export interface GlobalConfig {
@@ -33,6 +34,11 @@ const DEFAULT_CONFIG: GlobalConfig = {
         borderThickness: {
             closeValue: 0.5,
             farValue: 2.0,
+            easing: 'Linear'
+        },
+        markerScale: {
+            closeValue: 1.0,
+            farValue: 3.0,
             easing: 'Linear'
         }
     }

@@ -128,3 +128,9 @@ export { Skybox } from './skybox';
 export { AnimationTexture } from './animation-texture';
 export { CountryAnimator } from './country-animator';
 export { ShaderFactory } from './shader-factory';
+
+// Location markers
+export { LocationMarker } from './location-marker';
+export type { LocationMarkerOptions } from './location-marker';
+export { LocationMarkerPool } from './location-marker-pool';
+export type { LocationMarkerPoolOptions } from './location-marker-pool';

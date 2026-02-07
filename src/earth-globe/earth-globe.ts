@@ -52,6 +52,7 @@ import { CountryAnimator } from './country-animator';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
+import { LocationMarkerPool } from './location-marker-pool';
 import { getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
 
@@ -101,6 +102,9 @@ export class EarthGlobe {
     // Animation
     private animationTexture: AnimationTexture;
     private countryAnimator: CountryAnimator;
+
+    // Location markers
+    private markerPool: LocationMarkerPool | null = null;
 
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;
@@ -246,6 +250,9 @@ export class EarthGlobe {
             // Create outline material (once, reused for all outlines)
             this.outlineMaterial = this.shaderFactory.createOutlineMaterial();
 
+            // Create location marker pool (200 markers, batched rendering)
+            this.markerPool = new LocationMarkerPool(this.scene, { poolSize: 200 });
+
             // Log statistics
             const pickerStats = this.countryPicker.getStats();
             console.log(`Country picker: ${pickerStats.polygonCount} polygons in ${pickerStats.cellCount} grid cells`);
@@ -277,13 +284,21 @@ export class EarthGlobe {
         // Update animations
         this.countryAnimator.update();
 
+        const config = getConfig();
+
         // Update border thickness based on camera zoom
         if (this.segmentBorderMaterial) {
-            const config = getConfig();
             const bt = config.zoom.borderThickness;
             const scale = getZoomValue(this.camera, bt.closeValue, bt.farValue, bt.easing);
             const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
             this.segmentBorderMaterial.setFloat("thicknessOffset", offset);
+        }
+
+        // Update marker scale based on camera zoom
+        if (this.markerPool) {
+            const ms = config.zoom.markerScale;
+            const scale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
+            this.markerPool.updateScale(scale);
         }
     }
 
@@ -384,6 +399,36 @@ export class EarthGlobe {
         const finalAltitude = altitude !== undefined ? altitude : COUNTRY_ALTITUDE + 0.01;
         const position = latLonToSphere(lat, lon, finalAltitude);
         const normal = position.normalizeToNew();
+        return { position, normal };
+    }
+
+    /**
+     * Get position at lat/lon accounting for current country displacement
+     * This is useful for placing objects that should sit on top of the displaced country surface
+     *
+     * @param lat Latitude in degrees
+     * @param lon Longitude in degrees
+     * @param offsetAbove Additional offset above the country surface (default: 0.01)
+     * @returns Position and normal vector
+     */
+    getDisplacedPositionAtLatLon(lat: number, lon: number, offsetAbove: number = 0.01): { position: Vector3; normal: Vector3 } {
+        // Get the country at this location
+        const country = this.countryPicker.getCountryAt({ lat, lon });
+
+        // Base position at water level (country vertices start at altitude 0)
+        const basePosition = latLonToSphere(lat, lon, 0);
+        const normal = basePosition.normalizeToNew();
+
+        // If there's a country, account for its current displacement
+        if (country) {
+            const animValue = this.countryAnimator.getAltitude(country.countryIndex);
+            const displacement = animValue * ANIMATION_AMPLITUDE;
+            const position = basePosition.add(normal.scale(displacement + offsetAbove));
+            return { position, normal };
+        }
+
+        // No country (ocean) - just return base position with small offset
+        const position = basePosition.add(normal.scale(offsetAbove));
         return { position, normal };
     }
 
@@ -568,6 +613,82 @@ export class EarthGlobe {
     }
 
     // =========================================================================
+    // Public API - Location Markers
+    // =========================================================================
+
+    /**
+     * Acquire a marker from the pool and position it at the given coordinates
+     * The marker will be positioned on top of the displaced country surface
+     *
+     * @param lat Latitude in degrees
+     * @param lon Longitude in degrees
+     * @param offsetAbove Additional offset above the country surface (default: 0.01)
+     * @returns Marker ID (use this to release or update the marker), or -1 if pool is exhausted
+     */
+    acquireMarker(lat: number, lon: number, offsetAbove: number = 0.01): number {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return -1;
+        }
+
+        const { position, normal } = this.getDisplacedPositionAtLatLon(lat, lon, offsetAbove);
+        return this.markerPool.acquireMarker(position, normal);
+    }
+
+    /**
+     * Release a marker back to the pool
+     * @param markerId Marker ID returned from acquireMarker()
+     */
+    releaseMarker(markerId: number): void {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return;
+        }
+
+        this.markerPool.releaseMarker(markerId);
+    }
+
+    /**
+     * Update a marker's position
+     * @param markerId Marker ID
+     * @param lat Latitude in degrees
+     * @param lon Longitude in degrees
+     * @param offsetAbove Additional offset above the country surface (default: 0.01)
+     */
+    updateMarkerPosition(markerId: number, lat: number, lon: number, offsetAbove: number = 0.01): void {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return;
+        }
+
+        const { position, normal } = this.getDisplacedPositionAtLatLon(lat, lon, offsetAbove);
+        this.markerPool.updateMarkerPosition(markerId, position, normal);
+    }
+
+    /**
+     * Release all markers from the pool
+     */
+    releaseAllMarkers(): void {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return;
+        }
+
+        this.markerPool.releaseAll();
+    }
+
+    /**
+     * Get marker pool statistics
+     */
+    getMarkerPoolStats(): { total: number; inUse: number; available: number } | null {
+        if (!this.markerPool) {
+            return null;
+        }
+
+        return this.markerPool.getStats();
+    }
+
+    // =========================================================================
     // Public API - Lifecycle
     // =========================================================================
 
@@ -590,6 +711,10 @@ export class EarthGlobe {
         this.outlineRenderer.dispose();
         this.skybox.dispose();
         this.animationTexture.dispose();
+
+        if (this.markerPool) {
+            this.markerPool.dispose();
+        }
 
         this.scene.dispose();
         this.engine.dispose();
