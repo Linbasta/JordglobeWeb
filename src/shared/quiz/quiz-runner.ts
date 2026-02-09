@@ -110,6 +110,31 @@ export function startQuiz(
 
     // Generate steps
     steps = generateQuizSteps(questions)
+
+    // Frame camera to show all game countries
+    if (gameCountries.length > 0) {
+        const allPolygons = globe.getCountryPicker().getAllPolygons()
+        const gamePolygons = allPolygons.filter(p =>
+            gameCountries.some(c => c.index === p.countryIndex)
+        )
+
+        // Collect all perimeter points, sampled
+        const allPoints: { lat: number; lon: number }[] = []
+        for (const polygon of gamePolygons) {
+            allPoints.push(...polygon.points)
+        }
+        const MAX_POINTS = 500
+        const points = allPoints.length > MAX_POINTS
+            ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
+            : allPoints
+
+        const insertIndex = steps.findIndex(s => s.op === StepOp.DisableNonGameCountries)
+        if (insertIndex !== -1) {
+            steps.splice(insertIndex + 1, 0, {
+                op: StepOp.FrameLocations, points, duration: 800
+            })
+        }
+    }
 }
 
 /**

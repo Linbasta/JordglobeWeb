@@ -930,6 +930,31 @@ export async function frameLocations(
 }
 
 /**
+ * Frame arbitrary polygons by collecting all perimeter points, sampling them,
+ * and delegating to frameLocations.
+ */
+export async function frameCountries(
+    camera: ArcRotateCamera,
+    polygons: CountryPolygon[],
+    duration: number,
+    margin?: number,
+    viewportRegion?: ViewportRegion
+): Promise<boolean> {
+    const allPoints: LatLon[] = []
+    for (const polygon of polygons) {
+        allPoints.push(...polygon.points)
+    }
+
+    // Sample down if too many points (same approach as frameCountry line 494)
+    const MAX_POINTS = 500
+    const points = allPoints.length > MAX_POINTS
+        ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
+        : allPoints
+
+    return frameLocations(camera, points, duration, margin, viewportRegion)
+}
+
+/**
  * Camera shake effect for wrong answers
  */
 export async function cameraShake(camera: ArcRotateCamera, duration: number = 300, intensity: number = 0.02): Promise<void> {
