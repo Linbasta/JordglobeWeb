@@ -18,7 +18,7 @@ import {
     animateToCleared,
     setDisabledImmediate
 } from '../animations/country-animations'
-import { frameCountry, cameraShake, getZoomValue, animateToLocation } from '../animation/camera-utils'
+import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere } from '../../earth-globe/geo-math'
 import { getConfig } from '../config/global-config'
@@ -175,6 +175,18 @@ export function tickQuiz(now: number): boolean {
             })
 
             advance(now)
+            break
+        }
+
+        case StepOp.FrameLocations: {
+            if (!activeAnimation) {
+                const vp = getQuizViewportRegion()
+                activeAnimation = frameLocations(globe.getCamera(), step.points, step.duration, 0.8, vp)
+                    .then(() => {
+                        activeAnimation = null
+                        advance(performance.now())
+                    })
+            }
             break
         }
 
@@ -539,6 +551,22 @@ export function debugStepBackward() {
 function advance(now: number) {
     pc++
     stepStartTime = now
+}
+
+/**
+ * Compute the normalized viewport region between the question card and bottom panel.
+ * Called at execution time so it reflects the current window size.
+ */
+function getQuizViewportRegion(): ViewportRegion {
+    const h = window.innerHeight
+    const topPx = 120   // question card: 20px offset + 100px height
+    const bottomPx = 180 // bottom panel: 30px offset + 150px height
+    return {
+        x: 0,
+        y: topPx / h,
+        width: 1,
+        height: (h - topPx - bottomPx) / h
+    }
 }
 
 function findCurrentQuestionIndex(): number {

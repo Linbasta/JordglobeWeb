@@ -25,8 +25,12 @@ export function generateQuizSteps(questions: Question[]): Step[] {
 
     // Initial setup
     if (hasLocationQuestions) {
-        // Location quiz: show all markers first
+        // Location quiz: show all markers, then frame them
         steps.push({ op: StepOp.ShowAllLocationMarkers })
+        const locationPoints = questions
+            .filter(q => q.type === 'location')
+            .map(q => ({ lat: q.lat, lon: q.lng }))
+        steps.push({ op: StepOp.FrameLocations, points: locationPoints, duration: 800 })
     } else {
         // Country quiz: disable non-game countries
         steps.push({ op: StepOp.DisableNonGameCountries })

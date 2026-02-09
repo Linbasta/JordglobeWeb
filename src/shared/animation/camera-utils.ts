@@ -809,6 +809,127 @@ export async function frameCountry(
 }
 
 /**
+ * Frame arbitrary lat/lon points by flying the camera to show them all.
+ * Thin wrapper around the same spherical-center + binary-search-radius logic
+ * used by frameCountry, but without polygons or viewport regions.
+ *
+ * Returns false (and skips animation) if points span more than MAX_ANGULAR_SPREAD_DEG.
+ */
+const MAX_ANGULAR_SPREAD_DEG = 120
+
+export async function frameLocations(
+    camera: ArcRotateCamera,
+    points: LatLon[],
+    duration: number,
+    margin: number = 0.8,
+    viewportRegion?: ViewportRegion
+): Promise<boolean> {
+    if (points.length === 0) return false
+
+    // Single point: just fly there at a reasonable zoom
+    if (points.length === 1) {
+        const alphaOffset = viewportRegion
+            ? (viewportRegion.x + viewportRegion.width / 2 - 0.5) * 0.3
+            : 0
+        const betaOffset = viewportRegion
+            ? -(viewportRegion.y + viewportRegion.height / 2 - 0.5) * 0.5
+            : 0
+        await animateToLocation(camera, points[0].lat, points[0].lon, 5.0, duration, alphaOffset, betaOffset)
+        return true
+    }
+
+    // Spherical center via 3D averaging (handles antimeridian)
+    let sumX = 0, sumY = 0, sumZ = 0
+    for (const p of points) {
+        const latRad = p.lat * (Math.PI / 180)
+        const lonRad = p.lon * (Math.PI / 180)
+        sumX += Math.cos(latRad) * Math.cos(lonRad)
+        sumY += Math.sin(latRad)
+        sumZ += Math.cos(latRad) * Math.sin(lonRad)
+    }
+    const length = Math.sqrt(sumX * sumX + sumY * sumY + sumZ * sumZ)
+    const center = cartesianToLatLon(sumX / length, sumY / length, sumZ / length)
+
+    // Check angular spread — skip if too wide to frame meaningfully
+    const centerLatRad = center.lat * (Math.PI / 180)
+    const centerLonRad = center.lon * (Math.PI / 180)
+    let maxAngle = 0
+    for (const p of points) {
+        const latRad = p.lat * (Math.PI / 180)
+        const lonRad = p.lon * (Math.PI / 180)
+        // Dot product on unit sphere
+        const dot =
+            Math.cos(centerLatRad) * Math.cos(centerLonRad) * Math.cos(latRad) * Math.cos(lonRad) +
+            Math.sin(centerLatRad) * Math.sin(latRad) +
+            Math.cos(centerLatRad) * Math.sin(centerLonRad) * Math.cos(latRad) * Math.sin(lonRad)
+        const angle = Math.acos(Math.min(1, Math.max(-1, dot))) * (180 / Math.PI)
+        if (angle > maxAngle) maxAngle = angle
+    }
+
+    if (maxAngle > MAX_ANGULAR_SPREAD_DEG) {
+        console.log(`frameLocations: spread ${maxAngle.toFixed(1)}° > ${MAX_ANGULAR_SPREAD_DEG}° — skipping`)
+        return false
+    }
+
+    // Binary search for radius that fits all points with margin
+    const { alpha: baseAlpha, beta: baseBeta } = latLonToAlphaBeta(center.lat, center.lon)
+
+    // Viewport bounds for containment check and fill ratio
+    const vLeft = viewportRegion?.x ?? 0
+    const vTop = viewportRegion?.y ?? 0
+    const vWidth = viewportRegion?.width ?? 1
+    const vHeight = viewportRegion?.height ?? 1
+    const vRight = vLeft + vWidth
+    const vBottom = vTop + vHeight
+
+    let minRadius = CAMERA_LOWER_RADIUS
+    let maxRadius = 10.0
+    const MAX_ITERATIONS = 20
+
+    for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+        const testRadius = (minRadius + maxRadius) / 2
+
+        const projected = projectWorldToScreenXY(camera, points, baseAlpha, baseBeta, testRadius)
+        const xs = projected.map(p => p.x)
+        const ys = projected.map(p => p.y)
+        const pMinX = Math.min(...xs)
+        const pMaxX = Math.max(...xs)
+        const pMinY = Math.min(...ys)
+        const pMaxY = Math.max(...ys)
+
+        const allFit = pMinX >= vLeft && pMaxX <= vRight && pMinY >= vTop && pMaxY <= vBottom
+
+        if (!allFit) {
+            minRadius = testRadius
+        } else {
+            const width = pMaxX - pMinX
+            const height = pMaxY - pMinY
+            const fillRatio = Math.min(width / vWidth, height / vHeight)
+
+            if (fillRatio >= margin) {
+                maxRadius = testRadius
+                break
+            } else {
+                maxRadius = testRadius
+            }
+        }
+    }
+
+    const radius = (minRadius + maxRadius) / 2
+
+    // Camera offset to center content in viewport region
+    const alphaOffset = viewportRegion
+        ? (viewportRegion.x + viewportRegion.width / 2 - 0.5) * 0.3
+        : 0
+    const betaOffset = viewportRegion
+        ? -(viewportRegion.y + viewportRegion.height / 2 - 0.5) * 0.5
+        : 0
+
+    await animateToLocation(camera, center.lat, center.lon, radius, duration, alphaOffset, betaOffset)
+    return true
+}
+
+/**
  * Camera shake effect for wrong answers
  */
 export async function cameraShake(camera: ArcRotateCamera, duration: number = 300, intensity: number = 0.02): Promise<void> {
