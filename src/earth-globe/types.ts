@@ -244,6 +244,19 @@ export interface EarthGlobeAPI {
     showCountryOutline(countryIndex: number): void;
     clearCountryOutline(): void;
 
+    // Location markers
+    acquireMarker(lat: number, lon: number, offsetAbove?: number): number;
+    releaseMarker(markerId: number): void;
+    updateMarkerPosition(markerId: number, lat: number, lon: number, offsetAbove?: number): void;
+    releaseAllMarkers(): void;
+    getMarkerPoolStats(): { total: number; inUse: number; available: number } | null;
+    setMarkerScale(markerId: number, scale: number): void;
+    getMarkerScale(markerId: number): number;
+    getMarkerPosition(markerId: number): import('@babylonjs/core/Maths/math').Vector3 | null;
+    hideMarker(markerId: number): void;
+    toggleMarkerDebugVisualization(): void;
+    updateMarkerDebugRadius(hitRadius: number): void;
+
     // Event callbacks
     onCountryHover(callback: (event: CountryHoverEvent) => void): void;
     onCountryClick(callback: (event: CountryClickEvent) => void): void;

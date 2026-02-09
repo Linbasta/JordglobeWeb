@@ -41,6 +41,7 @@ interface PooledMarker {
     fillInstance: InstancedMesh;
     debugSphereInstance: InstancedMesh | null;
     inUse: boolean;
+    scaleMultiplier: number;
 }
 
 /**
@@ -97,7 +98,8 @@ export class LocationMarkerPool {
                 strokeInstance,
                 fillInstance,
                 debugSphereInstance: null,
-                inUse: false
+                inUse: false,
+                scaleMultiplier: 1.0
             });
         }
 
@@ -179,6 +181,7 @@ export class LocationMarkerPool {
         }
 
         marker.inUse = false;
+        marker.scaleMultiplier = 1.0;
         marker.strokeInstance.setEnabled(false);
 
         // Hide debug sphere
@@ -258,8 +261,8 @@ export class LocationMarkerPool {
     updateScale(scale: number): void {
         // Update all marker instances (both in use and available)
         this.markers.forEach(marker => {
-            // Scale the stroke instance (parent)
-            marker.strokeInstance.scaling.setAll(scale);
+            // Scale the stroke instance (parent), preserving per-marker multiplier
+            marker.strokeInstance.scaling.setAll(scale * marker.scaleMultiplier);
         });
     }
 
@@ -275,7 +278,28 @@ export class LocationMarkerPool {
             return;
         }
 
-        marker.strokeInstance.scaling.setAll(scale);
+        marker.scaleMultiplier = scale;
+    }
+
+    /**
+     * Get the world position of a marker
+     * @param id Marker ID
+     * @returns Position vector, or null if marker not found or not in use
+     */
+    getMarkerPosition(id: number): Vector3 | null {
+        const marker = this.markers[id];
+        if (!marker || !marker.inUse) return null;
+        return marker.strokeInstance.position;
+    }
+
+    /**
+     * Hide a marker visually without releasing it from the pool.
+     * The slot stays acquired so nothing else grabs it.
+     */
+    hideMarker(id: number): void {
+        const marker = this.markers[id];
+        if (!marker) return;
+        marker.strokeInstance.setEnabled(false);
     }
 
     /**
@@ -289,7 +313,7 @@ export class LocationMarkerPool {
             return 1.0;
         }
 
-        return marker.strokeInstance.scaling.x; // All axes scaled uniformly
+        return marker.scaleMultiplier;
     }
 
     /**

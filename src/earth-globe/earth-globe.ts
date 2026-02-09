@@ -427,8 +427,8 @@ export class EarthGlobe {
             return { position, normal };
         }
 
-        // No country (ocean) - just return base position with small offset
-        const position = basePosition.add(normal.scale(offsetAbove));
+        // No country found (coastal edge case) — default to landmass altitude
+        const position = basePosition.add(normal.scale(COUNTRY_ALTITUDE + offsetAbove));
         return { position, normal };
     }
 
@@ -713,6 +713,25 @@ export class EarthGlobe {
         }
 
         return this.markerPool.getMarkerScale(markerId);
+    }
+
+    /**
+     * Get the world position of a marker
+     * @param markerId Marker ID
+     * @returns Position vector, or null if marker not found or not in use
+     */
+    getMarkerPosition(markerId: number): Vector3 | null {
+        if (!this.markerPool) return null;
+        return this.markerPool.getMarkerPosition(markerId);
+    }
+
+    /**
+     * Hide a marker visually without releasing it from the pool
+     * @param markerId Marker ID
+     */
+    hideMarker(markerId: number): void {
+        if (!this.markerPool) return;
+        this.markerPool.hideMarker(markerId);
     }
 
     /**

@@ -13,7 +13,7 @@ import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
 import { STATE_DISABLED } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
-import { getPreviewPin, onCountryHover, onPinPlaced } from '../shared/managers/pin-manager';
+import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared/managers/pin-manager';
 import { handleHover, clearSelection } from '../shared/behaviors/country-selection';
 import { CountryLabelUI } from '../shared/ui/country-label-ui';
 import { HoverCountryLabel } from '../shared/ui/hover-country-label';
@@ -23,7 +23,7 @@ import { getZoomValue } from '../shared/animation/camera-utils';
 // New quiz pipeline
 import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
-import { getDebugState, getCurrentQuestionIndex, getQuestion } from '../shared/quiz/quiz-runner';
+import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -103,12 +103,12 @@ export class SoloGameController extends BaseGameController {
                 if (state === STATE_DISABLED) {
                     return;  // Ignore disabled countries
                 }
-                // Submit answer with country and location
-                this.quizAdapter.submitAnswer(country.countryIndex, latLon);
+                // Submit answer with country and location (convert .lon → .lng at boundary)
+                this.quizAdapter.submitAnswer(country.countryIndex, { lat: latLon.lat, lng: latLon.lon });
             } else {
                 // No country clicked - use a placeholder index (-1) and pass the latLon
                 // The quiz runner will use latLon for distance-based hit detection
-                this.quizAdapter.submitAnswer(-1, latLon);
+                this.quizAdapter.submitAnswer(-1, { lat: latLon.lat, lng: latLon.lon });
             }
         } else {
             // Normal mode - delegate to user callback if set
@@ -165,6 +165,13 @@ export class SoloGameController extends BaseGameController {
                 this.hoverCountryLabel?.show(country.name);
             } else {
                 this.hoverCountryLabel?.hide();
+            }
+        });
+
+        // Wire pin move → location marker hover detection
+        onPinMove((latLon) => {
+            if (this.quizAdapter) {
+                updateLocationHover(latLon.lat, latLon.lon);
             }
         });
 
@@ -249,10 +256,7 @@ export class SoloGameController extends BaseGameController {
         this.quizAdapter = new QuizUIAdapter(this.globe, this.countryLabelUI);
         this.quizAdapter.startQuiz(config);
 
-        // Show debug panel in dev mode
-        if (this.quizDebugManager && import.meta.env.DEV) {
-            this.quizDebugManager.show();
-        }
+        // Debug panel available via 'D' key (created hidden by default)
     }
 
     /**

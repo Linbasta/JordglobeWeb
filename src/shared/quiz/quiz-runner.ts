@@ -18,10 +18,11 @@ import {
     animateToCleared,
     setDisabledImmediate
 } from '../animations/country-animations'
-import { frameCountry, cameraShake, getZoomValue } from '../animation/camera-utils'
+import { frameCountry, cameraShake, getZoomValue, animateToLocation } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere } from '../../earth-globe/geo-math'
 import { getConfig } from '../config/global-config'
+import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 
 // ============================================================================
 // Module State
@@ -40,6 +41,9 @@ let done = false
 
 // Input buffer (set by caller before tick)
 let pendingAnswer: { countryIndex: number; latLon: { lat: number; lng: number } } | { optionIndex: number } | null = null
+
+// Hover tracking for location markers
+let hoveredMarkerId = -1
 
 // Animation tracking
 let activeAnimation: Promise<void> | null = null
@@ -85,6 +89,7 @@ export function startQuiz(
     wrongCount = 0
     done = false
     pendingAnswer = null
+    hoveredMarkerId = -1
     activeAnimation = null
 
     globe = globeAPI
@@ -159,15 +164,12 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.ShowAllLocationMarkers: {
-            console.log('[Quiz Runner] Showing all location markers')
-
             // Create markers for all location questions
             questions.forEach((q, index) => {
                 if (q.type === 'location') {
                     const markerId = globe.acquireMarker(q.lat, q.lng)
                     if (markerId !== -1) {
                         locationMarkers.set(index, markerId)
-                        console.log(`  Marker ${markerId} for question ${index}: ${q.prompt}`)
                     }
                 }
             })
@@ -181,7 +183,6 @@ export function tickQuiz(now: number): boolean {
             // Stay on this step for at least one frame so UI can update
             if (!questionShown) {
                 questionShown = true
-                console.log(`[Quiz Runner] Showing question ${step.questionIndex}, waiting one frame for UI`)
             } else {
                 // UI has had a chance to update, now advance
                 questionShown = false
@@ -194,75 +195,70 @@ export function tickQuiz(now: number): boolean {
             waiting = true
 
             if (pendingAnswer && 'countryIndex' in pendingAnswer) {
-                waiting = false
-
-                // Find the current question
                 const qi = findCurrentQuestionIndex()
                 const q = questions[qi]
 
                 if (q.type === 'country') {
+                    waiting = false
                     const correctCountry = globe.getCountryByISO2(q.countryISO2)
                     if (!correctCountry) break
-
                     const isCorrect = pendingAnswer.countryIndex === correctCountry.index
-
-                    if (isCorrect) {
-                        score++
-                    } else {
-                        wrongCount++
-                    }
-
-                    // Generate post-answer steps
-                    const postSteps = generateCountryAnswerSteps(
-                        isCorrect,
-                        correctCountry.index,
-                        pendingAnswer.countryIndex,
-                        revealOnWrong
-                    )
-
-                    console.log(`[Quiz Runner] Answer ${isCorrect ? 'correct' : 'wrong'}, splicing ${postSteps.length} steps at position ${pc + 1}`)
-
-                    // Splice them in after current step
+                    if (isCorrect) { score++ } else { wrongCount++ }
+                    const postSteps = generateCountryAnswerSteps(isCorrect, correctCountry.index, pendingAnswer.countryIndex, revealOnWrong)
                     steps.splice(pc + 1, 0, ...postSteps)
+                    pendingAnswer = null
+                    advance(now)
+
                 } else if (q.type === 'location') {
-                    // Distance-based hit detection with zoom-dependent radius
                     const clickLatLon = pendingAnswer.latLon
-                    const clickPoint = latLonToSphere(clickLatLon.lat, clickLatLon.lon, 0)
-                    const targetPoint = latLonToSphere(q.lat, q.lng, 0)
-
-                    const distSqr = Vector3.DistanceSquared(clickPoint, targetPoint)
-
-                    // Get zoom-dependent hit radius from config
+                    const clickPoint = latLonToSphere(clickLatLon.lat, clickLatLon.lng, 0)
                     const camera = globe.getCamera()
                     const config = getConfig()
                     const hr = config.zoom.markerHitRadius
                     const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing)
                     const hitRadiusSqr = hitRadius * hitRadius
 
-                    const isCorrect = distSqr <= hitRadiusSqr
-
-                    console.log(`[Quiz Runner] Location hit test: dist=${Math.sqrt(distSqr).toFixed(4)}, hitRadius=${hitRadius.toFixed(4)}, correct=${isCorrect}`)
-
-                    if (isCorrect) {
-                        score++
-                    } else {
-                        wrongCount++
+                    // Check ALL location markers for hit (find closest within radius)
+                    let hitQuestionIndex = -1
+                    let hitMarkerId = -1
+                    let closestDistSqr = Infinity
+                    for (const [questionIndex, markerId] of locationMarkers) {
+                        const mq = questions[questionIndex]
+                        if (mq.type !== 'location') continue
+                        const markerPoint = latLonToSphere(mq.lat, mq.lng, 0)
+                        const distSqr = Vector3.DistanceSquared(clickPoint, markerPoint)
+                        if (distSqr <= hitRadiusSqr && distSqr < closestDistSqr) {
+                            closestDistSqr = distSqr
+                            hitQuestionIndex = questionIndex
+                            hitMarkerId = markerId
+                        }
                     }
 
-                    // Get marker ID for this question
-                    const markerId = locationMarkers.get(qi) ?? -1
-
-                    // Generate post-answer steps
-                    const postSteps = generateLocationAnswerSteps(isCorrect, markerId)
-
-                    console.log(`[Quiz Runner] Location answer ${isCorrect ? 'correct' : 'wrong'}, splicing ${postSteps.length} steps`)
-
-                    // Splice them in after current step
-                    steps.splice(pc + 1, 0, ...postSteps)
+                    if (hitMarkerId === -1) {
+                        // No marker hit - stay in navigation state
+                        pendingAnswer = null
+                    } else {
+                        waiting = false
+                        clearLocationHover()
+                        globe.setMarkerScale(hitMarkerId, 2.0)
+                        const isCorrect = hitQuestionIndex === qi
+                        if (isCorrect) { score++ } else { wrongCount++ }
+                        const correctMarkerId = locationMarkers.get(qi) ?? -1
+                        const hitQ = questions[hitQuestionIndex]
+                        const correctQ = questions[qi]
+                        const wrongLat = hitQ.type === 'location' ? hitQ.lat : 0
+                        const wrongLng = hitQ.type === 'location' ? hitQ.lng : 0
+                        const correctLat = correctQ.type === 'location' ? correctQ.lat : 0
+                        const correctLng = correctQ.type === 'location' ? correctQ.lng : 0
+                        const postSteps = generateLocationAnswerSteps(
+                            isCorrect, correctMarkerId, hitMarkerId, revealOnWrong,
+                            wrongLat, wrongLng, correctLat, correctLng
+                        )
+                        steps.splice(pc + 1, 0, ...postSteps)
+                        pendingAnswer = null
+                        advance(now)
+                    }
                 }
-
-                pendingAnswer = null
-                advance(now)
             }
             break
         }
@@ -298,11 +294,9 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.AnimateCorrect: {
             if (!activeAnimation) {
-                console.log(`[Quiz Runner] Starting animate_correct for country ${step.countryIndex}`)
                 globe.clearCountryOutline()
                 activeAnimation = animateCorrect(globe, step.countryIndex)
                 activeAnimation.then(() => {
-                    console.log(`[Quiz Runner] animate_correct completed`)
                     activeAnimation = null
                     advance(performance.now())
                 })
@@ -311,16 +305,48 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.AnimateMarkerCorrect: {
-            console.log(`[Quiz Runner] Animating marker ${step.markerId} correct`)
-            // Scale up the marker
-            globe.setMarkerScale(step.markerId, 2.0)
+            const pos = globe.getMarkerPosition(step.markerId)
+            if (pos) {
+                globe.hideMarker(step.markerId)
+                burstAtPosition(globe.getScene(), pos)
+            }
             advance(now)
+            break
+        }
+
+        case StepOp.AnimateMarkerWrongShake: {
+            if (!activeAnimation) {
+                // Red burst (fire-and-forget) + camera shake
+                const wrongPos = globe.getMarkerPosition(step.wrongMarkerId)
+                if (wrongPos) {
+                    wrongBurstAtPosition(globe.getScene(), wrongPos)
+                }
+                activeAnimation = cameraShake(globe.getCamera(), 300, 0.02)
+                activeAnimation.then(() => {
+                    activeAnimation = null
+                    advance(performance.now())
+                })
+            }
+            break
+        }
+
+        case StepOp.AnimateMarkerWrongReveal: {
+            if (!activeAnimation) {
+                activeAnimation = handleMarkerWrongReveal(
+                    step.wrongMarkerId, step.correctMarkerId,
+                    step.wrongLat, step.wrongLng,
+                    step.correctLat, step.correctLng
+                )
+                activeAnimation.then(() => {
+                    activeAnimation = null
+                    advance(performance.now())
+                })
+            }
             break
         }
 
         case StepOp.AnimateWrongShake: {
             if (!activeAnimation) {
-                console.log(`[Quiz Runner] Starting animate_wrong_shake`)
                 globe.clearCountryOutline()
                 activeAnimation = Promise.all([
                     cameraShake(globe.getCamera(), 300, 0.02),
@@ -328,7 +354,6 @@ export function tickQuiz(now: number): boolean {
                 ]).then(() => {})
 
                 activeAnimation.then(() => {
-                    console.log(`[Quiz Runner] animate_wrong_shake completed`)
                     activeAnimation = null
                     advance(performance.now())
                 })
@@ -338,10 +363,8 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.AnimateWrongReveal: {
             if (!activeAnimation) {
-                console.log(`[Quiz Runner] Starting animate_wrong_reveal`)
                 activeAnimation = handleWrongReveal(step.wrongCountryIndex, step.correctCountryIndex)
                 activeAnimation.then(() => {
-                    console.log(`[Quiz Runner] animate_wrong_reveal completed`)
                     activeAnimation = null
                     advance(performance.now())
                 })
@@ -403,6 +426,67 @@ export function getQuestion(index: number) { return questions[index] }
 export function getCurrentQuestionIndex() { return findCurrentQuestionIndex() }
 
 // ============================================================================
+// Location Hover
+// ============================================================================
+
+/**
+ * Called on every pointermove during placing mode.
+ * Scales the closest marker up if within hit radius, resets previous.
+ */
+export function updateLocationHover(lat: number, lon: number): void {
+    if (!globe || !waiting) return
+
+    // Only applies to location questions
+    const qi = findCurrentQuestionIndex()
+    const q = questions[qi]
+    if (!q || q.type !== 'location') return
+
+    const clickPoint = latLonToSphere(lat, lon, 0)
+    const camera = globe.getCamera()
+    const cfg = getConfig()
+    const hr = cfg.zoom.markerHitRadius
+    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing)
+    const hitRadiusSqr = hitRadius * hitRadius
+
+    // Find closest marker within hit radius
+    let closestId = -1
+    let closestDistSqr = Infinity
+    for (const [questionIndex, markerId] of locationMarkers) {
+        const mq = questions[questionIndex]
+        if (mq.type !== 'location') continue
+        const markerPoint = latLonToSphere(mq.lat, mq.lng, 0)
+        const distSqr = Vector3.DistanceSquared(clickPoint, markerPoint)
+        if (distSqr <= hitRadiusSqr && distSqr < closestDistSqr) {
+            closestDistSqr = distSqr
+            closestId = markerId
+        }
+    }
+
+    // Update hover state
+    if (closestId !== hoveredMarkerId) {
+        // Reset old
+        if (hoveredMarkerId !== -1) {
+            globe.setMarkerScale(hoveredMarkerId, 1.0)
+        }
+        // Set new
+        if (closestId !== -1) {
+            globe.setMarkerScale(closestId, 2.0)
+        }
+        hoveredMarkerId = closestId
+    }
+}
+
+/**
+ * Reset any hovered marker to normal scale.
+ */
+function clearLocationHover(): void {
+    if (hoveredMarkerId !== -1 && globe) {
+        globe.setMarkerScale(hoveredMarkerId, 1.0)
+        hoveredMarkerId = -1
+    }
+}
+
+// ============================================================================
 // Debug API (Approach A - Fire-and-forget)
 // ============================================================================
 
@@ -453,10 +537,6 @@ export function debugStepBackward() {
 function advance(now: number) {
     pc++
     stepStartTime = now
-    const nextStep = pc < steps.length ? steps[pc] : null
-    if (nextStep) {
-        console.log(`[Quiz Runner] Advanced to step ${pc}: ${nextStep.op}`)
-    }
 }
 
 function findCurrentQuestionIndex(): number {
@@ -468,6 +548,54 @@ function findCurrentQuestionIndex(): number {
         }
     }
     return 0
+}
+
+/**
+ * Handle wrong marker answer with reveal choreography
+ * (Red burst, arc from wrong→correct, camera fly, scale up correct, hold, scale down)
+ */
+async function handleMarkerWrongReveal(
+    wrongMarkerId: number,
+    correctMarkerId: number,
+    wrongLat: number,
+    wrongLng: number,
+    correctLat: number,
+    correctLng: number
+): Promise<void> {
+    if (!globe || !arcDrawer) return
+
+    // 1. Red burst at wrong marker (fire-and-forget)
+    const wrongPos = globe.getMarkerPosition(wrongMarkerId)
+    if (wrongPos) {
+        wrongBurstAtPosition(globe.getScene(), wrongPos)
+    }
+
+    // 2. Arc from wrong → correct + camera fly to correct (parallel)
+    const arcId = arcDrawer.addArc(
+        wrongLat, wrongLng,
+        correctLat, correctLng,
+        '#ffffff', 0.3, 0
+    )
+
+    const arcPromise = arcDrawer.animateArc(arcId, 500)
+    const cameraPromise = animateToLocation(
+        globe.getCamera(),
+        correctLat, correctLng,
+        globe.getCamera().radius,
+        800
+    )
+
+    await Promise.all([arcPromise, cameraPromise])
+
+    // 3. Remove arc, scale up correct marker
+    arcDrawer.removeArc(arcId)
+    globe.setMarkerScale(correctMarkerId, 3.0)
+
+    // 4. Hold
+    await new Promise(r => setTimeout(r, 1500))
+
+    // 5. Scale correct marker back down
+    globe.setMarkerScale(correctMarkerId, 1.0)
 }
 
 /**

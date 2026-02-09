@@ -97,23 +97,46 @@ export function generateCountryAnswerSteps(
  * Generate steps after user answers a location question
  *
  * @param correct - Whether the answer was correct
- * @param markerId - ID of the marker for this location
+ * @param correctMarkerId - ID of the correct marker
+ * @param wrongMarkerId - ID of the marker the user clicked (-1 if correct)
+ * @param revealOnWrong - If false, just shake. If true, arc + fly to correct.
+ * @param wrongLat - Lat of wrong marker
+ * @param wrongLng - Lng of wrong marker
+ * @param correctLat - Lat of correct marker
+ * @param correctLng - Lng of correct marker
  * @returns Steps to splice into the main array
  */
 export function generateLocationAnswerSteps(
     correct: boolean,
-    markerId: number
+    correctMarkerId: number,
+    wrongMarkerId: number,
+    revealOnWrong: boolean,
+    wrongLat: number,
+    wrongLng: number,
+    correctLat: number,
+    correctLng: number
 ): Step[] {
     if (correct) {
         return [
-            { op: StepOp.AnimateMarkerCorrect, markerId },
-            { op: StepOp.Pause, duration: 1500 },
+            { op: StepOp.AnimateMarkerCorrect, markerId: correctMarkerId },
         ]
     }
 
-    // Wrong answer - just pause and move on
+    // Wrong answer
+    if (revealOnWrong) {
+        return [
+            {
+                op: StepOp.AnimateMarkerWrongReveal,
+                wrongMarkerId,
+                correctMarkerId,
+                wrongLat, wrongLng,
+                correctLat, correctLng
+            },
+        ]
+    }
+
     return [
-        { op: StepOp.Pause, duration: 1000 },
+        { op: StepOp.AnimateMarkerWrongShake, wrongMarkerId },
     ]
 }
 

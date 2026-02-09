@@ -45,7 +45,8 @@
       "Bash(jq:*)",
       "Bash(npm run test:quiz-runner:*)",
       "WebSearch",
-      "Bash({} ;)"
+      "Bash({} ;)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

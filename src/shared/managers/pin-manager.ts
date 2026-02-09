@@ -43,6 +43,7 @@ let pinRecorder = new PinRecorder();
 let onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
 let onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
 let onPlacingModeChangeCallback: ((isPlacing: boolean) => void) | null = null;
+let onPinMoveCallback: ((latLon: LatLon) => void) | null = null;
 
 // --- Private functions ---
 
@@ -166,6 +167,11 @@ function updatePreviewPinPosition(event: PointerEvent): void {
         Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
         previewPin.rotationQuaternion = quaternion;
 
+        // Fire pin move callback (every pointermove, not gated by country change)
+        if (onPinMoveCallback) {
+            onPinMoveCallback(latLon);
+        }
+
         // Record this position
         pinRecorder.recordPosition(latLon.lat, latLon.lon);
 
@@ -283,4 +289,8 @@ export function onCountryHover(callback: (country: CountryPolygon | null, latLon
 
 export function onPlacingModeChange(callback: (isPlacing: boolean) => void): void {
     onPlacingModeChangeCallback = callback;
+}
+
+export function onPinMove(callback: (latLon: LatLon) => void): void {
+    onPinMoveCallback = callback;
 }
