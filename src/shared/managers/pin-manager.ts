@@ -22,6 +22,7 @@ import { getZoomValue } from '../animation/camera-utils';
 import { getConfig } from '../config/global-config';
 
 const EARTH_RADIUS = 2.0;
+const TOUCH_Y_OFFSET = -50; // negative = upward in screen space, ~50px above fingertip
 
 // --- Module-level state ---
 
@@ -111,7 +112,8 @@ function setupEventHandlers(): void {
 
     canvas.addEventListener('pointerdown', (e) => {
         if (e.button === 2 && !isPlacingMode) {
-            const pickResult = scene.pick(e.clientX, e.clientY, (mesh) => mesh === earthSphere);
+            const pickY = e.pointerType === 'touch' ? e.clientY + TOUCH_Y_OFFSET : e.clientY;
+            const pickResult = scene.pick(e.clientX, pickY, (mesh) => mesh === earthSphere);
             if (pickResult.hit) {
                 enterPlacingMode();
                 updatePreviewPinPosition(e);
@@ -127,7 +129,8 @@ function setupEventHandlers(): void {
 function updatePreviewPinPosition(event: PointerEvent): void {
     if (!previewPin) return;
 
-    const pickResult = scene.pick(event.clientX, event.clientY, (mesh) => mesh === earthSphere);
+    const pickY = event.pointerType === 'touch' ? event.clientY + TOUCH_Y_OFFSET : event.clientY;
+    const pickResult = scene.pick(event.clientX, pickY, (mesh) => mesh === earthSphere);
 
     if (pickResult.hit && pickResult.pickedPoint) {
         // Show the pin when we hit the globe

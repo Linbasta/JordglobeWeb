@@ -101,7 +101,7 @@ export type Step =
     // Location markers
     | { op: StepOp.ShowAllLocationMarkers }
     | { op: StepOp.AnimateMarkerCorrect; markerId: number }
-    | { op: StepOp.AnimateMarkerWrongShake; wrongMarkerId: number }
+    | { op: StepOp.AnimateMarkerWrongShake; wrongMarkerId: number; correctMarkerId: number }
     | { op: StepOp.AnimateMarkerWrongReveal; wrongMarkerId: number; correctMarkerId: number;
         wrongLat: number; wrongLng: number; correctLat: number; correctLng: number }
 

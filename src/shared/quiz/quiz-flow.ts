@@ -136,7 +136,7 @@ export function generateLocationAnswerSteps(
     }
 
     return [
-        { op: StepOp.AnimateMarkerWrongShake, wrongMarkerId },
+        { op: StepOp.AnimateMarkerWrongShake, wrongMarkerId, correctMarkerId },
     ]
 }
 

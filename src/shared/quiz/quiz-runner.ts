@@ -323,6 +323,8 @@ export function tickQuiz(now: number): boolean {
                 }
                 activeAnimation = cameraShake(globe.getCamera(), 300, 0.02)
                 activeAnimation.then(() => {
+                    globe.hideMarker(step.wrongMarkerId)
+                    globe.hideMarker(step.correctMarkerId)
                     activeAnimation = null
                     advance(performance.now())
                 })
@@ -564,11 +566,12 @@ async function handleMarkerWrongReveal(
 ): Promise<void> {
     if (!globe || !arcDrawer) return
 
-    // 1. Red burst at wrong marker (fire-and-forget)
+    // 1. Red burst at wrong marker (fire-and-forget) + reset scale
     const wrongPos = globe.getMarkerPosition(wrongMarkerId)
     if (wrongPos) {
         wrongBurstAtPosition(globe.getScene(), wrongPos)
     }
+    globe.setMarkerScale(wrongMarkerId, 1.0)
 
     // 2. Arc from wrong → correct + camera fly to correct (parallel)
     const arcId = arcDrawer.addArc(
@@ -594,8 +597,9 @@ async function handleMarkerWrongReveal(
     // 4. Hold
     await new Promise(r => setTimeout(r, 1500))
 
-    // 5. Scale correct marker back down
-    globe.setMarkerScale(correctMarkerId, 1.0)
+    // 5. Hide both markers (question won't repeat)
+    globe.hideMarker(wrongMarkerId)
+    globe.hideMarker(correctMarkerId)
 }
 
 /**
