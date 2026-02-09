@@ -106,6 +106,13 @@ export const CAMERA_ANGULAR_SENSITIVITY = 4000;
 export const CAMERA_PANNING_SENSITIVITY = 4000;
 
 // ============================================================================
+// Small Countries
+// ============================================================================
+
+/** Camera distance squared above which small country markers are visible */
+export const SMALL_MARKER_VISIBILITY_DISTANCE_SQ = 64;
+
+// ============================================================================
 // Spatial Index
 // ============================================================================
 

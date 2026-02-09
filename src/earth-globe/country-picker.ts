@@ -12,10 +12,19 @@ import type { LatLon, CountryPolygon, BoundingBox, GridCell } from './types';
 /**
  * Spatial index for fast country polygon lookup
  */
+interface SmallCountryCentroid {
+    countryIndex: number;
+    lat: number;
+    lon: number;
+    radiusDeg: number;
+    polygon: CountryPolygon;  // first polygon, returned on proximity match
+}
+
 export class CountryPicker {
     private grid: Map<string, GridCell>;
     private cellSize: number;
     private polygons: CountryPolygon[];
+    private smallCentroids: SmallCountryCentroid[] = [];
 
     /**
      * Create a new CountryPicker
@@ -81,7 +90,41 @@ export class CountryPicker {
             }
         }
 
-        return null;
+        // Fallback: check proximity to small country centroids
+        return this.checkSmallCountryCentroids(point);
+    }
+
+    /**
+     * Check if a point is near any small country centroid
+     */
+    private checkSmallCountryCentroids(point: LatLon): CountryPolygon | null {
+        let bestDist = Infinity;
+        let bestMatch: CountryPolygon | null = null;
+
+        for (const entry of this.smallCentroids) {
+            const dlat = point.lat - entry.lat;
+            const dlon = point.lon - entry.lon;
+            const dist = dlat * dlat + dlon * dlon;
+            const radiusSq = entry.radiusDeg * entry.radiusDeg;
+
+            if (dist < radiusSq && dist < bestDist) {
+                bestDist = dist;
+                bestMatch = entry.polygon;
+            }
+        }
+
+        return bestMatch;
+    }
+
+    /**
+     * Register a small country centroid for enlarged hit detection
+     */
+    registerSmallCountryCentroid(countryIndex: number, lat: number, lon: number, radiusDeg: number): void {
+        // Find the first polygon for this country
+        const polygon = this.polygons.find(p => p.countryIndex === countryIndex);
+        if (!polygon) return;
+
+        this.smallCentroids.push({ countryIndex, lat, lon, radiusDeg, polygon });
     }
 
     /**

@@ -28,6 +28,9 @@ export class CountryAnimator {
     /** Active blend factor animations by country index */
     private blendAnimations: Map<number, AnimationState> = new Map();
 
+    /** Active expansion animations by country index */
+    private expansionAnimations: Map<number, AnimationState> = new Map();
+
     /** Segment animation index mappings (segment -> country indices) */
     private segmentCountryMap: Map<number, number[]> = new Map();
 
@@ -156,6 +159,52 @@ export class CountryAnimator {
     }
 
     /**
+     * Animate a country's expansion factor from current value to target
+     * @param countryIndex Country index
+     * @param targetExpansion Target expansion (1.0 = normal, >1 = magnified)
+     * @param durationMs Animation duration in milliseconds
+     */
+    animateExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void> {
+        return new Promise((resolve) => {
+            const existing = this.expansionAnimations.get(countryIndex);
+            if (existing) {
+                existing.resolve();
+            }
+
+            const startValue = this.animationTexture.getExpansion(countryIndex);
+            const animation: AnimationState = {
+                startValue,
+                endValue: targetExpansion,
+                startTime: performance.now(),
+                duration: durationMs,
+                resolve
+            };
+
+            this.expansionAnimations.set(countryIndex, animation);
+        });
+    }
+
+    /**
+     * Set immediate expansion value (no animation)
+     */
+    setExpansion(countryIndex: number, expansion: number): void {
+        const existing = this.expansionAnimations.get(countryIndex);
+        if (existing) {
+            existing.resolve();
+            this.expansionAnimations.delete(countryIndex);
+        }
+
+        this.animationTexture.setExpansion(countryIndex, expansion);
+    }
+
+    /**
+     * Get current expansion value
+     */
+    getExpansion(countryIndex: number): number {
+        return this.animationTexture.getExpansion(countryIndex);
+    }
+
+    /**
      * Update all active animations
      * Call this once per frame
      */
@@ -199,6 +248,24 @@ export class CountryAnimator {
             }
         }
 
+        // Process expansion animations
+        for (const [countryIndex, anim] of this.expansionAnimations) {
+            const elapsed = now - anim.startTime;
+            const progress = Math.min(1, elapsed / anim.duration);
+
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
+
+            this.animationTexture.setExpansion(countryIndex, value);
+            needsUpdate = true;
+
+            if (progress >= 1) {
+                anim.resolve();
+                this.expansionAnimations.delete(countryIndex);
+            }
+        }
+
         // Update segment border animations (sync with countries)
         for (const [segmentIndex, countryIndices] of this.segmentCountryMap) {
             let maxAltitude = 0;
@@ -219,7 +286,7 @@ export class CountryAnimator {
      * Check if any animations are currently active
      */
     hasActiveAnimations(): boolean {
-        return this.altitudeAnimations.size > 0 || this.blendAnimations.size > 0;
+        return this.altitudeAnimations.size > 0 || this.blendAnimations.size > 0 || this.expansionAnimations.size > 0;
     }
 
     /**
@@ -235,6 +302,11 @@ export class CountryAnimator {
             anim.resolve();
         }
         this.blendAnimations.clear();
+
+        for (const anim of this.expansionAnimations.values()) {
+            anim.resolve();
+        }
+        this.expansionAnimations.clear();
     }
 
     /**

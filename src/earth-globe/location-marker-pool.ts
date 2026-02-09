@@ -303,6 +303,15 @@ export class LocationMarkerPool {
     }
 
     /**
+     * Show a previously hidden marker (inverse of hideMarker)
+     */
+    showMarker(id: number): void {
+        const marker = this.markers[id];
+        if (!marker || !marker.inUse) return;
+        marker.strokeInstance.setEnabled(true);
+    }
+
+    /**
      * Get the current scale of a specific marker
      * @param id Marker ID
      * @returns Scale factor, or 1.0 if marker not found

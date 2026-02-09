@@ -9,7 +9,7 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { Vector3, Color4 } from '@babylonjs/core/Maths/math';
+import { Vector3, Color3, Color4 } from '@babylonjs/core/Maths/math';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Material } from '@babylonjs/core/Materials/material';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
@@ -53,6 +53,7 @@ import { CountryAnimator } from './country-animator';
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
 import { LocationMarkerPool } from './location-marker-pool';
+import { isSmallCountry as checkSmallCountry } from './small-countries';
 import { getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
 
@@ -105,6 +106,7 @@ export class EarthGlobe {
 
     // Location markers
     private markerPool: LocationMarkerPool | null = null;
+    private smallMarkerPool: LocationMarkerPool | null = null;
 
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;
@@ -119,6 +121,9 @@ export class EarthGlobe {
     private assets: AssetPaths;
     private onCountryHoverCallback: ((event: CountryHoverEvent) => void) | null = null;
     private onCountryClickCallback: ((event: CountryClickEvent) => void) | null = null;
+
+    // Small country markers (countryIndex -> markerId)
+    private smallCountryMarkers: Map<number, number> = new Map();
 
     // State
     private isInitialized: boolean = false;
@@ -226,10 +231,14 @@ export class EarthGlobe {
             const worldTexture = new Texture(worldTextureUrl, this.scene, false, true);
 
             // Merge meshes for performance
-            this.countryRenderer.mergeCountries(this.shaderFactory.createCountryShaderMaterial(worldTexture));
+            const countryMaterial = this.shaderFactory.createCountryShaderMaterial(worldTexture);
+            const smallCountryMaterial = this.shaderFactory.createSmallCountryShaderMaterial(worldTexture);
+            this.countryRenderer.mergeCountries(countryMaterial, smallCountryMaterial);
             this.borderRenderer.mergeExtrudedBorders(
                 this.countryRenderer.getPolygonsData(),
-                this.shaderFactory.createExtrudedBorderMaterial()
+                this.shaderFactory.createExtrudedBorderMaterial(),
+                this.shaderFactory.createSmallExtrudedBorderMaterial(),
+                this.countryRenderer.getCountriesData()
             );
 
             // Render segment borders
@@ -252,6 +261,26 @@ export class EarthGlobe {
 
             // Create location marker pool (200 markers, batched rendering)
             this.markerPool = new LocationMarkerPool(this.scene, { poolSize: 200 });
+
+            // Create separate green marker pool for small country indicators
+            this.smallMarkerPool = new LocationMarkerPool(this.scene, {
+                poolSize: 20,
+                fillColor: new Color3(0.2, 0.8, 0.2),
+                strokeColor: new Color3(0, 0.4, 0),
+                strokeWidth: 0.35,
+            });
+
+            // Place markers at small country centroids
+            for (const country of this.countryRenderer.getCountriesData()) {
+                if (country.centroid) {
+                    const normal = country.centroid.normalizeToNew();
+                    const position = country.centroid.add(normal.scale(COUNTRY_ALTITUDE + 0.01));
+                    const markerId = this.smallMarkerPool.acquireMarker(position, normal);
+                    if (markerId >= 0) {
+                        this.smallCountryMarkers.set(country.index, markerId);
+                    }
+                }
+            }
 
             // Log statistics
             const pickerStats = this.countryPicker.getStats();
@@ -299,6 +328,13 @@ export class EarthGlobe {
             const ms = config.zoom.markerScale;
             const scale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
             this.markerPool.updateScale(scale);
+        }
+
+        // Update small country marker scale based on camera zoom
+        if (this.smallMarkerPool) {
+            const ms = config.zoom.markerScale;
+            const smallScale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
+            this.smallMarkerPool.updateScale(smallScale);
         }
     }
 
@@ -501,6 +537,15 @@ export class EarthGlobe {
     setCountryState(countryIndex: number, state: number): void {
         this.countryAnimator.setState(countryIndex, state);
         this.animationTexture.update();
+
+        // Hide/show small country marker based on state
+        if (this.smallCountryMarkers.has(countryIndex)) {
+            if (state === STATE_NORMAL) {
+                this.showSmallCountryMarker(countryIndex);
+            } else {
+                this.hideSmallCountryMarker(countryIndex);
+            }
+        }
     }
 
     /**
@@ -545,6 +590,65 @@ export class EarthGlobe {
      */
     animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void> {
         return this.countryAnimator.animateBlend(countryIndex, targetBlend, durationMs);
+    }
+
+    // =========================================================================
+    // Public API - Country Expansion (small countries)
+    // =========================================================================
+
+    /**
+     * Set the expansion factor for a country (instant)
+     * @param countryIndex Country index
+     * @param expansion Expansion factor (1.0 = normal, >1 = magnified)
+     */
+    setCountryExpansion(countryIndex: number, expansion: number): void {
+        this.countryAnimator.setExpansion(countryIndex, expansion);
+        this.animationTexture.update();
+    }
+
+    /**
+     * Get the current expansion factor for a country
+     */
+    getCountryExpansion(countryIndex: number): number {
+        return this.countryAnimator.getExpansion(countryIndex);
+    }
+
+    /**
+     * Animate a country's expansion factor over time
+     * @param countryIndex Country index
+     * @param targetExpansion Target expansion (1.0 = normal, >1 = magnified)
+     * @param durationMs Animation duration in milliseconds
+     */
+    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void> {
+        return this.countryAnimator.animateExpansion(countryIndex, targetExpansion, durationMs);
+    }
+
+    /**
+     * Check if a country is classified as small (needs magnification)
+     */
+    isSmallCountry(countryIndex: number): boolean {
+        const country = this.countryRenderer.getCountryByIndex(countryIndex);
+        return country ? checkSmallCountry(country.iso2) : false;
+    }
+
+    /**
+     * Hide the small country marker for a given country index
+     */
+    hideSmallCountryMarker(countryIndex: number): void {
+        const markerId = this.smallCountryMarkers.get(countryIndex);
+        if (markerId !== undefined && this.smallMarkerPool) {
+            this.smallMarkerPool.hideMarker(markerId);
+        }
+    }
+
+    /**
+     * Show the small country marker for a given country index
+     */
+    showSmallCountryMarker(countryIndex: number): void {
+        const markerId = this.smallCountryMarkers.get(countryIndex);
+        if (markerId !== undefined && this.smallMarkerPool) {
+            this.smallMarkerPool.showMarker(markerId);
+        }
     }
 
     // =========================================================================
@@ -735,6 +839,15 @@ export class EarthGlobe {
     }
 
     /**
+     * Show a previously hidden marker
+     * @param markerId Marker ID
+     */
+    showMarker(markerId: number): void {
+        if (!this.markerPool) return;
+        this.markerPool.showMarker(markerId);
+    }
+
+    /**
      * Toggle debug visualization of marker hit areas
      */
     toggleMarkerDebugVisualization(): void {
@@ -784,6 +897,9 @@ export class EarthGlobe {
 
         if (this.markerPool) {
             this.markerPool.dispose();
+        }
+        if (this.smallMarkerPool) {
+            this.smallMarkerPool.dispose();
         }
 
         this.scene.dispose();

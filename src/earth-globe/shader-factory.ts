@@ -25,6 +25,7 @@ import {
 
 // Import shaders
 import animatedVertexShader from './shaders/animated.vertex.glsl?raw';
+import animatedSmallVertexShader from './shaders/animated-small.vertex.glsl?raw';
 import borderFragmentShader from './shaders/border.fragment.glsl?raw';
 import countryFragmentShader from './shaders/country.fragment.glsl?raw';
 import unlitVertexShader from './shaders/unlit.vertex.glsl?raw';
@@ -135,6 +136,79 @@ export class ShaderFactory {
     }
 
     /**
+     * Create a shader material using the small-country vertex shader (with countryPivot expansion)
+     */
+    createSmallShaderMaterial(
+        name: string,
+        fragmentShader: string,
+        uniforms: string[],
+        varyings: string = "",
+        varyingAssignments: string = "",
+        extraSamplers: string[] = []
+    ): ShaderMaterial {
+        const vertexShader = animatedSmallVertexShader
+            .replace('// VARYINGS_PLACEHOLDER', varyings)
+            .replace('// VARYING_ASSIGNMENTS_PLACEHOLDER', varyingAssignments);
+
+        Effect.ShadersStore[`${name}VertexShader`] = vertexShader;
+        Effect.ShadersStore[`${name}FragmentShader`] = fragmentShader;
+
+        const shaderMaterial = new ShaderMaterial(name, this.scene, {
+            vertex: name,
+            fragment: name,
+        }, {
+            attributes: ["position", "normal", "uv", "countryIndex", "countryPivot"],
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
+            samplers: ["animationTexture", ...extraSamplers]
+        });
+
+        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onError = (effect, errors) => {
+            console.error(`Shader compilation error in ${name}:`, errors);
+        };
+
+        if (this.animationTexture) {
+            shaderMaterial.setTexture("animationTexture", this.animationTexture);
+        }
+        shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
+        shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("thicknessOffset", 0.0);
+        shaderMaterial.backFaceCulling = false;
+
+        return shaderMaterial;
+    }
+
+    /**
+     * Create the small country surface shader material (with pivot-based expansion)
+     */
+    createSmallCountryShaderMaterial(worldTexture: Texture): ShaderMaterial {
+        const varyings = [
+            "varying float vCountryIndex;",
+            "varying vec2 vTexUV;"
+        ].join("\n");
+
+        // Use expandedPosition for UV so texture follows expansion
+        const varyingAssignments = [
+            "vCountryIndex = countryIndex;",
+            "vec3 dir = normalize(expandedPosition);",
+            "float lon = atan(dir.z, dir.x);",
+            "float lat = asin(dir.y);",
+            "vTexUV = vec2(lon / 6.28318530 + 0.5, lat / 3.14159265 + 0.5);"
+        ].join("\n    ");
+
+        const material = this.createSmallShaderMaterial(
+            "smallCountryShader",
+            countryFragmentShader,
+            [],
+            varyings,
+            varyingAssignments,
+            ["worldTexture"]
+        );
+        material.setTexture("worldTexture", worldTexture);
+        return material;
+    }
+
+    /**
      * Create a border shader material
      * @param name Material name
      * @param baseColor Border color
@@ -151,6 +225,19 @@ export class ShaderFactory {
      */
     createExtrudedBorderMaterial(): ShaderMaterial {
         return this.createBorderShaderMaterial("extrudedBorderShader", BORDER_COLOR_GRAY);
+    }
+
+    /**
+     * Create the small extruded border shader material (gray, with pivot expansion)
+     */
+    createSmallExtrudedBorderMaterial(): ShaderMaterial {
+        const material = this.createSmallShaderMaterial(
+            "smallExtrudedBorderShader",
+            borderFragmentShader,
+            ["baseColor"]
+        );
+        material.setColor3("baseColor", BORDER_COLOR_GRAY);
+        return material;
     }
 
     /**

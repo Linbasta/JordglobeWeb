@@ -33,8 +33,11 @@ export class BorderRenderer {
     private scene: Scene;
     private engine: AbstractEngine;
 
-    /** Merged mesh for all extruded borders */
+    /** Merged mesh for regular extruded borders */
     private mergedExtrudedBorders: Mesh | null = null;
+
+    /** Merged mesh for small country extruded borders */
+    private mergedExtrudedBordersSmall: Mesh | null = null;
 
     /** Merged mesh for segment borders */
     private mergedSegmentBorders: Mesh | null = null;
@@ -203,17 +206,19 @@ export class BorderRenderer {
     }
 
     /**
-     * Merge all extruded borders into a single mesh
+     * Merge a set of border meshes into one, applying countryIndex and optional countryPivot attributes.
      */
-    mergeExtrudedBorders(polygonsData: PolygonData[], shaderMaterial: ShaderMaterial): void {
-        console.log('Merging extruded borders...');
-        const startTime = performance.now();
-
+    private mergeBorderBucket(
+        polygons: PolygonData[],
+        material: ShaderMaterial,
+        name: string,
+        centroids?: Map<number, Vector3>
+    ): Mesh | null {
         const meshes: Mesh[] = [];
         const vertexCounts: number[] = [];
         const countryIndicesPerMesh: number[] = [];
 
-        for (const polygon of polygonsData) {
+        for (const polygon of polygons) {
             if (polygon.extrudedBorder) {
                 meshes.push(polygon.extrudedBorder);
                 vertexCounts.push(polygon.extrudedBorder.getTotalVertices());
@@ -221,25 +226,18 @@ export class BorderRenderer {
             }
         }
 
-        if (meshes.length === 0) {
-            console.log('No extruded borders to merge');
-            return;
-        }
+        if (meshes.length === 0) return null;
 
-        this.mergedExtrudedBorders = Mesh.MergeMeshes(
-            meshes,
-            true, true, undefined, false, false
+        const merged = Mesh.MergeMeshes(
+            meshes, true, true, undefined, false, false
         );
 
-        if (!this.mergedExtrudedBorders) {
-            console.error('Failed to merge extruded borders');
-            return;
-        }
+        if (!merged) return null;
 
-        this.mergedExtrudedBorders.name = "mergedExtrudedBorders";
+        merged.name = name;
 
         // Rebuild countryIndex attribute
-        const totalVertices = this.mergedExtrudedBorders.getTotalVertices();
+        const totalVertices = merged.getTotalVertices();
         const countryIndices = new Float32Array(totalVertices);
 
         let vertexOffset = 0;
@@ -253,23 +251,96 @@ export class BorderRenderer {
         }
 
         const buffer = new VertexBuffer(
-            this.engine,
-            countryIndices,
-            "countryIndex",
+            this.engine, countryIndices, "countryIndex",
             false, false, 1, false
         );
-        this.mergedExtrudedBorders.setVerticesBuffer(buffer);
+        merged.setVerticesBuffer(buffer);
 
-        // Apply shader
-        this.mergedExtrudedBorders.material = shaderMaterial;
+        // Build countryPivot attribute if centroids provided
+        if (centroids) {
+            const pivotData = new Float32Array(totalVertices * 3);
+
+            vertexOffset = 0;
+            for (let meshIdx = 0; meshIdx < vertexCounts.length; meshIdx++) {
+                const vertexCount = vertexCounts[meshIdx];
+                const countryIndex = countryIndicesPerMesh[meshIdx];
+                const centroid = centroids.get(countryIndex);
+                const cx = centroid ? centroid.x : 0;
+                const cy = centroid ? centroid.y : 0;
+                const cz = centroid ? centroid.z : 0;
+
+                for (let i = 0; i < vertexCount; i++) {
+                    const base = (vertexOffset + i) * 3;
+                    pivotData[base] = cx;
+                    pivotData[base + 1] = cy;
+                    pivotData[base + 2] = cz;
+                }
+                vertexOffset += vertexCount;
+            }
+
+            const pivotBuffer = new VertexBuffer(
+                this.engine, pivotData, "countryPivot",
+                false, false, 3, false
+            );
+            merged.setVerticesBuffer(pivotBuffer);
+        }
+
+        merged.material = material;
+        return merged;
+    }
+
+    /**
+     * Merge all extruded borders into merged meshes, partitioned by regular/small.
+     */
+    mergeExtrudedBorders(
+        polygonsData: PolygonData[],
+        regularMaterial: ShaderMaterial,
+        smallMaterial: ShaderMaterial,
+        countriesData: CountryData[]
+    ): void {
+        console.log('Merging extruded borders...');
+        const startTime = performance.now();
+
+        // Partition
+        const regularPolygons: PolygonData[] = [];
+        const smallPolygons: PolygonData[] = [];
+
+        for (const polygon of polygonsData) {
+            if (polygon.extrudedBorder) {
+                if (polygon.isSmall) {
+                    smallPolygons.push(polygon);
+                } else {
+                    regularPolygons.push(polygon);
+                }
+            }
+        }
+
+        this.mergedExtrudedBorders = this.mergeBorderBucket(
+            regularPolygons, regularMaterial, "mergedExtrudedBorders"
+        );
+
+        if (smallPolygons.length > 0) {
+            // Build centroid map
+            const centroids = new Map<number, Vector3>();
+            for (const country of countriesData) {
+                if (country.centroid) {
+                    centroids.set(country.index, country.centroid);
+                }
+            }
+
+            this.mergedExtrudedBordersSmall = this.mergeBorderBucket(
+                smallPolygons, smallMaterial, "mergedExtrudedBordersSmall", centroids
+            );
+        }
 
         // Clear references
         for (const polygon of polygonsData) {
             polygon.extrudedBorder = null;
         }
 
+        const totalMeshes = regularPolygons.length + smallPolygons.length;
         const endTime = performance.now();
-        console.log(`Merged ${meshes.length} extruded borders in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Merged ${totalMeshes} extruded borders in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**
@@ -390,6 +461,10 @@ export class BorderRenderer {
         if (this.mergedExtrudedBorders) {
             this.mergedExtrudedBorders.dispose();
             this.mergedExtrudedBorders = null;
+        }
+        if (this.mergedExtrudedBordersSmall) {
+            this.mergedExtrudedBordersSmall.dispose();
+            this.mergedExtrudedBordersSmall = null;
         }
         if (this.mergedSegmentBorders) {
             this.mergedSegmentBorders.dispose();

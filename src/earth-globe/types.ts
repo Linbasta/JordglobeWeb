@@ -63,6 +63,7 @@ export interface PolygonData {
     extrudedBorder: Mesh | null;
     borderPoints: LatLonPoint[];
     countryIndex: number;  // Back-reference to parent country
+    isSmall: boolean;      // Small country (needs magnification)
 }
 
 /**
@@ -83,6 +84,7 @@ export interface CountryData {
     index: number;
     polygonIndices: number[];    // Indices into polygonsData array
     neighbourCountries: NeighborInfo[];
+    centroid: import('@babylonjs/core/Maths/math').Vector3 | null;  // Sphere-surface centroid (small countries only)
 }
 
 /**
@@ -240,6 +242,14 @@ export interface EarthGlobeAPI {
     getCountryBlend(countryIndex: number): number;
     animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void>;
 
+    // Animation control - Expansion (small countries)
+    setCountryExpansion(countryIndex: number, expansion: number): void;
+    getCountryExpansion(countryIndex: number): number;
+    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void>;
+    isSmallCountry(countryIndex: number): boolean;
+    hideSmallCountryMarker(countryIndex: number): void;
+    showSmallCountryMarker(countryIndex: number): void;
+
     // Country outline
     showCountryOutline(countryIndex: number): void;
     clearCountryOutline(): void;
@@ -254,6 +264,7 @@ export interface EarthGlobeAPI {
     getMarkerScale(markerId: number): number;
     getMarkerPosition(markerId: number): import('@babylonjs/core/Maths/math').Vector3 | null;
     hideMarker(markerId: number): void;
+    showMarker(markerId: number): void;
     toggleMarkerDebugVisualization(): void;
     updateMarkerDebugRadius(hitRadius: number): void;
 

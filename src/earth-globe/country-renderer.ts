@@ -22,11 +22,12 @@ import {
     COUNTRY_HSV_VALUE,
     TRIANGULATION_GRID_SPACING
 } from './constants';
-import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
+import { latLonToSphere, positionToLatLon, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
 import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
 import { CountryPicker, calculateBoundingBox } from './country-picker';
 import type { LatLonPoint, PolygonData, CountryData, CountryJSON, TriangulationResult } from './types';
+import { isSmallCountry } from './small-countries';
 
 /**
  * Country Renderer - Creates and manages country meshes
@@ -45,8 +46,11 @@ export class CountryRenderer {
     /** Total triangle count for statistics */
     private totalTriangleCount: number = 0;
 
-    /** Merged mesh for all country polygons */
+    /** Merged mesh for regular country polygons */
     private mergedCountries: Mesh | null = null;
+
+    /** Merged mesh for small country polygons (expanded via shader) */
+    private mergedCountriesSmall: Mesh | null = null;
 
     constructor(scene: Scene, shaderFactory: ShaderFactory) {
         this.scene = scene;
@@ -94,6 +98,13 @@ export class CountryRenderer {
      */
     getMergedMesh(): Mesh | null {
         return this.mergedCountries;
+    }
+
+    /**
+     * Get merged small countries mesh
+     */
+    getMergedSmallMesh(): Mesh | null {
+        return this.mergedCountriesSmall;
     }
 
     /**
@@ -273,7 +284,8 @@ export class CountryRenderer {
     addPolygon(
         coordinates: number[],
         countryIndex: number,
-        holePolygons?: number[][][]
+        holePolygons?: number[][][],
+        small: boolean = false
     ): number | null {
         if (this.polygonsData.length >= MAX_COUNTRIES) {
             console.error("Max polygons reached");
@@ -305,7 +317,8 @@ export class CountryRenderer {
                 mesh,
                 extrudedBorder: null,
                 borderPoints: latLonPoints,
-                countryIndex
+                countryIndex,
+                isSmall: small
             };
 
             const polygonIndex = this.polygonsData.length;
@@ -333,17 +346,44 @@ export class CountryRenderer {
     }
 
     /**
-     * Merge all country meshes into a single mesh with animation support
+     * Compute centroid on the sphere surface for a small country.
+     * Averages all border points, projects back onto sphere.
      */
-    mergeCountries(shaderMaterial: ShaderMaterial): void {
-        console.log('Merging country polygons...');
-        const startTime = performance.now();
+    private computeCentroid(polygonIndices: number[]): Vector3 {
+        let sumX = 0, sumY = 0, sumZ = 0;
+        let count = 0;
 
+        for (const polyIdx of polygonIndices) {
+            const polygon = this.polygonsData[polyIdx];
+            for (const point of polygon.borderPoints) {
+                const pos = latLonToSphere(point.lat, point.lon, 0);
+                sumX += pos.x;
+                sumY += pos.y;
+                sumZ += pos.z;
+                count++;
+            }
+        }
+
+        const avg = new Vector3(sumX / count, sumY / count, sumZ / count);
+        avg.normalize().scaleInPlace(EARTH_RADIUS);
+        return avg;
+    }
+
+    /**
+     * Merge and apply countryIndex attribute to a set of polygon meshes.
+     * Optionally builds a countryPivot vec3 attribute using centroids.
+     */
+    private mergeMeshBucket(
+        polygons: PolygonData[],
+        material: ShaderMaterial,
+        name: string,
+        centroids?: Map<number, Vector3>
+    ): Mesh | null {
         const meshes: Mesh[] = [];
         const vertexCounts: number[] = [];
         const countryIndicesPerMesh: number[] = [];
 
-        for (const polygon of this.polygonsData) {
+        for (const polygon of polygons) {
             if (polygon.mesh) {
                 meshes.push(polygon.mesh);
                 vertexCounts.push(polygon.mesh.getTotalVertices());
@@ -351,12 +391,9 @@ export class CountryRenderer {
             }
         }
 
-        if (meshes.length === 0) {
-            console.log('No country meshes to merge');
-            return;
-        }
+        if (meshes.length === 0) return null;
 
-        this.mergedCountries = Mesh.MergeMeshes(
+        const merged = Mesh.MergeMeshes(
             meshes,
             true,   // disposeSource
             true,   // allow32BitsIndices
@@ -365,15 +402,12 @@ export class CountryRenderer {
             false
         );
 
-        if (!this.mergedCountries) {
-            console.error('Failed to merge countries');
-            return;
-        }
+        if (!merged) return null;
 
-        this.mergedCountries.name = "mergedCountries";
+        merged.name = name;
 
         // Rebuild countryIndex attribute
-        const totalVertices = this.mergedCountries.getTotalVertices();
+        const totalVertices = merged.getTotalVertices();
         const countryIndices = new Float32Array(totalVertices);
 
         let vertexOffset = 0;
@@ -392,18 +426,92 @@ export class CountryRenderer {
             "countryIndex",
             false, false, 1, false
         );
-        this.mergedCountries.setVerticesBuffer(buffer);
+        merged.setVerticesBuffer(buffer);
 
-        // Apply shader
-        this.mergedCountries.material = shaderMaterial;
+        // Build countryPivot attribute if centroids provided
+        if (centroids) {
+            const pivotData = new Float32Array(totalVertices * 3);
 
-        // Update polygon references
-        for (const polygon of this.polygonsData) {
-            polygon.mesh = this.mergedCountries;
+            vertexOffset = 0;
+            for (let meshIdx = 0; meshIdx < vertexCounts.length; meshIdx++) {
+                const vertexCount = vertexCounts[meshIdx];
+                const countryIndex = countryIndicesPerMesh[meshIdx];
+                const centroid = centroids.get(countryIndex);
+                const cx = centroid ? centroid.x : 0;
+                const cy = centroid ? centroid.y : 0;
+                const cz = centroid ? centroid.z : 0;
+
+                for (let i = 0; i < vertexCount; i++) {
+                    const base = (vertexOffset + i) * 3;
+                    pivotData[base] = cx;
+                    pivotData[base + 1] = cy;
+                    pivotData[base + 2] = cz;
+                }
+                vertexOffset += vertexCount;
+            }
+
+            const pivotBuffer = new VertexBuffer(
+                this.engine,
+                pivotData,
+                "countryPivot",
+                false, false, 3, false
+            );
+            merged.setVerticesBuffer(pivotBuffer);
         }
 
+        // Apply shader
+        merged.material = material;
+
+        // Update polygon references to point to merged mesh
+        for (const polygon of polygons) {
+            polygon.mesh = merged;
+        }
+
+        return merged;
+    }
+
+    /**
+     * Merge all country meshes into merged meshes with animation support.
+     * Partitions into regular and small country buckets.
+     */
+    mergeCountries(regularMaterial: ShaderMaterial, smallMaterial: ShaderMaterial): void {
+        console.log('Merging country polygons...');
+        const startTime = performance.now();
+
+        // Partition polygons
+        const regularPolygons: PolygonData[] = [];
+        const smallPolygons: PolygonData[] = [];
+
+        for (const polygon of this.polygonsData) {
+            if (polygon.isSmall) {
+                smallPolygons.push(polygon);
+            } else {
+                regularPolygons.push(polygon);
+            }
+        }
+
+        this.mergedCountries = this.mergeMeshBucket(
+            regularPolygons, regularMaterial, "mergedCountries"
+        );
+
+        if (smallPolygons.length > 0) {
+            // Build centroid map from countriesData
+            const centroids = new Map<number, Vector3>();
+            for (const country of this.countriesData) {
+                if (country.centroid) {
+                    centroids.set(country.index, country.centroid);
+                }
+            }
+
+            this.mergedCountriesSmall = this.mergeMeshBucket(
+                smallPolygons, smallMaterial, "mergedCountriesSmall", centroids
+            );
+            console.log(`Small countries: ${smallPolygons.length} polygons in separate mesh`);
+        }
+
+        const totalMeshes = regularPolygons.length + smallPolygons.length;
         const endTime = performance.now();
-        console.log(`Merged ${meshes.length} country meshes in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Merged ${totalMeshes} country meshes in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**
@@ -505,7 +613,8 @@ export class CountryRenderer {
                         }
                     }
 
-                    const polygonIndex = this.addPolygon(flatCoords, this.countriesData.length, holePolygons);
+                    const small = isSmallCountry(country.iso2);
+                    const polygonIndex = this.addPolygon(flatCoords, this.countriesData.length, holePolygons, small);
                     if (polygonIndex !== null) {
                         polygonIndices.push(polygonIndex);
 
@@ -522,14 +631,39 @@ export class CountryRenderer {
                 }
 
                 if (polygonIndices.length > 0) {
+                    const small = isSmallCountry(country.iso2);
+                    const centroid = small ? this.computeCentroid(polygonIndices) : null;
+
                     const countryData: CountryData = {
                         name: country.name_en,
                         iso2: country.iso2,
                         index: this.countriesData.length,
                         polygonIndices,
-                        neighbourCountries: []
+                        neighbourCountries: [],
+                        centroid
                     };
                     this.countriesData.push(countryData);
+
+                    // Register enlarged hit area for small countries
+                    if (centroid) {
+                        const centroidLatLon = positionToLatLon(centroid);
+                        // Compute radius from bbox extent of all polygons
+                        let minLat = Infinity, maxLat = -Infinity;
+                        let minLon = Infinity, maxLon = -Infinity;
+                        for (const polyIdx of polygonIndices) {
+                            for (const pt of this.polygonsData[polyIdx].borderPoints) {
+                                if (pt.lat < minLat) minLat = pt.lat;
+                                if (pt.lat > maxLat) maxLat = pt.lat;
+                                if (pt.lon < minLon) minLon = pt.lon;
+                                if (pt.lon > maxLon) maxLon = pt.lon;
+                            }
+                        }
+                        const extent = Math.max(maxLat - minLat, maxLon - minLon);
+                        const radiusDeg = Math.max(extent * 2.0, 1.0);
+                        countryPicker.registerSmallCountryCentroid(
+                            countryData.index, centroidLatLon.lat, centroidLatLon.lon, radiusDeg
+                        );
+                    }
 
                     if (onCountryAdded) {
                         onCountryAdded(countryData);
@@ -553,6 +687,10 @@ export class CountryRenderer {
         if (this.mergedCountries) {
             this.mergedCountries.dispose();
             this.mergedCountries = null;
+        }
+        if (this.mergedCountriesSmall) {
+            this.mergedCountriesSmall.dispose();
+            this.mergedCountriesSmall = null;
         }
         this.polygonsData = [];
         this.countriesData = [];

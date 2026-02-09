@@ -6,7 +6,7 @@
  * - R channel: altitude animation value (0-1)
  * - G channel: state enum (0.00=Normal, 0.25=Disabled, 0.50=Cleared)
  * - B channel: blend factor (0.0=full state effect, 1.0=normal appearance)
- * - A channel: reserved (255)
+ * - A channel: expansion factor (stored as expansion/4.0, default 0.25 = expansion 1.0)
  */
 
 // State constants for G channel encoding
@@ -36,6 +36,9 @@ export class AnimationTexture {
     /** Blend factor for each country (0.0 = full state effect, 1.0 = normal appearance) */
     private blendData: Float32Array;
 
+    /** Expansion factor for small countries (stored as expansion/4.0, default 0.25 = expansion 1.0) */
+    private expansionData: Float32Array;
+
     /** Number of entries used in the texture */
     private entriesUsed: number = 0;
 
@@ -53,18 +56,15 @@ export class AnimationTexture {
         // Pre-allocate buffer for updates
         this.buffer = new Uint8ClampedArray(ANIMATION_TEXTURE_WIDTH * 4);
 
-        // Initialize alpha channel to 255
-        for (let i = 0; i < this.buffer.length; i += 4) {
-            this.buffer[i + 3] = 255;
-        }
-
         // Initialize data arrays
         this.altitudeData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
         this.stateData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
         this.blendData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
-        // Default: STATE_NORMAL (0.0), blend = 1.0 (normal appearance)
+        this.expansionData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
+        // Default: STATE_NORMAL (0.0), blend = 1.0 (normal appearance), expansion = 1.0 (stored as 0.25)
         this.stateData.fill(STATE_NORMAL);
         this.blendData.fill(1.0);
+        this.expansionData.fill(0.25);
     }
 
     /**
@@ -146,6 +146,36 @@ export class AnimationTexture {
     }
 
     /**
+     * Set expansion value for an index
+     * @param index Country index
+     * @param expansion Expansion factor (1.0 = normal, >1 = magnified). Stored as expansion/4.0.
+     */
+    setExpansion(index: number, expansion: number): void {
+        if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
+            this.expansionData[index] = Math.max(0, Math.min(1, expansion / 4.0));
+        }
+    }
+
+    /**
+     * Get expansion value for an index
+     * @returns Expansion factor (1.0 = normal)
+     */
+    getExpansion(index: number): number {
+        if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
+            return this.expansionData[index] * 4.0;
+        }
+        return 1.0;
+    }
+
+    /**
+     * Get direct access to expansion data array
+     * Use with care - call update() after modifications
+     */
+    getExpansionData(): Float32Array {
+        return this.expansionData;
+    }
+
+    /**
      * Get direct access to altitude data array
      * Use with care - call update() after modifications
      */
@@ -177,10 +207,10 @@ export class AnimationTexture {
         // Update buffer from data arrays
         for (let i = 0; i < this.entriesUsed; i++) {
             const pixelIndex = i * 4;
-            this.buffer[pixelIndex] = this.altitudeData[i] * 255;     // R = altitude
-            this.buffer[pixelIndex + 1] = this.stateData[i] * 255;    // G = state
-            this.buffer[pixelIndex + 2] = this.blendData[i] * 255;    // B = blend
-            // A already 255
+            this.buffer[pixelIndex] = this.altitudeData[i] * 255;         // R = altitude
+            this.buffer[pixelIndex + 1] = this.stateData[i] * 255;      // G = state
+            this.buffer[pixelIndex + 2] = this.blendData[i] * 255;      // B = blend
+            this.buffer[pixelIndex + 3] = this.expansionData[i] * 255;   // A = expansion
         }
 
         // Update texture from buffer
@@ -198,6 +228,7 @@ export class AnimationTexture {
         this.altitudeData.fill(0);
         this.stateData.fill(STATE_NORMAL);
         this.blendData.fill(1.0);
+        this.expansionData.fill(0.25);
         this.update();
     }
 
