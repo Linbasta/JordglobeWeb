@@ -269,10 +269,14 @@ export class CountryAnimator {
         // Update segment border animations (sync with countries)
         for (const [segmentIndex, countryIndices] of this.segmentCountryMap) {
             let maxAltitude = 0;
+            let anyExpanding = false;
             for (const countryIndex of countryIndices) {
                 maxAltitude = Math.max(maxAltitude, this.animationTexture.getAltitude(countryIndex));
+                if (this.animationTexture.getExpansion(countryIndex) > 1.01) {
+                    anyExpanding = true;
+                }
             }
-            this.animationTexture.setAltitude(segmentIndex, maxAltitude);
+            this.animationTexture.setAltitude(segmentIndex, anyExpanding ? 0 : maxAltitude);
             needsUpdate = true;
         }
 
