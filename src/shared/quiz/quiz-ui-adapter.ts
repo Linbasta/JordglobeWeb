@@ -121,6 +121,13 @@ export class QuizUIAdapter {
     }
 
     /**
+     * Update the country label UI reference (e.g., after GUI recreation on resize)
+     */
+    setCountryLabelUI(ui: CountryLabelUI | null): void {
+        this.countryLabelUI = ui
+    }
+
+    /**
      * Stop the quiz and cleanup
      */
     dispose(): void {

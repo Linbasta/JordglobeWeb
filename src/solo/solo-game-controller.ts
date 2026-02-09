@@ -23,7 +23,7 @@ import { getZoomValue } from '../shared/animation/camera-utils';
 // New quiz pipeline
 import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
-import { getDebugState } from '../shared/quiz/quiz-runner';
+import { getDebugState, getCurrentQuestionIndex, getQuestion } from '../shared/quiz/quiz-runner';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -124,7 +124,17 @@ export class SoloGameController extends BaseGameController {
         // Create country label UI (optional)
         if ((this.options as SoloGameOptions)?.showCountryLabel) {
             this.countryLabelUI = new CountryLabelUI(this.advancedTexture);
-            this.countryLabelUI.show('Sweden');
+
+            // If quiz is running, restore current question prompt; otherwise show placeholder
+            if (this.quizAdapter) {
+                const qi = getCurrentQuestionIndex();
+                const q = getQuestion(qi);
+                if (q) {
+                    this.countryLabelUI.show(q.prompt);
+                }
+            } else {
+                this.countryLabelUI.show('Sweden');
+            }
         }
 
         // Create hover country label (shows at pin location) - optional
@@ -138,7 +148,8 @@ export class SoloGameController extends BaseGameController {
         }
 
         // Wire hover selection (unless disabled)
-        if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
+        // Don't re-enable if a quiz already disabled it
+        if (!(this.options as SoloGameOptions).disableSelectionBehavior && !this.quizAdapter) {
             this.selectionEnabled = true;
         }
 
@@ -156,6 +167,11 @@ export class SoloGameController extends BaseGameController {
                 this.hoverCountryLabel?.hide();
             }
         });
+
+        // Reconnect quiz adapter to the new countryLabelUI after GUI recreation
+        if (this.quizAdapter) {
+            this.quizAdapter.setCountryLabelUI(this.countryLabelUI);
+        }
 
         // Create debug manager in dev mode
         if (import.meta.env.DEV) {
@@ -207,11 +223,10 @@ export class SoloGameController extends BaseGameController {
             this.quizDebugManager = null;
         }
 
-        // Dispose quiz adapter
-        if (this.quizAdapter) {
-            this.quizAdapter.dispose();
-            this.quizAdapter = null;
-        }
+        // NOTE: Don't dispose quiz adapter here — it survives GUI recreation (resize).
+        // It will get reconnected to the new countryLabelUI in setupAdditionalUI().
+        // The countryLabelUI reference is nulled since the old GUI is gone.
+        this.countryLabelUI = null;
     }
 
     // =========================================================================
