@@ -15,6 +15,11 @@
       "closeValue": 0.2,
       "farValue": 0.8,
       "easing": "Linear"
+    },
+    "markerHitRadius": {
+      "closeValue": 0.025,
+      "farValue": 0.1,
+      "easing": "Linear"
     }
   }
 }

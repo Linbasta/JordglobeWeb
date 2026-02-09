@@ -389,7 +389,7 @@ Follow these naming conventions consistently across the codebase.
 |------|------------|---------|
 | TypeScript source files | kebab-case | `quiz-debug-manager.ts`, `earth-globe.ts` |
 | Script files | kebab-case | `generate-segments.ts`, `test-quiz-runner.ts` |
-| HTML files | kebab-case | `quiz.html`, `test-arcs.html` |
+| HTML files | kebab-case | `country-quiz.html`, `test-arcs.html` |
 | Data files | kebab-case | `countries-enriched.json`, `segments.json` |
 | Directories | lowercase | `earth-globe/`, `quiz/`, `shared/` |
 | Shader files | lowercase.type.glsl | `country.fragment.glsl`, `water.vertex.glsl` |

@@ -38,10 +38,16 @@ export const routes: RoutesConfig = {
       description: 'Join a multiplayer game on mobile'
     },
     {
-      path: '/quiz',
-      file: 'quiz.html',
+      path: '/country-quiz',
+      file: 'country-quiz.html',
       title: 'Country Quiz',
       description: 'Test your geography knowledge'
+    },
+    {
+      path: '/capitals-quiz',
+      file: 'capitals-quiz.html',
+      title: 'Capitals Quiz',
+      description: 'Find capital cities on the globe'
     }
   ],
 

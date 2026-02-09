@@ -12,7 +12,7 @@ import { StepOp } from './quiz-types'
  * Generate the main quiz flow steps
  *
  * Pre-generates steps up to each wait point (where user input is needed).
- * Post-answer steps are generated dynamically by generateCountryAnswerSteps.
+ * Post-answer steps are generated dynamically by generateCountryAnswerSteps or generateLocationAnswerSteps.
  *
  * @param questions - Array of questions to convert into steps
  * @returns Flat array of steps to execute
@@ -20,8 +20,17 @@ import { StepOp } from './quiz-types'
 export function generateQuizSteps(questions: Question[]): Step[] {
     const steps: Step[] = []
 
+    // Check if this is a location quiz
+    const hasLocationQuestions = questions.some(q => q.type === "location")
+
     // Initial setup
-    steps.push({ op: StepOp.DisableNonGameCountries })
+    if (hasLocationQuestions) {
+        // Location quiz: show all markers first
+        steps.push({ op: StepOp.ShowAllLocationMarkers })
+    } else {
+        // Country quiz: disable non-game countries
+        steps.push({ op: StepOp.DisableNonGameCountries })
+    }
 
     // Generate steps for each question
     for (let i = 0; i < questions.length; i++) {
@@ -81,6 +90,30 @@ export function generateCountryAnswerSteps(
     // Mode B: Just shake
     return [
         { op: StepOp.AnimateWrongShake, wrongCountryIndex: clickedCountryIndex },
+    ]
+}
+
+/**
+ * Generate steps after user answers a location question
+ *
+ * @param correct - Whether the answer was correct
+ * @param markerId - ID of the marker for this location
+ * @returns Steps to splice into the main array
+ */
+export function generateLocationAnswerSteps(
+    correct: boolean,
+    markerId: number
+): Step[] {
+    if (correct) {
+        return [
+            { op: StepOp.AnimateMarkerCorrect, markerId },
+            { op: StepOp.Pause, duration: 1500 },
+        ]
+    }
+
+    // Wrong answer - just pause and move on
+    return [
+        { op: StepOp.Pause, duration: 1000 },
     ]
 }
 

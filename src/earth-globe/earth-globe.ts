@@ -688,6 +688,57 @@ export class EarthGlobe {
         return this.markerPool.getStats();
     }
 
+    /**
+     * Set the scale of a specific marker
+     * @param markerId Marker ID
+     * @param scale Scale factor (1.0 = normal size)
+     */
+    setMarkerScale(markerId: number, scale: number): void {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return;
+        }
+
+        this.markerPool.setMarkerScale(markerId, scale);
+    }
+
+    /**
+     * Get the scale of a specific marker
+     * @param markerId Marker ID
+     * @returns Scale factor, or 1.0 if not found
+     */
+    getMarkerScale(markerId: number): number {
+        if (!this.markerPool) {
+            return 1.0;
+        }
+
+        return this.markerPool.getMarkerScale(markerId);
+    }
+
+    /**
+     * Toggle debug visualization of marker hit areas
+     */
+    toggleMarkerDebugVisualization(): void {
+        if (!this.markerPool) {
+            console.warn('EarthGlobe: Marker pool not initialized');
+            return;
+        }
+
+        this.markerPool.toggleDebugVisualization();
+    }
+
+    /**
+     * Update the debug sphere radius based on hit radius
+     * @param hitRadius The current hit radius in world units
+     */
+    updateMarkerDebugRadius(hitRadius: number): void {
+        if (!this.markerPool) {
+            return;
+        }
+
+        this.markerPool.updateDebugRadius(hitRadius);
+    }
+
     // =========================================================================
     // Public API - Lifecycle
     // =========================================================================

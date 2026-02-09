@@ -39,6 +39,7 @@ interface PooledMarker {
     id: number;
     strokeInstance: InstancedMesh;
     fillInstance: InstancedMesh;
+    debugSphereInstance: InstancedMesh | null;
     inUse: boolean;
 }
 
@@ -53,9 +54,11 @@ export class LocationMarkerPool {
     // Source meshes for instancing
     private sourceFillMesh: Mesh;
     private sourceStrokeMesh: Mesh;
+    private sourceDebugSphereMesh: Mesh | null = null;
 
     private radius: number;
     private height: number;
+    private debugEnabled = false;
 
     constructor(scene: Scene, options: LocationMarkerPoolOptions = {}) {
         this.scene = scene;
@@ -93,6 +96,7 @@ export class LocationMarkerPool {
                 id: i,
                 strokeInstance,
                 fillInstance,
+                debugSphereInstance: null,
                 inUse: false
             });
         }
@@ -156,6 +160,11 @@ export class LocationMarkerPool {
         this.positionMarker(marker, position, normal);
         marker.strokeInstance.setEnabled(true);
 
+        // Enable debug sphere if debugging is active
+        if (this.debugEnabled && marker.debugSphereInstance) {
+            marker.debugSphereInstance.setEnabled(true);
+        }
+
         return marker.id;
     }
 
@@ -171,6 +180,11 @@ export class LocationMarkerPool {
 
         marker.inUse = false;
         marker.strokeInstance.setEnabled(false);
+
+        // Hide debug sphere
+        if (marker.debugSphereInstance) {
+            marker.debugSphereInstance.setEnabled(false);
+        }
     }
 
     /**
@@ -206,6 +220,11 @@ export class LocationMarkerPool {
         } else {
             // Normal is aligned with up or down
             marker.strokeInstance.rotationQuaternion = Quaternion.Identity();
+        }
+
+        // Update debug sphere position if it exists
+        if (marker.debugSphereInstance) {
+            marker.debugSphereInstance.position = position;
         }
     }
 
@@ -245,9 +264,131 @@ export class LocationMarkerPool {
     }
 
     /**
+     * Set the scale of a specific marker
+     * @param id Marker ID
+     * @param scale Scale factor (1.0 = normal size)
+     */
+    setMarkerScale(id: number, scale: number): void {
+        const marker = this.markers[id];
+        if (!marker) {
+            console.warn(`LocationMarkerPool: Invalid marker ID ${id}`);
+            return;
+        }
+
+        marker.strokeInstance.scaling.setAll(scale);
+    }
+
+    /**
+     * Get the current scale of a specific marker
+     * @param id Marker ID
+     * @returns Scale factor, or 1.0 if marker not found
+     */
+    getMarkerScale(id: number): number {
+        const marker = this.markers[id];
+        if (!marker) {
+            return 1.0;
+        }
+
+        return marker.strokeInstance.scaling.x; // All axes scaled uniformly
+    }
+
+    /**
+     * Create the source mesh for debug spheres
+     */
+    private createDebugSphereMesh(): Mesh {
+        const mesh = MeshBuilder.CreateSphere('markerDebugSphereSource', {
+            diameter: 1.0, // Will be scaled based on hit radius
+            segments: 16
+        }, this.scene);
+
+        const material = new StandardMaterial('markerDebugSphereMaterial', this.scene);
+        material.diffuseColor = new Color3(1, 0, 0);
+        material.alpha = 0.2;
+        material.wireframe = true;
+        mesh.material = material;
+
+        return mesh;
+    }
+
+    /**
+     * Enable debug visualization of hit areas
+     */
+    enableDebugVisualization(): void {
+        if (this.debugEnabled) return;
+
+        console.log('[LocationMarkerPool] Enabling debug visualization');
+        this.debugEnabled = true;
+
+        // Create debug sphere source mesh if it doesn't exist
+        if (!this.sourceDebugSphereMesh) {
+            this.sourceDebugSphereMesh = this.createDebugSphereMesh();
+            this.sourceDebugSphereMesh.setEnabled(false);
+        }
+
+        // Create debug sphere instances for all markers
+        this.markers.forEach((marker, i) => {
+            if (!marker.debugSphereInstance) {
+                marker.debugSphereInstance = this.sourceDebugSphereMesh!.createInstance(`markerDebugSphere_${i}`);
+                marker.debugSphereInstance.position = marker.strokeInstance.position.clone();
+                marker.debugSphereInstance.setEnabled(marker.inUse);
+            }
+        });
+    }
+
+    /**
+     * Disable debug visualization of hit areas
+     */
+    disableDebugVisualization(): void {
+        if (!this.debugEnabled) return;
+
+        console.log('[LocationMarkerPool] Disabling debug visualization');
+        this.debugEnabled = false;
+
+        // Dispose debug sphere instances
+        this.markers.forEach(marker => {
+            if (marker.debugSphereInstance) {
+                marker.debugSphereInstance.dispose();
+                marker.debugSphereInstance = null;
+            }
+        });
+    }
+
+    /**
+     * Toggle debug visualization
+     */
+    toggleDebugVisualization(): void {
+        if (this.debugEnabled) {
+            this.disableDebugVisualization();
+        } else {
+            this.enableDebugVisualization();
+        }
+    }
+
+    /**
+     * Update debug sphere radius based on hit radius
+     * @param hitRadius The current hit radius in world units
+     */
+    updateDebugRadius(hitRadius: number): void {
+        if (!this.debugEnabled) return;
+
+        // Scale debug spheres to match hit radius
+        // Diameter is 1.0, so scale by 2*hitRadius to get correct diameter
+        const scale = hitRadius * 2.0;
+
+        this.markers.forEach(marker => {
+            if (marker.debugSphereInstance) {
+                marker.debugSphereInstance.scaling.setAll(scale);
+            }
+        });
+    }
+
+    /**
      * Dispose of all resources
      */
     dispose(): void {
+        // Disable debug visualization first
+        this.disableDebugVisualization();
+
         // Dispose instances
         this.markers.forEach(marker => {
             marker.fillInstance.dispose();
@@ -257,6 +398,9 @@ export class LocationMarkerPool {
         // Dispose source meshes
         this.sourceFillMesh.dispose();
         this.sourceStrokeMesh.dispose();
+        if (this.sourceDebugSphereMesh) {
+            this.sourceDebugSphereMesh.dispose();
+        }
 
         this.markers = [];
     }

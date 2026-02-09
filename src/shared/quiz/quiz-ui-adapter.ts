@@ -34,6 +34,7 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number) => void
+    onQuestionTypeChanged?: (questionType: 'country' | 'location' | 'alternative') => void
 }
 
 /**
@@ -100,9 +101,9 @@ export class QuizUIAdapter {
     /**
      * Submit an answer (from pin placement)
      */
-    submitAnswer(countryIndex: number): void {
+    submitAnswer(countryIndex: number, latLon: { lat: number; lng: number }): void {
         if (this.active) {
-            submitCountryAnswer(countryIndex)
+            submitCountryAnswer(countryIndex, latLon)
         }
     }
 
@@ -160,6 +161,11 @@ export class QuizUIAdapter {
                         questionIndex + 1,
                         total
                     )
+                }
+
+                // Notify about question type change
+                if (question && this.config?.onQuestionTypeChanged) {
+                    this.config.onQuestionTypeChanged(question.type)
                 }
             }
         }

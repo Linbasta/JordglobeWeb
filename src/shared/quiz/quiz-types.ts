@@ -64,7 +64,9 @@ export enum StepOp {
     AnimateWrongShake = "animate_wrong_shake",
     ShowResult = "show_result",
     Pause = "pause",
-    GameComplete = "game_complete"
+    GameComplete = "game_complete",
+    ShowAllLocationMarkers = "show_all_location_markers",
+    AnimateMarkerCorrect = "animate_marker_correct",
 }
 
 /**
@@ -93,6 +95,10 @@ export type Step =
     | { op: StepOp.AnimateCorrect; countryIndex: number }
     | { op: StepOp.AnimateWrongReveal; wrongCountryIndex: number; correctCountryIndex: number }
     | { op: StepOp.AnimateWrongShake; wrongCountryIndex: number }
+
+    // Location markers
+    | { op: StepOp.ShowAllLocationMarkers }
+    | { op: StepOp.AnimateMarkerCorrect; markerId: number }
 
     // Result display
     | { op: StepOp.ShowResult; questionIndex: number; wasCorrect: boolean }

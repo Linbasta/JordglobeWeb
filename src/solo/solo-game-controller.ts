@@ -79,21 +79,37 @@ export class SoloGameController extends BaseGameController {
                 if (this.quizDebugManager && import.meta.env.DEV) {
                     this.quizDebugManager.update(getDebugState());
                 }
+
+                // Update marker debug radius based on current zoom (dev only)
+                if (import.meta.env.DEV) {
+                    const camera = globe.getCamera();
+                    const config = getConfig();
+                    const hr = config.zoom.markerHitRadius;
+                    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing);
+                    globe.updateMarkerDebugRadius(hitRadius);
+                }
             }
         });
     }
 
     protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
         // Check if we're in quiz mode
-        if (this.quizAdapter && country) {
-            // Don't submit answer if country is disabled
-            const state = this.globe.getCountryState(country.countryIndex);
-            if (state === STATE_DISABLED) {
-                return;  // Ignore disabled countries
+        if (this.quizAdapter) {
+            // For location questions, we allow clicking anywhere (country can be null)
+            // For country questions, we need a valid country and check if disabled
+            if (country) {
+                // Don't submit answer if country is disabled
+                const state = this.globe.getCountryState(country.countryIndex);
+                if (state === STATE_DISABLED) {
+                    return;  // Ignore disabled countries
+                }
+                // Submit answer with country and location
+                this.quizAdapter.submitAnswer(country.countryIndex, latLon);
+            } else {
+                // No country clicked - use a placeholder index (-1) and pass the latLon
+                // The quiz runner will use latLon for distance-based hit detection
+                this.quizAdapter.submitAnswer(-1, latLon);
             }
-
-            // Submit answer to quiz adapter
-            this.quizAdapter.submitAnswer(country.countryIndex);
         } else {
             // Normal mode - delegate to user callback if set
             if (this.onCountrySelected) {
@@ -124,17 +140,22 @@ export class SoloGameController extends BaseGameController {
         // Wire hover selection (unless disabled)
         if (!(this.options as SoloGameOptions).disableSelectionBehavior) {
             this.selectionEnabled = true;
-            onCountryHover((country, latLon) => {
-                handleHover(this.globe, country, latLon);
-
-                // Update hover label
-                if (country) {
-                    this.hoverCountryLabel?.show(country.name);
-                } else {
-                    this.hoverCountryLabel?.hide();
-                }
-            });
         }
+
+        // Always register hover callback, but check selectionEnabled inside
+        onCountryHover((country, latLon) => {
+            // Only handle hover if selection is enabled
+            if (this.selectionEnabled) {
+                handleHover(this.globe, country, latLon);
+            }
+
+            // Update hover label (this should still work even when selection is disabled)
+            if (country) {
+                this.hoverCountryLabel?.show(country.name);
+            } else {
+                this.hoverCountryLabel?.hide();
+            }
+        });
 
         // Create debug manager in dev mode
         if (import.meta.env.DEV) {
@@ -220,6 +241,28 @@ export class SoloGameController extends BaseGameController {
     }
 
     /**
+     * Enable country selection/hover behavior
+     */
+    enableSelectionBehavior(): void {
+        if (!this.selectionEnabled) {
+            this.selectionEnabled = true;
+            console.log('[SoloGameController] Selection behavior enabled');
+        }
+    }
+
+    /**
+     * Disable country selection/hover behavior and clear any active selection
+     */
+    disableSelectionBehavior(): void {
+        if (this.selectionEnabled) {
+            this.selectionEnabled = false;
+            clearSelection(this.globe);
+            this.hoveredCountry = null;
+            console.log('[SoloGameController] Selection behavior disabled');
+        }
+    }
+
+    /**
      * Get quiz state
      */
     getQuizState() {
@@ -262,9 +305,10 @@ export class SoloGameController extends BaseGameController {
             if (e.key === 'z' || e.key === 'Z') {
                 this.reloadConfigShortcut();
             }
-            // Log camera info (C key)
+            // Toggle collision/hit area debug visualization (C key)
             if (e.key === 'c' || e.key === 'C') {
-                this.logCameraInfo();
+                console.log('[SoloGameController] C key detected - toggling collision debug visualization');
+                this.toggleMarkerDebugVisualization();
             }
             // Toggle debug panel (D key) - dev only
             if ((e.key === 'd' || e.key === 'D') && import.meta.env.DEV) {
@@ -275,6 +319,11 @@ export class SoloGameController extends BaseGameController {
 
     private toggleDebugPanel(): void {
         this.quizDebugManager?.toggle();
+    }
+
+    private toggleMarkerDebugVisualization(): void {
+        this.globe.toggleMarkerDebugVisualization();
+        console.log('[SoloGameController] Toggled marker debug visualization');
     }
 
     private async toggleInspector(): Promise<void> {
@@ -337,30 +386,5 @@ export class SoloGameController extends BaseGameController {
         console.log('⚙️ Reloading configuration...');
         const config = await reloadConfig();
         console.log('✓ Configuration reloaded:', config);
-    }
-
-    private logCameraInfo(): void {
-        const camera = this.globe.getCamera();
-        const config = getConfig();
-        const pinScale = getZoomValue(
-            camera,
-            config.zoom.pinScale.closeValue,
-            config.zoom.pinScale.farValue,
-            config.zoom.pinScale.easing
-        );
-
-        console.log('📷 Camera Info:');
-        console.log(`  Radius: ${camera.radius.toFixed(2)}`);
-        console.log(`  Alpha: ${camera.alpha.toFixed(2)}`);
-        console.log(`  Beta: ${camera.beta.toFixed(2)}`);
-        console.log(`  Pin Scale: ${pinScale.toFixed(2)} (close=${config.zoom.pinScale.closeValue}, far=${config.zoom.pinScale.farValue}, threshold=${config.zoom.threshold})`);
-
-        // Show pin altitude if hovering over a country
-        const previewPin = getPreviewPin();
-        if (previewPin && previewPin.isEnabled()) {
-            const pos = previewPin.position;
-            const pinRadius = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
-            console.log(`  Pin Position Radius: ${pinRadius.toFixed(4)} (EARTH_RADIUS=2.0, altitude=${(pinRadius - 2.0).toFixed(4)})`);
-        }
     }
 }

@@ -5,10 +5,12 @@
  * No classes, no callbacks - just plain functions and explicit state.
  */
 
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+
 import type { EarthGlobeAPI, CountryData } from '../../earth-globe/types'
 import type { Question, Step, DebugState } from './quiz-types'
 import { StepOp } from './quiz-types'
-import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from './quiz-flow'
+import { generateQuizSteps, generateCountryAnswerSteps, generateLocationAnswerSteps, generateAlternativeAnswerSteps } from './quiz-flow'
 import {
     animateCorrect,
     animateWrong,
@@ -16,8 +18,10 @@ import {
     animateToCleared,
     setDisabledImmediate
 } from '../animations/country-animations'
-import { frameCountry, cameraShake } from '../animation/camera-utils'
+import { frameCountry, cameraShake, getZoomValue } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
+import { latLonToSphere } from '../../earth-globe/geo-math'
+import { getConfig } from '../config/global-config'
 
 // ============================================================================
 // Module State
@@ -26,6 +30,7 @@ import { ArcDrawer } from '../visualizers/arc-drawer'
 let steps: Step[] = []
 let questions: Question[] = []
 let gameCountries: CountryData[] = []
+let locationMarkers: Map<number, number> = new Map() // questionIndex -> markerId
 let pc = 0                    // Program counter
 let stepStartTime = 0
 let waiting = false           // True when blocked on user input
@@ -34,7 +39,7 @@ let wrongCount = 0
 let done = false
 
 // Input buffer (set by caller before tick)
-let pendingAnswer: { countryIndex: number } | { optionIndex: number } | null = null
+let pendingAnswer: { countryIndex: number; latLon: { lat: number; lng: number } } | { optionIndex: number } | null = null
 
 // Animation tracking
 let activeAnimation: Promise<void> | null = null
@@ -72,6 +77,7 @@ export function startQuiz(
     // Reset state
     questions = qs
     gameCountries = []
+    locationMarkers = new Map()
     pc = 0
     stepStartTime = 0
     waiting = false
@@ -104,9 +110,9 @@ export function startQuiz(
 /**
  * Submit a country answer (from pin placement)
  */
-export function submitCountryAnswer(countryIndex: number) {
+export function submitCountryAnswer(countryIndex: number, latLon: { lat: number; lng: number }) {
     if (waiting) {
-        pendingAnswer = { countryIndex }
+        pendingAnswer = { countryIndex, latLon }
     }
 }
 
@@ -147,6 +153,24 @@ export function tickQuiz(now: number): boolean {
                     setDisabledImmediate(globe, country.index)
                 }
             }
+
+            advance(now)
+            break
+        }
+
+        case StepOp.ShowAllLocationMarkers: {
+            console.log('[Quiz Runner] Showing all location markers')
+
+            // Create markers for all location questions
+            questions.forEach((q, index) => {
+                if (q.type === 'location') {
+                    const markerId = globe.acquireMarker(q.lat, q.lng)
+                    if (markerId !== -1) {
+                        locationMarkers.set(index, markerId)
+                        console.log(`  Marker ${markerId} for question ${index}: ${q.prompt}`)
+                    }
+                }
+            })
 
             advance(now)
             break
@@ -200,6 +224,41 @@ export function tickQuiz(now: number): boolean {
 
                     // Splice them in after current step
                     steps.splice(pc + 1, 0, ...postSteps)
+                } else if (q.type === 'location') {
+                    // Distance-based hit detection with zoom-dependent radius
+                    const clickLatLon = pendingAnswer.latLon
+                    const clickPoint = latLonToSphere(clickLatLon.lat, clickLatLon.lon, 0)
+                    const targetPoint = latLonToSphere(q.lat, q.lng, 0)
+
+                    const distSqr = Vector3.DistanceSquared(clickPoint, targetPoint)
+
+                    // Get zoom-dependent hit radius from config
+                    const camera = globe.getCamera()
+                    const config = getConfig()
+                    const hr = config.zoom.markerHitRadius
+                    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing)
+                    const hitRadiusSqr = hitRadius * hitRadius
+
+                    const isCorrect = distSqr <= hitRadiusSqr
+
+                    console.log(`[Quiz Runner] Location hit test: dist=${Math.sqrt(distSqr).toFixed(4)}, hitRadius=${hitRadius.toFixed(4)}, correct=${isCorrect}`)
+
+                    if (isCorrect) {
+                        score++
+                    } else {
+                        wrongCount++
+                    }
+
+                    // Get marker ID for this question
+                    const markerId = locationMarkers.get(qi) ?? -1
+
+                    // Generate post-answer steps
+                    const postSteps = generateLocationAnswerSteps(isCorrect, markerId)
+
+                    console.log(`[Quiz Runner] Location answer ${isCorrect ? 'correct' : 'wrong'}, splicing ${postSteps.length} steps`)
+
+                    // Splice them in after current step
+                    steps.splice(pc + 1, 0, ...postSteps)
                 }
 
                 pendingAnswer = null
@@ -248,6 +307,14 @@ export function tickQuiz(now: number): boolean {
                     advance(performance.now())
                 })
             }
+            break
+        }
+
+        case StepOp.AnimateMarkerCorrect: {
+            console.log(`[Quiz Runner] Animating marker ${step.markerId} correct`)
+            // Scale up the marker
+            globe.setMarkerScale(step.markerId, 2.0)
+            advance(now)
             break
         }
 
