@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Quiz Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        body.placing-mode {
+            cursor: none;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 100;
+            line-height: 1.6;
+        }
+
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loadingScreen h2 {
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .debug-hint {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadingScreen">
+        <h2>Loading Video Quiz</h2>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Initializing...</div>
+    </div>
+
+    <canvas id="renderCanvas"></canvas>
+    <div id="stats">
+        <div><strong>Score:</strong> <span id="correct">0</span> / <span id="total">0</span></div>
+        <div><strong>Wrong:</strong> <span id="wrong">0</span></div>
+    </div>
+
+    <div class="debug-hint">Press D to toggle debug panel</div>
+
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+
+    <script type="module">
+        import { SoloGameController } from './src/solo/solo-game-controller.ts';
+        import { loadConfig } from './src/shared/config/global-config.ts';
+
+        // Each entry: [youtubeId, countryISO2, prompt, startTime?, endTime?]
+        const VIDEO_QUESTIONS = [
+            ['dQw4w9WgXcQ', 'GB', 'Where was this music video filmed?', 0, 30],
+            ['JGwWNGJdvx8', 'KR', 'Where is this song from?', 0, 30],
+            ['kJQP7kiw5Fk', 'CO', 'Where was this music video filmed?', 0, 30],
+        ];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadConfig();
+
+            if (import.meta.env.DEV) {
+                await import('@babylonjs/core/Debug/debugLayer');
+                await import('@babylonjs/inspector');
+            }
+
+            const game = new SoloGameController('renderCanvas', {
+                showCountryLabel: false,
+                showHoverLabel: false,
+                onReady: (controller) => {
+                    console.log('Video quiz ready!');
+
+                    const questions = VIDEO_QUESTIONS.map(([youtubeId, iso2, prompt, start, end]) => ({
+                        type: 'video',
+                        youtubeId,
+                        countryISO2: iso2,
+                        prompt,
+                        startTime: start,
+                        endTime: end,
+                    }));
+
+                    // Shuffle
+                    questions.sort(() => Math.random() - 0.5);
+
+                    controller.startQuizGame({
+                        questions,
+                        revealCorrectOnWrong: true,
+                        onQuestionChanged: (prompt, i, total) => {
+                            console.log(`Question ${i}/${total}: ${prompt}`);
+                            document.getElementById('total').textContent = total;
+                        },
+                        onCorrectAnswer: (prompt) => {
+                            console.log(`✓ Correct!`);
+                            const state = controller.getQuizState();
+                            document.getElementById('correct').textContent = state.score;
+                        },
+                        onWrongAnswer: (wrong, correct) => {
+                            console.log(`✗ Wrong! Clicked ${wrong}, answer was ${correct}`);
+                            const state = controller.getQuizState();
+                            document.getElementById('wrong').textContent = state.total - state.score;
+                        },
+                        onGameComplete: (score, total) => {
+                            console.log(`Game over! Score: ${score}/${total}`);
+                            alert(`Video Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+                        }
+                    });
+                }
+            });
+
+            window.soloGame = game;
+        });
+    </script>
+</body>
+
+</html>

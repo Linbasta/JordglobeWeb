@@ -38,6 +38,10 @@ export function formatStep(step: Step): string {
             return `highlight_country { ${step.countryIndex} }`
         case StepOp.ClearHighlight:
             return 'clear_highlight'
+        case StepOp.ShowVideo:
+            return `show_video { q: ${step.questionIndex} }`
+        case StepOp.HideVideo:
+            return 'hide_video'
         default:
             return 'unknown'
     }

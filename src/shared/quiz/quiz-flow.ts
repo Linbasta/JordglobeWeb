@@ -20,8 +20,9 @@ import { StepOp } from './quiz-types'
 export function generateQuizSteps(questions: Question[]): Step[] {
     const steps: Step[] = []
 
-    // Check if this is a location quiz
+    // Check question types present
     const hasLocationQuestions = questions.some(q => q.type === "location")
+    const hasCountryQuestions = questions.some(q => q.type === "country")
 
     // Initial setup
     if (hasLocationQuestions) {
@@ -31,8 +32,8 @@ export function generateQuizSteps(questions: Question[]): Step[] {
             .filter(q => q.type === 'location')
             .map(q => ({ lat: q.lat, lon: q.lng }))
         steps.push({ op: StepOp.FrameLocations, points: locationPoints, duration: 800 })
-    } else {
-        // Country quiz: disable non-game countries
+    } else if (hasCountryQuestions) {
+        // Country quiz: disable non-game countries (video questions keep all countries enabled)
         steps.push({ op: StepOp.DisableNonGameCountries })
     }
 
@@ -43,8 +44,12 @@ export function generateQuizSteps(questions: Question[]): Step[] {
         // Show question UI
         steps.push({ op: StepOp.ShowQuestion, questionIndex: i })
 
-        // Wait for answer based on question type
-        if (q.type === "country" || q.type === "location") {
+        if (q.type === "video") {
+            // Video plays while user places pin. HideVideo runs after answer steps are spliced in.
+            steps.push({ op: StepOp.ShowVideo, questionIndex: i })
+            steps.push({ op: StepOp.WaitPinPlacement })
+            steps.push({ op: StepOp.HideVideo })
+        } else if (q.type === "country" || q.type === "location") {
             steps.push({ op: StepOp.WaitPinPlacement })
         } else {
             steps.push({ op: StepOp.WaitAlternativeAnswer })

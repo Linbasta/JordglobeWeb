@@ -34,7 +34,7 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number) => void
-    onQuestionTypeChanged?: (questionType: 'country' | 'location' | 'alternative') => void
+    onQuestionTypeChanged?: (questionType: 'country' | 'location' | 'alternative' | 'video') => void
 }
 
 /**
@@ -157,7 +157,8 @@ export class QuizUIAdapter {
 
                 console.log(`[Quiz UI] Showing question ${questionIndex}: ${question?.prompt}`)
 
-                if (question && this.countryLabelUI) {
+                // Video questions show the prompt inside the video overlay — skip the card
+                if (question && question.type !== 'video' && this.countryLabelUI) {
                     this.countryLabelUI.show(question.prompt)
                 }
 

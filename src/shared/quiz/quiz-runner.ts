@@ -23,6 +23,7 @@ import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere } from '../../earth-globe/geo-math'
 import { getConfig } from '../config/global-config'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
+import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 
 // ============================================================================
 // Module State
@@ -100,7 +101,7 @@ export function startQuiz(
 
     // Resolve countries from questions
     for (const q of questions) {
-        if (q.type === 'country') {
+        if (q.type === 'country' || q.type === 'video') {
             const country = globe.getCountryByISO2(q.countryISO2)
             if (country) {
                 gameCountries.push(country)
@@ -218,6 +219,21 @@ export function tickQuiz(now: number): boolean {
             break
         }
 
+        case StepOp.ShowVideo: {
+            const q = questions[step.questionIndex]
+            if (q.type === 'video') {
+                showVideoOverlay(q.youtubeId, q.prompt, q.startTime, q.endTime)
+            }
+            advance(now)
+            break
+        }
+
+        case StepOp.HideVideo: {
+            hideVideoOverlay()
+            advance(now)
+            break
+        }
+
         case StepOp.ShowQuestion: {
             // Question display is handled by UI reading getCurrentStep()
             // Stay on this step for at least one frame so UI can update
@@ -238,7 +254,7 @@ export function tickQuiz(now: number): boolean {
                 const qi = findCurrentQuestionIndex()
                 const q = questions[qi]
 
-                if (q.type === 'country') {
+                if (q.type === 'country' || q.type === 'video') {
                     // Ignore ocean clicks (no country selected)
                     if (pendingAnswer.countryIndex === -1) {
                         pendingAnswer = null

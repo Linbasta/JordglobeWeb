@@ -39,9 +39,22 @@ export type AlternativeQuestion = {
 }
 
 /**
+ * Video question - user watches a clip, then clicks the correct country
+ * Same answer mechanic as CountryQuestion — only the presentation differs.
+ */
+export type VideoQuestion = {
+    type: "video"
+    youtubeId: string
+    startTime?: number
+    endTime?: number
+    countryISO2: string     // correct country (same as CountryQuestion)
+    prompt: string
+}
+
+/**
  * Union of all question types
  */
-export type Question = CountryQuestion | LocationQuestion | AlternativeQuestion
+export type Question = CountryQuestion | LocationQuestion | AlternativeQuestion | VideoQuestion
 
 // ============================================================================
 // Step Types (Execution Bytecode)
@@ -69,6 +82,8 @@ export enum StepOp {
     AnimateMarkerWrongShake = "animate_marker_wrong_shake",
     AnimateMarkerWrongReveal = "animate_marker_wrong_reveal",
     FrameLocations = "frame_locations",
+    ShowVideo = "show_video",
+    HideVideo = "hide_video",
 }
 
 /**
@@ -102,6 +117,10 @@ export type Step =
     | { op: StepOp.AnimateMarkerWrongReveal; wrongMarkerId: number; correctMarkerId: number;
         wrongLat: number; wrongLng: number; correctLat: number; correctLng: number }
 
+    // Video
+    | { op: StepOp.ShowVideo; questionIndex: number }
+    | { op: StepOp.HideVideo }
+
     // Framing
     | { op: StepOp.FrameLocations; points: { lat: number; lon: number }[]; duration: number }
 
@@ -128,5 +147,5 @@ export interface DebugState {
     score: number
     waiting: boolean
     stepStartTime: number
-    pendingAnswer: { countryIndex: number } | { optionIndex: number } | null
+    pendingAnswer: { countryIndex: number; latLon: { lat: number; lng: number } } | { optionIndex: number } | null
 }
