@@ -20,10 +20,13 @@
     "test:small-countries": "tsx scripts/test-small-countries.ts",
     "generate-borders": "node scripts/generate_borders.mjs",
     "generate-segments": "tsx scripts/generate-segments.ts",
-    "enrich-countries": "tsx scripts/enrich-countries.ts"
+    "enrich-countries": "tsx scripts/enrich-countries.ts",
+    "test:e2e": "npx playwright test",
+    "test:e2e:headed": "npx playwright test --headed"
   },
   "devDependencies": {
     "@babylonjs/inspector": "^7.54.3",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^20.0.0",
     "@types/qrcode": "^1.5.6",
     "tsx": "^4.20.6",
