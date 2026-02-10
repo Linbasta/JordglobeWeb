@@ -23,6 +23,17 @@ export default defineConfig({
       pure: ['console.log', 'console.info'],
       drop: ['debugger'],
     },
+    rollupOptions: {
+      input: {
+        main: join(__dirname, 'index.html'),
+        party: join(__dirname, 'public/party.html'),
+        host: join(__dirname, 'public/host.html'),
+        'bot-panel': join(__dirname, 'public/bot-panel.html'),
+        'country-quiz': join(__dirname, 'country-quiz.html'),
+        'capitals-quiz': join(__dirname, 'capitals-quiz.html'),
+        'country-game': join(__dirname, 'country-game.html')
+      }
+    }
   },
   publicDir: 'public',
   appType: 'mpa',

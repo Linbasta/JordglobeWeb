@@ -191,14 +191,17 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.ShowAllLocationMarkers: {
             // Create markers for all location questions
-            questions.forEach((q, index) => {
-                if (q.type === 'location') {
-                    const markerId = globe.acquireMarker(q.lat, q.lng)
-                    if (markerId !== -1) {
-                        locationMarkers.set(index, markerId)
+            if (globe) {
+                const g = globe // Capture for closure
+                questions.forEach((q, index) => {
+                    if (q.type === 'location') {
+                        const markerId = g.acquireMarker(q.lat, q.lng)
+                        if (markerId !== -1) {
+                            locationMarkers.set(index, markerId)
+                        }
                     }
-                }
-            })
+                })
+            }
 
             // Hide small country markers so they don't clutter the location quiz
             globe.hideAllSmallCountryMarkers()
@@ -376,7 +379,7 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.AnimateMarkerWrongShake: {
-            if (!activeAnimation) {
+            if (!activeAnimation && globe) {
                 // Red burst (fire-and-forget) + camera shake
                 const wrongPos = globe.getMarkerPosition(step.wrongMarkerId)
                 if (wrongPos) {
@@ -384,8 +387,10 @@ export function tickQuiz(now: number): boolean {
                 }
                 activeAnimation = cameraShake(globe.getCamera(), 300, 0.02)
                 activeAnimation.then(() => {
-                    globe.hideMarker(step.wrongMarkerId)
-                    globe.hideMarker(step.correctMarkerId)
+                    if (globe) {
+                        globe.hideMarker(step.wrongMarkerId)
+                        globe.hideMarker(step.correctMarkerId)
+                    }
                     activeAnimation = null
                     advance(performance.now())
                 })

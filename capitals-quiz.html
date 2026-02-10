@@ -71,14 +71,12 @@
         <p><span class="stat-label">Total:</span> <span id="total">29</span></p>
     </div>
 
-    <!-- Console logger - streams browser console to file for Claude -->
-    <script type="module" src="/shared/consoleLogger.ts"></script>
 
     <script type="module">
-        import { SoloGameController } from './src/solo/solo-game-controller.ts';
-        import { loadConfig } from './src/shared/config/global-config.ts';
-        import { EUROPEAN_CAPITALS } from './src/capitals/capitals-data.ts';
-        import { getScore, getTotal } from './src/shared/quiz/quiz-runner.ts';
+        import { SoloGameController } from '/src/solo/solo-game-controller.ts';
+        import { loadConfig } from '/src/shared/config/global-config.ts';
+        import { EUROPEAN_CAPITALS } from '/src/capitals/capitals-data.ts';
+        import { getScore, getTotal } from '/src/shared/quiz/quiz-runner.ts';
 
         window.addEventListener('DOMContentLoaded', async () => {
             // Load configuration first

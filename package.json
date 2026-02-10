@@ -22,7 +22,10 @@
     "generate-segments": "tsx scripts/generate-segments.ts",
     "enrich-countries": "tsx scripts/enrich-countries.ts",
     "test:e2e": "npx playwright test",
-    "test:e2e:headed": "npx playwright test --headed"
+    "test:e2e:headed": "npx playwright test --headed",
+    "deploy": "scripts/gcp-staging/deploy.sh",
+    "deploy:ssh": "scripts/gcp-staging/ssh.sh",
+    "deploy:logs": "scripts/gcp-staging/logs.sh"
   },
   "devDependencies": {
     "@babylonjs/inspector": "^7.54.3",
@@ -38,6 +41,7 @@
     "@babylonjs/gui": "^7.54.3",
     "@babylonjs/loaders": "^7.54.3",
     "express": "^4.18.2",
+    "express-basic-auth": "^1.2.1",
     "qrcode": "^1.5.4",
     "ws": "^8.18.3"
   }

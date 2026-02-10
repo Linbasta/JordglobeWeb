@@ -30,3 +30,6 @@ wasm/*.wasm
 browser-console.log
 game-server.log
 *.log
+
+# Deployment secrets
+scripts/gcp-staging/config.sh

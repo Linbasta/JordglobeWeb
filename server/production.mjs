@@ -13,6 +13,7 @@ import { WebSocketServer } from 'ws';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { getRandomCity, calculateDistance } from './cities.mjs';
+import basicAuth from 'express-basic-auth';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,6 +35,18 @@ function log(message, data = null) {
     console.log(logLine);
 }
 
+// Basic Auth - Protect the entire app with simple username/password
+const BASIC_AUTH_USER = process.env.BASIC_AUTH_USER || 'team';
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD || 'changeme123';
+
+app.use(basicAuth({
+    users: { [BASIC_AUTH_USER]: BASIC_AUTH_PASSWORD },
+    challenge: true,
+    realm: 'JordGlobe Staging'
+}));
+
+log(`Basic auth enabled: username="${BASIC_AUTH_USER}"`);
+
 // URL routing middleware - rewrite clean URLs to .html files
 app.get('/party', (req, res, next) => {
     req.url = '/party.html';
@@ -42,6 +55,21 @@ app.get('/party', (req, res, next) => {
 
 app.get('/host', (req, res, next) => {
     req.url = '/host.html';
+    next();
+});
+
+app.get('/country-quiz', (req, res, next) => {
+    req.url = '/country-quiz.html';
+    next();
+});
+
+app.get('/capitals-quiz', (req, res, next) => {
+    req.url = '/capitals-quiz.html';
+    next();
+});
+
+app.get('/country-game', (req, res, next) => {
+    req.url = '/country-game.html';
     next();
 });
 
