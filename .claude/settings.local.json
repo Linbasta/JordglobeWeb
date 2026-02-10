@@ -46,7 +46,13 @@
       "Bash(npm run test:quiz-runner:*)",
       "WebSearch",
       "Bash({} ;)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run test:small-countries:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run test:lofi-colliders:*)"
     ],
     "deny": [],
     "ask": []

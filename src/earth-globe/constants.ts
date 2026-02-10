@@ -58,6 +58,8 @@ export const TUBE_TESSELLATION = 8;
 /** Radius of outline tubes (thicker than segment borders) */
 export const OUTLINE_TUBE_RADIUS = 0.004;
 
+export const SMALL_OUTLINE_TUBE_RADIUS = 0.0005;
+
 /** Color for country selection outline */
 export const OUTLINE_COLOR = new Color3(0.0, 0.0, 0.0);
 
@@ -126,6 +128,7 @@ export const PICKER_CELL_SIZE = 10;
 export const DEFAULT_ASSETS = {
     countriesJson: '/countries-enriched.json',
     segmentsJson: '/segments.json',
+    lofiCollidersJson: '/lofi-colliders.json',
     oceanDepthMap: '/OceanDepthMap.png',
     causticsTexture: '/SwsCaustics.png',
     spaceTextureMid: '/SpaceMidTexture.png',

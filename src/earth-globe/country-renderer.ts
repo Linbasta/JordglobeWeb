@@ -22,12 +22,12 @@ import {
     COUNTRY_HSV_VALUE,
     TRIANGULATION_GRID_SPACING
 } from './constants';
-import { latLonToSphere, positionToLatLon, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
+import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
 import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
 import { CountryPicker, calculateBoundingBox } from './country-picker';
 import type { LatLonPoint, PolygonData, CountryData, CountryJSON, TriangulationResult } from './types';
-import { isSmallCountry } from './small-countries';
+import { isSmallCountry, isSurroundedCountry } from './small-countries';
 
 /**
  * Country Renderer - Creates and manages country meshes
@@ -632,7 +632,9 @@ export class CountryRenderer {
 
                 if (polygonIndices.length > 0) {
                     const small = isSmallCountry(country.iso2);
-                    const centroid = small ? this.computeCentroid(polygonIndices) : null;
+                    const surrounded = isSurroundedCountry(country.iso2);
+                    const needsCentroid = small || surrounded;
+                    const centroid = needsCentroid ? this.computeCentroid(polygonIndices) : null;
 
                     const countryData: CountryData = {
                         name: country.name_en,
@@ -643,27 +645,6 @@ export class CountryRenderer {
                         centroid
                     };
                     this.countriesData.push(countryData);
-
-                    // Register enlarged hit area for small countries
-                    if (centroid) {
-                        const centroidLatLon = positionToLatLon(centroid);
-                        // Compute radius from bbox extent of all polygons
-                        let minLat = Infinity, maxLat = -Infinity;
-                        let minLon = Infinity, maxLon = -Infinity;
-                        for (const polyIdx of polygonIndices) {
-                            for (const pt of this.polygonsData[polyIdx].borderPoints) {
-                                if (pt.lat < minLat) minLat = pt.lat;
-                                if (pt.lat > maxLat) maxLat = pt.lat;
-                                if (pt.lon < minLon) minLon = pt.lon;
-                                if (pt.lon > maxLon) maxLon = pt.lon;
-                            }
-                        }
-                        const extent = Math.max(maxLat - minLat, maxLon - minLon);
-                        const radiusDeg = Math.max(extent * 2.0, 1.0);
-                        countryPicker.registerSmallCountryCentroid(
-                            countryData.index, centroidLatLon.lat, centroidLatLon.lon, radiusDeg
-                        );
-                    }
 
                     if (onCountryAdded) {
                         onCountryAdded(countryData);

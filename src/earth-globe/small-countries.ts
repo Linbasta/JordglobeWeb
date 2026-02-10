@@ -25,3 +25,16 @@ export function isSmallCountry(iso2: string): boolean {
 export function getSmallCountryCodes(): ReadonlySet<string> {
     return SMALL_COUNTRY_CODES;
 }
+
+const SURROUNDED_COUNTRY_CODES = new Set([
+    'VA', // Vatican City (surrounded by Italy)
+    'SM', // San Marino (surrounded by Italy)
+    'LS', // Lesotho (surrounded by South Africa)
+    'LI', // Liechtenstein (surrounded by Switzerland/Austria)
+    'LU', // Luxembourg (surrounded by Belgium/Germany/France)
+    'AD', // Andorra (surrounded by France/Spain)
+]);
+
+export function isSurroundedCountry(iso2: string): boolean {
+    return SURROUNDED_COUNTRY_CODES.has(iso2);
+}

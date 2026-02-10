@@ -333,6 +333,10 @@ export class SoloGameController extends BaseGameController {
             if ((e.key === 'd' || e.key === 'D') && import.meta.env.DEV) {
                 this.toggleDebugPanel();
             }
+            // Toggle collider debug visualization (V key) - dev only
+            if ((e.key === 'v' || e.key === 'V') && import.meta.env.DEV) {
+                this.globe.toggleColliderDebugVisualization();
+            }
         });
     }
 

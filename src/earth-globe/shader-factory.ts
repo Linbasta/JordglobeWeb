@@ -255,6 +255,19 @@ export class ShaderFactory {
     }
 
     /**
+     * Create the small country outline shader material (with pivot expansion)
+     */
+    createSmallOutlineMaterial(): ShaderMaterial {
+        const material = this.createSmallShaderMaterial(
+            "smallOutlineShader",
+            borderFragmentShader,
+            ["baseColor"]
+        );
+        material.setColor3("baseColor", OUTLINE_COLOR);
+        return material;
+    }
+
+    /**
      * Create an unlit material (for pins and other objects)
      * @param originalMaterial Original material to extract color/texture from
      * @returns Configured unlit ShaderMaterial

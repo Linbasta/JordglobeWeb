@@ -17,6 +17,7 @@ import {
     TUBE_TESSELLATION
 } from './constants';
 import { latLonToSphere } from './geo-math';
+import { Vector3 } from '@babylonjs/core/Maths/math';
 import type { LatLonPoint } from './types';
 
 /**
@@ -43,11 +44,14 @@ export class OutlineRenderer {
     showOutline(
         countryIndex: number,
         borderPointArrays: LatLonPoint[][],
-        material: ShaderMaterial
+        material: ShaderMaterial,
+        tubeRadius?: number,
+        countryPivot?: Vector3
     ): void {
         // Clear any existing outline
         this.clearOutline();
 
+        const radius = tubeRadius ?? OUTLINE_TUBE_RADIUS;
         const tubes: Mesh[] = [];
         const vertexCounts: number[] = [];
 
@@ -64,7 +68,7 @@ export class OutlineRenderer {
                     "outlineTube",
                     {
                         path,
-                        radius: OUTLINE_TUBE_RADIUS,
+                        radius,
                         tessellation: TUBE_TESSELLATION,
                         cap: Mesh.NO_CAP
                     },
@@ -114,6 +118,24 @@ export class OutlineRenderer {
             false, false, 1, false
         );
         this.outlineMesh.setVerticesBuffer(buffer);
+
+        // Set countryPivot attribute for small countries (expansion shader)
+        if (countryPivot) {
+            const pivotData = new Float32Array(totalVertices * 3);
+            for (let i = 0; i < totalVertices; i++) {
+                pivotData[i * 3] = countryPivot.x;
+                pivotData[i * 3 + 1] = countryPivot.y;
+                pivotData[i * 3 + 2] = countryPivot.z;
+            }
+
+            const pivotBuffer = new VertexBuffer(
+                this.engine,
+                pivotData,
+                "countryPivot",
+                false, false, 3, false
+            );
+            this.outlineMesh.setVerticesBuffer(pivotBuffer);
+        }
 
         // Apply shader material
         this.outlineMesh.material = material;

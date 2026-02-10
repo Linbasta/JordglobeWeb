@@ -141,12 +141,32 @@ export interface SegmentData {
 // Configuration Types
 // ============================================================================
 
+// ============================================================================
+// Lofi Collider Types
+// ============================================================================
+
+export interface LofiCircle {
+    lat: number;
+    lon: number;
+    radiusDeg: number;
+}
+
+export interface LofiColliderItem {
+    id: string;              // ISO2 for countries
+    colliders: LofiCircle[];
+}
+
+// ============================================================================
+// Configuration Types
+// ============================================================================
+
 /**
  * Asset paths configuration
  */
 export interface AssetPaths {
     countriesJson?: string;
     segmentsJson?: string;
+    lofiCollidersJson?: string;
     oceanDepthMap?: string;
     causticsTexture?: string;
     pinModel?: string;
@@ -267,6 +287,7 @@ export interface EarthGlobeAPI {
     showMarker(markerId: number): void;
     toggleMarkerDebugVisualization(): void;
     updateMarkerDebugRadius(hitRadius: number): void;
+    toggleColliderDebugVisualization(): Promise<void>;
 
     // Event callbacks
     onCountryHover(callback: (event: CountryHoverEvent) => void): void;

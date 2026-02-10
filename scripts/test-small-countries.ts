@@ -2,7 +2,7 @@
 /**
  * Test script for small-countries module
  */
-import { isSmallCountry, getSmallCountryCodes } from '../src/earth-globe/small-countries';
+import { isSmallCountry, getSmallCountryCodes, isSurroundedCountry } from '../src/earth-globe/small-countries';
 
 console.log('=== Testing Small Countries ===\n');
 
@@ -43,6 +43,27 @@ assert('Set is readonly (has .has but no .add)', typeof (codes as any).has === '
 console.log('\nTest 4: Edge cases');
 assert('Empty string is not small', !isSmallCountry(''));
 assert('Lowercase "mt" is not small (case-sensitive)', !isSmallCountry('mt'));
+
+// Test surrounded countries
+console.log('\nTest 5: Known surrounded countries return true');
+const expectedSurrounded = ['VA', 'SM', 'LS', 'LI', 'LU', 'AD'];
+for (const code of expectedSurrounded) {
+    assert(`${code} is surrounded`, isSurroundedCountry(code));
+}
+
+console.log('\nTest 6: Non-surrounded countries return false');
+const notSurrounded = ['US', 'IT', 'ZA', 'FR', 'DE', 'MT', 'SG', 'BH'];
+for (const code of notSurrounded) {
+    assert(`${code} is not surrounded`, !isSurroundedCountry(code));
+}
+
+console.log('\nTest 7: Surrounded + small overlap');
+const bothSmallAndSurrounded = ['VA', 'SM', 'LI', 'LU', 'AD'];
+for (const code of bothSmallAndSurrounded) {
+    assert(`${code} is both small and surrounded`, isSmallCountry(code) && isSurroundedCountry(code));
+}
+assert('LS is surrounded but NOT small', isSurroundedCountry('LS') && !isSmallCountry('LS'));
+assert('MT is small but NOT surrounded', isSmallCountry('MT') && !isSurroundedCountry('MT'));
 
 // Summary
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===`);
