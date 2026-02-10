@@ -269,6 +269,8 @@ export interface EarthGlobeAPI {
     isSmallCountry(countryIndex: number): boolean;
     hideSmallCountryMarker(countryIndex: number): void;
     showSmallCountryMarker(countryIndex: number): void;
+    hideAllSmallCountryMarkers(): void;
+    showAllSmallCountryMarkers(): void;
 
     // Country outline
     showCountryOutline(countryIndex: number): void;

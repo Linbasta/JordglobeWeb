@@ -684,6 +684,26 @@ export class EarthGlobe {
         }
     }
 
+    /**
+     * Hide all small country markers
+     */
+    hideAllSmallCountryMarkers(): void {
+        if (!this.smallMarkerPool) return;
+        for (const markerId of this.smallCountryMarkers.values()) {
+            this.smallMarkerPool.hideMarker(markerId);
+        }
+    }
+
+    /**
+     * Show all small country markers
+     */
+    showAllSmallCountryMarkers(): void {
+        if (!this.smallMarkerPool) return;
+        for (const markerId of this.smallCountryMarkers.values()) {
+            this.smallMarkerPool.showMarker(markerId);
+        }
+    }
+
     // =========================================================================
     // Public API - Country Outline
     // =========================================================================

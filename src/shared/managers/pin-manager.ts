@@ -20,6 +20,7 @@ import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
 import { getConfig } from '../config/global-config';
+import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag } from './pin-scroll';
 
 const EARTH_RADIUS = 2.0;
 const TOUCH_Y_OFFSET = -50; // negative = upward in screen space, ~50px above fingertip
@@ -40,6 +41,9 @@ let previewPinContainer: TransformNode | null = null;
 let isPlacingMode = false;
 let hoveredCountry: CountryPolygon | null = null;
 let pinRecorder = new PinRecorder();
+
+let lastClientX = 0;
+let lastClientY = 0;
 
 let onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
 let onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
@@ -94,7 +98,7 @@ function createPreviewPin(): void {
 function setupEventHandlers(): void {
     canvas.addEventListener('pointermove', (e) => {
         if (isPlacingMode && previewPin) {
-            updatePreviewPinPosition(e);
+            updatePreviewPinFromEvent(e);
         }
     });
 
@@ -116,7 +120,7 @@ function setupEventHandlers(): void {
             const pickResult = scene.pick(e.clientX, pickY, (mesh) => mesh === earthSphere);
             if (pickResult.hit) {
                 enterPlacingMode();
-                updatePreviewPinPosition(e);
+                updatePreviewPinFromEvent(e);
             }
         }
     });
@@ -126,67 +130,84 @@ function setupEventHandlers(): void {
     });
 }
 
-function updatePreviewPinPosition(event: PointerEvent): void {
+function updatePreviewPinFromEvent(event: PointerEvent): void {
+    const pickY = event.pointerType === 'touch' ? event.clientY + TOUCH_Y_OFFSET : event.clientY;
+    lastClientX = event.clientX;
+    lastClientY = pickY;
+    updatePointer(event.clientX, event.clientY);
+    updatePreviewPinAtScreenCoords(event.clientX, pickY);
+}
+
+function positionPinAtNormal(normal: Vector3): void {
     if (!previewPin) return;
 
-    const pickY = event.pointerType === 'touch' ? event.clientY + TOUCH_Y_OFFSET : event.clientY;
-    const pickResult = scene.pick(event.clientX, pickY, (mesh) => mesh === earthSphere);
+    if (!previewPin.isEnabled()) {
+        previewPin.setEnabled(true);
+    }
+
+    // Scale pin based on camera zoom (using config values)
+    if (previewPinContainer) {
+        const config = getConfig();
+        const pinScale = getZoomValue(
+            camera,
+            config.zoom.pinScale.closeValue,
+            config.zoom.pinScale.farValue,
+            config.zoom.pinScale.easing
+        );
+        previewPinContainer.scaling.setAll(pinScale);
+    }
+
+    // Detect which country the pin is over
+    const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
+    const country = countryPicker.getCountryAt(latLon);
+
+    // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
+    const altitudeNormalized = country ? getCountryAltitude(country.countryIndex) : 0.0;
+    const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
+
+    // Position pin at globe surface + country altitude
+    previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS + altitudeWorldSpace);
+
+    // Orient the pivot so its local Y-axis points along the normal
+    const upVector = Vector3.Up();
+    const quaternion = new Quaternion();
+    Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
+    previewPin.rotationQuaternion = quaternion;
+
+    // Fire pin move callback (every pointermove, not gated by country change)
+    if (onPinMoveCallback) {
+        onPinMoveCallback(latLon);
+    }
+
+    // Record this position
+    pinRecorder.recordPosition(latLon.lat, latLon.lon);
+
+    // Update hovered country and trigger callback if changed
+    if (country !== hoveredCountry) {
+        hoveredCountry = country;
+        if (onCountryHoverCallback) {
+            onCountryHoverCallback(country, latLon);
+        }
+    }
+}
+
+function updatePreviewPinAtScreenCoords(clientX: number, clientY: number): void {
+    if (!previewPin) return;
+
+    const pickResult = scene.pick(clientX, clientY, (mesh) => mesh === earthSphere);
 
     if (pickResult.hit && pickResult.pickedPoint) {
-        // Show the pin when we hit the globe
-        if (!previewPin.isEnabled()) {
-            previewPin.setEnabled(true);
-        }
-
-        // Scale pin based on camera zoom (using config values)
-        if (previewPinContainer) {
-            const config = getConfig();
-            const pinScale = getZoomValue(
-                camera,
-                config.zoom.pinScale.closeValue,
-                config.zoom.pinScale.farValue,
-                config.zoom.pinScale.easing
-            );
-            previewPinContainer.scaling.setAll(pinScale);
-        }
-
-        // Calculate surface normal
         const normal = pickResult.pickedPoint.normalizeToNew();
-
-        // Detect which country the pin is over
-        const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
-        const country = countryPicker.getCountryAt(latLon);
-
-        // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
-        const altitudeNormalized = country ? getCountryAltitude(country.countryIndex) : 0.0;
-        const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
-
-        // Position pin at globe surface + country altitude
-        previewPin.position.copyFrom(normal).scaleInPlace(EARTH_RADIUS + altitudeWorldSpace);
-
-        // Orient the pivot so its local Y-axis points along the normal
-        const upVector = Vector3.Up();
-        const quaternion = new Quaternion();
-        Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
-        previewPin.rotationQuaternion = quaternion;
-
-        // Fire pin move callback (every pointermove, not gated by country change)
-        if (onPinMoveCallback) {
-            onPinMoveCallback(latLon);
-        }
-
-        // Record this position
-        pinRecorder.recordPosition(latLon.lat, latLon.lon);
-
-        // Update hovered country and trigger callback if changed
-        if (country !== hoveredCountry) {
-            hoveredCountry = country;
-            if (onCountryHoverCallback) {
-                onCountryHoverCallback(country, latLon);
-            }
-        }
+        positionPinAtNormal(normal);
+    } else if (isPlacingMode) {
+        // Ray missed the globe — project pointer ray to nearest point on sphere edge
+        const ray = scene.createPickingRay(clientX, clientY, null, camera);
+        const t = -Vector3.Dot(ray.origin, ray.direction);
+        const closestOnRay = ray.origin.add(ray.direction.scale(Math.max(0, t)));
+        const normal = closestOnRay.normalizeToNew();
+        positionPinAtNormal(normal);
     } else {
-        // Not over globe - hide pin
+        // Not over globe and not dragging - hide pin
         if (previewPin.isEnabled()) {
             previewPin.setEnabled(false);
         }
@@ -222,7 +243,15 @@ export async function initPinManager(
 
     await loadBossPinModel();
     createPreviewPin();
+    initPinScroll(scene, camera, canvas);
     setupEventHandlers();
+
+    // Re-pick pin position when globe scrolls under stationary pointer
+    scene.registerBeforeRender(() => {
+        if (isPlacingMode && consumeScrolledFlag()) {
+            updatePreviewPinAtScreenCoords(lastClientX, lastClientY);
+        }
+    });
 }
 
 export function enterPlacingMode(): void {
@@ -232,6 +261,7 @@ export function enterPlacingMode(): void {
 
     camera.detachControl();
     pinRecorder.startRecording();
+    startPinScroll();
 
     if (onPlacingModeChangeCallback) {
         onPlacingModeChangeCallback(true);
@@ -244,6 +274,7 @@ export function exitPlacingMode(placePin: boolean = false): void {
 
     camera.attachControl(canvas, true);
     pinRecorder.stopRecording();
+    stopPinScroll();
 
     if (onPlacingModeChangeCallback) {
         onPlacingModeChangeCallback(false);
