@@ -17,6 +17,7 @@ export interface ZoomConfig {
     borderThickness: ZoomBasedConfig;
     markerScale: ZoomBasedConfig;
     markerHitRadius: ZoomBasedConfig;
+    colliderScale: ZoomBasedConfig;
 }
 
 export interface GlobalConfig {
@@ -45,6 +46,11 @@ const DEFAULT_CONFIG: GlobalConfig = {
         markerHitRadius: {
             closeValue: 0.025,
             farValue: 0.1,
+            easing: 'Linear'
+        },
+        colliderScale: {
+            closeValue: 1.0,
+            farValue: 2.0,
             easing: 'Linear'
         }
     }

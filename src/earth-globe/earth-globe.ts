@@ -37,7 +37,8 @@ import {
     PICKER_CELL_SIZE,
     DEFAULT_ASSETS,
     MAX_ANIMATION_COUNTRIES,
-    TUBE_RADIUS
+    TUBE_RADIUS,
+    SMALL_OUTLINE_TUBE_RADIUS
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './geo-math';
 import { CountryPicker } from './country-picker';
@@ -53,7 +54,7 @@ import { CountryAnimator } from './country-animator';
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
 import { LocationMarkerPool } from './location-marker-pool';
-import { isSmallCountry as checkSmallCountry } from './small-countries';
+import { isSmallCountry as checkSmallCountry, isSurroundedCountry } from './small-countries';
 import { getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
 
@@ -65,7 +66,8 @@ import type {
     CountryData,
     CountryHoverEvent,
     CountryClickEvent,
-    SegmentData
+    SegmentData,
+    LofiColliderItem
 } from './types';
 
 /**
@@ -110,6 +112,7 @@ export class EarthGlobe {
 
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;
+    private smallOutlineMaterial: ShaderMaterial | null = null;
     private segmentBorderMaterial: ShaderMaterial | null = null;
 
     // Data
@@ -127,6 +130,7 @@ export class EarthGlobe {
 
     // State
     private isInitialized: boolean = false;
+    private colliderDebugUpdate: (() => void) | null = null;
 
     constructor(options: EarthGlobeOptions = {}) {
         this.options = options;
@@ -209,6 +213,22 @@ export class EarthGlobe {
                 }
             );
 
+            // Load lofi colliders for enhanced hit detection
+            const collidersUrl = this.assets.lofiCollidersJson || DEFAULT_ASSETS.lofiCollidersJson;
+            const collidersResponse = await fetch(collidersUrl);
+            const collidersEntries: LofiColliderItem[] = await collidersResponse.json();
+
+            for (const entry of collidersEntries) {
+                if (entry.colliders.length === 0) continue;
+                const country = this.getCountryByISO2(entry.id);
+                if (!country) continue;
+                this.countryPicker.registerColliders(
+                    country.index,
+                    entry.colliders,
+                    isSurroundedCountry(entry.id)
+                );
+            }
+
             // Create borders for polygons
             const polygonsData = this.countryRenderer.getPolygonsData();
             for (const polygon of polygonsData) {
@@ -258,6 +278,7 @@ export class EarthGlobe {
 
             // Create outline material (once, reused for all outlines)
             this.outlineMaterial = this.shaderFactory.createOutlineMaterial();
+            this.smallOutlineMaterial = this.shaderFactory.createSmallOutlineMaterial();
 
             // Create location marker pool (200 markers, batched rendering)
             this.markerPool = new LocationMarkerPool(this.scene, { poolSize: 200 });
@@ -336,6 +357,16 @@ export class EarthGlobe {
             const smallScale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
             this.smallMarkerPool.updateScale(smallScale);
         }
+
+        // Update collider radius scale based on camera zoom
+        const cs = config.zoom.colliderScale;
+        if (cs) {
+            const colliderMul = getZoomValue(this.camera, cs.closeValue, cs.farValue, cs.easing);
+            this.countryPicker.setColliderMultiplier(colliderMul);
+        }
+
+        // Rebuild debug circles if multiplier changed
+        this.colliderDebugUpdate?.();
     }
 
     // =========================================================================
@@ -670,7 +701,14 @@ export class EarthGlobe {
             idx => polygonsData[idx].borderPoints
         );
 
-        this.outlineRenderer.showOutline(countryIndex, borderPointArrays, this.outlineMaterial);
+        if (countryData.centroid && this.smallOutlineMaterial) {
+            this.outlineRenderer.showOutline(
+                countryIndex, borderPointArrays, this.smallOutlineMaterial,
+                SMALL_OUTLINE_TUBE_RADIUS, countryData.centroid
+            );
+        } else {
+            this.outlineRenderer.showOutline(countryIndex, borderPointArrays, this.outlineMaterial);
+        }
     }
 
     /**
@@ -845,6 +883,29 @@ export class EarthGlobe {
     showMarker(markerId: number): void {
         if (!this.markerPool) return;
         this.markerPool.showMarker(markerId);
+    }
+
+    /**
+     * Toggle debug visualization of lofi collider circles (dev only)
+     */
+    async toggleColliderDebugVisualization(): Promise<void> {
+        if (!import.meta.env.DEV) return;
+        const { toggleColliderDebug, updateColliderDebugScale } = await import('./collider-debug');
+        this.colliderDebugUpdate = updateColliderDebugScale;
+
+        // Collect country/border surface meshes to hide while debug is active
+        const surfaceMeshes: Mesh[] = [];
+        const names = [
+            'mergedCountries', 'mergedCountriesSmall',
+            'mergedExtrudedBorders', 'mergedExtrudedBordersSmall',
+            'mergedSegmentBorders'
+        ];
+        for (const name of names) {
+            const mesh = this.scene.getMeshByName(name) as Mesh | null;
+            if (mesh) surfaceMeshes.push(mesh);
+        }
+
+        toggleColliderDebug(this.scene, this.countryPicker, surfaceMeshes);
     }
 
     /**
