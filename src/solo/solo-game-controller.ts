@@ -24,6 +24,7 @@ import { getZoomValue } from '../shared/animation/camera-utils';
 import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
 import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
+import { togglePerfOverlay } from '../shared/dev/perf-overlay';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -336,6 +337,10 @@ export class SoloGameController extends BaseGameController {
             // Toggle collider debug visualization (V key) - dev only
             if ((e.key === 'v' || e.key === 'V') && import.meta.env.DEV) {
                 this.globe.toggleColliderDebugVisualization();
+            }
+            // Toggle performance overlay (P key) - dev only
+            if ((e.key === 'p' || e.key === 'P') && import.meta.env.DEV) {
+                togglePerfOverlay();
             }
         });
     }

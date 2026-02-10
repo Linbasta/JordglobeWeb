@@ -58,6 +58,7 @@ import { LocationMarkerPool } from './location-marker-pool';
 import { isSmallCountry as checkSmallCountry, isSurroundedCountry } from './small-countries';
 import { getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
+import { tickPerf } from '../shared/dev/perf-overlay';
 
 import type {
     EarthGlobeOptions,
@@ -314,6 +315,7 @@ export class EarthGlobe {
 
             // Start render loop
             this.engine.runRenderLoop(() => {
+                if (import.meta.env.DEV) tickPerf(performance.now());
                 this.update();
                 this.scene.render();
             });
