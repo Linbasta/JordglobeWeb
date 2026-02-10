@@ -57,7 +57,7 @@ function createWaterShader(scene: Scene): string {
         }
 
         void main() {
-            vUV = vec2(fract(1.0 - uv.x + 0.5), 1.0 - uv.y);
+            vUV = vec2(1.0 - uv.x + 0.5, 1.0 - uv.y);
 
             vec2 waveUV = uv * waveScale;
             float wave1 = noise(waveUV + time * waveSpeed);
@@ -242,8 +242,10 @@ function createWaterMaterial(
         samplers: ["depthMap", "causticsMap"]
     });
 
-    // Load textures
+    // Load textures (WRAP so UV range 0.5..1.5 wraps correctly without fract seam)
     const depthTexture = new Texture(assets.oceanDepthMap || DEFAULT_ASSETS.oceanDepthMap, scene);
+    depthTexture.wrapU = Texture.WRAP_ADDRESSMODE;
+    depthTexture.wrapV = Texture.WRAP_ADDRESSMODE;
     material.setTexture("depthMap", depthTexture);
 
     const causticsTexture = new Texture(assets.causticsTexture || DEFAULT_ASSETS.causticsTexture, scene);
