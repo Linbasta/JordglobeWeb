@@ -31,6 +31,7 @@ import {
     CAMERA_UPPER_RADIUS,
     CAMERA_DEFAULT_RADIUS,
     CAMERA_WHEEL_PRECISION,
+    CAMERA_PINCH_PRECISION,
     CAMERA_MIN_Z,
     CAMERA_ANGULAR_SENSITIVITY,
     CAMERA_PANNING_SENSITIVITY,
@@ -189,6 +190,7 @@ export class EarthGlobe {
         this.camera.lowerRadiusLimit = CAMERA_LOWER_RADIUS;
         this.camera.upperRadiusLimit = CAMERA_UPPER_RADIUS;
         this.camera.wheelPrecision = CAMERA_WHEEL_PRECISION;
+        this.camera.pinchPrecision = CAMERA_PINCH_PRECISION;
         this.camera.minZ = CAMERA_MIN_Z;
         this.camera.angularSensibilityX = CAMERA_ANGULAR_SENSITIVITY;
         this.camera.angularSensibilityY = CAMERA_ANGULAR_SENSITIVITY;

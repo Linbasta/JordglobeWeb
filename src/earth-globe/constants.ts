@@ -98,6 +98,9 @@ export const CAMERA_DEFAULT_RADIUS = 10;
 /** Camera wheel scroll precision */
 export const CAMERA_WHEEL_PRECISION = 50;
 
+/** Camera pinch-zoom precision (higher = less sensitive) */
+export const CAMERA_PINCH_PRECISION = 50;
+
 /** Camera near clipping plane */
 export const CAMERA_MIN_Z = 0.01;
 
