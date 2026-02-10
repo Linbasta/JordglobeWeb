@@ -17,7 +17,7 @@ import {
     animateShowCorrect,
     animateToCleared,
     setDisabledImmediate
-} from '../animations/country-animations'
+} from '../animation/country-animations'
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere } from '../../earth-globe/geo-math'
@@ -449,11 +449,6 @@ export function tickQuiz(now: number): boolean {
             break
         }
 
-        case StepOp.AnimateCamera: {
-            // TODO: implement camera animation step
-            advance(now)
-            break
-        }
     }
 
     return true

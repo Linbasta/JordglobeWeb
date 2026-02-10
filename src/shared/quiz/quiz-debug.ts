@@ -38,8 +38,6 @@ export function formatStep(step: Step): string {
             return `highlight_country { ${step.countryIndex} }`
         case StepOp.ClearHighlight:
             return 'clear_highlight'
-        case StepOp.AnimateCamera:
-            return `animate_camera { lat: ${step.lat.toFixed(2)}, lng: ${step.lng.toFixed(2)} }`
         default:
             return 'unknown'
     }

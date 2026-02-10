@@ -53,7 +53,6 @@ export type Question = CountryQuestion | LocationQuestion | AlternativeQuestion
  */
 export enum StepOp {
     DisableNonGameCountries = "disable_non_game_countries",
-    AnimateCamera = "animate_camera",
     HighlightCountry = "highlight_country",
     ClearHighlight = "clear_highlight",
     ShowQuestion = "show_question",
@@ -79,9 +78,6 @@ export enum StepOp {
 export type Step =
     // Setup
     | { op: StepOp.DisableNonGameCountries }
-
-    // Camera control
-    | { op: StepOp.AnimateCamera; lat: number; lng: number; duration: number }
 
     // Country highlighting
     | { op: StepOp.HighlightCountry; countryIndex: number }

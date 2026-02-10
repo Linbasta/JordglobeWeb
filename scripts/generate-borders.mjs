@@ -3,7 +3,7 @@
 /**
  * CLI tool to generate binary border data from countries.json
  *
- * Usage: node scripts/generate_borders.mjs
+ * Usage: node scripts/generate-borders.mjs
  *
  * Reads: public/countries.json
  * Writes: public/borders.bin

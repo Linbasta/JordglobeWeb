@@ -109,7 +109,7 @@ console.log(result.isValid ? '✓ Pass' : '✗ Fail');
 
 ### CLI Tools (preferred)
 - `scripts/generate-segments.ts` - Generate segments.json
-- `scripts/generate_borders.mjs` - Generate borders.bin
+- `scripts/generate-borders.mjs` - Generate borders.bin
 
 ### Modules to Test
 - `src/segmentLoader.ts` - Load and convert segments (should have CLI test)
