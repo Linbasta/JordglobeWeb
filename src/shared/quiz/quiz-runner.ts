@@ -236,6 +236,11 @@ export function tickQuiz(now: number): boolean {
                 const q = questions[qi]
 
                 if (q.type === 'country') {
+                    // Ignore ocean clicks (no country selected)
+                    if (pendingAnswer.countryIndex === -1) {
+                        pendingAnswer = null
+                        break
+                    }
                     waiting = false
                     const correctCountry = globe.getCountryByISO2(q.countryISO2)
                     if (!correctCountry) break
