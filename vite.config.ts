@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   server: {
-    port: 3001,
+    port: 4817,
     open: true,
     proxy: {
       // Rewrite /party to /party.html
@@ -18,7 +18,11 @@ export default defineConfig({
   build: {
     target: 'es2020',
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    esbuild: {
+      pure: ['console.log', 'console.info'],
+      drop: ['debugger'],
+    },
   },
   publicDir: 'public',
   appType: 'mpa',

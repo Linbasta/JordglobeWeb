@@ -52,7 +52,14 @@
       "Bash(git commit:*)",
       "Bash(npm run test:small-countries:*)",
       "Bash(npx tsx:*)",
-      "Bash(npm run test:lofi-colliders:*)"
+      "Bash(npm run test:lofi-colliders:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(git -C /Users/oloflandin/Programming/BabylonTest log --all --oneline --grep=\"performance\\\\|FPS\\\\|frame\\\\|debug\\\\|telemetry\" -i)",
+      "Bash(git -C /Users/oloflandin/Programming/BabylonTest log --oneline --all)",
+      "Bash(git -C /Users/oloflandin/Programming/BabylonTest show --stat c549465)",
+      "Bash(lsof:*)",
+      "Bash(ps:*)"
     ],
     "deny": [],
     "ask": []

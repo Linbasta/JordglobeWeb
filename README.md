@@ -36,7 +36,7 @@ Start the development server with hot reload:
 npm run dev
 ```
 
-The app will open automatically at **http://localhost:3001**
+The app will open automatically at **http://localhost:4817**
 
 ### Build for Production
 

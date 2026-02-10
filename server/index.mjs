@@ -30,7 +30,7 @@ function log(message, data = null) {
 }
 
 const PORT = 3003;
-const WEB_PORT = 3001; // Vite server port
+const WEB_PORT = 4817; // Vite server port
 
 // Get local network IP address
 function getLocalIP() {
