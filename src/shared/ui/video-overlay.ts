@@ -36,7 +36,7 @@ export function showVideoOverlay(
     // loop+playlist prevents the end-screen with related videos
     // modestbranding hides the YT logo, iv_load_policy=3 hides annotations
     let embedUrl = `https://www.youtube.com/embed/${youtubeId}` +
-        `?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3` +
+        `?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3` +
         `&loop=1&playlist=${youtubeId}`
     if (startTime !== undefined) embedUrl += `&start=${Math.floor(startTime)}`
     if (endTime !== undefined) embedUrl += `&end=${Math.floor(endTime)}`
@@ -67,7 +67,7 @@ export function showVideoOverlay(
     const promptEl = document.createElement('div')
     promptEl.textContent = prompt
     promptEl.style.cssText =
-        'padding:8px 16px;color:#fff;font-size:16px;font-weight:600;' +
+        'padding:8px 16px;color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:600;' +
         'text-align:center;flex-shrink:0;'
     container.appendChild(promptEl)
 

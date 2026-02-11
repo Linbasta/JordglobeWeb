@@ -10,51 +10,45 @@
 // ============================================================================
 
 /**
- * Country identification question - user clicks on globe
+ * How the question is presented to the user
  */
-export type CountryQuestion = {
-    type: "country"
-    countryISO2: string       // e.g. "SE"
-    prompt: string            // e.g. "Where is Sweden?"
-}
+export type PresentTag = "text" | "video"
 
 /**
- * Location question - user clicks on specific lat/lon
+ * What kind of answer the question expects
  */
-export type LocationQuestion = {
-    type: "location"
-    lat: number
-    lng: number
-    prompt: string            // e.g. "Where is Stockholm?"
-}
+export type AnswerTag = "country" | "location-guess" | "location-alternatives"
 
 /**
- * Multiple choice question - user selects from options
+ * Flat question struct — presentation and answer type are independent.
+ *
+ * Old type mapping:
+ *   "country"     → present: "text",  answer: "country"
+ *   "location"    → present: "text",  answer: "location-guess"
+ *   "alternative" → present: "text",  answer: "location-alternatives"
+ *   "video"       → present: "video", answer: "country"
  */
-export type AlternativeQuestion = {
-    type: "alternative"
+export type Question = {
+    present: PresentTag
+    answer: AnswerTag
     prompt: string
-    options: string[]
-    correctIndex: number
-}
 
-/**
- * Video question - user watches a clip, then clicks the correct country
- * Same answer mechanic as CountryQuestion — only the presentation differs.
- */
-export type VideoQuestion = {
-    type: "video"
-    youtubeId: string
+    // answer: "country"
+    countryISO2?: string
+
+    // answer: "location-guess"
+    lat?: number
+    lng?: number
+
+    // answer: "location-alternatives"
+    options?: string[]
+    correctIndex?: number
+
+    // present: "video"
+    youtubeId?: string
     startTime?: number
     endTime?: number
-    countryISO2: string     // correct country (same as CountryQuestion)
-    prompt: string
 }
-
-/**
- * Union of all question types
- */
-export type Question = CountryQuestion | LocationQuestion | AlternativeQuestion | VideoQuestion
 
 // ============================================================================
 // Step Types (Execution Bytecode)

@@ -6,17 +6,17 @@
  * Focuses on quizFlow.ts which has no rendering dependencies.
  */
 
-import type { Question, Step } from '../src/shared/quiz/quizTypes'
-import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from '../src/shared/quiz/quizFlow'
+import type { Question, Step } from '../src/shared/quiz/quiz-types'
+import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from '../src/shared/quiz/quiz-flow'
 
 // ============================================================================
 // Test Data
 // ============================================================================
 
 const testQuestions: Question[] = [
-    { type: 'country', countryISO2: 'SE', prompt: 'Where is Sweden?' },
-    { type: 'country', countryISO2: 'NO', prompt: 'Where is Norway?' },
-    { type: 'alternative', prompt: 'What is the capital of Finland?', options: ['Oslo', 'Helsinki', 'Stockholm'], correctIndex: 1 },
+    { present: 'text', answer: 'country', countryISO2: 'SE', prompt: 'Where is Sweden?' },
+    { present: 'text', answer: 'country', countryISO2: 'NO', prompt: 'Where is Norway?' },
+    { present: 'text', answer: 'location-alternatives', prompt: 'What is the capital of Finland?', options: ['Oslo', 'Helsinki', 'Stockholm'], correctIndex: 1 },
 ]
 
 // ============================================================================
@@ -172,16 +172,13 @@ function runTests() {
         const steps = generateQuizSteps(testQuestions)
 
         const pinWaits = steps.filter(s => s.op === 'wait_pin_placement').length
-        const altWaits = steps.filter(s => s.op === 'wait_alternative_answer').length
 
-        const expectedPinWaits = testQuestions.filter(q => q.type === 'country' || q.type === 'location').length
-        const expectedAltWaits = testQuestions.filter(q => q.type === 'alternative').length
-
-        if (pinWaits === expectedPinWaits && altWaits === expectedAltWaits) {
-            console.log(`  ✓ Correct wait types: ${pinWaits} pin, ${altWaits} alternative`)
+        // All answer types use WaitPinPlacement (they all click the globe)
+        if (pinWaits === testQuestions.length) {
+            console.log(`  ✓ Correct wait count: ${pinWaits} pin placements (matches question count)`)
             testsPassed++
         } else {
-            console.log(`  ✗ Wrong wait counts: got ${pinWaits}/${altWaits}, expected ${expectedPinWaits}/${expectedAltWaits}`)
+            console.log(`  ✗ Wrong wait count: got ${pinWaits}, expected ${testQuestions.length}`)
             testsFailed++
         }
     } catch (error) {

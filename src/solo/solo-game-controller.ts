@@ -55,6 +55,7 @@ export class SoloGameController extends BaseGameController {
     private onCountrySelected: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private onCountryHovered: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
     private hoveredCountry: CountryPolygon | null = null;
+    private smallMarkersHidden = false;
 
     constructor(canvasId: string = 'renderCanvas', options?: SoloGameOptions) {
         super(canvasId, options);
@@ -75,6 +76,24 @@ export class SoloGameController extends BaseGameController {
             if (this.quizAdapter) {
                 const now = performance.now();
                 this.quizAdapter.tick(now);
+
+                // Auto-toggle selection & small markers based on current answer type
+                const qi = getCurrentQuestionIndex();
+                const q = getQuestion(qi);
+                const wantSelection = q?.answer === 'country';
+                if (wantSelection && !this.selectionEnabled) {
+                    this.enableSelectionBehavior();
+                } else if (!wantSelection && this.selectionEnabled) {
+                    this.disableSelectionBehavior();
+                }
+                const wantSmallMarkers = q?.answer === 'country';
+                if (!wantSmallMarkers && !this.smallMarkersHidden) {
+                    this.smallMarkersHidden = true;
+                    globe.hideAllSmallCountryMarkers();
+                } else if (wantSmallMarkers && this.smallMarkersHidden) {
+                    this.smallMarkersHidden = false;
+                    globe.showAllSmallCountryMarkers();
+                }
 
                 // Update debug panel if visible
                 if (this.quizDebugManager && import.meta.env.DEV) {

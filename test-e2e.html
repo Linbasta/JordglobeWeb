@@ -109,7 +109,8 @@
                     const questions = countries.map(iso2 => {
                         const country = controller.getGlobe().getCountryByISO2(iso2);
                         return {
-                            type: 'country',
+                            present: 'text',
+                            answer: 'country',
                             countryISO2: iso2,
                             prompt: country?.name || iso2
                         };

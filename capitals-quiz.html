@@ -6,147 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capitals Quiz Game</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            width: 100%;
-            height: 100vh;
-            background-color: #000;
-        }
-
-        body.placing-mode {
-            cursor: none;
-        }
-
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            touch-action: none;
-        }
-
-        #info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #333;
-            font-family: Arial, sans-serif;
-            font-size: 18px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 100;
-            max-width: 300px;
-        }
-
-        #stats {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #333;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 100;
-            line-height: 1.6;
-        }
-
-        #stats p {
-            margin: 5px 0;
-        }
-
-        .stat-label {
-            font-weight: bold;
-        }
+        body { margin: 0; overflow: hidden; }
+        body.placing-mode { cursor: none; }
+        #renderCanvas { width: 100%; height: 100vh; touch-action: none; }
     </style>
 </head>
 
 <body>
     <canvas id="renderCanvas"></canvas>
-
-    <div id="stats">
-        <p><span class="stat-label">Score:</span> <span id="score">0/0</span></p>
-        <p><span class="stat-label">Total:</span> <span id="total">29</span></p>
-    </div>
-
-
     <script type="module">
-        import { SoloGameController } from '/src/solo/solo-game-controller.ts';
-        import { loadConfig } from '/src/shared/config/global-config.ts';
+        import { startQuizGame } from '/src/solo/start-quiz-game.ts';
         import { EUROPEAN_CAPITALS } from '/src/capitals/capitals-data.ts';
-        import { getScore, getTotal } from '/src/shared/quiz/quiz-runner.ts';
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            // Load configuration first
-            await loadConfig();
-
-            // Optionally load inspector in dev
-            if (import.meta.env.DEV) {
-                await import('@babylonjs/core/Debug/debugLayer');
-                await import('@babylonjs/inspector');
+        startQuizGame({
+            title: 'Loading Capitals Quiz',
+            questions: EUROPEAN_CAPITALS.map(capital => ({
+                present: 'text',
+                answer: 'location-alternatives',
+                lat: capital.lat,
+                lng: capital.lon,
+                prompt: capital.name,
+            })),
+            onGameComplete: (score, total) => {
+                alert(`Capitals Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
             }
-
-            // Create the Capitals Quiz
-            const game = new SoloGameController('renderCanvas', {
-                showCountryLabel: true,
-                showHoverLabel: false,
-                onReady: (controller) => {
-                    console.log('Capitals quiz ready!');
-
-                    // Convert capitals to LocationQuestion objects
-                    const questions = EUROPEAN_CAPITALS.map(capital => ({
-                        type: 'location',
-                        lat: capital.lat,
-                        lng: capital.lon,
-                        prompt: capital.name
-                    }));
-
-                    // Shuffle questions
-                    questions.sort(() => Math.random() - 0.5);
-
-                    // Start the quiz
-                    controller.startQuizGame({
-                        questions,
-                        revealCorrectOnWrong: true,
-                        removeOnWrong: false,
-                        onQuestionChanged: (prompt, index, total) => {
-                            // Update progress in score display
-                            document.getElementById('total').textContent = `${total}`;
-                        },
-                        onQuestionTypeChanged: (questionType) => {
-                            // Enable selection behavior only for country questions
-                            if (questionType === 'country') {
-                                controller.enableSelectionBehavior();
-                            } else {
-                                controller.disableSelectionBehavior();
-                            }
-                        },
-                        onCorrectAnswer: (prompt) => {
-                            console.log(`✓ Correct: ${prompt}`);
-                        },
-                        onWrongAnswer: (wrongCountry, correctCountry) => {
-                            console.log(`✗ Wrong`);
-                        },
-                        onGameComplete: (score, total) => {
-                            console.log(`Quiz complete! Score: ${score}/${total}`);
-                            document.getElementById('score').textContent = `${score}/${total} - Complete!`;
-                        }
-                    });
-
-                    // Update score display every frame
-                    const globe = controller.getGlobe();
-                    globe.getScene().onBeforeRenderObservable.add(() => {
-                        const score = getScore();
-                        const total = getTotal();
-                        document.getElementById('score').textContent = `${score}/${total}`;
-                    });
-                }
-            });
-
-            // Expose for debugging
-            window.game = game;
         });
     </script>
 </body>

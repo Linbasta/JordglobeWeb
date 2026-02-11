@@ -16,12 +16,14 @@ import {
     tickQuiz,
     submitCountryAnswer,
     getScore,
+    getWrongCount,
     getTotal,
     isDone,
     isWaiting,
     getCurrentStep,
     getQuestion
 } from './quiz-runner'
+import { createScoreHUD, updateScoreHUD, disposeScoreHUD } from '../ui/score-hud'
 
 /**
  * Quiz configuration
@@ -34,7 +36,6 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number) => void
-    onQuestionTypeChanged?: (questionType: 'country' | 'location' | 'alternative' | 'video') => void
 }
 
 /**
@@ -60,6 +61,8 @@ export class QuizUIAdapter {
         this.active = true
         this.lastShownQuestionIndex = -1
 
+        createScoreHUD()
+
         // Initialize the quiz runner
         startQuiz(
             config.questions,
@@ -82,6 +85,8 @@ export class QuizUIAdapter {
         if (!this.active) return false
 
         const stillActive = tickQuiz(now)
+
+        updateScoreHUD(getScore(), getWrongCount(), getTotal())
 
         if (!stillActive) {
             // Quiz completed
@@ -134,6 +139,7 @@ export class QuizUIAdapter {
         this.active = false
         this.config = null
         this.lastShownQuestionIndex = -1
+        disposeScoreHUD()
     }
 
     // ========================================================================
@@ -158,7 +164,7 @@ export class QuizUIAdapter {
                 console.log(`[Quiz UI] Showing question ${questionIndex}: ${question?.prompt}`)
 
                 // Video questions show the prompt inside the video overlay — skip the card
-                if (question && question.type !== 'video' && this.countryLabelUI) {
+                if (question && question.present !== 'video' && this.countryLabelUI) {
                     this.countryLabelUI.show(question.prompt)
                 }
 
@@ -169,11 +175,6 @@ export class QuizUIAdapter {
                         questionIndex + 1,
                         total
                     )
-                }
-
-                // Notify about question type change
-                if (question && this.config?.onQuestionTypeChanged) {
-                    this.config.onQuestionTypeChanged(question.type)
                 }
             }
         }

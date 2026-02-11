@@ -20,7 +20,7 @@ import {
 } from '../animation/country-animations'
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
-import { latLonToSphere } from '../../earth-globe/geo-math'
+import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
 import { getConfig } from '../config/global-config'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
@@ -38,6 +38,7 @@ let stepStartTime = 0
 let waiting = false           // True when blocked on user input
 let score = 0
 let wrongCount = 0
+let distances: number[] = []  // km per question (location-guess)
 let done = false
 
 // Input buffer (set by caller before tick)
@@ -88,6 +89,7 @@ export function startQuiz(
     waiting = false
     score = 0
     wrongCount = 0
+    distances = []
     done = false
     pendingAnswer = null
     hoveredMarkerId = -1
@@ -101,8 +103,8 @@ export function startQuiz(
 
     // Resolve countries from questions
     for (const q of questions) {
-        if (q.type === 'country' || q.type === 'video') {
-            const country = globe.getCountryByISO2(q.countryISO2)
+        if (q.answer === 'country') {
+            const country = globe.getCountryByISO2(q.countryISO2!)
             if (country) {
                 gameCountries.push(country)
             }
@@ -190,12 +192,12 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.ShowAllLocationMarkers: {
-            // Create markers for all location questions
+            // Create markers for location-alternatives questions
             if (globe) {
-                const g = globe // Capture for closure
+                const g = globe
                 questions.forEach((q, index) => {
-                    if (q.type === 'location') {
-                        const markerId = g.acquireMarker(q.lat, q.lng)
+                    if (q.answer === 'location-alternatives') {
+                        const markerId = g.acquireMarker(q.lat!, q.lng!)
                         if (markerId !== -1) {
                             locationMarkers.set(index, markerId)
                         }
@@ -224,8 +226,8 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.ShowVideo: {
             const q = questions[step.questionIndex]
-            if (q.type === 'video') {
-                showVideoOverlay(q.youtubeId, q.prompt, q.startTime, q.endTime)
+            if (q.present === 'video') {
+                showVideoOverlay(q.youtubeId!, q.prompt, q.startTime, q.endTime)
             }
             advance(now)
             break
@@ -257,14 +259,14 @@ export function tickQuiz(now: number): boolean {
                 const qi = findCurrentQuestionIndex()
                 const q = questions[qi]
 
-                if (q.type === 'country' || q.type === 'video') {
+                if (q.answer === 'country') {
                     // Ignore ocean clicks (no country selected)
                     if (pendingAnswer.countryIndex === -1) {
                         pendingAnswer = null
                         break
                     }
                     waiting = false
-                    const correctCountry = globe.getCountryByISO2(q.countryISO2)
+                    const correctCountry = globe.getCountryByISO2(q.countryISO2!)
                     if (!correctCountry) break
                     const isCorrect = pendingAnswer.countryIndex === correctCountry.index
                     if (isCorrect) { score++ } else { wrongCount++ }
@@ -273,7 +275,23 @@ export function tickQuiz(now: number): boolean {
                     pendingAnswer = null
                     advance(now)
 
-                } else if (q.type === 'location') {
+                } else if (q.answer === 'location-guess') {
+                    // Free-form click — accept any click, measure distance
+                    const clickLatLon = pendingAnswer.latLon
+                    const distKm = haversineDistance(
+                        clickLatLon.lat, clickLatLon.lng,
+                        q.lat!, q.lng!
+                    )
+                    distances.push(distKm)
+                    console.log(`[Quiz] location-guess: ${Math.round(distKm)} km from correct answer`)
+                    waiting = false
+                    const postSteps = generateAlternativeAnswerSteps(true, qi)
+                    steps.splice(pc + 1, 0, ...postSteps)
+                    pendingAnswer = null
+                    advance(now)
+
+                } else if (q.answer === 'location-alternatives') {
+                    // Marker-based hit detection
                     const clickLatLon = pendingAnswer.latLon
                     const clickPoint = latLonToSphere(clickLatLon.lat, clickLatLon.lng, 0)
                     const camera = globe.getCamera()
@@ -288,8 +306,8 @@ export function tickQuiz(now: number): boolean {
                     let closestDistSqr = Infinity
                     for (const [questionIndex, markerId] of locationMarkers) {
                         const mq = questions[questionIndex]
-                        if (mq.type !== 'location') continue
-                        const markerPoint = latLonToSphere(mq.lat, mq.lng, 0)
+                        if (mq.answer !== 'location-alternatives') continue
+                        const markerPoint = latLonToSphere(mq.lat!, mq.lng!, 0)
                         const distSqr = Vector3.DistanceSquared(clickPoint, markerPoint)
                         if (distSqr <= hitRadiusSqr && distSqr < closestDistSqr) {
                             closestDistSqr = distSqr
@@ -310,10 +328,10 @@ export function tickQuiz(now: number): boolean {
                         const correctMarkerId = locationMarkers.get(qi) ?? -1
                         const hitQ = questions[hitQuestionIndex]
                         const correctQ = questions[qi]
-                        const wrongLat = hitQ.type === 'location' ? hitQ.lat : 0
-                        const wrongLng = hitQ.type === 'location' ? hitQ.lng : 0
-                        const correctLat = correctQ.type === 'location' ? correctQ.lat : 0
-                        const correctLng = correctQ.type === 'location' ? correctQ.lng : 0
+                        const wrongLat = hitQ.answer === 'location-alternatives' ? hitQ.lat! : 0
+                        const wrongLng = hitQ.answer === 'location-alternatives' ? hitQ.lng! : 0
+                        const correctLat = correctQ.answer === 'location-alternatives' ? correctQ.lat! : 0
+                        const correctLng = correctQ.answer === 'location-alternatives' ? correctQ.lng! : 0
                         const postSteps = generateLocationAnswerSteps(
                             isCorrect, correctMarkerId, hitMarkerId, revealOnWrong,
                             wrongLat, wrongLng, correctLat, correctLng
@@ -323,35 +341,6 @@ export function tickQuiz(now: number): boolean {
                         advance(now)
                     }
                 }
-            }
-            break
-        }
-
-        case StepOp.WaitAlternativeAnswer: {
-            waiting = true
-
-            if (pendingAnswer && 'optionIndex' in pendingAnswer) {
-                waiting = false
-
-                const qi = findCurrentQuestionIndex()
-                const q = questions[qi]
-
-                if (q.type === 'alternative') {
-                    const isCorrect = pendingAnswer.optionIndex === q.correctIndex
-
-                    if (isCorrect) {
-                        score++
-                    } else {
-                        wrongCount++
-                    }
-
-                    // Generate post-answer steps
-                    const postSteps = generateAlternativeAnswerSteps(isCorrect, qi)
-                    steps.splice(pc + 1, 0, ...postSteps)
-                }
-
-                pendingAnswer = null
-                advance(now)
             }
             break
         }
@@ -481,6 +470,7 @@ export function tickQuiz(now: number): boolean {
 
 export function getScore() { return score }
 export function getWrongCount() { return wrongCount }
+export function getDistances() { return distances }
 export function getTotal() { return questions.length }
 export function isDone() { return done }
 export function isWaiting() { return waiting }
@@ -502,7 +492,7 @@ export function updateLocationHover(lat: number, lon: number): void {
     // Only applies to location questions
     const qi = findCurrentQuestionIndex()
     const q = questions[qi]
-    if (!q || q.type !== 'location') return
+    if (!q || q.answer !== 'location-alternatives') return
 
     const clickPoint = latLonToSphere(lat, lon, 0)
     const camera = globe.getCamera()
@@ -516,8 +506,8 @@ export function updateLocationHover(lat: number, lon: number): void {
     let closestDistSqr = Infinity
     for (const [questionIndex, markerId] of locationMarkers) {
         const mq = questions[questionIndex]
-        if (mq.type !== 'location') continue
-        const markerPoint = latLonToSphere(mq.lat, mq.lng, 0)
+        if (mq.answer !== 'location-alternatives') continue
+        const markerPoint = latLonToSphere(mq.lat!, mq.lng!, 0)
         const distSqr = Vector3.DistanceSquared(clickPoint, markerPoint)
         if (distSqr <= hitRadiusSqr && distSqr < closestDistSqr) {
             closestDistSqr = distSqr

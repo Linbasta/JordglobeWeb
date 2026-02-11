@@ -20,22 +20,23 @@ import { StepOp } from './quiz-types'
 export function generateQuizSteps(questions: Question[]): Step[] {
     const steps: Step[] = []
 
-    // Check question types present
-    const hasLocationQuestions = questions.some(q => q.type === "location")
-    const hasCountryQuestions = questions.some(q => q.type === "country")
+    // Check answer types present
+    const hasLocationAlternatives = questions.some(q => q.answer === "location-alternatives")
+    const hasCountryQuestions = questions.some(q => q.answer === "country")
 
-    // Initial setup
-    if (hasLocationQuestions) {
-        // Location quiz: show all markers, then frame them
+    // Initial setup — markers and countries are mutually exclusive
+    if (hasLocationAlternatives) {
+        // Show markers as clickable choices, frame them
         steps.push({ op: StepOp.ShowAllLocationMarkers })
         const locationPoints = questions
-            .filter(q => q.type === 'location')
-            .map(q => ({ lat: q.lat, lon: q.lng }))
+            .filter(q => q.answer === 'location-alternatives')
+            .map(q => ({ lat: q.lat!, lon: q.lng! }))
         steps.push({ op: StepOp.FrameLocations, points: locationPoints, duration: 800 })
     } else if (hasCountryQuestions) {
-        // Country quiz: disable non-game countries (video questions keep all countries enabled)
+        // Country quiz: disable non-game countries
         steps.push({ op: StepOp.DisableNonGameCountries })
     }
+    // location-guess: no setup needed — user clicks anywhere
 
     // Generate steps for each question
     for (let i = 0; i < questions.length; i++) {
@@ -44,15 +45,15 @@ export function generateQuizSteps(questions: Question[]): Step[] {
         // Show question UI
         steps.push({ op: StepOp.ShowQuestion, questionIndex: i })
 
-        if (q.type === "video") {
-            // Video plays while user places pin. HideVideo runs after answer steps are spliced in.
+        if (q.present === "video") {
             steps.push({ op: StepOp.ShowVideo, questionIndex: i })
-            steps.push({ op: StepOp.WaitPinPlacement })
+        }
+
+        // All current answer types click the globe
+        steps.push({ op: StepOp.WaitPinPlacement })
+
+        if (q.present === "video") {
             steps.push({ op: StepOp.HideVideo })
-        } else if (q.type === "country" || q.type === "location") {
-            steps.push({ op: StepOp.WaitPinPlacement })
-        } else {
-            steps.push({ op: StepOp.WaitAlternativeAnswer })
         }
 
         // Post-answer steps will be spliced in by the runner

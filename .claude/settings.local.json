@@ -59,7 +59,9 @@
       "Bash(git -C /Users/oloflandin/Programming/BabylonTest log --oneline --all)",
       "Bash(git -C /Users/oloflandin/Programming/BabylonTest show --stat c549465)",
       "Bash(lsof:*)",
-      "Bash(ps:*)"
+      "Bash(ps:*)",
+      "Bash(git checkout:*)",
+      "Bash(git status:*)"
     ],
     "deny": [],
     "ask": []
