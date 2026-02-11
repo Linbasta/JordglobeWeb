@@ -1,0 +1,1290 @@
+{
+  "medals": [
+    {
+      "id": 0,
+      "name": "Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "ZA",
+        "NG",
+        "EG",
+        "KE",
+        "TZ",
+        "ET",
+        "CD",
+        "MA",
+        "DZ",
+        "SD",
+        "UG",
+        "TN",
+        "GH",
+        "ZW",
+        "MG",
+        "CI",
+        "SO",
+        "CM",
+        "BF",
+        "MZ",
+        "MW",
+        "ZM",
+        "ML",
+        "SN",
+        "AO",
+        "TD",
+        "NE",
+        "MU",
+        "RW",
+        "NA",
+        "BI",
+        "LR",
+        "ER",
+        "SL",
+        "TG",
+        "LY",
+        "CF",
+        "MR",
+        "CG",
+        "SS",
+        "BJ",
+        "BW",
+        "LS",
+        "GM",
+        "GA",
+        "GW",
+        "GN",
+        "GQ",
+        "SZ",
+        "DJ",
+        "CV",
+        "KM",
+        "ST",
+        "SC"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Northern Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "DZ",
+        "EG",
+        "LY",
+        "MA",
+        "MR",
+        "SD",
+        "TN"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Eastern Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "KM",
+        "DJ",
+        "ER",
+        "ET",
+        "KE",
+        "MG",
+        "MW",
+        "MU",
+        "MZ",
+        "SC",
+        "SO",
+        "SS",
+        "UG",
+        "TZ",
+        "ZM",
+        "ZW"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Middle Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "BI",
+        "CD",
+        "RW",
+        "AO",
+        "CF",
+        "TD",
+        "CG",
+        "GQ",
+        "GA",
+        "ST",
+        "CM"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Southern Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "BW",
+        "LS",
+        "NA",
+        "ZA",
+        "SZ"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Western Africa Countries",
+      "type": "countries",
+      "questionIds": [
+        "BJ",
+        "BF",
+        "CV",
+        "CI",
+        "GM",
+        "GH",
+        "GN",
+        "GW",
+        "LR",
+        "ML",
+        "NE",
+        "NG",
+        "SN",
+        "SL",
+        "TG"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Africa 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "EG",
+        "ZA",
+        "NG",
+        "MA",
+        "MG"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "CN",
+        "IN",
+        "JP",
+        "RU",
+        "ID",
+        "PK",
+        "BD",
+        "KR",
+        "TR",
+        "IR",
+        "VN",
+        "TH",
+        "MM",
+        "PH",
+        "IL",
+        "IQ",
+        "AF",
+        "MY",
+        "NP",
+        "SA",
+        "UZ",
+        "KP",
+        "TW",
+        "LB",
+        "KZ",
+        "SY",
+        "KH",
+        "AZ",
+        "SG",
+        "AE",
+        "YE",
+        "LK",
+        "JO",
+        "TJ",
+        "LA",
+        "KG",
+        "TM",
+        "PS",
+        "MN",
+        "OM",
+        "KW",
+        "BH",
+        "AM",
+        "QA",
+        "TL",
+        "BN",
+        "BT",
+        "MV"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Central Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "KZ",
+        "KG",
+        "TJ",
+        "TM",
+        "UZ"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Eastern Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "CN",
+        "JP",
+        "KP",
+        "KR",
+        "MN",
+        "TW"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Southeastern Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "BN",
+        "KH",
+        "ID",
+        "LA",
+        "MY",
+        "MM",
+        "PH",
+        "SG",
+        "TH",
+        "TL",
+        "VN"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Southern Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "AF",
+        "BD",
+        "BT",
+        "IN",
+        "IR",
+        "MV",
+        "NP",
+        "PK",
+        "LK"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Western Asia Countries",
+      "type": "countries",
+      "questionIds": [
+        "AM",
+        "AZ",
+        "BH",
+        "IQ",
+        "IL",
+        "JO",
+        "KW",
+        "LB",
+        "OM",
+        "PS",
+        "QA",
+        "SA",
+        "SY",
+        "TR",
+        "AE",
+        "YE"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Asia 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "CN",
+        "IN",
+        "RU",
+        "JP",
+        "SA"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Europe Countries",
+      "type": "countries",
+      "questionIds": [
+        "DE",
+        "FR",
+        "GB",
+        "IT",
+        "ES",
+        "GR",
+        "PL",
+        "PT",
+        "NL",
+        "BE",
+        "AT",
+        "DK",
+        "SE",
+        "IE",
+        "NO",
+        "FI",
+        "UA",
+        "CH",
+        "CZ",
+        "HU",
+        "HR",
+        "RO",
+        "SK",
+        "RS",
+        "BG",
+        "IS",
+        "EE",
+        "BA",
+        "MT",
+        "LT",
+        "GE",
+        "MK",
+        "SI",
+        "LV",
+        "XK",
+        "VA",
+        "CY",
+        "LU",
+        "AL",
+        "MC",
+        "AD",
+        "MD",
+        "LI",
+        "ME",
+        "BY",
+        "SM"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Europe Sights",
+      "type": "locations",
+      "questionIds": [
+        "a41c96d8-3bab-11ec-997c-784f43691740",
+        "a117d89e-3bab-11ec-997c-784f43691740",
+        "74a23576-a6b7-11ec-8571-a860b6166432",
+        "a06ac564-3bab-11ec-997c-784f43691740",
+        "ad70c932-56c9-11ec-8661-838d89a7781f",
+        "1adc1a78-52a4-11ec-a49f-bbee89b30a15",
+        "dc07ef16-56cc-11ec-8661-838d89a7781f",
+        "a3042fc4-9487-11ec-8c03-8fa79ee10251"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Eastern Europe Countries",
+      "type": "countries",
+      "questionIds": [
+        "BY",
+        "BG",
+        "CZ",
+        "HU",
+        "MD",
+        "PL",
+        "RO",
+        "SK",
+        "UA",
+        "GE",
+        "CY"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Northern Europe Countries",
+      "type": "countries",
+      "questionIds": [
+        "DK",
+        "EE",
+        "FI",
+        "IS",
+        "IE",
+        "LV",
+        "LT",
+        "NO",
+        "SE",
+        "GB"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Southern Europe Countries",
+      "type": "countries",
+      "questionIds": [
+        "AL",
+        "AD",
+        "BA",
+        "HR",
+        "GR",
+        "IT",
+        "MT",
+        "ME",
+        "PT",
+        "SM",
+        "RS",
+        "SI",
+        "ES",
+        "VA",
+        "MK",
+        "XK"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Western Europe Countries",
+      "type": "countries",
+      "questionIds": [
+        "AT",
+        "BE",
+        "FR",
+        "DE",
+        "LI",
+        "LU",
+        "MC",
+        "NL",
+        "CH"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Europe 10 Countries",
+      "type": "countries",
+      "questionIds": [
+        "GB",
+        "FR",
+        "DE",
+        "IT",
+        "ES",
+        "SE",
+        "FI",
+        "NO",
+        "GR",
+        "DK"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Europe 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "GB",
+        "FR",
+        "DE",
+        "IT",
+        "SE"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "North America Countries",
+      "type": "countries",
+      "questionIds": [
+        "US",
+        "MX",
+        "CA",
+        "JM",
+        "CU",
+        "HT",
+        "DO",
+        "GT",
+        "SV",
+        "NI",
+        "CR",
+        "PA",
+        "BS",
+        "HN",
+        "TT",
+        "LC",
+        "AG",
+        "KN",
+        "BZ",
+        "BB",
+        "GD",
+        "DM",
+        "VC"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Central America Countries",
+      "type": "countries",
+      "questionIds": [
+        "BZ",
+        "CR",
+        "SV",
+        "GT",
+        "HN",
+        "NI",
+        "PA",
+        "MX"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Carribean Countries",
+      "type": "countries",
+      "questionIds": [
+        "AG",
+        "BS",
+        "BB",
+        "CU",
+        "DM",
+        "DO",
+        "GD",
+        "HT",
+        "JM",
+        "KN",
+        "LC",
+        "VC",
+        "TT"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "North America 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "US",
+        "CA",
+        "MX",
+        "CU",
+        "JM"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "South America Countries",
+      "type": "countries",
+      "questionIds": [
+        "BR",
+        "CO",
+        "AR",
+        "PE",
+        "VE",
+        "CL",
+        "EC",
+        "BO",
+        "PY",
+        "UY",
+        "GY",
+        "SR",
+        "GF"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "South America 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "BR",
+        "AR",
+        "CO",
+        "CL",
+        "PE"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Oceania Countries",
+      "type": "countries",
+      "questionIds": [
+        "AU",
+        "PG",
+        "NZ",
+        "FJ",
+        "SB",
+        "VU",
+        "WS",
+        "KI",
+        "FM",
+        "TO",
+        "TV",
+        "NR",
+        "MH",
+        "PW"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Melanesia Countries",
+      "type": "countries",
+      "questionIds": [
+        "FJ",
+        "PG",
+        "SB",
+        "VU"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Micronesia Countries",
+      "type": "countries",
+      "questionIds": [
+        "FM",
+        "KI",
+        "MH",
+        "NR",
+        "PW"
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Polynesia Countries",
+      "type": "countries",
+      "questionIds": [
+        "TO",
+        "TV",
+        "WS"
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Oceania 5 Countries",
+      "type": "countries",
+      "questionIds": [
+        "AU",
+        "NZ",
+        "PG",
+        "SB",
+        "FJ"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "The World Countries",
+      "type": "countries",
+      "questionIds": [
+        "ZA",
+        "NG",
+        "EG",
+        "KE",
+        "TZ",
+        "ET",
+        "CD",
+        "MA",
+        "DZ",
+        "SD",
+        "UG",
+        "TN",
+        "GH",
+        "ZW",
+        "MG",
+        "CI",
+        "SO",
+        "CM",
+        "BF",
+        "MZ",
+        "MW",
+        "ZM",
+        "ML",
+        "SN",
+        "AO",
+        "TD",
+        "NE",
+        "MU",
+        "RW",
+        "NA",
+        "BI",
+        "LR",
+        "ER",
+        "SL",
+        "TG",
+        "LY",
+        "CF",
+        "MR",
+        "CG",
+        "SS",
+        "BJ",
+        "BW",
+        "LS",
+        "GM",
+        "GA",
+        "GW",
+        "GN",
+        "GQ",
+        "SZ",
+        "DJ",
+        "CV",
+        "KM",
+        "ST",
+        "SC",
+        "CN",
+        "IN",
+        "JP",
+        "RU",
+        "ID",
+        "PK",
+        "BD",
+        "KR",
+        "TR",
+        "IR",
+        "VN",
+        "TH",
+        "MM",
+        "PH",
+        "IL",
+        "IQ",
+        "AF",
+        "MY",
+        "NP",
+        "SA",
+        "UZ",
+        "KP",
+        "TW",
+        "LB",
+        "KZ",
+        "SY",
+        "KH",
+        "AZ",
+        "SG",
+        "AE",
+        "YE",
+        "LK",
+        "JO",
+        "TJ",
+        "LA",
+        "KG",
+        "TM",
+        "PS",
+        "MN",
+        "OM",
+        "KW",
+        "BH",
+        "AM",
+        "QA",
+        "TL",
+        "BN",
+        "BT",
+        "MV",
+        "DE",
+        "FR",
+        "GB",
+        "IT",
+        "ES",
+        "GR",
+        "PL",
+        "PT",
+        "NL",
+        "BE",
+        "AT",
+        "DK",
+        "SE",
+        "IE",
+        "NO",
+        "FI",
+        "UA",
+        "CH",
+        "CZ",
+        "HU",
+        "HR",
+        "RO",
+        "SK",
+        "RS",
+        "BG",
+        "IS",
+        "EE",
+        "BA",
+        "MT",
+        "LT",
+        "GE",
+        "MK",
+        "SI",
+        "LV",
+        "XK",
+        "VA",
+        "CY",
+        "LU",
+        "AL",
+        "MC",
+        "AD",
+        "MD",
+        "LI",
+        "ME",
+        "BY",
+        "SM",
+        "US",
+        "MX",
+        "CA",
+        "JM",
+        "CU",
+        "HT",
+        "DO",
+        "GT",
+        "SV",
+        "NI",
+        "CR",
+        "PA",
+        "BS",
+        "HN",
+        "TT",
+        "LC",
+        "AG",
+        "KN",
+        "BZ",
+        "BB",
+        "GD",
+        "DM",
+        "VC",
+        "BR",
+        "CO",
+        "AR",
+        "PE",
+        "VE",
+        "CL",
+        "EC",
+        "BO",
+        "PY",
+        "UY",
+        "GY",
+        "SR",
+        "GF",
+        "AU",
+        "PG",
+        "NZ",
+        "FJ",
+        "SB",
+        "VU",
+        "WS",
+        "KI",
+        "FM",
+        "TO",
+        "TV",
+        "NR",
+        "MH",
+        "PW"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "The World Sights",
+      "type": "locations",
+      "questionIds": [
+        "a58566bc-3bab-11ec-997c-784f43691740",
+        "9decd264-3bab-11ec-997c-784f43691740",
+        "13b1f7d4-a6d4-11ec-9a05-3d350d28acaf",
+        "a0284ec8-3bab-11ec-997c-784f43691740",
+        "beef3076-52b0-11ec-8c70-7f64b02fdad6",
+        "ad70c932-56c9-11ec-8661-838d89a7781f",
+        "a49d3162-3bab-11ec-997c-784f43691740",
+        "9deb4d7c-3bab-11ec-997c-784f43691740",
+        "9f5e6f90-3bab-11ec-997c-784f43691740",
+        "a117d89e-3bab-11ec-997c-784f43691740",
+        "dc07ef16-56cc-11ec-8661-838d89a7781f",
+        "a49583fe-3bab-11ec-997c-784f43691740",
+        "9d68167a-52b0-11ec-8c70-7f64b02fdad6",
+        "a1ab987c-3bab-11ec-997c-784f43691740",
+        "a276266e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Dependent territories",
+      "type": "countries",
+      "questionIds": [
+        "AI",
+        "AS",
+        "AW",
+        "AX",
+        "BL",
+        "BM",
+        "BQ",
+        "BV",
+        "CC",
+        "CK",
+        "CW",
+        "CX",
+        "FK",
+        "FO",
+        "GF",
+        "GG",
+        "GI",
+        "GL",
+        "GP",
+        "GS",
+        "GU",
+        "HK",
+        "HM",
+        "IM",
+        "IO",
+        "JE",
+        "KY",
+        "MF",
+        "MO",
+        "MP",
+        "MQ",
+        "MS",
+        "NC",
+        "NF",
+        "NU",
+        "PF",
+        "PM",
+        "PN",
+        "PR",
+        "RE",
+        "SH",
+        "SJ",
+        "SX",
+        "TC",
+        "TF",
+        "TK",
+        "UM",
+        "VG",
+        "VI",
+        "WF",
+        "YT"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Atlantic dependent territories",
+      "type": "countries",
+      "questionIds": [
+        "AX",
+        "BM",
+        "FK",
+        "FO",
+        "GI",
+        "GL",
+        "GG",
+        "IM",
+        "JE",
+        "PM",
+        "SH",
+        "SJ",
+        "BV",
+        "GS"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Carribean dependent territories",
+      "type": "countries",
+      "questionIds": [
+        "AI",
+        "AW",
+        "BL",
+        "BQ",
+        "CW",
+        "GP",
+        "KY",
+        "MF",
+        "MS",
+        "MQ",
+        "PR",
+        "SX",
+        "TC",
+        "VG",
+        "VI"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Pacific dependent territories",
+      "type": "countries",
+      "questionIds": [
+        "AS",
+        "CK",
+        "GU",
+        "MP",
+        "NC",
+        "NF",
+        "NU",
+        "PF",
+        "PN",
+        "TK",
+        "UM",
+        "WF"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Indian Ocean dependent territories",
+      "type": "countries",
+      "questionIds": [
+        "CC",
+        "CX",
+        "HM",
+        "IO",
+        "RE",
+        "TF",
+        "YT"
+      ]
+    }
+  ],
+  "menu": [
+    {
+      "name": "NORTH AMERICA",
+      "children": [
+        {
+          "name": "North America Countries",
+          "medalId": 22
+        },
+        {
+          "name": "CENTRAL AMERICA",
+          "children": [
+            {
+              "name": "Central America Countries",
+              "medalId": 23
+            }
+          ]
+        },
+        {
+          "name": "CARRIBEAN",
+          "children": [
+            {
+              "name": "Carribean Countries",
+              "medalId": 24
+            },
+            {
+              "name": "Carribean dependent territories",
+              "medalId": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SOUTH AMERICA",
+      "children": [
+        {
+          "name": "South America Countries",
+          "medalId": 26
+        }
+      ]
+    },
+    {
+      "name": "EUROPE",
+      "children": [
+        {
+          "name": "Europe Countries",
+          "medalId": 14
+        },
+        {
+          "name": "Europe Sights",
+          "medalId": 15
+        },
+        {
+          "name": "NORTHERN EUROPE",
+          "children": [
+            {
+              "name": "Northern Europe Countries",
+              "medalId": 17
+            }
+          ]
+        },
+        {
+          "name": "WESTERN EUROPE",
+          "children": [
+            {
+              "name": "Western Europe Countries",
+              "medalId": 19
+            }
+          ]
+        },
+        {
+          "name": "EASTERN EUROPE",
+          "children": [
+            {
+              "name": "Eastern Europe Countries",
+              "medalId": 16
+            }
+          ]
+        },
+        {
+          "name": "SOUTHERN EUROPE",
+          "children": [
+            {
+              "name": "Southern Europe Countries",
+              "medalId": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AFRICA",
+      "children": [
+        {
+          "name": "Africa Countries",
+          "medalId": 0
+        },
+        {
+          "name": "NORTHERN AFRICA",
+          "children": [
+            {
+              "name": "Northern Africa Countries",
+              "medalId": 1
+            }
+          ]
+        },
+        {
+          "name": "WESTERN AFRICA",
+          "children": [
+            {
+              "name": "Western Africa Countries",
+              "medalId": 5
+            }
+          ]
+        },
+        {
+          "name": "MIDDLE AFRICA",
+          "children": [
+            {
+              "name": "Middle Africa Countries",
+              "medalId": 3
+            }
+          ]
+        },
+        {
+          "name": "EASTERN AFRICA",
+          "children": [
+            {
+              "name": "Eastern Africa Countries",
+              "medalId": 2
+            }
+          ]
+        },
+        {
+          "name": "SOUTHERN AFRICA",
+          "children": [
+            {
+              "name": "Southern Africa Countries",
+              "medalId": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ASIA",
+      "children": [
+        {
+          "name": "Asia Countries",
+          "medalId": 7
+        },
+        {
+          "name": "CENTRAL ASIA",
+          "children": [
+            {
+              "name": "Central Asia Countries",
+              "medalId": 8
+            }
+          ]
+        },
+        {
+          "name": "EASTERN ASIA",
+          "children": [
+            {
+              "name": "Eastern Asia Countries",
+              "medalId": 9
+            }
+          ]
+        },
+        {
+          "name": "WESTERN ASIA",
+          "children": [
+            {
+              "name": "Western Asia Countries",
+              "medalId": 12
+            }
+          ]
+        },
+        {
+          "name": "SOUTHERN ASIA",
+          "children": [
+            {
+              "name": "Southern Asia Countries",
+              "medalId": 11
+            }
+          ]
+        },
+        {
+          "name": "SOUTHEASTERN ASIA",
+          "children": [
+            {
+              "name": "Southeastern Asia Countries",
+              "medalId": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OCEANIA",
+      "children": [
+        {
+          "name": "Oceania Countries",
+          "medalId": 28
+        },
+        {
+          "name": "MICRONESIA",
+          "children": [
+            {
+              "name": "Micronesia Countries",
+              "medalId": 30
+            }
+          ]
+        },
+        {
+          "name": "MELANESIA",
+          "children": [
+            {
+              "name": "Melanesia Countries",
+              "medalId": 29
+            }
+          ]
+        },
+        {
+          "name": "POLYNESIA",
+          "children": [
+            {
+              "name": "Polynesia Countries",
+              "medalId": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "THE WORLD",
+      "children": [
+        {
+          "name": "The World Countries",
+          "medalId": 33
+        },
+        {
+          "name": "The World Sights",
+          "medalId": 34
+        },
+        {
+          "name": "Dependent territories",
+          "medalId": 35
+        },
+        {
+          "name": "Atlantic dependent territories",
+          "medalId": 36
+        },
+        {
+          "name": "Indian Ocean dependent territories",
+          "medalId": 39
+        },
+        {
+          "name": "Pacific dependent territories",
+          "medalId": 38
+        },
+        {
+          "name": "Carribean dependent territories",
+          "medalId": 37
+        }
+      ]
+    }
+  ]
+}

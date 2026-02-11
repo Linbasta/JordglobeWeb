@@ -21,6 +21,7 @@
     "generate-borders": "node scripts/generate-borders.mjs",
     "generate-segments": "tsx scripts/generate-segments.ts",
     "enrich-countries": "tsx scripts/enrich-countries.ts",
+    "convert-medals": "tsx scripts/convert-medals.ts",
     "test:e2e": "npx playwright test",
     "test:e2e:headed": "npx playwright test --headed",
     "deploy": "scripts/gcp-staging/deploy.sh",

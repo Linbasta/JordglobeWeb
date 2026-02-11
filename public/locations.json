@@ -1,0 +1,102 @@
+{
+  "a41c96d8-3bab-11ec-997c-784f43691740": {
+    "name": "Matterhorn",
+    "lat": 45.97638889,
+    "lng": 7.65861111
+  },
+  "a117d89e-3bab-11ec-997c-784f43691740": {
+    "name": "Leaning Tower of Pisa",
+    "lat": 43.723056,
+    "lng": 10.396389
+  },
+  "74a23576-a6b7-11ec-8571-a860b6166432": {
+    "name": "Sagrada Família",
+    "lat": 41.40361111,
+    "lng": 2.17444444
+  },
+  "a06ac564-3bab-11ec-997c-784f43691740": {
+    "name": "Brandenburg Gate",
+    "lat": 52.51627222,
+    "lng": 13.37772222
+  },
+  "ad70c932-56c9-11ec-8661-838d89a7781f": {
+    "name": "Stonehenge",
+    "lat": 51.17888889,
+    "lng": -1.82611111
+  },
+  "1adc1a78-52a4-11ec-a49f-bbee89b30a15": {
+    "name": "Acropolis of Athens",
+    "lat": 37.97083333,
+    "lng": 23.72611111
+  },
+  "dc07ef16-56cc-11ec-8661-838d89a7781f": {
+    "name": "Eiffel Tower",
+    "lat": 48.85822222,
+    "lng": 2.2945
+  },
+  "a3042fc4-9487-11ec-8c03-8fa79ee10251": {
+    "name": "The Little Mermaid",
+    "lat": 55.692861,
+    "lng": 12.599278
+  },
+  "a58566bc-3bab-11ec-997c-784f43691740": {
+    "name": "Mount Everest",
+    "lat": 27.988056,
+    "lng": 86.925278
+  },
+  "9decd264-3bab-11ec-997c-784f43691740": {
+    "name": "Sydney Opera House",
+    "lat": -33.85861111,
+    "lng": 151.2141667
+  },
+  "13b1f7d4-a6d4-11ec-9a05-3d350d28acaf": {
+    "name": "Taj Mahal",
+    "lat": 27.175,
+    "lng": 78.04194444
+  },
+  "a0284ec8-3bab-11ec-997c-784f43691740": {
+    "name": "Giza pyramid complex",
+    "lat": 29.976111,
+    "lng": 31.132778
+  },
+  "beef3076-52b0-11ec-8c70-7f64b02fdad6": {
+    "name": "Statue of Liberty",
+    "lat": 40.689167,
+    "lng": -74.044444
+  },
+  "a49d3162-3bab-11ec-997c-784f43691740": {
+    "name": "Grand Canyon",
+    "lat": 36.3,
+    "lng": -112.6
+  },
+  "9deb4d7c-3bab-11ec-997c-784f43691740": {
+    "name": "Uluru",
+    "lat": -25.345,
+    "lng": 131.036111
+  },
+  "9f5e6f90-3bab-11ec-997c-784f43691740": {
+    "name": "Great Wall of China",
+    "lat": 40.68,
+    "lng": 117.23
+  },
+  "a49583fe-3bab-11ec-997c-784f43691740": {
+    "name": "Kilimanjaro",
+    "lat": -3.07583333,
+    "lng": 37.35333333
+  },
+  "9d68167a-52b0-11ec-8c70-7f64b02fdad6": {
+    "name": "Christ the Redeemer",
+    "lat": -22.95194444,
+    "lng": -43.21055556
+  },
+  "a1ab987c-3bab-11ec-997c-784f43691740": {
+    "name": "Chichen Itza",
+    "lat": 20.68305556,
+    "lng": -88.56861111
+  },
+  "a276266e-3bab-11ec-997c-784f43691740": {
+    "name": "Machu Picchu",
+    "lat": -13.16333333,
+    "lng": -72.54555556
+  }
+}

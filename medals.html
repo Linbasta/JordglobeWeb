@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medals</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        body.placing-mode { cursor: none; }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100vh;
+            touch-action: none;
+            display: none;
+        }
+
+        #medals-root {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .search-bar {
+            margin-bottom: 16px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #16213e;
+            color: #e0e0e0;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: #4a90d9;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-header {
+            padding: 12px 14px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .menu-header:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .menu-header::before {
+            content: '▾ ';
+            display: inline-block;
+            transition: transform 0.15s;
+        }
+
+        .menu-header.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        .depth-0 {
+            font-size: 15px;
+            color: #8ab4f8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .depth-1 {
+            font-size: 14px;
+            color: #aaa;
+            padding-left: 24px;
+        }
+
+        .depth-2 {
+            font-size: 13px;
+            color: #888;
+            padding-left: 40px;
+        }
+
+        .menu-children {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .medal-leaf {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px 10px 28px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .medal-leaf:hover {
+            background: rgba(74, 144, 217, 0.15);
+        }
+
+        .medal-name {
+            font-size: 14px;
+        }
+
+        .medal-badge {
+            font-size: 12px;
+            color: #888;
+            white-space: nowrap;
+            margin-left: 12px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="medals-root">Loading medals...</div>
+    <canvas id="renderCanvas"></canvas>
+    <script type="module" src="/src/medals/main.ts"></script>
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+</body>
+
+</html>

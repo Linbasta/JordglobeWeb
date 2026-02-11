@@ -48,6 +48,12 @@ export const routes: RoutesConfig = {
       file: 'capitals-quiz.html',
       title: 'Capitals Quiz',
       description: 'Find capital cities on the globe'
+    },
+    {
+      path: '/medals',
+      file: 'medals.html',
+      title: 'Medals',
+      description: 'Browse and play medal quizzes'
     }
   ],
 

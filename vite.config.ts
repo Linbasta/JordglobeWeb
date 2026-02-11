@@ -31,7 +31,8 @@ export default defineConfig({
         'bot-panel': join(__dirname, 'public/bot-panel.html'),
         'country-quiz': join(__dirname, 'country-quiz.html'),
         'capitals-quiz': join(__dirname, 'capitals-quiz.html'),
-        'country-game': join(__dirname, 'country-game.html')
+        'country-game': join(__dirname, 'country-game.html'),
+        'medals': join(__dirname, 'medals.html')
       }
     }
   },
