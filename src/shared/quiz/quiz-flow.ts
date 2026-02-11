@@ -151,6 +151,29 @@ export function generateLocationAnswerSteps(
 }
 
 /**
+ * Generate steps after user answers a location-guess question
+ *
+ * @param guessLat - Latitude of the user's guess
+ * @param guessLng - Longitude of the user's guess
+ * @param correctLat - Latitude of the correct location
+ * @param correctLng - Longitude of the correct location
+ * @param distanceKm - Haversine distance in km
+ * @returns Steps to splice into the main array
+ */
+export function generateLocationGuessAnswerSteps(
+    guessLat: number,
+    guessLng: number,
+    correctLat: number,
+    correctLng: number,
+    distanceKm: number,
+    locationName: string
+): Step[] {
+    return [
+        { op: StepOp.RevealLocationGuess, guessLat, guessLng, correctLat, correctLng, distanceKm, locationName },
+    ]
+}
+
+/**
  * Generate steps after user answers an alternative question
  *
  * @param correct - Whether the answer was correct

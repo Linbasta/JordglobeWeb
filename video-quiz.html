@@ -21,22 +21,23 @@
     <script type="module">
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
 
-        // [youtubeId, lat, lng, prompt, startTime, endTime]
+        // [youtubeId, lat, lng, prompt, locationName, startTime, endTime]
         const VIDEO_QUESTIONS = [
-            ['dQw4w9WgXcQ', 51.51, -0.13, 'Where was this music video filmed?', 0, 30],
-            ['JGwWNGJdvx8', 37.57, 126.98, 'Where is this song from?', 0, 30],
-            ['kJQP7kiw5Fk', 6.25, -75.56, 'Where was this music video filmed?', 0, 30],
+            ['dQw4w9WgXcQ', 51.51, -0.13, 'Where was this music video filmed?', 'London', 0, 30],
+            ['JGwWNGJdvx8', 37.57, 126.98, 'Where is this song from?', 'Seoul', 0, 30],
+            ['kJQP7kiw5Fk', 6.25, -75.56, 'Where was this music video filmed?', 'Medellín', 0, 30],
         ];
 
         startQuizGame({
             title: 'Loading Video Quiz',
-            questions: VIDEO_QUESTIONS.map(([youtubeId, lat, lng, prompt, start, end]) => ({
+            questions: VIDEO_QUESTIONS.map(([youtubeId, lat, lng, prompt, locationName, start, end]) => ({
                 present: 'video',
                 answer: 'location-guess',
                 youtubeId,
                 lat,
                 lng,
                 prompt,
+                locationName,
                 startTime: start,
                 endTime: end,
             })),

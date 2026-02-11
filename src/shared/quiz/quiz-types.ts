@@ -39,6 +39,7 @@ export type Question = {
     // answer: "location-guess"
     lat?: number
     lng?: number
+    locationName?: string
 
     // answer: "location-alternatives"
     options?: string[]
@@ -78,6 +79,7 @@ export enum StepOp {
     FrameLocations = "frame_locations",
     ShowVideo = "show_video",
     HideVideo = "hide_video",
+    RevealLocationGuess = "reveal_location_guess",
 }
 
 /**
@@ -114,6 +116,13 @@ export type Step =
     // Video
     | { op: StepOp.ShowVideo; questionIndex: number }
     | { op: StepOp.HideVideo }
+
+    // Location guess reveal
+    | { op: StepOp.RevealLocationGuess;
+        guessLat: number; guessLng: number;
+        correctLat: number; correctLng: number;
+        distanceKm: number;
+        locationName: string }
 
     // Framing
     | { op: StepOp.FrameLocations; points: { lat: number; lon: number }[]; duration: number }

@@ -10,7 +10,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import type { EarthGlobeAPI, CountryData } from '../../earth-globe/types'
 import type { Question, Step, DebugState } from './quiz-types'
 import { StepOp } from './quiz-types'
-import { generateQuizSteps, generateCountryAnswerSteps, generateLocationAnswerSteps, generateAlternativeAnswerSteps } from './quiz-flow'
+import { generateQuizSteps, generateCountryAnswerSteps, generateLocationAnswerSteps, generateAlternativeAnswerSteps, generateLocationGuessAnswerSteps } from './quiz-flow'
 import {
     animateCorrect,
     animateWrong,
@@ -24,6 +24,7 @@ import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
 import { getConfig } from '../config/global-config'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
+import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
 
 // ============================================================================
 // Module State
@@ -285,7 +286,12 @@ export function tickQuiz(now: number): boolean {
                     distances.push(distKm)
                     console.log(`[Quiz] location-guess: ${Math.round(distKm)} km from correct answer`)
                     waiting = false
-                    const postSteps = generateAlternativeAnswerSteps(true, qi)
+                    const postSteps = generateLocationGuessAnswerSteps(
+                        clickLatLon.lat, clickLatLon.lng,
+                        q.lat!, q.lng!,
+                        distKm,
+                        q.locationName ?? q.prompt
+                    )
                     steps.splice(pc + 1, 0, ...postSteps)
                     pendingAnswer = null
                     advance(now)
@@ -393,6 +399,22 @@ export function tickQuiz(now: number): boolean {
                     step.wrongMarkerId, step.correctMarkerId,
                     step.wrongLat, step.wrongLng,
                     step.correctLat, step.correctLng
+                )
+                activeAnimation.then(() => {
+                    activeAnimation = null
+                    advance(performance.now())
+                })
+            }
+            break
+        }
+
+        case StepOp.RevealLocationGuess: {
+            if (!activeAnimation) {
+                activeAnimation = handleLocationGuessReveal(
+                    step.guessLat, step.guessLng,
+                    step.correctLat, step.correctLng,
+                    step.distanceKm,
+                    step.locationName
                 )
                 activeAnimation.then(() => {
                     activeAnimation = null
@@ -667,6 +689,58 @@ async function handleMarkerWrongReveal(
     // 5. Hide both markers (question won't repeat)
     globe.hideMarker(wrongMarkerId)
     globe.hideMarker(correctMarkerId)
+}
+
+/**
+ * Handle location-guess reveal choreography
+ * (Guess marker, arc, camera frame, distance text, burst, hold, cleanup)
+ */
+async function handleLocationGuessReveal(
+    guessLat: number,
+    guessLng: number,
+    correctLat: number,
+    correctLng: number,
+    distanceKm: number,
+    locationName: string
+): Promise<void> {
+    if (!globe || !arcDrawer) return
+
+    // 1. Place marker at guess location
+    const guessMarkerId = globe.acquireMarker(guessLat, guessLng)
+
+    // 2. Arc from guess → correct (1.5s) + camera frames both (2s) in parallel
+    const arcId = arcDrawer.addArc(
+        guessLat, guessLng,
+        correctLat, correctLng,
+        '#ffffff', 0.3, 0
+    )
+
+    const arcPromise = arcDrawer.animateArc(arcId, 1500)
+    const cameraPromise = animateToLocation(
+        globe.getCamera(),
+        correctLat, correctLng,
+        globe.getCamera().radius,
+        2000
+    )
+
+    await Promise.all([arcPromise, cameraPromise])
+
+    // 3. Show distance text + burst at correct location
+    showDistanceOverlay(distanceKm, locationName)
+    const correctPos = latLonToSphere(correctLat, correctLng, 0)
+    burstAtPosition(globe.getScene(), correctPos)
+
+    // 4. Remove arc
+    arcDrawer.removeArc(arcId)
+
+    // 5. Hold 4s
+    await new Promise(r => setTimeout(r, 4000))
+
+    // 6. Cleanup
+    hideDistanceOverlay()
+    if (guessMarkerId !== -1) {
+        globe.releaseMarker(guessMarkerId)
+    }
 }
 
 /**

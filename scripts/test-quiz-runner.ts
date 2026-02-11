@@ -7,7 +7,7 @@
  */
 
 import type { Question, Step } from '../src/shared/quiz/quiz-types'
-import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps } from '../src/shared/quiz/quiz-flow'
+import { generateQuizSteps, generateCountryAnswerSteps, generateAlternativeAnswerSteps, generateLocationGuessAnswerSteps } from '../src/shared/quiz/quiz-flow'
 
 // ============================================================================
 // Test Data
@@ -166,8 +166,39 @@ function runTests() {
         testsFailed++
     }
 
-    // Test 7: Mixed question types
-    console.log('\nTest 7: Mixed question types')
+    // Test 7: Generate location-guess answer steps
+    console.log('\nTest 7: Generate location-guess answer steps')
+    try {
+        const steps = generateLocationGuessAnswerSteps(59.33, 18.07, 55.68, 12.57, 523.4, 'Copenhagen')
+
+        if (steps.length === 1 && steps[0].op === 'reveal_location_guess') {
+            const s = steps[0] as { op: string; guessLat: number; guessLng: number; correctLat: number; correctLng: number; distanceKm: number; locationName: string }
+            const fieldsOk =
+                s.guessLat === 59.33 &&
+                s.guessLng === 18.07 &&
+                s.correctLat === 55.68 &&
+                s.correctLng === 12.57 &&
+                s.distanceKm === 523.4 &&
+                s.locationName === 'Copenhagen'
+            if (fieldsOk) {
+                console.log(`  ✓ Generated RevealLocationGuess step with correct data`)
+                console.log(`  Step: ${s.op} { guess: (${s.guessLat}, ${s.guessLng}), correct: (${s.correctLat}, ${s.correctLng}), dist: ${s.distanceKm} km }`)
+                testsPassed++
+            } else {
+                console.log('  ✗ Step data does not match input')
+                testsFailed++
+            }
+        } else {
+            console.log(`  ✗ Expected 1 reveal_location_guess step, got ${steps.length} steps with op=${steps[0]?.op}`)
+            testsFailed++
+        }
+    } catch (error) {
+        console.log('  ✗ Failed:', error)
+        testsFailed++
+    }
+
+    // Test 8: Mixed question types
+    console.log('\nTest 8: Mixed question types')
     try {
         const steps = generateQuizSteps(testQuestions)
 
