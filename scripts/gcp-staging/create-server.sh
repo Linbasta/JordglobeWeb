@@ -46,20 +46,54 @@ if gcloud compute instances describe "$GCP_INSTANCE_NAME" \
     fi
 fi
 
-# Create firewall rule for app port
-echo "🔥 Creating firewall rule for port $APP_PORT..."
+# Create firewall rules
+echo "🔥 Creating firewall rules..."
+
+# HTTP (port 80) - for Caddy ACME challenge and redirects
+if ! gcloud compute firewall-rules describe "allow-jordglobe-http" \
+    --project="$GCP_PROJECT" &>/dev/null; then
+    gcloud compute firewall-rules create "allow-jordglobe-http" \
+        --project="$GCP_PROJECT" \
+        --allow="tcp:80" \
+        --description="Allow HTTP traffic for Caddy ACME and redirects" \
+        --direction=INGRESS \
+        --priority=1000 \
+        --source-ranges=0.0.0.0/0 \
+        --target-tags=http-server
+    echo "✅ HTTP firewall rule created"
+else
+    echo "✅ HTTP firewall rule already exists"
+fi
+
+# HTTPS (port 443) - for secure traffic
+if ! gcloud compute firewall-rules describe "allow-jordglobe-https" \
+    --project="$GCP_PROJECT" &>/dev/null; then
+    gcloud compute firewall-rules create "allow-jordglobe-https" \
+        --project="$GCP_PROJECT" \
+        --allow="tcp:443" \
+        --description="Allow HTTPS traffic" \
+        --direction=INGRESS \
+        --priority=1000 \
+        --source-ranges=0.0.0.0/0 \
+        --target-tags=https-server
+    echo "✅ HTTPS firewall rule created"
+else
+    echo "✅ HTTPS firewall rule already exists"
+fi
+
+# App port (8080) - for direct access and Caddy upstream
 if ! gcloud compute firewall-rules describe "allow-jordglobe-$APP_PORT" \
     --project="$GCP_PROJECT" &>/dev/null; then
     gcloud compute firewall-rules create "allow-jordglobe-$APP_PORT" \
         --project="$GCP_PROJECT" \
         --allow="tcp:$APP_PORT" \
-        --description="Allow JordGlobe staging app traffic" \
+        --description="Allow JordGlobe staging app traffic (direct access)" \
         --direction=INGRESS \
         --priority=1000 \
         --source-ranges=0.0.0.0/0
-    echo "✅ Firewall rule created"
+    echo "✅ App port firewall rule created"
 else
-    echo "✅ Firewall rule already exists"
+    echo "✅ App port firewall rule already exists"
 fi
 
 # Create instance

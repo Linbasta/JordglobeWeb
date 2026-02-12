@@ -28,3 +28,8 @@ export BASIC_AUTH_PASSWORD="changeme123"
 
 # Node.js version
 export NODE_VERSION="20"
+
+# Domain Configuration (for HTTPS with Caddy)
+# Leave empty to use IP address only (HTTP)
+# Set to your domain for automatic HTTPS (e.g., "staging.yourdomain.com")
+export DOMAIN=""

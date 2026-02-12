@@ -126,7 +126,17 @@ echo ""
 echo "✅ Deployment complete!"
 echo ""
 echo "🌍 Your app is running at:"
-echo "   http://$SERVER_IP:$APP_PORT"
+
+if [ -n "$DOMAIN" ]; then
+    echo "   https://$DOMAIN (HTTPS)"
+    echo "   http://$DOMAIN (redirects to HTTPS)"
+    echo ""
+    echo "   Alternative: http://$SERVER_IP:$APP_PORT (direct, HTTP only)"
+else
+    echo "   http://$SERVER_IP (via Caddy)"
+    echo "   http://$SERVER_IP:$APP_PORT (direct)"
+fi
+
 echo ""
 echo "🔐 Login with:"
 echo "   Username: $BASIC_AUTH_USER"
