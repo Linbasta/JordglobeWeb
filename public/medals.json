@@ -63,6 +63,67 @@
     },
     {
       "id": 1,
+      "name": "Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a35c008a-3bab-11ec-997c-784f43691740",
+        "a5763200-3bab-11ec-997c-784f43691740",
+        "a44ee7be-3bab-11ec-997c-784f43691740",
+        "9da3cc2c-3bab-11ec-997c-784f43691740",
+        "a3900902-3bab-11ec-997c-784f43691740",
+        "vsZr8yC1",
+        "a2a53b3e-3bab-11ec-997c-784f43691740",
+        "a161b108-3bab-11ec-997c-784f43691740",
+        "a19c68b6-3bab-11ec-997c-784f43691740",
+        "a49866e6-3bab-11ec-997c-784f43691740",
+        "a09df466-3bab-11ec-997c-784f43691740",
+        "9e6f82cc-3bab-11ec-997c-784f43691740",
+        "a015a3cc-3bab-11ec-997c-784f43691740",
+        "9f3cdc54-3bab-11ec-997c-784f43691740",
+        "84d5d1d0-5286-11ec-a35d-69ef77974be3",
+        "a037d708-3bab-11ec-997c-784f43691740",
+        "a33a223a-3bab-11ec-997c-784f43691740",
+        "a57af9c0-3bab-11ec-997c-784f43691740",
+        "a07f53d0-3bab-11ec-997c-784f43691740",
+        "a174b0b4-3bab-11ec-997c-784f43691740",
+        "a1aaa2aa-3bab-11ec-997c-784f43691740",
+        "a1f0c0aa-3bab-11ec-997c-784f43691740",
+        "a22a31be-3bab-11ec-997c-784f43691740",
+        "a097e242-3bab-11ec-997c-784f43691740",
+        "a190ff1c-3bab-11ec-997c-784f43691740",
+        "a34e1b14-3bab-11ec-997c-784f43691740",
+        "4794ec0e-9492-11ec-8c03-8fa79ee10251",
+        "a1eb1880-3bab-11ec-997c-784f43691740",
+        "a34a3986-3bab-11ec-997c-784f43691740",
+        "a227a548-3bab-11ec-997c-784f43691740",
+        "a469b562-3bab-11ec-997c-784f43691740",
+        "49414368-9492-11ec-8c03-8fa79ee10251",
+        "a3ee25d2-3bab-11ec-997c-784f43691740",
+        "9eea674e-3bab-11ec-997c-784f43691740",
+        "a402a8d6-3bab-11ec-997c-784f43691740",
+        "9fe7ed38-3bab-11ec-997c-784f43691740",
+        "a0639e4c-3bab-11ec-997c-784f43691740",
+        "9efe8580-3bab-11ec-997c-784f43691740",
+        "a12d0084-3bab-11ec-997c-784f43691740",
+        "a177eec8-3bab-11ec-997c-784f43691740",
+        "9f46a158-3bab-11ec-997c-784f43691740",
+        "9db5e75e-3bab-11ec-997c-784f43691740",
+        "9eefc84c-3bab-11ec-997c-784f43691740",
+        "a06736b0-3bab-11ec-997c-784f43691740",
+        "a03be082-3bab-11ec-997c-784f43691740",
+        "a2056bea-3bab-11ec-997c-784f43691740",
+        "a445f910-3bab-11ec-997c-784f43691740",
+        "a34d3cbc-3bab-11ec-997c-784f43691740",
+        "9e514046-3bab-11ec-997c-784f43691740",
+        "9f3bb342-3bab-11ec-997c-784f43691740",
+        "a370169c-3bab-11ec-997c-784f43691740",
+        "a1803664-3bab-11ec-997c-784f43691740",
+        "a189636a-3bab-11ec-997c-784f43691740",
+        "a1a8013a-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 2,
       "name": "Northern Africa Countries",
       "type": "countries",
       "questionIds": [
@@ -76,7 +137,21 @@
       ]
     },
     {
-      "id": 2,
+      "id": 3,
+      "name": "Northern Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "4794ec0e-9492-11ec-8c03-8fa79ee10251",
+        "9da3cc2c-3bab-11ec-997c-784f43691740",
+        "a1803664-3bab-11ec-997c-784f43691740",
+        "a3ee25d2-3bab-11ec-997c-784f43691740",
+        "a1eb1880-3bab-11ec-997c-784f43691740",
+        "a1a8013a-3bab-11ec-997c-784f43691740",
+        "a44ee7be-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 4,
       "name": "Eastern Africa Countries",
       "type": "countries",
       "questionIds": [
@@ -99,7 +174,30 @@
       ]
     },
     {
-      "id": 3,
+      "id": 5,
+      "name": "Eastern Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a161b108-3bab-11ec-997c-784f43691740",
+        "a469b562-3bab-11ec-997c-784f43691740",
+        "a189636a-3bab-11ec-997c-784f43691740",
+        "9fe7ed38-3bab-11ec-997c-784f43691740",
+        "a03be082-3bab-11ec-997c-784f43691740",
+        "a5763200-3bab-11ec-997c-784f43691740",
+        "a037d708-3bab-11ec-997c-784f43691740",
+        "a190ff1c-3bab-11ec-997c-784f43691740",
+        "a57af9c0-3bab-11ec-997c-784f43691740",
+        "a34d3cbc-3bab-11ec-997c-784f43691740",
+        "a1f0c0aa-3bab-11ec-997c-784f43691740",
+        "a35c008a-3bab-11ec-997c-784f43691740",
+        "a1aaa2aa-3bab-11ec-997c-784f43691740",
+        "a015a3cc-3bab-11ec-997c-784f43691740",
+        "a49866e6-3bab-11ec-997c-784f43691740",
+        "a3900902-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 6,
       "name": "Middle Africa Countries",
       "type": "countries",
       "questionIds": [
@@ -117,7 +215,25 @@
       ]
     },
     {
-      "id": 4,
+      "id": 7,
+      "name": "Middle Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "9f3cdc54-3bab-11ec-997c-784f43691740",
+        "9db5e75e-3bab-11ec-997c-784f43691740",
+        "84d5d1d0-5286-11ec-a35d-69ef77974be3",
+        "9f46a158-3bab-11ec-997c-784f43691740",
+        "a2a53b3e-3bab-11ec-997c-784f43691740",
+        "a0639e4c-3bab-11ec-997c-784f43691740",
+        "9efe8580-3bab-11ec-997c-784f43691740",
+        "vsZr8yC1",
+        "a33a223a-3bab-11ec-997c-784f43691740",
+        "9eefc84c-3bab-11ec-997c-784f43691740",
+        "49414368-9492-11ec-8c03-8fa79ee10251"
+      ]
+    },
+    {
+      "id": 8,
       "name": "Southern Africa Countries",
       "type": "countries",
       "questionIds": [
@@ -129,7 +245,19 @@
       ]
     },
     {
-      "id": 5,
+      "id": 9,
+      "name": "Southern Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a370169c-3bab-11ec-997c-784f43691740",
+        "a2056bea-3bab-11ec-997c-784f43691740",
+        "a174b0b4-3bab-11ec-997c-784f43691740",
+        "a402a8d6-3bab-11ec-997c-784f43691740",
+        "9e6f82cc-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 10,
       "name": "Western Africa Countries",
       "type": "countries",
       "questionIds": [
@@ -151,7 +279,29 @@
       ]
     },
     {
-      "id": 6,
+      "id": 11,
+      "name": "Western Africa Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a19c68b6-3bab-11ec-997c-784f43691740",
+        "a097e242-3bab-11ec-997c-784f43691740",
+        "a177eec8-3bab-11ec-997c-784f43691740",
+        "9eea674e-3bab-11ec-997c-784f43691740",
+        "a06736b0-3bab-11ec-997c-784f43691740",
+        "9f3bb342-3bab-11ec-997c-784f43691740",
+        "a34e1b14-3bab-11ec-997c-784f43691740",
+        "a07f53d0-3bab-11ec-997c-784f43691740",
+        "a22a31be-3bab-11ec-997c-784f43691740",
+        "9e514046-3bab-11ec-997c-784f43691740",
+        "a227a548-3bab-11ec-997c-784f43691740",
+        "a12d0084-3bab-11ec-997c-784f43691740",
+        "a34a3986-3bab-11ec-997c-784f43691740",
+        "a445f910-3bab-11ec-997c-784f43691740",
+        "a09df466-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 12,
       "name": "Africa 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -163,7 +313,19 @@
       ]
     },
     {
-      "id": 7,
+      "id": 13,
+      "name": "Africa 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a370169c-3bab-11ec-997c-784f43691740",
+        "4794ec0e-9492-11ec-8c03-8fa79ee10251",
+        "a22a31be-3bab-11ec-997c-784f43691740",
+        "a1eb1880-3bab-11ec-997c-784f43691740",
+        "a189636a-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 14,
       "name": "Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -218,7 +380,62 @@
       ]
     },
     {
-      "id": 8,
+      "id": 15,
+      "name": "Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a42f0ff2-3bab-11ec-997c-784f43691740",
+        "9ef4867a-3bab-11ec-997c-784f43691740",
+        "a4521a24-3bab-11ec-997c-784f43691740",
+        "a42ff084-3bab-11ec-997c-784f43691740",
+        "a3894e46-3bab-11ec-997c-784f43691740",
+        "a570d116-3bab-11ec-997c-784f43691740",
+        "a20951a6-3bab-11ec-997c-784f43691740",
+        "9e393500-3bab-11ec-997c-784f43691740",
+        "a47b7392-3bab-11ec-997c-784f43691740",
+        "9dea3108-3bab-11ec-997c-784f43691740",
+        "a5520b14-3bab-11ec-997c-784f43691740",
+        "c5fc01f4-a6b2-11ec-8571-a860b6166432",
+        "a14a1a52-3bab-11ec-997c-784f43691740",
+        "9e52459a-3bab-11ec-997c-784f43691740",
+        "a2902ab4-3bab-11ec-997c-784f43691740",
+        "a25d751a-3bab-11ec-997c-784f43691740",
+        "a463571c-3bab-11ec-997c-784f43691740",
+        "a0c1e18c-3bab-11ec-997c-784f43691740",
+        "a5651768-3bab-11ec-997c-784f43691740",
+        "a19b802c-3bab-11ec-997c-784f43691740",
+        "a42b62d0-3bab-11ec-997c-784f43691740",
+        "a001fc6a-a61c-11ec-8d1d-7998aac3e330",
+        "a10b43c2-3bab-11ec-997c-784f43691740",
+        "a0ea3592-3bab-11ec-997c-784f43691740",
+        "9edeb2dc-3bab-11ec-997c-784f43691740",
+        "a01eded8-3bab-11ec-997c-784f43691740",
+        "a1689888-3bab-11ec-997c-784f43691740",
+        "9e3c97cc-3bab-11ec-997c-784f43691740",
+        "a172521a-3bab-11ec-997c-784f43691740",
+        "a23d7a08-3bab-11ec-997c-784f43691740",
+        "a3491664-3bab-11ec-997c-784f43691740",
+        "a166fb40-3bab-11ec-997c-784f43691740",
+        "d4c9ffd8-527a-11ec-83ef-2f69b13edb9b",
+        "a2a4cbf4-3bab-11ec-997c-784f43691740",
+        "9e345094-3bab-11ec-997c-784f43691740",
+        "a1fb5970-3bab-11ec-997c-784f43691740",
+        "a2f56c62-3bab-11ec-997c-784f43691740",
+        "a144c980-3bab-11ec-997c-784f43691740",
+        "a2533ac8-3bab-11ec-997c-784f43691740",
+        "a4342a50-3bab-11ec-997c-784f43691740",
+        "a1976758-3bab-11ec-997c-784f43691740",
+        "a34f5f42-3bab-11ec-997c-784f43691740",
+        "a104f968-3bab-11ec-997c-784f43691740",
+        "a1e360cc-3bab-11ec-997c-784f43691740",
+        "a1144896-3bab-11ec-997c-784f43691740",
+        "a16eb7ae-3bab-11ec-997c-784f43691740",
+        "9f69f98c-3bab-11ec-997c-784f43691740",
+        "a3d64d68-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 16,
       "name": "Central Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -230,7 +447,19 @@
       ]
     },
     {
-      "id": 9,
+      "id": 17,
+      "name": "Central Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a463571c-3bab-11ec-997c-784f43691740",
+        "a1689888-3bab-11ec-997c-784f43691740",
+        "a42ff084-3bab-11ec-997c-784f43691740",
+        "a14a1a52-3bab-11ec-997c-784f43691740",
+        "a5520b14-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 18,
       "name": "Eastern Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -243,7 +472,20 @@
       ]
     },
     {
-      "id": 10,
+      "id": 19,
+      "name": "Eastern Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a3894e46-3bab-11ec-997c-784f43691740",
+        "a23d7a08-3bab-11ec-997c-784f43691740",
+        "a1e360cc-3bab-11ec-997c-784f43691740",
+        "d4c9ffd8-527a-11ec-83ef-2f69b13edb9b",
+        "a42f0ff2-3bab-11ec-997c-784f43691740",
+        "9f69f98c-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 20,
       "name": "Southeastern Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -261,7 +503,25 @@
       ]
     },
     {
-      "id": 11,
+      "id": 21,
+      "name": "Southeastern Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a5651768-3bab-11ec-997c-784f43691740",
+        "9ef4867a-3bab-11ec-997c-784f43691740",
+        "9edeb2dc-3bab-11ec-997c-784f43691740",
+        "a34f5f42-3bab-11ec-997c-784f43691740",
+        "a01eded8-3bab-11ec-997c-784f43691740",
+        "a1fb5970-3bab-11ec-997c-784f43691740",
+        "a1976758-3bab-11ec-997c-784f43691740",
+        "a16eb7ae-3bab-11ec-997c-784f43691740",
+        "a2902ab4-3bab-11ec-997c-784f43691740",
+        "a0ea3592-3bab-11ec-997c-784f43691740",
+        "a4342a50-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 22,
       "name": "Southern Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -277,7 +537,23 @@
       ]
     },
     {
-      "id": 12,
+      "id": 23,
+      "name": "Southern Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "c5fc01f4-a6b2-11ec-8571-a860b6166432",
+        "a19b802c-3bab-11ec-997c-784f43691740",
+        "a0c1e18c-3bab-11ec-997c-784f43691740",
+        "a104f968-3bab-11ec-997c-784f43691740",
+        "a2533ac8-3bab-11ec-997c-784f43691740",
+        "a20951a6-3bab-11ec-997c-784f43691740",
+        "a3d64d68-3bab-11ec-997c-784f43691740",
+        "9e3c97cc-3bab-11ec-997c-784f43691740",
+        "9e52459a-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 24,
       "name": "Western Asia Countries",
       "type": "countries",
       "questionIds": [
@@ -300,7 +576,30 @@
       ]
     },
     {
-      "id": 13,
+      "id": 25,
+      "name": "Western Asia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a172521a-3bab-11ec-997c-784f43691740",
+        "a1144896-3bab-11ec-997c-784f43691740",
+        "a47b7392-3bab-11ec-997c-784f43691740",
+        "a3491664-3bab-11ec-997c-784f43691740",
+        "a2a4cbf4-3bab-11ec-997c-784f43691740",
+        "a4521a24-3bab-11ec-997c-784f43691740",
+        "9dea3108-3bab-11ec-997c-784f43691740",
+        "a166fb40-3bab-11ec-997c-784f43691740",
+        "a42b62d0-3bab-11ec-997c-784f43691740",
+        "a570d116-3bab-11ec-997c-784f43691740",
+        "a001fc6a-a61c-11ec-8d1d-7998aac3e330",
+        "a10b43c2-3bab-11ec-997c-784f43691740",
+        "9e345094-3bab-11ec-997c-784f43691740",
+        "a25d751a-3bab-11ec-997c-784f43691740",
+        "a144c980-3bab-11ec-997c-784f43691740",
+        "9e393500-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 26,
       "name": "Asia 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -312,7 +611,19 @@
       ]
     },
     {
-      "id": 14,
+      "id": 27,
+      "name": "Asia 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "9f69f98c-3bab-11ec-997c-784f43691740",
+        "a0c1e18c-3bab-11ec-997c-784f43691740",
+        "a2f56c62-3bab-11ec-997c-784f43691740",
+        "d4c9ffd8-527a-11ec-83ef-2f69b13edb9b",
+        "a3491664-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 28,
       "name": "Europe Countries",
       "type": "countries",
       "questionIds": [
@@ -365,7 +676,59 @@
       ]
     },
     {
-      "id": 15,
+      "id": 29,
+      "name": "Europe Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a1a3db8c-3bab-11ec-997c-784f43691740",
+        "9e49f200-3bab-11ec-997c-784f43691740",
+        "9e6d7cac-3bab-11ec-997c-784f43691740",
+        "a0033d0e-3bab-11ec-997c-784f43691740",
+        "a2475e74-3bab-11ec-997c-784f43691740",
+        "a1dce940-3bab-11ec-997c-784f43691740",
+        "a185a860-3bab-11ec-997c-784f43691740",
+        "a3536402-3bab-11ec-997c-784f43691740",
+        "a418b69e-3bab-11ec-997c-784f43691740",
+        "a2ac2930-3bab-11ec-997c-784f43691740",
+        "9ee37c5e-3bab-11ec-997c-784f43691740",
+        "a2a0fbbe-3bab-11ec-997c-784f43691740",
+        "a0736746-3bab-11ec-997c-784f43691740",
+        "a046152a-3bab-11ec-997c-784f43691740",
+        "a3c467f6-3bab-11ec-997c-784f43691740",
+        "8d3dcae0-3a51-11ed-bd58-858d2062bc31",
+        "7e9a877e-f61f-11ec-bf8e-ed47401ebff3",
+        "a1824d96-3bab-11ec-997c-784f43691740",
+        "a183a556-3bab-11ec-997c-784f43691740",
+        "a0b2e5c4-3bab-11ec-997c-784f43691740",
+        "a00904b4-3bab-11ec-997c-784f43691740",
+        "9e32fa14-3bab-11ec-997c-784f43691740",
+        "a490759e-3bab-11ec-997c-784f43691740",
+        "9da277e6-3bab-11ec-997c-784f43691740",
+        "a1e509c2-3bab-11ec-997c-784f43691740",
+        "9e439752-3bab-11ec-997c-784f43691740",
+        "a20d4ff4-3bab-11ec-997c-784f43691740",
+        "a1db699e-3bab-11ec-997c-784f43691740",
+        "9db0212a-3bab-11ec-997c-784f43691740",
+        "a29b4304-3bab-11ec-997c-784f43691740",
+        "a165935e-3bab-11ec-997c-784f43691740",
+        "9feeb992-3bab-11ec-997c-784f43691740",
+        "a2a750d6-3bab-11ec-997c-784f43691740",
+        "a170f230-3bab-11ec-997c-784f43691740",
+        "a05c68d4-3bab-11ec-997c-784f43691740",
+        "a18731a8-3bab-11ec-997c-784f43691740",
+        "a4201736-3bab-11ec-997c-784f43691740",
+        "a0acd472-3bab-11ec-997c-784f43691740",
+        "a47408dc-3bab-11ec-997c-784f43691740",
+        "a3510266-3bab-11ec-997c-784f43691740",
+        "a03a2aa8-3bab-11ec-997c-784f43691740",
+        "a084437c-3bab-11ec-997c-784f43691740",
+        "a1103a3a-3bab-11ec-997c-784f43691740",
+        "a0694b30-3bab-11ec-997c-784f43691740",
+        "a012a758-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 30,
       "name": "Europe Sights",
       "type": "locations",
       "questionIds": [
@@ -380,7 +743,7 @@
       ]
     },
     {
-      "id": 16,
+      "id": 31,
       "name": "Eastern Europe Countries",
       "type": "countries",
       "questionIds": [
@@ -398,7 +761,25 @@
       ]
     },
     {
-      "id": 17,
+      "id": 32,
+      "name": "Eastern Europe Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a0033d0e-3bab-11ec-997c-784f43691740",
+        "a2ac2930-3bab-11ec-997c-784f43691740",
+        "a3510266-3bab-11ec-997c-784f43691740",
+        "9ee37c5e-3bab-11ec-997c-784f43691740",
+        "a29b4304-3bab-11ec-997c-784f43691740",
+        "a00904b4-3bab-11ec-997c-784f43691740",
+        "9e439752-3bab-11ec-997c-784f43691740",
+        "a47408dc-3bab-11ec-997c-784f43691740",
+        "a0acd472-3bab-11ec-997c-784f43691740",
+        "a0694b30-3bab-11ec-997c-784f43691740",
+        "a1db699e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 33,
       "name": "Northern Europe Countries",
       "type": "countries",
       "questionIds": [
@@ -415,7 +796,24 @@
       ]
     },
     {
-      "id": 18,
+      "id": 34,
+      "name": "Northern Europe Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a012a758-3bab-11ec-997c-784f43691740",
+        "a0b2e5c4-3bab-11ec-997c-784f43691740",
+        "a490759e-3bab-11ec-997c-784f43691740",
+        "a046152a-3bab-11ec-997c-784f43691740",
+        "a183a556-3bab-11ec-997c-784f43691740",
+        "a2475e74-3bab-11ec-997c-784f43691740",
+        "a170f230-3bab-11ec-997c-784f43691740",
+        "a1103a3a-3bab-11ec-997c-784f43691740",
+        "a03a2aa8-3bab-11ec-997c-784f43691740",
+        "a418b69e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 35,
       "name": "Southern Europe Countries",
       "type": "countries",
       "questionIds": [
@@ -438,7 +836,29 @@
       ]
     },
     {
-      "id": 19,
+      "id": 36,
+      "name": "Southern Europe Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "7e9a877e-f61f-11ec-bf8e-ed47401ebff3",
+        "a1e509c2-3bab-11ec-997c-784f43691740",
+        "a1a3db8c-3bab-11ec-997c-784f43691740",
+        "a165935e-3bab-11ec-997c-784f43691740",
+        "a084437c-3bab-11ec-997c-784f43691740",
+        "9db0212a-3bab-11ec-997c-784f43691740",
+        "9feeb992-3bab-11ec-997c-784f43691740",
+        "9e6d7cac-3bab-11ec-997c-784f43691740",
+        "a18731a8-3bab-11ec-997c-784f43691740",
+        "a2a750d6-3bab-11ec-997c-784f43691740",
+        "8d3dcae0-3a51-11ed-bd58-858d2062bc31",
+        "9da277e6-3bab-11ec-997c-784f43691740",
+        "a3c467f6-3bab-11ec-997c-784f43691740",
+        "a3536402-3bab-11ec-997c-784f43691740",
+        "a2a0fbbe-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 37,
       "name": "Western Europe Countries",
       "type": "countries",
       "questionIds": [
@@ -454,7 +874,23 @@
       ]
     },
     {
-      "id": 20,
+      "id": 38,
+      "name": "Western Europe Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a0736746-3bab-11ec-997c-784f43691740",
+        "a1dce940-3bab-11ec-997c-784f43691740",
+        "a05c68d4-3bab-11ec-997c-784f43691740",
+        "a4201736-3bab-11ec-997c-784f43691740",
+        "a1824d96-3bab-11ec-997c-784f43691740",
+        "9e32fa14-3bab-11ec-997c-784f43691740",
+        "a185a860-3bab-11ec-997c-784f43691740",
+        "9e49f200-3bab-11ec-997c-784f43691740",
+        "a20d4ff4-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 39,
       "name": "Europe 10 Countries",
       "type": "countries",
       "questionIds": [
@@ -471,7 +907,7 @@
       ]
     },
     {
-      "id": 21,
+      "id": 40,
       "name": "Europe 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -483,7 +919,19 @@
       ]
     },
     {
-      "id": 22,
+      "id": 41,
+      "name": "Europe 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a490759e-3bab-11ec-997c-784f43691740",
+        "8d3dcae0-3a51-11ed-bd58-858d2062bc31",
+        "a0736746-3bab-11ec-997c-784f43691740",
+        "a05c68d4-3bab-11ec-997c-784f43691740",
+        "a418b69e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 42,
       "name": "North America Countries",
       "type": "countries",
       "questionIds": [
@@ -513,7 +961,37 @@
       ]
     },
     {
-      "id": 23,
+      "id": 43,
+      "name": "North America Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "9d09d7e6-5b6f-11ec-9fa0-558ef698b0b5",
+        "a261b5a8-3bab-11ec-997c-784f43691740",
+        "a4451388-3bab-11ec-997c-784f43691740",
+        "a091fa62-3bab-11ec-997c-784f43691740",
+        "a0a60476-3bab-11ec-997c-784f43691740",
+        "a03438dc-3bab-11ec-997c-784f43691740",
+        "a33b9e3a-3bab-11ec-997c-784f43691740",
+        "a08ebe56-3bab-11ec-997c-784f43691740",
+        "a0a9c9a8-3bab-11ec-997c-784f43691740",
+        "a016d5e4-3bab-11ec-997c-784f43691740",
+        "a33e01a2-3bab-11ec-997c-784f43691740",
+        "a01e8302-3bab-11ec-997c-784f43691740",
+        "9febc570-3bab-11ec-997c-784f43691740",
+        "9e4d4770-3bab-11ec-997c-784f43691740",
+        "9ff2c910-3bab-11ec-997c-784f43691740",
+        "a53e458e-3bab-11ec-997c-784f43691740",
+        "a222938c-3bab-11ec-997c-784f43691740",
+        "dacc8a5a-9491-11ec-8c03-8fa79ee10251",
+        "a44935ee-3bab-11ec-997c-784f43691740",
+        "a33d18d2-3bab-11ec-997c-784f43691740",
+        "bc0a3328-a61c-11ec-8d1d-7998aac3e330",
+        "9dbcb1ba-3bab-11ec-997c-784f43691740",
+        "9f26dc88-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 44,
       "name": "Central America Countries",
       "type": "countries",
       "questionIds": [
@@ -528,7 +1006,22 @@
       ]
     },
     {
-      "id": 24,
+      "id": 45,
+      "name": "Central America Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a091fa62-3bab-11ec-997c-784f43691740",
+        "a222938c-3bab-11ec-997c-784f43691740",
+        "9e4d4770-3bab-11ec-997c-784f43691740",
+        "a03438dc-3bab-11ec-997c-784f43691740",
+        "9febc570-3bab-11ec-997c-784f43691740",
+        "a0a9c9a8-3bab-11ec-997c-784f43691740",
+        "a261b5a8-3bab-11ec-997c-784f43691740",
+        "dacc8a5a-9491-11ec-8c03-8fa79ee10251"
+      ]
+    },
+    {
+      "id": 46,
       "name": "Carribean Countries",
       "type": "countries",
       "questionIds": [
@@ -548,7 +1041,27 @@
       ]
     },
     {
-      "id": 25,
+      "id": 47,
+      "name": "Carribean Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a4451388-3bab-11ec-997c-784f43691740",
+        "a33b9e3a-3bab-11ec-997c-784f43691740",
+        "bc0a3328-a61c-11ec-8d1d-7998aac3e330",
+        "9d09d7e6-5b6f-11ec-9fa0-558ef698b0b5",
+        "a08ebe56-3bab-11ec-997c-784f43691740",
+        "a44935ee-3bab-11ec-997c-784f43691740",
+        "a0a60476-3bab-11ec-997c-784f43691740",
+        "9dbcb1ba-3bab-11ec-997c-784f43691740",
+        "9ff2c910-3bab-11ec-997c-784f43691740",
+        "a016d5e4-3bab-11ec-997c-784f43691740",
+        "a33d18d2-3bab-11ec-997c-784f43691740",
+        "a01e8302-3bab-11ec-997c-784f43691740",
+        "a33e01a2-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 48,
       "name": "North America 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -560,7 +1073,19 @@
       ]
     },
     {
-      "id": 26,
+      "id": 49,
+      "name": "North America 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "dacc8a5a-9491-11ec-8c03-8fa79ee10251",
+        "9f26dc88-3bab-11ec-997c-784f43691740",
+        "9ff2c910-3bab-11ec-997c-784f43691740",
+        "bc0a3328-a61c-11ec-8d1d-7998aac3e330",
+        "a53e458e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 50,
       "name": "South America Countries",
       "type": "countries",
       "questionIds": [
@@ -580,7 +1105,27 @@
       ]
     },
     {
-      "id": 27,
+      "id": 51,
+      "name": "South America Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a558459c-3bab-11ec-997c-784f43691740",
+        "9e5c55c6-3bab-11ec-997c-784f43691740",
+        "d62bfcf8-5286-11ec-a35d-69ef77974be3",
+        "9fd52b44-3bab-11ec-997c-784f43691740",
+        "a02535c6-3bab-11ec-997c-784f43691740",
+        "a0a16c9a-3bab-11ec-997c-784f43691740",
+        "a3fe872e-3bab-11ec-997c-784f43691740",
+        "9f597332-3bab-11ec-997c-784f43691740",
+        "07415d3e-957f-11ec-8414-8d5e721eb3c7",
+        "9e87ea10-3bab-11ec-997c-784f43691740",
+        "fce9410c-5286-11ec-a35d-69ef77974be3",
+        "a26b4000-3bab-11ec-997c-784f43691740",
+        "a16bc3ea-5286-11ec-a35d-69ef77974be3"
+      ]
+    },
+    {
+      "id": 52,
       "name": "South America 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -592,7 +1137,19 @@
       ]
     },
     {
-      "id": 28,
+      "id": 53,
+      "name": "South America 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "9e87ea10-3bab-11ec-997c-784f43691740",
+        "fce9410c-5286-11ec-a35d-69ef77974be3",
+        "9fd52b44-3bab-11ec-997c-784f43691740",
+        "a16bc3ea-5286-11ec-a35d-69ef77974be3",
+        "9f597332-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 54,
       "name": "Oceania Countries",
       "type": "countries",
       "questionIds": [
@@ -613,7 +1170,28 @@
       ]
     },
     {
-      "id": 29,
+      "id": 55,
+      "name": "Oceania Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a5542fc0-3bab-11ec-997c-784f43691740",
+        "a206abae-3bab-11ec-997c-784f43691740",
+        "a25bd052-3bab-11ec-997c-784f43691740",
+        "a2687e42-3bab-11ec-997c-784f43691740",
+        "9df91ea2-3bab-11ec-997c-784f43691740",
+        "a4661a2e-3bab-11ec-997c-784f43691740",
+        "a164da0e-3bab-11ec-997c-784f43691740",
+        "a044ae10-3bab-11ec-997c-784f43691740",
+        "a33e5f3a-3bab-11ec-997c-784f43691740",
+        "a447ebf8-3bab-11ec-997c-784f43691740",
+        "1c8b6084-5274-11ec-85d4-93a20b4d74bc",
+        "a0432ca2-3bab-11ec-997c-784f43691740",
+        "a3549566-3bab-11ec-997c-784f43691740",
+        "a1a46cdc-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 56,
       "name": "Melanesia Countries",
       "type": "countries",
       "questionIds": [
@@ -624,7 +1202,18 @@
       ]
     },
     {
-      "id": 30,
+      "id": 57,
+      "name": "Melanesia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a2687e42-3bab-11ec-997c-784f43691740",
+        "a044ae10-3bab-11ec-997c-784f43691740",
+        "a3549566-3bab-11ec-997c-784f43691740",
+        "a5542fc0-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 58,
       "name": "Micronesia Countries",
       "type": "countries",
       "questionIds": [
@@ -636,7 +1225,19 @@
       ]
     },
     {
-      "id": 31,
+      "id": 59,
+      "name": "Micronesia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a1a46cdc-3bab-11ec-997c-784f43691740",
+        "a25bd052-3bab-11ec-997c-784f43691740",
+        "a206abae-3bab-11ec-997c-784f43691740",
+        "a0432ca2-3bab-11ec-997c-784f43691740",
+        "a164da0e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 60,
       "name": "Polynesia Countries",
       "type": "countries",
       "questionIds": [
@@ -646,7 +1247,17 @@
       ]
     },
     {
-      "id": 32,
+      "id": 61,
+      "name": "Polynesia Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a33e5f3a-3bab-11ec-997c-784f43691740",
+        "a447ebf8-3bab-11ec-997c-784f43691740",
+        "a4661a2e-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 62,
       "name": "Oceania 5 Countries",
       "type": "countries",
       "questionIds": [
@@ -658,7 +1269,19 @@
       ]
     },
     {
-      "id": 33,
+      "id": 63,
+      "name": "Oceania 5 Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "1c8b6084-5274-11ec-85d4-93a20b4d74bc",
+        "a044ae10-3bab-11ec-997c-784f43691740",
+        "a3549566-3bab-11ec-997c-784f43691740",
+        "9df91ea2-3bab-11ec-997c-784f43691740",
+        "a2687e42-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 64,
       "name": "The World Countries",
       "type": "countries",
       "questionIds": [
@@ -863,7 +1486,211 @@
       ]
     },
     {
-      "id": 34,
+      "id": 65,
+      "name": "The World Capitals",
+      "type": "capitals",
+      "questionIds": [
+        "a166fb40-3bab-11ec-997c-784f43691740",
+        "a16eb7ae-3bab-11ec-997c-784f43691740",
+        "a2902ab4-3bab-11ec-997c-784f43691740",
+        "a2a750d6-3bab-11ec-997c-784f43691740",
+        "a1e509c2-3bab-11ec-997c-784f43691740",
+        "9e32fa14-3bab-11ec-997c-784f43691740",
+        "a01eded8-3bab-11ec-997c-784f43691740",
+        "1c8b6084-5274-11ec-85d4-93a20b4d74bc",
+        "9db5e75e-3bab-11ec-997c-784f43691740",
+        "a14a1a52-3bab-11ec-997c-784f43691740",
+        "a2475e74-3bab-11ec-997c-784f43691740",
+        "a20d4ff4-3bab-11ec-997c-784f43691740",
+        "a03438dc-3bab-11ec-997c-784f43691740",
+        "9e393500-3bab-11ec-997c-784f43691740",
+        "a2f56c62-3bab-11ec-997c-784f43691740",
+        "9f46a158-3bab-11ec-997c-784f43691740",
+        "a091fa62-3bab-11ec-997c-784f43691740",
+        "a10b43c2-3bab-11ec-997c-784f43691740",
+        "a0acd472-3bab-11ec-997c-784f43691740",
+        "a08ebe56-3bab-11ec-997c-784f43691740",
+        "a0a9c9a8-3bab-11ec-997c-784f43691740",
+        "a1f0c0aa-3bab-11ec-997c-784f43691740",
+        "a3c467f6-3bab-11ec-997c-784f43691740",
+        "a25bd052-3bab-11ec-997c-784f43691740",
+        "a144c980-3bab-11ec-997c-784f43691740",
+        "a00904b4-3bab-11ec-997c-784f43691740",
+        "a53e458e-3bab-11ec-997c-784f43691740",
+        "a49866e6-3bab-11ec-997c-784f43691740",
+        "9e3c97cc-3bab-11ec-997c-784f43691740",
+        "a0ea3592-3bab-11ec-997c-784f43691740",
+        "a42f0ff2-3bab-11ec-997c-784f43691740",
+        "a164da0e-3bab-11ec-997c-784f43691740",
+        "9e439752-3bab-11ec-997c-784f43691740",
+        "8d3dcae0-3a51-11ed-bd58-858d2062bc31",
+        "9ff2c910-3bab-11ec-997c-784f43691740",
+        "a47b7392-3bab-11ec-997c-784f43691740",
+        "4794ec0e-9492-11ec-8c03-8fa79ee10251",
+        "d4c9ffd8-527a-11ec-83ef-2f69b13edb9b",
+        "a3894e46-3bab-11ec-997c-784f43691740",
+        "a1803664-3bab-11ec-997c-784f43691740",
+        "a084437c-3bab-11ec-997c-784f43691740",
+        "a0c1e18c-3bab-11ec-997c-784f43691740",
+        "a19c68b6-3bab-11ec-997c-784f43691740",
+        "a570d116-3bab-11ec-997c-784f43691740",
+        "a174b0b4-3bab-11ec-997c-784f43691740",
+        "9edeb2dc-3bab-11ec-997c-784f43691740",
+        "a172521a-3bab-11ec-997c-784f43691740",
+        "a3d64d68-3bab-11ec-997c-784f43691740",
+        "a177eec8-3bab-11ec-997c-784f43691740",
+        "a189636a-3bab-11ec-997c-784f43691740",
+        "a2687e42-3bab-11ec-997c-784f43691740",
+        "a4661a2e-3bab-11ec-997c-784f43691740",
+        "9f26dc88-3bab-11ec-997c-784f43691740",
+        "a33b9e3a-3bab-11ec-997c-784f43691740",
+        "a490759e-3bab-11ec-997c-784f43691740",
+        "a558459c-3bab-11ec-997c-784f43691740",
+        "a165935e-3bab-11ec-997c-784f43691740",
+        "c5fc01f4-a6b2-11ec-8571-a860b6166432",
+        "9e5c55c6-3bab-11ec-997c-784f43691740",
+        "9fe7ed38-3bab-11ec-997c-784f43691740",
+        "a33e5f3a-3bab-11ec-997c-784f43691740",
+        "a03be082-3bab-11ec-997c-784f43691740",
+        "07415d3e-957f-11ec-8414-8d5e721eb3c7",
+        "a1824d96-3bab-11ec-997c-784f43691740",
+        "9e49f200-3bab-11ec-997c-784f43691740",
+        "a09df466-3bab-11ec-997c-784f43691740",
+        "a5651768-3bab-11ec-997c-784f43691740",
+        "9ee37c5e-3bab-11ec-997c-784f43691740",
+        "9e345094-3bab-11ec-997c-784f43691740",
+        "a5763200-3bab-11ec-997c-784f43691740",
+        "a2a53b3e-3bab-11ec-997c-784f43691740",
+        "84d5d1d0-5286-11ec-a35d-69ef77974be3",
+        "9db0212a-3bab-11ec-997c-784f43691740",
+        "a0b2e5c4-3bab-11ec-997c-784f43691740",
+        "a227a548-3bab-11ec-997c-784f43691740",
+        "a33d18d2-3bab-11ec-997c-784f43691740",
+        "a18731a8-3bab-11ec-997c-784f43691740",
+        "a170f230-3bab-11ec-997c-784f43691740",
+        "a3510266-3bab-11ec-997c-784f43691740",
+        "a20951a6-3bab-11ec-997c-784f43691740",
+        "a0a16c9a-3bab-11ec-997c-784f43691740",
+        "a1fb5970-3bab-11ec-997c-784f43691740",
+        "a07f53d0-3bab-11ec-997c-784f43691740",
+        "a4342a50-3bab-11ec-997c-784f43691740",
+        "d62bfcf8-5286-11ec-a35d-69ef77974be3",
+        "a206abae-3bab-11ec-997c-784f43691740",
+        "a1db699e-3bab-11ec-997c-784f43691740",
+        "9da3cc2c-3bab-11ec-997c-784f43691740",
+        "49414368-9492-11ec-8c03-8fa79ee10251",
+        "a046152a-3bab-11ec-997c-784f43691740",
+        "9f69f98c-3bab-11ec-997c-784f43691740",
+        "a1144896-3bab-11ec-997c-784f43691740",
+        "a4521a24-3bab-11ec-997c-784f43691740",
+        "a418b69e-3bab-11ec-997c-784f43691740",
+        "a33e01a2-3bab-11ec-997c-784f43691740",
+        "a4451388-3bab-11ec-997c-784f43691740",
+        "a370169c-3bab-11ec-997c-784f43691740",
+        "a29b4304-3bab-11ec-997c-784f43691740",
+        "9e514046-3bab-11ec-997c-784f43691740",
+        "a1a8013a-3bab-11ec-997c-784f43691740",
+        "a25d751a-3bab-11ec-997c-784f43691740",
+        "a16bc3ea-5286-11ec-a35d-69ef77974be3",
+        "a34f5f42-3bab-11ec-997c-784f43691740",
+        "a34d3cbc-3bab-11ec-997c-784f43691740",
+        "a42ff084-3bab-11ec-997c-784f43691740",
+        "a012a758-3bab-11ec-997c-784f43691740",
+        "a0639e4c-3bab-11ec-997c-784f43691740",
+        "a33a223a-3bab-11ec-997c-784f43691740",
+        "9febc570-3bab-11ec-997c-784f43691740",
+        "a1a3db8c-3bab-11ec-997c-784f43691740",
+        "9e4d4770-3bab-11ec-997c-784f43691740",
+        "a015a3cc-3bab-11ec-997c-784f43691740",
+        "vsZr8yC1",
+        "a3549566-3bab-11ec-997c-784f43691740",
+        "9e87ea10-3bab-11ec-997c-784f43691740",
+        "a3536402-3bab-11ec-997c-784f43691740",
+        "a23d7a08-3bab-11ec-997c-784f43691740",
+        "a001fc6a-a61c-11ec-8d1d-7998aac3e330",
+        "9feeb992-3bab-11ec-997c-784f43691740",
+        "9fd52b44-3bab-11ec-997c-784f43691740",
+        "a469b562-3bab-11ec-997c-784f43691740",
+        "9e52459a-3bab-11ec-997c-784f43691740",
+        "9df91ea2-3bab-11ec-997c-784f43691740",
+        "bc0a3328-a61c-11ec-8d1d-7998aac3e330",
+        "a12d0084-3bab-11ec-997c-784f43691740",
+        "9da277e6-3bab-11ec-997c-784f43691740",
+        "a1e360cc-3bab-11ec-997c-784f43691740",
+        "9eea674e-3bab-11ec-997c-784f43691740",
+        "a05c68d4-3bab-11ec-997c-784f43691740",
+        "9dea3108-3bab-11ec-997c-784f43691740",
+        "a0033d0e-3bab-11ec-997c-784f43691740",
+        "a0736746-3bab-11ec-997c-784f43691740",
+        "a402a8d6-3bab-11ec-997c-784f43691740",
+        "9f597332-3bab-11ec-997c-784f43691740",
+        "7e9a877e-f61f-11ec-bf8e-ed47401ebff3",
+        "a44935ee-3bab-11ec-997c-784f43691740",
+        "fce9410c-5286-11ec-a35d-69ef77974be3",
+        "a044ae10-3bab-11ec-997c-784f43691740",
+        "9eefc84c-3bab-11ec-997c-784f43691740",
+        "a47408dc-3bab-11ec-997c-784f43691740",
+        "a104f968-3bab-11ec-997c-784f43691740",
+        "9e6f82cc-3bab-11ec-997c-784f43691740",
+        "a4201736-3bab-11ec-997c-784f43691740",
+        "a35c008a-3bab-11ec-997c-784f43691740",
+        "a1dce940-3bab-11ec-997c-784f43691740",
+        "a3491664-3bab-11ec-997c-784f43691740",
+        "a190ff1c-3bab-11ec-997c-784f43691740",
+        "a26b4000-3bab-11ec-997c-784f43691740",
+        "a3900902-3bab-11ec-997c-784f43691740",
+        "a222938c-3bab-11ec-997c-784f43691740",
+        "a34a3986-3bab-11ec-997c-784f43691740",
+        "a0432ca2-3bab-11ec-997c-784f43691740",
+        "a22a31be-3bab-11ec-997c-784f43691740",
+        "a037d708-3bab-11ec-997c-784f43691740",
+        "a463571c-3bab-11ec-997c-784f43691740",
+        "a2ac2930-3bab-11ec-997c-784f43691740",
+        "a1689888-3bab-11ec-997c-784f43691740",
+        "a261b5a8-3bab-11ec-997c-784f43691740",
+        "a1976758-3bab-11ec-997c-784f43691740",
+        "a2a0fbbe-3bab-11ec-997c-784f43691740",
+        "a016d5e4-3bab-11ec-997c-784f43691740",
+        "a445f910-3bab-11ec-997c-784f43691740",
+        "a1a46cdc-3bab-11ec-997c-784f43691740",
+        "9efe8580-3bab-11ec-997c-784f43691740",
+        "9ef4867a-3bab-11ec-997c-784f43691740",
+        "a1eb1880-3bab-11ec-997c-784f43691740",
+        "a1aaa2aa-3bab-11ec-997c-784f43691740",
+        "a57af9c0-3bab-11ec-997c-784f43691740",
+        "9dbcb1ba-3bab-11ec-997c-784f43691740",
+        "a2a4cbf4-3bab-11ec-997c-784f43691740",
+        "a19b802c-3bab-11ec-997c-784f43691740",
+        "9f3bb342-3bab-11ec-997c-784f43691740",
+        "a0694b30-3bab-11ec-997c-784f43691740",
+        "a42b62d0-3bab-11ec-997c-784f43691740",
+        "a0a60476-3bab-11ec-997c-784f43691740",
+        "9d09d7e6-5b6f-11ec-9fa0-558ef698b0b5",
+        "a097e242-3bab-11ec-997c-784f43691740",
+        "a183a556-3bab-11ec-997c-784f43691740",
+        "a1103a3a-3bab-11ec-997c-784f43691740",
+        "a3ee25d2-3bab-11ec-997c-784f43691740",
+        "a02535c6-3bab-11ec-997c-784f43691740",
+        "a447ebf8-3bab-11ec-997c-784f43691740",
+        "a5520b14-3bab-11ec-997c-784f43691740",
+        "9e6d7cac-3bab-11ec-997c-784f43691740",
+        "9f3cdc54-3bab-11ec-997c-784f43691740",
+        "a03a2aa8-3bab-11ec-997c-784f43691740",
+        "a3fe872e-3bab-11ec-997c-784f43691740",
+        "a06736b0-3bab-11ec-997c-784f43691740",
+        "a34e1b14-3bab-11ec-997c-784f43691740",
+        "a44ee7be-3bab-11ec-997c-784f43691740",
+        "a01e8302-3bab-11ec-997c-784f43691740",
+        "a161b108-3bab-11ec-997c-784f43691740",
+        "a2056bea-3bab-11ec-997c-784f43691740",
+        "a5542fc0-3bab-11ec-997c-784f43691740",
+        "dacc8a5a-9491-11ec-8c03-8fa79ee10251",
+        "a185a860-3bab-11ec-997c-784f43691740",
+        "a2533ac8-3bab-11ec-997c-784f43691740"
+      ]
+    },
+    {
+      "id": 66,
       "name": "The World Sights",
       "type": "locations",
       "questionIds": [
@@ -885,7 +1712,7 @@
       ]
     },
     {
-      "id": 35,
+      "id": 67,
       "name": "Dependent territories",
       "type": "countries",
       "questionIds": [
@@ -943,7 +1770,7 @@
       ]
     },
     {
-      "id": 36,
+      "id": 68,
       "name": "Atlantic dependent territories",
       "type": "countries",
       "questionIds": [
@@ -964,7 +1791,7 @@
       ]
     },
     {
-      "id": 37,
+      "id": 69,
       "name": "Carribean dependent territories",
       "type": "countries",
       "questionIds": [
@@ -986,7 +1813,7 @@
       ]
     },
     {
-      "id": 38,
+      "id": 70,
       "name": "Pacific dependent territories",
       "type": "countries",
       "questionIds": [
@@ -1005,7 +1832,7 @@
       ]
     },
     {
-      "id": 39,
+      "id": 71,
       "name": "Indian Ocean dependent territories",
       "type": "countries",
       "questionIds": [
@@ -1025,14 +1852,22 @@
       "children": [
         {
           "name": "North America Countries",
-          "medalId": 22
+          "medalId": 42
+        },
+        {
+          "name": "North America Capitals",
+          "medalId": 43
         },
         {
           "name": "CENTRAL AMERICA",
           "children": [
             {
               "name": "Central America Countries",
-              "medalId": 23
+              "medalId": 44
+            },
+            {
+              "name": "Central America Capitals",
+              "medalId": 45
             }
           ]
         },
@@ -1041,11 +1876,15 @@
           "children": [
             {
               "name": "Carribean Countries",
-              "medalId": 24
+              "medalId": 46
+            },
+            {
+              "name": "Carribean Capitals",
+              "medalId": 47
             },
             {
               "name": "Carribean dependent territories",
-              "medalId": 37
+              "medalId": 69
             }
           ]
         }
@@ -1056,7 +1895,11 @@
       "children": [
         {
           "name": "South America Countries",
-          "medalId": 26
+          "medalId": 50
+        },
+        {
+          "name": "South America Capitals",
+          "medalId": 51
         }
       ]
     },
@@ -1065,18 +1908,26 @@
       "children": [
         {
           "name": "Europe Countries",
-          "medalId": 14
+          "medalId": 28
+        },
+        {
+          "name": "Europe Capitals",
+          "medalId": 29
         },
         {
           "name": "Europe Sights",
-          "medalId": 15
+          "medalId": 30
         },
         {
           "name": "NORTHERN EUROPE",
           "children": [
             {
               "name": "Northern Europe Countries",
-              "medalId": 17
+              "medalId": 33
+            },
+            {
+              "name": "Northern Europe Capitals",
+              "medalId": 34
             }
           ]
         },
@@ -1085,7 +1936,11 @@
           "children": [
             {
               "name": "Western Europe Countries",
-              "medalId": 19
+              "medalId": 37
+            },
+            {
+              "name": "Western Europe Capitals",
+              "medalId": 38
             }
           ]
         },
@@ -1094,7 +1949,11 @@
           "children": [
             {
               "name": "Eastern Europe Countries",
-              "medalId": 16
+              "medalId": 31
+            },
+            {
+              "name": "Eastern Europe Capitals",
+              "medalId": 32
             }
           ]
         },
@@ -1103,7 +1962,11 @@
           "children": [
             {
               "name": "Southern Europe Countries",
-              "medalId": 18
+              "medalId": 35
+            },
+            {
+              "name": "Southern Europe Capitals",
+              "medalId": 36
             }
           ]
         }
@@ -1117,11 +1980,19 @@
           "medalId": 0
         },
         {
+          "name": "Africa Capitals",
+          "medalId": 1
+        },
+        {
           "name": "NORTHERN AFRICA",
           "children": [
             {
               "name": "Northern Africa Countries",
-              "medalId": 1
+              "medalId": 2
+            },
+            {
+              "name": "Northern Africa Capitals",
+              "medalId": 3
             }
           ]
         },
@@ -1130,7 +2001,11 @@
           "children": [
             {
               "name": "Western Africa Countries",
-              "medalId": 5
+              "medalId": 10
+            },
+            {
+              "name": "Western Africa Capitals",
+              "medalId": 11
             }
           ]
         },
@@ -1139,7 +2014,11 @@
           "children": [
             {
               "name": "Middle Africa Countries",
-              "medalId": 3
+              "medalId": 6
+            },
+            {
+              "name": "Middle Africa Capitals",
+              "medalId": 7
             }
           ]
         },
@@ -1148,7 +2027,11 @@
           "children": [
             {
               "name": "Eastern Africa Countries",
-              "medalId": 2
+              "medalId": 4
+            },
+            {
+              "name": "Eastern Africa Capitals",
+              "medalId": 5
             }
           ]
         },
@@ -1157,7 +2040,11 @@
           "children": [
             {
               "name": "Southern Africa Countries",
-              "medalId": 4
+              "medalId": 8
+            },
+            {
+              "name": "Southern Africa Capitals",
+              "medalId": 9
             }
           ]
         }
@@ -1168,14 +2055,22 @@
       "children": [
         {
           "name": "Asia Countries",
-          "medalId": 7
+          "medalId": 14
+        },
+        {
+          "name": "Asia Capitals",
+          "medalId": 15
         },
         {
           "name": "CENTRAL ASIA",
           "children": [
             {
               "name": "Central Asia Countries",
-              "medalId": 8
+              "medalId": 16
+            },
+            {
+              "name": "Central Asia Capitals",
+              "medalId": 17
             }
           ]
         },
@@ -1184,7 +2079,11 @@
           "children": [
             {
               "name": "Eastern Asia Countries",
-              "medalId": 9
+              "medalId": 18
+            },
+            {
+              "name": "Eastern Asia Capitals",
+              "medalId": 19
             }
           ]
         },
@@ -1193,7 +2092,11 @@
           "children": [
             {
               "name": "Western Asia Countries",
-              "medalId": 12
+              "medalId": 24
+            },
+            {
+              "name": "Western Asia Capitals",
+              "medalId": 25
             }
           ]
         },
@@ -1202,7 +2105,11 @@
           "children": [
             {
               "name": "Southern Asia Countries",
-              "medalId": 11
+              "medalId": 22
+            },
+            {
+              "name": "Southern Asia Capitals",
+              "medalId": 23
             }
           ]
         },
@@ -1211,7 +2118,11 @@
           "children": [
             {
               "name": "Southeastern Asia Countries",
-              "medalId": 10
+              "medalId": 20
+            },
+            {
+              "name": "Southeastern Asia Capitals",
+              "medalId": 21
             }
           ]
         }
@@ -1222,14 +2133,22 @@
       "children": [
         {
           "name": "Oceania Countries",
-          "medalId": 28
+          "medalId": 54
+        },
+        {
+          "name": "Oceania Capitals",
+          "medalId": 55
         },
         {
           "name": "MICRONESIA",
           "children": [
             {
               "name": "Micronesia Countries",
-              "medalId": 30
+              "medalId": 58
+            },
+            {
+              "name": "Micronesia Capitals",
+              "medalId": 59
             }
           ]
         },
@@ -1238,7 +2157,11 @@
           "children": [
             {
               "name": "Melanesia Countries",
-              "medalId": 29
+              "medalId": 56
+            },
+            {
+              "name": "Melanesia Capitals",
+              "medalId": 57
             }
           ]
         },
@@ -1247,7 +2170,11 @@
           "children": [
             {
               "name": "Polynesia Countries",
-              "medalId": 31
+              "medalId": 60
+            },
+            {
+              "name": "Polynesia Capitals",
+              "medalId": 61
             }
           ]
         }
@@ -1258,31 +2185,35 @@
       "children": [
         {
           "name": "The World Countries",
-          "medalId": 33
+          "medalId": 64
+        },
+        {
+          "name": "The World Capitals",
+          "medalId": 65
         },
         {
           "name": "The World Sights",
-          "medalId": 34
+          "medalId": 66
         },
         {
           "name": "Dependent territories",
-          "medalId": 35
+          "medalId": 67
         },
         {
           "name": "Atlantic dependent territories",
-          "medalId": 36
+          "medalId": 68
         },
         {
           "name": "Indian Ocean dependent territories",
-          "medalId": 39
+          "medalId": 71
         },
         {
           "name": "Pacific dependent territories",
-          "medalId": 38
+          "medalId": 70
         },
         {
           "name": "Carribean dependent territories",
-          "medalId": 37
+          "medalId": 69
         }
       ]
     }

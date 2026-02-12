@@ -149,7 +149,9 @@ function createMedalLeaf(medal: Medal): HTMLElement {
     const count = medal.questionIds.length
     badge.textContent = medal.type === 'countries'
         ? `${count} countries`
-        : `${count} sights`
+        : medal.type === 'capitals'
+            ? `${count} capitals`
+            : `${count} sights`
 
     el.appendChild(name)
     el.appendChild(badge)
@@ -173,7 +175,7 @@ async function startMedal(medalId: number) {
                 prompt: '',
             })
         }
-    } else {
+    } else if (medal.type === 'locations' || medal.type === 'capitals') {
         for (const locId of medal.questionIds) {
             const loc = locationsData[locId]
             if (!loc) continue

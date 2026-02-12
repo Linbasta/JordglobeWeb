@@ -1,7 +1,7 @@
 export type Medal = {
     id: number
     name: string
-    type: 'countries' | 'locations'
+    type: 'countries' | 'locations' | 'capitals'
     questionIds: string[]
 }
 

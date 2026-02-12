@@ -48,7 +48,7 @@ type LegacyMedal = {
     QuestionIds: string[];
 };
 
-const KEEP_TYPES = new Set(['Countries', 'Locations']);
+const KEEP_TYPES = new Set(['Countries', 'Locations', 'Capitals']);
 
 const legacyMedals: LegacyMedal[] = legacyData.Medals.filter(
     (m: LegacyMedal) => KEEP_TYPES.has(m.BossType)
@@ -62,7 +62,7 @@ const referencedLocations = new Map<string, { name: string; lat: number; lng: nu
 type OutputMedal = {
     id: number;
     name: string;
-    type: 'countries' | 'locations';
+    type: 'countries' | 'locations' | 'capitals';
     questionIds: string[];
 };
 
@@ -79,7 +79,7 @@ for (let i = 0; i < legacyMedals.length; i++) {
             type: 'countries',
             questionIds: m.EnabledCountryIso2s ?? [],
         });
-    } else if (m.BossType === 'Locations') {
+    } else if (m.BossType === 'Locations' || m.BossType === 'Capitals') {
         const questionIds: string[] = [];
         for (const qid of m.QuestionIds) {
             const loc = locationById.get(qid);
@@ -93,7 +93,7 @@ for (let i = 0; i < legacyMedals.length; i++) {
         medals.push({
             id: i,
             name: m.Name,
-            type: 'locations',
+            type: m.BossType === 'Capitals' ? 'capitals' : 'locations',
             questionIds,
         });
     }
@@ -159,10 +159,12 @@ writeFileSync(locationsPath, JSON.stringify(locationsOutput, null, 2), 'utf-8');
 
 const countriesMedals = medals.filter(m => m.type === 'countries');
 const locationsMedals = medals.filter(m => m.type === 'locations');
+const capitalsMedals = medals.filter(m => m.type === 'capitals');
 
 console.log('=== Medal Conversion Summary ===');
 console.log(`  Countries medals:    ${countriesMedals.length}`);
 console.log(`  Locations medals:    ${locationsMedals.length}`);
+console.log(`  Capitals medals:     ${capitalsMedals.length}`);
 console.log(`  Total medals:        ${medals.length}`);
 console.log(`  Unique locations:    ${referencedLocations.size}`);
 console.log(`  Menu root items:     ${menu.length}`);
