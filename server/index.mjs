@@ -11,6 +11,18 @@ import { WebSocketServer } from 'ws';
 import os from 'os';
 import { appendFileSync, writeFileSync } from 'fs';
 import { getRandomCity, calculateDistance } from './cities.mjs';
+import { getRandomVideo, videos } from './videos.mjs';
+
+// ============================================================================
+// QUIZ CONFIGURATION
+// ============================================================================
+const QUIZ_CONFIG = {
+    mode: 'video-only',          // 'mixed' | 'text-only' | 'video-only'
+    randomOrder: false,           // true = random selection, false = sequential order
+    videoProbability: 0.3,        // Only used in 'mixed' mode (0.3 = 30% videos)
+    showPresentationOnClient: false  // false = host-only, true = show on player devices too
+};
+// ============================================================================
 
 // Logging setup
 const LOG_FILE = 'game-server.log';
@@ -51,11 +63,12 @@ const wss = new WebSocketServer({ port: PORT, host: '0.0.0.0' });
 const players = [];
 const hosts = new Set();
 let gameStarted = false;
-let currentCity = null;
-const answers = new Map(); // playerName -> { lat, lon, positions }
+let currentQuestion = null;  // Current question object (text or video)
+const answers = new Map(); // playerName -> { lat, lng, positions }
 const scores = new Map();  // playerName -> total score
 let maxRounds = 2; // Default number of rounds
 let currentRound = 0;
+let videoQuestionIndex = 0;  // For sequential video questions (when randomOrder=false)
 
 function broadcast(message) {
     const data = JSON.stringify(message);
@@ -77,13 +90,30 @@ function getPlayerList() {
 function startNewRound() {
     answers.clear();
     currentRound++;
-    currentCity = getRandomCity();
-    log(`Round ${currentRound}/${maxRounds}: ${currentCity.name}, ${currentCity.country}`);
+
+    // Select question based on QUIZ_CONFIG
+    if (QUIZ_CONFIG.mode === 'video-only') {
+        if (QUIZ_CONFIG.randomOrder) {
+            currentQuestion = getRandomVideo();
+        } else {
+            // Sequential order through videos array
+            currentQuestion = videos[videoQuestionIndex % videos.length];
+            videoQuestionIndex++;
+        }
+    } else if (QUIZ_CONFIG.mode === 'text-only') {
+        currentQuestion = getRandomCity();
+    } else {
+        // Mixed mode - use videoProbability
+        const useVideo = Math.random() < QUIZ_CONFIG.videoProbability;
+        currentQuestion = useVideo ? getRandomVideo() : getRandomCity();
+    }
+
+    log(`Round ${currentRound}/${maxRounds}: ${currentQuestion.present} question - ${currentQuestion.locationName || currentQuestion.prompt}`);
 
     broadcast({
         type: 'question',
-        city: currentCity.name,
-        country: currentCity.country,
+        question: currentQuestion,
+        showPresentationOnClient: QUIZ_CONFIG.showPresentationOnClient,
         round: currentRound,
         maxRounds: maxRounds
     });
@@ -99,14 +129,14 @@ function checkAllAnswered() {
     const results = players.map(p => {
         const answer = answers.get(p.name);
         const distance = calculateDistance(
-            currentCity.lat, currentCity.lon,
-            answer.lat, answer.lon
+            currentQuestion.lat, currentQuestion.lng,
+            answer.lat, answer.lng
         );
         return {
             name: p.name,
             distance: distance,
             lat: answer.lat,
-            lon: answer.lon,
+            lng: answer.lng,
             positions: answer.positions || []
         };
     });
@@ -127,11 +157,11 @@ function checkAllAnswered() {
 
     broadcast({
         type: 'reveal',
+        question: currentQuestion,  // Include original question for context
         correct: {
-            name: currentCity.name,
-            country: currentCity.country,
-            lat: currentCity.lat,
-            lon: currentCity.lon
+            lat: currentQuestion.lat,
+            lng: currentQuestion.lng,
+            locationName: currentQuestion.locationName || currentQuestion.prompt
         },
         results: results,
         players: getPlayerList(),
@@ -211,13 +241,14 @@ wss.on('connection', (ws) => {
                         gameStarted = true;
                         currentRound = 0;
                         scores.clear();
+                        videoQuestionIndex = 0;  // Reset video index for sequential mode
 
                         // Set max rounds if provided
                         if (message.maxRounds && message.maxRounds > 0) {
                             maxRounds = message.maxRounds;
                         }
 
-                        log(`Game started! Max rounds: ${maxRounds}`);
+                        log(`Game started! Mode: ${QUIZ_CONFIG.mode}, Random: ${QUIZ_CONFIG.randomOrder}, Max rounds: ${maxRounds}`);
                         broadcast({ type: 'game-start', maxRounds });
 
                         // Start first round after short delay
@@ -227,15 +258,15 @@ wss.on('connection', (ws) => {
                 }
 
                 case 'submit-answer': {
-                    if (!gameStarted || !currentCity) return;
+                    if (!gameStarted || !currentQuestion) return;
                     if (answers.has(playerName)) return; // Already answered
 
                     answers.set(playerName, {
                         lat: message.lat,
-                        lon: message.lon,
+                        lng: message.lng || message.lon,  // Support both lng (new) and lon (old) for compatibility
                         positions: message.positions || [] // Optional recorded positions
                     });
-                    log(`${playerName} answered: lat=${message.lat}, lon=${message.lon}, positions=${message.positions ? message.positions.length : 0}`);
+                    log(`${playerName} answered: lat=${message.lat}, lng=${message.lng || message.lon}, positions=${message.positions ? message.positions.length : 0}`);
 
                     // Broadcast that this player answered
                     broadcast({
@@ -272,11 +303,12 @@ wss.on('connection', (ws) => {
                     players.length = 0;
                     hosts.clear();
                     gameStarted = false;
-                    currentCity = null;
+                    currentQuestion = null;
                     answers.clear();
                     scores.clear();
                     currentRound = 0;
                     maxRounds = 2;
+                    videoQuestionIndex = 0;
 
                     // Notify all clients
                     broadcast({ type: 'game-reset' });

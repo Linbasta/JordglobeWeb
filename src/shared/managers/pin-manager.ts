@@ -104,7 +104,13 @@ function setupEventHandlers(): void {
 
     canvas.addEventListener('pointerup', (e) => {
         if (isPlacingMode && (e.button === 0 || e.button === 2)) {
-            exitPlacingMode(true);
+            // Check if pointer is in bottom cancel zone (near pin UI)
+            const cancelZoneHeight = 200; // pixels from bottom
+            const isInCancelZone = e.clientY > canvas.height - cancelZoneHeight;
+
+            // If in cancel zone, don't place pin (returns to UI)
+            // Otherwise, place pin normally
+            exitPlacingMode(!isInCancelZone);
         }
     });
 
@@ -145,17 +151,7 @@ function positionPinAtNormal(normal: Vector3): void {
         previewPin.setEnabled(true);
     }
 
-    // Scale pin based on camera zoom (using config values)
-    if (previewPinContainer) {
-        const config = getConfig();
-        const pinScale = getZoomValue(
-            camera,
-            config.zoom.pinScale.closeValue,
-            config.zoom.pinScale.farValue,
-            config.zoom.pinScale.easing
-        );
-        previewPinContainer.scaling.setAll(pinScale);
-    }
+    // Note: Pin scaling is handled by updatePinScaleIfPlacing() in the render loop
 
     // Detect which country the pin is over
     const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
@@ -327,4 +323,25 @@ export function onPlacingModeChange(callback: (isPlacing: boolean) => void): voi
 
 export function onPinMove(callback: (latLon: LatLon) => void): void {
     onPinMoveCallback = callback;
+}
+
+/**
+ * Update pin scale based on current camera zoom.
+ * Call this every frame to ensure smooth scaling during zoom.
+ * No-op if not in placing mode.
+ */
+export function updatePinScaleIfPlacing(): void {
+    if (!isPlacingMode || !previewPinContainer) return;
+
+    const config = getConfig();
+    const pinScale = getZoomValue(
+        camera,
+        config.zoom.pinScale.closeValue,
+        config.zoom.pinScale.farValue,
+        config.zoom.pinScale.easing
+    );
+
+    previewPinContainer.scaling.x = pinScale;
+    previewPinContainer.scaling.y = pinScale;
+    previewPinContainer.scaling.z = pinScale;
 }

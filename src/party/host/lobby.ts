@@ -7,6 +7,7 @@ import { EarthGlobe } from '../../earth-globe';
 import { RevealVisualizer } from '../../shared/visualizers/reveal-visualizer';
 import { Confetti } from '../../shared/effects/confetti';
 import { config } from '../../config';
+import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
 
 interface Player {
     name: string;
@@ -107,7 +108,7 @@ class HostLobby {
                         break;
 
                     case 'question':
-                        this.showQuestion(message.city);
+                        this.showQuestion(message.question);
                         break;
 
                     case 'player-answered':
@@ -189,13 +190,14 @@ class HostLobby {
         document.querySelector('.globe-container')?.appendChild(this.resultsOverlay);
     }
 
-    private async showResults(correct: { name: string; country: string; lat: number; lon: number }, results: { name: string; distance: number; points: number; lat: number; lon: number }[], players?: Player[]): Promise<void> {
+    private async showResults(correct: { locationName: string; lat: number; lng: number }, results: { name: string; distance: number; points: number; lat: number; lng: number }[], players?: Player[]): Promise<void> {
         if (!this.resultsOverlay) return;
 
-        // Hide question overlay
+        // Hide question overlay and video overlay
         if (this.questionOverlay) {
             this.questionOverlay.style.display = 'none';
         }
+        hideVideoOverlay();
 
         // Update players and leaderboard if provided
         if (players) {
@@ -205,9 +207,10 @@ class HostLobby {
 
         // Show visual reveal (pins + arcs) and wait for animation + delay
         if (this.revealVisualizer) {
+            // Convert lng to lon for reveal visualizer (it expects lon)
             await this.revealVisualizer.showReveal({
-                correct,
-                results
+                correct: { ...correct, lon: correct.lng } as any,
+                results: results.map(r => ({ ...r, lon: r.lng })) as any
             });
         }
 
@@ -215,7 +218,7 @@ class HostLobby {
         this.resultsOverlay.innerHTML = `
             <div style="color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 5px;">The answer was</div>
             <div style="color: #e94560; font-size: 2rem; font-weight: bold; margin-bottom: 25px;">
-                ${correct.name}, ${correct.country}
+                ${correct.locationName}
             </div>
             <div style="text-align: left;">
                 ${results.map((r, i) => `
@@ -292,7 +295,7 @@ class HostLobby {
         document.querySelector('.globe-container')?.appendChild(this.questionOverlay);
     }
 
-    private showQuestion(city: string): void {
+    private showQuestion(question: any): void {
         if (!this.questionOverlay) return;
 
         // Hide results overlay if visible
@@ -305,14 +308,32 @@ class HostLobby {
             this.revealVisualizer.hideReveal();
         }
 
-        const cityEl = this.questionOverlay.querySelector('#cityName');
-        if (cityEl) cityEl.textContent = city;
-
         // Reset all players' answer status
         this.players = this.players.map(p => ({ ...p, hasAnswered: false }));
         this.updateAnswerStatus();
 
-        this.questionOverlay.style.display = 'block';
+        // Show/hide small country markers based on question type
+        if (this.globe) {
+            if (question.answer === 'country') {
+                this.globe.showAllSmallCountryMarkers();
+            } else {
+                this.globe.hideAllSmallCountryMarkers();
+            }
+        }
+
+        // Show video or text question based on presentation type
+        if (question.present === 'video') {
+            // Show video overlay
+            showVideoOverlay(question.youtubeId, question.prompt, question.startTime, question.endTime);
+            // Hide text question overlay
+            this.questionOverlay.style.display = 'none';
+        } else {
+            // Show text question (existing behavior)
+            hideVideoOverlay();
+            const promptEl = this.questionOverlay.querySelector('#cityName');
+            if (promptEl) promptEl.textContent = question.prompt;
+            this.questionOverlay.style.display = 'block';
+        }
     }
 
     private updateAnswerStatus(): void {

@@ -41,19 +41,19 @@ export function showVideoOverlay(
     if (startTime !== undefined) embedUrl += `&start=${Math.floor(startTime)}`
     if (endTime !== undefined) embedUrl += `&end=${Math.floor(endTime)}`
 
-    // Container — centered horizontally, top-aligned, max 25vh tall
+    // Container — centered horizontally, top-aligned
     container = document.createElement('div')
     container.style.cssText =
         'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:500;' +
-        'max-height:25vh;display:flex;flex-direction:column;' +
+        'display:flex;flex-direction:column;' +
         'border-radius:8px;overflow:hidden;' +
         'box-shadow:0 4px 24px rgba(0,0,0,0.5);' +
         'background:#111;pointer-events:auto;'
 
-    // Iframe wrapper — height-driven, aspect ratio determines width
+    // Iframe wrapper — fixed height, aspect ratio determines width
     const iframeWrap = document.createElement('div')
     iframeWrap.style.cssText =
-        'flex:1;min-height:0;aspect-ratio:16/9;overflow:hidden;'
+        'height:25vh;aspect-ratio:16/9;overflow:hidden;'
 
     const iframe = document.createElement('iframe')
     iframe.src = embedUrl

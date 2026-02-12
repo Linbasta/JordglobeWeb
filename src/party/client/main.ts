@@ -5,11 +5,15 @@ import { JoinScreen } from './join-screen';
 import { WaitingScreen } from './waiting-screen';
 import { GameSocket } from './socket';
 import { PartyGameController } from './party-game-controller';
-import { onPinPlaced, getRecordedPositions } from '../../shared/managers/pin-manager';
+import { onPinPlaced, getRecordedPositions, onPlacingModeChange } from '../../shared/managers/pin-manager';
 import { Confetti } from '../../shared/effects/confetti';
+import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
+import { loadConfig } from '../../shared/config/global-config';
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {
+    // Load configuration
+    await loadConfig();
     const joinScreen = new JoinScreen();
     const waitingScreen = new WaitingScreen();
     const socket = new GameSocket();
@@ -67,21 +71,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('gameScreen')?.appendChild(questionOverlay);
     }
 
-    function showQuestion(city: string): void {
+    function showQuestion(prompt: string): void {
         if (!questionOverlay) return;
 
-        // Hide results overlay if visible
-        if (resultsOverlay) resultsOverlay.style.display = 'none';
-
-        // Reset answer state for new question
-        hasAnswered = false;
-        const instructionText = questionOverlay.querySelector('#instructionText') as HTMLElement;
-        const status = questionOverlay.querySelector('#answerStatus') as HTMLElement;
-        if (instructionText) instructionText.style.display = 'block';
-        if (status) status.style.display = 'none';
-
-        const cityEl = questionOverlay.querySelector('#cityName');
-        if (cityEl) cityEl.textContent = city;
+        const promptEl = questionOverlay.querySelector('#cityName');
+        if (promptEl) promptEl.textContent = prompt;
 
         questionOverlay.style.display = 'block';
     }
@@ -128,7 +122,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('gameScreen')?.appendChild(resultsOverlay);
     }
 
-    function showResults(correct: { name: string; country: string }, results: { name: string; distance: number; points: number }[]): void {
+    function showResults(correct: { locationName: string }, results: { name: string; distance: number; points: number }[]): void {
         if (!resultsOverlay) return;
 
         // Hide question overlay
@@ -137,7 +131,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         resultsOverlay.innerHTML = `
             <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 5px;">The answer was</div>
             <div style="color: #e94560; font-size: 1.5rem; font-weight: bold; margin-bottom: 20px;">
-                ${correct.name}, ${correct.country}
+                ${correct.locationName}
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 ${results.map((r, i) => `
@@ -301,6 +295,26 @@ window.addEventListener('DOMContentLoaded', async () => {
                     console.log(`Recorded ${positions.length} positions`);
                     handleAnswerSubmitted(latLon.lat, latLon.lon, positions);
                 });
+
+                // Hide "Watch the host screen!" overlay when placing pin
+                onPlacingModeChange((isPlacing) => {
+                    // Hide/show pin UI (same as BaseGameController does)
+                    const pinUI = controller?.getPinUI();
+                    if (pinUI) {
+                        pinUI.setPinButtonVisible(!isPlacing);
+                    }
+
+                    // Hide/show question overlay
+                    if (isPlacing) {
+                        // Hide overlay when dragging pin
+                        if (questionOverlay) questionOverlay.style.display = 'none';
+                    } else {
+                        // Show overlay again when done placing (if not answered yet)
+                        if (questionOverlay && !hasAnswered) {
+                            questionOverlay.style.display = 'block';
+                        }
+                    }
+                });
             }
         });
 
@@ -314,13 +328,50 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Handle question from server
     socket.on('question', (data) => {
-        console.log(`Question: Where is ${data.city}?`);
-        showQuestion(data.city);
+        const q = data.question;
+        const showOnClient = data.showPresentationOnClient ?? false;  // Default to host-only
+        console.log(`Question (${q.present}): ${q.prompt || q.locationName}, showOnClient: ${showOnClient}`);
+
+        // Hide results overlay from previous round
+        if (resultsOverlay) resultsOverlay.style.display = 'none';
+
+        // Reset answer state for new question
+        hasAnswered = false;
+        if (questionOverlay) {
+            const instructionText = questionOverlay.querySelector('#instructionText') as HTMLElement;
+            const status = questionOverlay.querySelector('#answerStatus') as HTMLElement;
+            if (instructionText) instructionText.style.display = 'block';
+            if (status) status.style.display = 'none';
+        }
+
+        // Only show presentation (video/text) if configured to show on client
+        if (showOnClient) {
+            if (q.present === 'video') {
+                // Show video overlay
+                showVideoOverlay(q.youtubeId, q.prompt, q.startTime, q.endTime);
+                // Hide text question overlay
+                if (questionOverlay) questionOverlay.style.display = 'none';
+            } else {
+                // Show text question
+                hideVideoOverlay();
+                showQuestion(q.prompt);
+            }
+        } else {
+            // Host-only mode: hide all presentation overlays, just show minimal instruction
+            hideVideoOverlay();
+            if (questionOverlay) {
+                questionOverlay.style.display = 'block';
+                const promptEl = questionOverlay.querySelector('#cityName');
+                if (promptEl) promptEl.textContent = 'Watch the host screen!';
+            }
+        }
     });
 
     // Handle results reveal
     socket.on('reveal', (data) => {
         console.log('Results revealed:', data);
+        // Hide video overlay if it was showing
+        hideVideoOverlay();
         showResults(data.correct, data.results);
     });
 

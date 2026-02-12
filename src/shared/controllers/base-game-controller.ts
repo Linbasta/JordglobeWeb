@@ -20,7 +20,7 @@ import {
 } from '../../earth-globe';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
-import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode } from '../managers/pin-manager';
+import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode, updatePinScaleIfPlacing } from '../managers/pin-manager';
 import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 
@@ -99,6 +99,9 @@ export abstract class BaseGameController {
                     const deltaTime = now - lastFrameTime;
                     lastFrameTime = now;
                     this.stateManager.sync(globe, deltaTime);
+
+                    // Update pin scale continuously during placement (for smooth zoom scaling)
+                    updatePinScaleIfPlacing();
                 });
 
                 // Expose state manager for debugging

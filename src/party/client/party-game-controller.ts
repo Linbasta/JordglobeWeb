@@ -32,9 +32,10 @@ export class PartyGameController extends BaseGameController {
     // =========================================================================
 
     protected async onGlobeReady(globe: EarthGlobeAPI): Promise<void> {
-        console.log('[PartyGameController] Globe ready');
         // Base class has already created PinManager at this point
-        // No additional modules needed for party game (yet)
+
+        // Hide small country markers - party game only uses location-guess questions
+        globe.hideAllSmallCountryMarkers();
     }
 
     protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
