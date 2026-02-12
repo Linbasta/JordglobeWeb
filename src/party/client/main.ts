@@ -89,8 +89,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         hasAnswered = true;
         console.log(`Submitting answer: ${lat.toFixed(2)}, ${lon.toFixed(2)}`);
 
+        // Convert positions from lon to lng format for socket
+        const positionsLng = positions?.map(p => ({ lat: p.lat, lng: p.lon, timestamp: p.timestamp }));
+
         // Submit to server with recorded positions
-        socket.submitAnswer(lat, lon, positions);
+        socket.submitAnswer(lat, lon, positionsLng);
 
         // Update UI
         if (questionOverlay) {
@@ -324,6 +327,33 @@ window.addEventListener('DOMContentLoaded', async () => {
         createQuestionOverlay();
         createResultsOverlay();
         createFinalResultsOverlay();
+
+        // Hide "Watch the host screen!" overlay when user interacts with globe
+        const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+        if (canvas) {
+            let hasInteracted = false;
+
+            const hideWatchHostOverlay = () => {
+                if (!hasInteracted && questionOverlay && questionOverlay.style.display === 'block') {
+                    const promptEl = questionOverlay.querySelector('#cityName');
+                    if (promptEl && promptEl.textContent === 'Watch the host screen!') {
+                        questionOverlay.style.display = 'none';
+                        hasInteracted = true;
+                    }
+                }
+            };
+
+            // Hide on pointer interaction (touch or mouse)
+            canvas.addEventListener('pointerdown', hideWatchHostOverlay);
+
+            // Hide on zoom (wheel)
+            canvas.addEventListener('wheel', hideWatchHostOverlay);
+
+            // Reset hasInteracted flag on new question
+            socket.on('question', () => {
+                hasInteracted = false;
+            });
+        }
     });
 
     // Handle question from server
@@ -348,13 +378,13 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (showOnClient) {
             if (q.present === 'video') {
                 // Show video overlay
-                showVideoOverlay(q.youtubeId, q.prompt, q.startTime, q.endTime);
+                showVideoOverlay(q.youtubeId || '', q.prompt || '', q.startTime, q.endTime);
                 // Hide text question overlay
                 if (questionOverlay) questionOverlay.style.display = 'none';
             } else {
                 // Show text question
                 hideVideoOverlay();
-                showQuestion(q.prompt);
+                showQuestion(q.prompt || q.locationName || 'Unknown');
             }
         } else {
             // Host-only mode: hide all presentation overlays, just show minimal instruction

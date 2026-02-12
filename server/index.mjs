@@ -66,7 +66,7 @@ let gameStarted = false;
 let currentQuestion = null;  // Current question object (text or video)
 const answers = new Map(); // playerName -> { lat, lng, positions }
 const scores = new Map();  // playerName -> total score
-let maxRounds = 2; // Default number of rounds
+let maxRounds = 7; // Default number of rounds (7 viral videos)
 let currentRound = 0;
 let videoQuestionIndex = 0;  // For sequential video questions (when randomOrder=false)
 

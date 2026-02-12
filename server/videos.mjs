@@ -1,244 +1,102 @@
 /**
- * Video Questions for Party Game
+ * Viral Video Quiz - 7 Legendary Videos
  *
  * Each question follows the solo quiz Question type:
  * - present: 'video'
  * - answer: 'location-guess'
  * - youtubeId, lat, lng, prompt, locationName, startTime, endTime
  *
- * NOTE: When using sequential order (randomOrder: false in server config),
- * these videos will be shown in the order they appear in this array.
+ * Geographic diversity: Asia, Africa, Europe, North America, Latin America
  */
 
 export const videos = [
-    // Music Videos - Iconic Locations
+    // 1. Gangnam Style - The video that broke YouTube
+    {
+        present: 'video',
+        answer: 'location-guess',
+        youtubeId: '9bZkp7q19f0',
+        lat: 37.5172,
+        lng: 127.0473,
+        prompt: 'Where was this viral dance phenomenon filmed?',
+        locationName: 'Gangnam, Seoul, South Korea',
+        startTime: 30,
+        endTime: 60
+    },
+
+    // 2. Despacito - Most viewed video ever
+    {
+        present: 'video',
+        answer: 'location-guess',
+        youtubeId: 'kJQP7kiw5Fk',
+        lat: 18.4655,
+        lng: -66.1057,
+        prompt: 'Where was this record-breaking music video filmed?',
+        locationName: 'San Juan, Puerto Rico',
+        startTime: 0,
+        endTime: 30
+    },
+
+    // 3. Rebecca Black - Friday (infamous viral sensation)
+    {
+        present: 'video',
+        answer: 'location-guess',
+        youtubeId: 'kfVsfOSbJY0',
+        lat: 34.0522,
+        lng: -118.2437,
+        prompt: 'Where was this infamous viral video filmed?',
+        locationName: 'Los Angeles, California, USA',
+        startTime: 30,
+        endTime: 60
+    },
+
+    // 4. Double Rainbow - "What does it mean?!"
+    {
+        present: 'video',
+        answer: 'location-guess',
+        youtubeId: 'OQSNhk5ICTI',
+        lat: 37.7459,
+        lng: -119.5933,
+        prompt: 'Where was this emotional rainbow moment filmed?',
+        locationName: 'Yosemite National Park, California, USA',
+        startTime: 0,
+        endTime: 30
+    },
+
+    // 5. Never Gonna Give You Up - The legendary Rickroll
     {
         present: 'video',
         answer: 'location-guess',
         youtubeId: 'dQw4w9WgXcQ',
         lat: 51.5074,
         lng: -0.1278,
-        prompt: 'Where was this music video filmed?',
-        locationName: 'London',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'JGwWNGJdvx8',
-        lat: 37.5665,
-        lng: 126.9780,
-        prompt: 'Where is this K-pop song from?',
-        locationName: 'Seoul',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'kJQP7kiw5Fk',
-        lat: 6.2476,
-        lng: -75.5658,
-        prompt: 'Where was this music video filmed?',
-        locationName: 'Medellín',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '60ItHLz5WEA',
-        lat: 48.8566,
-        lng: 2.3522,
-        prompt: 'Where was this music video filmed?',
-        locationName: 'Paris',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'RgKAFK5djSk',
-        lat: -22.9068,
-        lng: -43.1729,
-        prompt: 'Where was this music video filmed?',
-        locationName: 'Rio de Janeiro',
+        prompt: 'Where was this legendary internet meme filmed?',
+        locationName: 'London, United Kingdom',
         startTime: 0,
         endTime: 30
     },
 
-    // Travel & City Videos
+    // 6. Viral video from Uganda
     {
         present: 'video',
         answer: 'location-guess',
-        youtubeId: 'TLV4_xaYynY',
-        lat: 35.6762,
-        lng: 139.6503,
-        prompt: 'Which city is featured in this video?',
-        locationName: 'Tokyo',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'BrlF46M8h-w',
-        lat: 40.7128,
-        lng: -74.0060,
-        prompt: 'Which city is this?',
-        locationName: 'New York',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'EQ8ViYIeH04',
-        lat: 25.2048,
-        lng: 55.2708,
-        prompt: 'Where is this place?',
-        locationName: 'Dubai',
+        youtubeId: 'LRmALdMJxoU',
+        lat: -0.3476,
+        lng: 31.7347,
+        prompt: 'Where is this viral video from?',
+        locationName: 'Masaka, Uganda',
         startTime: 0,
         endTime: 30
     },
 
-    // Landmarks & Nature
+    // 7. Viral video from Hong Kong
     {
         present: 'video',
         answer: 'location-guess',
-        youtubeId: '4zdl8TvYBjw',
-        lat: -13.1631,
-        lng: -72.5450,
-        prompt: 'Where is this landmark?',
-        locationName: 'Machu Picchu',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'MLYt_qWqzhg',
-        lat: 29.9792,
-        lng: 31.1342,
-        prompt: 'Where is this ancient site?',
-        locationName: 'Pyramids of Giza',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'LzVL3Vc6UWs',
-        lat: -25.3444,
-        lng: 131.0369,
-        prompt: 'Where is this natural landmark?',
-        locationName: 'Uluru',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'D1ZYhVpdXbQ',
-        lat: 36.1069,
-        lng: -112.1129,
-        prompt: 'Where is this natural wonder?',
-        locationName: 'Grand Canyon',
-        startTime: 0,
-        endTime: 30
-    },
-
-    // European Cities
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'QfSP9p7vF4w',
-        lat: 41.9028,
-        lng: 12.4964,
-        prompt: 'Which ancient city is this?',
-        locationName: 'Rome',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'dXjf3sKG4Oo',
-        lat: 41.3851,
-        lng: 2.1734,
-        prompt: 'Which European city is this?',
-        locationName: 'Barcelona',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'zXiDFKHAYvM',
-        lat: 52.3676,
-        lng: 4.9041,
-        prompt: 'Which city is known for its canals?',
-        locationName: 'Amsterdam',
-        startTime: 0,
-        endTime: 30
-    },
-
-    // Asian Cities
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'HtwPvKSHyJ0',
+        youtubeId: 'nFo_NjgwJbQ',
         lat: 22.3193,
         lng: 114.1694,
-        prompt: 'Which vibrant Asian city is this?',
+        prompt: 'Where is this viral video from?',
         locationName: 'Hong Kong',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'Zy86_qvvxKI',
-        lat: 1.3521,
-        lng: 103.8198,
-        prompt: 'Which modern city-state is this?',
-        locationName: 'Singapore',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'C_iaqKWFIrE',
-        lat: 13.7563,
-        lng: 100.5018,
-        prompt: 'Which Southeast Asian capital is this?',
-        locationName: 'Bangkok',
-        startTime: 0,
-        endTime: 30
-    },
-
-    // Exotic Locations
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'BQ5ax8im3Ow',
-        lat: 64.1466,
-        lng: -21.9426,
-        prompt: 'Where is this Nordic capital?',
-        locationName: 'Reykjavik',
-        startTime: 0,
-        endTime: 30
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'SXiSVQZLje8',
-        lat: -33.8688,
-        lng: 151.2093,
-        prompt: 'Which harbor city is this?',
-        locationName: 'Sydney',
         startTime: 0,
         endTime: 30
     }
