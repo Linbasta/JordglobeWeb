@@ -20,7 +20,7 @@ import {
 } from '../../earth-globe';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
-import { initPinManager, onPlacingModeChange, onPinPlaced as onPinPlacedCb, enterPlacingMode, updatePinScaleIfPlacing } from '../managers/pin-manager';
+import { initPinManager, onPlacingModeChange, onCancelZoneChange, onPinPlaced as onPinPlacedCb, enterPlacingMode, updatePinScaleIfPlacing } from '../managers/pin-manager';
 import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 
@@ -116,6 +116,13 @@ export abstract class BaseGameController {
                 onPlacingModeChange((placing) => {
                     if (this.pinUI) {
                         this.pinUI.setPinButtonVisible(!placing);
+                    }
+                });
+
+                // Wire cancel zone to preview pin UI toggle during drag
+                onCancelZoneChange((inZone) => {
+                    if (this.pinUI) {
+                        this.pinUI.setPinButtonVisible(inZone);
                     }
                 });
 

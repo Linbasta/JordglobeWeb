@@ -41,6 +41,7 @@ let lastPointerX = 0;
 let lastPointerY = 0;
 let pointerValid = false;
 let scrolledThisFrame = false;
+let bottomDeadZone = 0; // pixels from bottom reserved for cancel zone
 
 // --- Private functions ---
 
@@ -70,10 +71,11 @@ function tick(): void {
         pushX = (nx - (1 - EDGE_RIGHT)) / EDGE_RIGHT;
     }
 
+    const deadNy = bottomDeadZone / h;
     if (ny < EDGE_TOP) {
         pushY = -(EDGE_TOP - ny) / EDGE_TOP;  // negative = rotate up (beta decreases)
-    } else if (ny > 1 - EDGE_BOTTOM) {
-        pushY = (ny - (1 - EDGE_BOTTOM)) / EDGE_BOTTOM;  // positive = rotate down (beta increases)
+    } else if (ny > 1 - EDGE_BOTTOM - deadNy && ny <= 1 - deadNy) {
+        pushY = (ny - (1 - EDGE_BOTTOM - deadNy)) / EDGE_BOTTOM;  // positive = rotate down (beta increases)
     }
 
     // Globe silhouette edge detection
@@ -161,6 +163,10 @@ export function updatePointer(clientX: number, clientY: number): void {
     lastPointerX = clientX;
     lastPointerY = clientY;
     pointerValid = true;
+}
+
+export function setBottomDeadZone(pixels: number): void {
+    bottomDeadZone = pixels;
 }
 
 export function consumeScrolledFlag(): boolean {

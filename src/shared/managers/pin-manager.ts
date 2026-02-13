@@ -20,10 +20,12 @@ import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
 import { getConfig } from '../config/global-config';
-import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag } from './pin-scroll';
+import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
 
 const EARTH_RADIUS = 2.0;
 const TOUCH_Y_OFFSET = -50; // negative = upward in screen space, ~50px above fingertip
+const CANCEL_ZONE_WIDTH = 600;
+const CANCEL_ZONE_VISIBLE_HEIGHT = 120; // 150px panel - 30px offset
 
 // --- Module-level state ---
 
@@ -41,6 +43,7 @@ let previewPinContainer: TransformNode | null = null;
 let isPlacingMode = false;
 let hoveredCountry: CountryPolygon | null = null;
 let pinRecorder = new PinRecorder();
+let inCancelZone = false;
 
 let lastClientX = 0;
 let lastClientY = 0;
@@ -49,6 +52,7 @@ let onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => vo
 let onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
 let onPlacingModeChangeCallback: ((isPlacing: boolean) => void) | null = null;
 let onPinMoveCallback: ((latLon: LatLon) => void) | null = null;
+let onCancelZoneChangeCallback: ((inZone: boolean) => void) | null = null;
 
 // --- Private functions ---
 
@@ -95,22 +99,62 @@ function createPreviewPin(): void {
     previewPin.setEnabled(false);
 }
 
+let cancelZoneLoggedOnce = false;
+
+function isPointerInCancelZone(clientX: number, clientY: number): boolean {
+    const rect = canvas.getBoundingClientRect();
+    const cw = rect.width;
+    const ch = rect.height;
+    const relX = clientX - rect.left;
+    const relY = clientY - rect.top;
+    const left = (cw - CANCEL_ZONE_WIDTH) / 2;
+    const right = (cw + CANCEL_ZONE_WIDTH) / 2;
+    const top = ch - CANCEL_ZONE_VISIBLE_HEIGHT;
+
+    if (!cancelZoneLoggedOnce) {
+        console.log('[CancelZone] rect:', JSON.stringify({ top: rect.top, left: rect.left, width: rect.width, height: rect.height }));
+        console.log('[CancelZone] canvas.clientHeight:', canvas.clientHeight, 'canvas.height:', canvas.height);
+        console.log('[CancelZone] window.innerHeight:', window.innerHeight, 'dpr:', window.devicePixelRatio);
+        console.log('[CancelZone] zone: left=', left, 'right=', right, 'top=', top);
+        cancelZoneLoggedOnce = true;
+    }
+    console.log('[CancelZone] pointer:', { clientX, clientY, relX: relX.toFixed(0), relY: relY.toFixed(0) }, 'inZone:', relX >= left && relX <= right && relY >= top);
+
+    return relX >= left && relX <= right && relY >= top;
+}
+
 function setupEventHandlers(): void {
     canvas.addEventListener('pointermove', (e) => {
         if (isPlacingMode && previewPin) {
-            updatePreviewPinFromEvent(e);
+            const nowInCancelZone = isPointerInCancelZone(e.clientX, e.clientY);
+            if (nowInCancelZone !== inCancelZone) {
+                inCancelZone = nowInCancelZone;
+                previewPin.setEnabled(!inCancelZone);
+                // Clear hovered country when entering cancel zone
+                if (inCancelZone && hoveredCountry) {
+                    hoveredCountry = null;
+                    if (onCountryHoverCallback) {
+                        onCountryHoverCallback(null, { lat: 0, lon: 0 });
+                    }
+                }
+                if (onCancelZoneChangeCallback) {
+                    onCancelZoneChangeCallback(inCancelZone);
+                }
+            }
+
+            // Always update pointer for pin-scroll tracking
+            updatePointer(e.clientX, e.clientY);
+
+            // Only update 3D pin position when not in cancel zone
+            if (!inCancelZone) {
+                updatePreviewPinFromEvent(e);
+            }
         }
     });
 
     canvas.addEventListener('pointerup', (e) => {
         if (isPlacingMode && (e.button === 0 || e.button === 2)) {
-            // Check if pointer is in bottom cancel zone (near pin UI)
-            const cancelZoneHeight = 200; // pixels from bottom
-            const isInCancelZone = e.clientY > canvas.height - cancelZoneHeight;
-
-            // If in cancel zone, don't place pin (returns to UI)
-            // Otherwise, place pin normally
-            exitPlacingMode(!isInCancelZone);
+            exitPlacingMode(!isPointerInCancelZone(e.clientX, e.clientY));
         }
     });
 
@@ -240,11 +284,12 @@ export async function initPinManager(
     await loadBossPinModel();
     createPreviewPin();
     initPinScroll(scene, camera, canvas);
+    setBottomDeadZone(CANCEL_ZONE_VISIBLE_HEIGHT);
     setupEventHandlers();
 
     // Re-pick pin position when globe scrolls under stationary pointer
     scene.registerBeforeRender(() => {
-        if (isPlacingMode && consumeScrolledFlag()) {
+        if (isPlacingMode && !inCancelZone && consumeScrolledFlag()) {
             updatePreviewPinAtScreenCoords(lastClientX, lastClientY);
         }
     });
@@ -266,6 +311,7 @@ export function enterPlacingMode(): void {
 
 export function exitPlacingMode(placePin: boolean = false): void {
     isPlacingMode = false;
+    inCancelZone = false;
     document.body.classList.remove('placing-mode');
 
     camera.attachControl(canvas, true);
@@ -323,6 +369,10 @@ export function onPlacingModeChange(callback: (isPlacing: boolean) => void): voi
 
 export function onPinMove(callback: (latLon: LatLon) => void): void {
     onPinMoveCallback = callback;
+}
+
+export function onCancelZoneChange(callback: (inZone: boolean) => void): void {
+    onCancelZoneChangeCallback = callback;
 }
 
 /**
