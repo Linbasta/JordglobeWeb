@@ -98,17 +98,20 @@ export const CAMERA_DEFAULT_RADIUS = 10;
 /** Camera wheel scroll precision */
 export const CAMERA_WHEEL_PRECISION = 50;
 
-/** Camera pinch-zoom precision (higher = less sensitive) */
-export const CAMERA_PINCH_PRECISION = 50;
+/** Camera pinch-zoom delta percentage (zooms by this fraction of current radius per pinch unit) */
+export const CAMERA_PINCH_DELTA_PERCENTAGE = 0.0008;
 
 /** Camera near clipping plane */
 export const CAMERA_MIN_Z = 0.01;
 
-/** Camera angular sensitivity (higher = slower rotation) */
-export const CAMERA_ANGULAR_SENSITIVITY = 4000;
+/** Orbit sensitivity when zoomed in (higher = slower) */
+export const ORBIT_SENSIBILITY_CLOSE = 4000;
 
-/** Camera panning sensitivity */
-export const CAMERA_PANNING_SENSITIVITY = 4000;
+/** Orbit sensitivity when zoomed out (higher = slower) */
+export const ORBIT_SENSIBILITY_FAR = 1000;
+
+/** Mobile orbit multiplier (lower = faster to compensate for small screens) */
+export const MOBILE_ORBIT_MULTIPLIER = 1.0;
 
 // ============================================================================
 // Small Countries
@@ -146,3 +149,47 @@ export const DEFAULT_ASSETS = {
 
 /** Size of the skybox cube */
 export const SKYBOX_SIZE = 1000;
+
+// ============================================================================
+// Zoom-Based Values
+// ============================================================================
+
+/** Camera distance threshold between "close" and "far" interpolation */
+export const ZOOM_THRESHOLD = 10.0;
+
+/** Pin scale: close (zoomed in) and far (zoomed out) */
+export const ZOOM_PIN_SCALE_CLOSE = 10;
+export const ZOOM_PIN_SCALE_FAR = 150;
+
+/** Border thickness multiplier: close and far */
+export const ZOOM_BORDER_THICKNESS_CLOSE = 0.5;
+export const ZOOM_BORDER_THICKNESS_FAR = 1.0;
+
+/** Marker scale: close and far */
+export const ZOOM_MARKER_SCALE_CLOSE = 0.2;
+export const ZOOM_MARKER_SCALE_FAR = 0.8;
+
+/** Marker hit radius (for click detection): close and far */
+export const ZOOM_MARKER_HIT_RADIUS_CLOSE = 0.025;
+export const ZOOM_MARKER_HIT_RADIUS_FAR = 0.1;
+
+/** Collider scale multiplier: close and far */
+export const ZOOM_COLLIDER_SCALE_CLOSE = 1.0;
+export const ZOOM_COLLIDER_SCALE_FAR = 2.0;
+
+/** Live zoom values — read every frame, tweakable via dev panel (Z key) */
+export const zoom = {
+    threshold: ZOOM_THRESHOLD,
+    pinScaleClose: ZOOM_PIN_SCALE_CLOSE,
+    pinScaleFar: ZOOM_PIN_SCALE_FAR,
+    borderThicknessClose: ZOOM_BORDER_THICKNESS_CLOSE,
+    borderThicknessFar: ZOOM_BORDER_THICKNESS_FAR,
+    markerScaleClose: ZOOM_MARKER_SCALE_CLOSE,
+    markerScaleFar: ZOOM_MARKER_SCALE_FAR,
+    markerHitRadiusClose: ZOOM_MARKER_HIT_RADIUS_CLOSE,
+    markerHitRadiusFar: ZOOM_MARKER_HIT_RADIUS_FAR,
+    colliderScaleClose: ZOOM_COLLIDER_SCALE_CLOSE,
+    colliderScaleFar: ZOOM_COLLIDER_SCALE_FAR,
+    orbitSensibilityClose: ORBIT_SENSIBILITY_CLOSE,
+    orbitSensibilityFar: ORBIT_SENSIBILITY_FAR,
+};

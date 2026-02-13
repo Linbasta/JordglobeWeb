@@ -31,15 +31,15 @@ import {
     CAMERA_UPPER_RADIUS,
     CAMERA_DEFAULT_RADIUS,
     CAMERA_WHEEL_PRECISION,
-    CAMERA_PINCH_PRECISION,
+    CAMERA_PINCH_DELTA_PERCENTAGE,
     CAMERA_MIN_Z,
-    CAMERA_ANGULAR_SENSITIVITY,
-    CAMERA_PANNING_SENSITIVITY,
+    MOBILE_ORBIT_MULTIPLIER,
     PICKER_CELL_SIZE,
     DEFAULT_ASSETS,
     MAX_ANIMATION_COUNTRIES,
     TUBE_RADIUS,
-    SMALL_OUTLINE_TUBE_RADIUS
+    SMALL_OUTLINE_TUBE_RADIUS,
+    zoom,
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './geo-math';
 import { CountryPicker } from './country-picker';
@@ -56,7 +56,6 @@ export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
 import { LocationMarkerPool } from './location-marker-pool';
 import { isSmallCountry as checkSmallCountry, isSurroundedCountry } from './small-countries';
-import { getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { tickPerf } from '../shared/dev/perf-overlay';
 
@@ -132,11 +131,13 @@ export class EarthGlobe {
 
     // State
     private isInitialized: boolean = false;
+    private isMobile: boolean = false;
     private colliderDebugUpdate: (() => void) | null = null;
 
     constructor(options: EarthGlobeOptions = {}) {
         this.options = options;
         this.assets = options.assets || {};
+        this.isMobile = matchMedia('(pointer: coarse)').matches;
 
         // Get canvas
         const canvasId = options.canvasId || 'renderCanvas';
@@ -191,11 +192,9 @@ export class EarthGlobe {
         this.camera.lowerRadiusLimit = CAMERA_LOWER_RADIUS;
         this.camera.upperRadiusLimit = CAMERA_UPPER_RADIUS;
         this.camera.wheelPrecision = CAMERA_WHEEL_PRECISION;
-        this.camera.pinchPrecision = CAMERA_PINCH_PRECISION;
+        this.camera.pinchDeltaPercentage = CAMERA_PINCH_DELTA_PERCENTAGE;
         this.camera.minZ = CAMERA_MIN_Z;
-        this.camera.angularSensibilityX = CAMERA_ANGULAR_SENSITIVITY;
-        this.camera.angularSensibilityY = CAMERA_ANGULAR_SENSITIVITY;
-        this.camera.panningSensibility = CAMERA_PANNING_SENSITIVITY;
+        this.camera.panningSensibility = 0; // Disable two-finger pan
     }
 
     private async init(): Promise<void> {
@@ -338,36 +337,34 @@ export class EarthGlobe {
         // Update animations
         this.countryAnimator.update();
 
-        const config = getConfig();
-
         // Update border thickness based on camera zoom
         if (this.segmentBorderMaterial) {
-            const bt = config.zoom.borderThickness;
-            const scale = getZoomValue(this.camera, bt.closeValue, bt.farValue, bt.easing);
+            const scale = getZoomValue(this.camera, zoom.borderThicknessClose, zoom.borderThicknessFar);
             const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
             this.segmentBorderMaterial.setFloat("thicknessOffset", offset);
         }
 
         // Update marker scale based on camera zoom
         if (this.markerPool) {
-            const ms = config.zoom.markerScale;
-            const scale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
+            const scale = getZoomValue(this.camera, zoom.markerScaleClose, zoom.markerScaleFar);
             this.markerPool.updateScale(scale);
         }
 
         // Update small country marker scale based on camera zoom
         if (this.smallMarkerPool) {
-            const ms = config.zoom.markerScale;
-            const smallScale = getZoomValue(this.camera, ms.closeValue, ms.farValue, ms.easing);
+            const smallScale = getZoomValue(this.camera, zoom.markerScaleClose, zoom.markerScaleFar);
             this.smallMarkerPool.updateScale(smallScale);
         }
 
         // Update collider radius scale based on camera zoom
-        const cs = config.zoom.colliderScale;
-        if (cs) {
-            const colliderMul = getZoomValue(this.camera, cs.closeValue, cs.farValue, cs.easing);
-            this.countryPicker.setColliderMultiplier(colliderMul);
-        }
+        const colliderMul = getZoomValue(this.camera, zoom.colliderScaleClose, zoom.colliderScaleFar);
+        this.countryPicker.setColliderMultiplier(colliderMul);
+
+        // Update orbit sensitivity based on camera zoom (and mobile)
+        let angular = getZoomValue(this.camera, zoom.orbitSensibilityClose, zoom.orbitSensibilityFar);
+        if (this.isMobile) angular *= MOBILE_ORBIT_MULTIPLIER;
+        this.camera.angularSensibilityX = angular;
+        this.camera.angularSensibilityY = angular;
 
         // Rebuild debug circles if multiplier changed
         this.colliderDebugUpdate?.();
