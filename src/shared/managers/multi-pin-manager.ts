@@ -28,6 +28,7 @@ export interface PlayerPin {
     color: string;
     position: { lat: number; lon: number };
     mesh: TransformNode;
+    alpha?: number;
 }
 
 export class MultiPinManager {
@@ -75,7 +76,7 @@ export class MultiPinManager {
     /**
      * Add or update a pin for a player
      */
-    addPin(playerId: string, playerName: string, color: string, lat: number, lon: number): void {
+    addPin(playerId: string, playerName: string, color: string, lat: number, lon: number, alpha: number = 1.0): void {
         // Remove existing pin if it exists
         if (this.pins.has(playerId)) {
             this.removePin(playerId);
@@ -87,7 +88,7 @@ export class MultiPinManager {
         }
 
         // Create the pin mesh
-        const pinMesh = this.createPinMesh(color);
+        const pinMesh = this.createPinMesh(color, alpha);
         if (!pinMesh) return;
 
         // Position the pin
@@ -99,7 +100,8 @@ export class MultiPinManager {
             playerName,
             color,
             position: { lat, lon },
-            mesh: pinMesh
+            mesh: pinMesh,
+            alpha
         };
 
         this.pins.set(playerId, playerPin);
@@ -159,7 +161,7 @@ export class MultiPinManager {
     /**
      * Create a pin mesh with the specified color
      */
-    private createPinMesh(color: string): TransformNode | null {
+    private createPinMesh(color: string, alpha: number = 1.0): TransformNode | null {
         if (!this.bossPinTemplate) return null;
 
         // Create pivot transform node
@@ -186,7 +188,7 @@ export class MultiPinManager {
                 cloned.setEnabled(true);
 
                 // Apply colored material
-                const coloredMaterial = this.createColoredMaterial(color);
+                const coloredMaterial = this.createColoredMaterial(color, alpha);
                 cloned.material = coloredMaterial;
             }
         });
@@ -197,13 +199,19 @@ export class MultiPinManager {
     /**
      * Create an unlit material with the specified color
      */
-    private createColoredMaterial(hexColor: string): Material {
-        const material = new StandardMaterial(`pinMaterial_${hexColor}`, this.scene);
+    private createColoredMaterial(hexColor: string, alpha: number = 1.0): Material {
+        const material = new StandardMaterial(`pinMaterial_${hexColor}_${alpha}`, this.scene);
         const rgb = hexToRgb(hexColor);
 
         material.diffuseColor = new Color3(rgb.r, rgb.g, rgb.b);
         material.emissiveColor = new Color3(rgb.r * 0.5, rgb.g * 0.5, rgb.b * 0.5);
         material.specularColor = new Color3(0, 0, 0);
+
+        // Enable transparency if alpha < 1
+        if (alpha < 1.0) {
+            material.alpha = alpha;
+            material.transparencyMode = 2; // MATERIAL_ALPHABLEND
+        }
 
         return material;
     }

@@ -177,7 +177,8 @@ export class RevealVisualizer {
     private showPlayerPins(data: RevealData): void {
         const { results } = data;
 
-        // Add player answer pins only
+        // Add player answer pins only - make them semi-transparent so they don't block the view
+        const PIN_ALPHA = 0.3; // 30% opacity
         results.forEach((result, index) => {
             const color = getPlayerColor(index);
             this.pinManager.addPin(
@@ -185,7 +186,8 @@ export class RevealVisualizer {
                 result.name,
                 color,
                 result.lat,
-                result.lon
+                result.lon,
+                PIN_ALPHA
             );
         });
 
