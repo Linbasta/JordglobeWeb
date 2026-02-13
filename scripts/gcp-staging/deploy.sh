@@ -45,50 +45,56 @@ npm run build
 echo "✅ Build complete"
 echo ""
 
-# Step 2: Sync files to server using gcloud compute scp
-echo "📤 Syncing files to server..."
+# Step 2: Sync files to server using rsync
+echo "📤 Syncing files to server (rsync - only changed files)..."
 
+# Use wrapper script for gcloud ssh compatibility
+RSYNC_SSH="$SCRIPT_DIR/gcloud-rsync-wrapper.sh"
+
+# Sync directories (with trailing slashes to sync contents, not the dir itself)
 echo "   → dist/"
-gcloud compute scp --recurse \
-    "$PROJECT_ROOT/dist" \
-    "$GCP_INSTANCE_NAME:$APP_DIR/" \
-    --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" &>/dev/null
+rsync -az --delete \
+    -e "$RSYNC_SSH" \
+    "$PROJECT_ROOT/dist/" \
+    "$GCP_INSTANCE_NAME:$APP_DIR/dist/"
 
 echo "   → server/"
-gcloud compute scp --recurse \
-    "$PROJECT_ROOT/server" \
-    "$GCP_INSTANCE_NAME:$APP_DIR/" \
-    --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" &>/dev/null
+rsync -az --delete \
+    -e "$RSYNC_SSH" \
+    "$PROJECT_ROOT/server/" \
+    "$GCP_INSTANCE_NAME:$APP_DIR/server/"
 
 echo "   → public/"
-gcloud compute scp --recurse \
-    "$PROJECT_ROOT/public" \
-    "$GCP_INSTANCE_NAME:$APP_DIR/" \
-    --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" &>/dev/null
+rsync -az --delete \
+    -e "$RSYNC_SSH" \
+    "$PROJECT_ROOT/public/" \
+    "$GCP_INSTANCE_NAME:$APP_DIR/public/"
 
+# Sync package files and check if they changed
 echo "   → package.json"
-gcloud compute scp \
+PACKAGE_CHANGED=0
+rsync -az --itemize-changes \
+    -e "$RSYNC_SSH" \
     "$PROJECT_ROOT/package.json" \
-    "$GCP_INSTANCE_NAME:$APP_DIR/" \
-    --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" &>/dev/null
+    "$GCP_INSTANCE_NAME:$APP_DIR/package.json" | grep -q '^>' && PACKAGE_CHANGED=1 || true
 
 if [ -f "$PROJECT_ROOT/package-lock.json" ]; then
-    gcloud compute scp \
+    rsync -az --itemize-changes \
+        -e "$RSYNC_SSH" \
         "$PROJECT_ROOT/package-lock.json" \
-        "$GCP_INSTANCE_NAME:$APP_DIR/" \
-        --project="$GCP_PROJECT" \
-        --zone="$GCP_ZONE" &>/dev/null || true
+        "$GCP_INSTANCE_NAME:$APP_DIR/package-lock.json" | grep -q '^>' && PACKAGE_CHANGED=1 || true
 fi
 
 echo "✅ Files synced"
 echo ""
 
 # Step 3: Install dependencies and restart on server
-echo "🔄 Installing dependencies and restarting app..."
+if [ "$PACKAGE_CHANGED" -eq 1 ]; then
+    echo "🔄 Package files changed - installing dependencies and restarting app..."
+else
+    echo "🔄 Restarting app (dependencies unchanged)..."
+fi
+
 gcloud compute ssh "$GCP_INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
@@ -96,9 +102,13 @@ gcloud compute ssh "$GCP_INSTANCE_NAME" \
 set -e
 cd $APP_DIR
 
-# Install/update dependencies (only production)
-echo "Installing dependencies..."
-npm install --production --quiet
+# Install/update dependencies only if package files changed
+if [ "$PACKAGE_CHANGED" -eq 1 ]; then
+    echo "Installing dependencies..."
+    npm install --production --quiet
+else
+    echo "Skipping npm install (package files unchanged)"
+fi
 
 # Set environment variables for PM2
 export PORT=$APP_PORT
