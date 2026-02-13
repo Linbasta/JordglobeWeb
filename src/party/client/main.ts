@@ -348,11 +348,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             // Hide on zoom (wheel)
             canvas.addEventListener('wheel', hideWatchHostOverlay);
-
-            // Reset hasInteracted flag on new question
-            socket.on('question', () => {
-                hasInteracted = false;
-            });
         }
     });
 
@@ -363,7 +358,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.log(`Question (${q.present}): ${q.prompt || q.locationName}, showOnClient: ${showOnClient}`);
 
         // Hide results overlay from previous round
-        if (resultsOverlay) resultsOverlay.style.display = 'none';
+        if (resultsOverlay) {
+            console.log('[CLIENT] Hiding results overlay');
+            resultsOverlay.style.display = 'none';
+        } else {
+            console.log('[CLIENT] WARNING: resultsOverlay is null/undefined!');
+        }
 
         // Reset answer state for new question
         hasAnswered = false;

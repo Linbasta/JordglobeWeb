@@ -300,7 +300,10 @@ class HostLobby {
 
         // Hide results overlay if visible
         if (this.resultsOverlay) {
+            console.log('[HOST] Hiding results overlay');
             this.resultsOverlay.style.display = 'none';
+        } else {
+            console.log('[HOST] WARNING: resultsOverlay is null/undefined!');
         }
 
         // Hide previous reveal visualization

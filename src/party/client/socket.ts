@@ -7,14 +7,30 @@
 import { Player } from './waiting-screen';
 import { config } from '../../config';
 
+// Question types - matches server format
+type Question = {
+    present: 'text' | 'video';
+    answer: 'city' | 'country';
+    lat: number;
+    lng: number;
+    // For text questions
+    prompt?: string;
+    locationName?: string;
+    // For video questions
+    youtubeId?: string;
+    startTime?: number;
+    endTime?: number;
+};
+
 type MessageHandler = {
     'joined': (data: { name: string; isFirst: boolean; players: Player[] }) => void;
     'player-list': (data: { players: Player[] }) => void;
     'game-start': () => void;
-    'question': (data: { city: string; country: string }) => void;
-    'reveal': (data: { correct: { name: string; country: string }; results: { name: string; distance: number; points: number }[] }) => void;
+    'question': (data: { question: Question; showPresentationOnClient: boolean; round: number; maxRounds: number }) => void;
+    'reveal': (data: { question: Question; correct: { lat: number; lng: number; locationName: string }; results: { name: string; distance: number; points: number; lat: number; lng: number; positions: any[] }[] }) => void;
     'final-results': (data: { players: Player[] }) => void;
     'error': (data: { message: string }) => void;
+    'player-answered': (data: { playerName: string }) => void;
 };
 
 export class GameSocket {
@@ -71,8 +87,8 @@ export class GameSocket {
         this.send({ type: 'start-game', maxRounds });
     }
 
-    submitAnswer(lat: number, lon: number, positions?: { lat: number; lon: number; timestamp: number }[]): void {
-        this.send({ type: 'submit-answer', lat, lon, positions });
+    submitAnswer(lat: number, lng: number, positions?: { lat: number; lng: number; timestamp: number }[]): void {
+        this.send({ type: 'submit-answer', lat, lng, positions });
     }
 
     nextRound(): void {
