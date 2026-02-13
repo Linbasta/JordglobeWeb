@@ -99,27 +99,13 @@ function createPreviewPin(): void {
     previewPin.setEnabled(false);
 }
 
-let cancelZoneLoggedOnce = false;
-
 function isPointerInCancelZone(clientX: number, clientY: number): boolean {
     const rect = canvas.getBoundingClientRect();
-    const cw = rect.width;
-    const ch = rect.height;
     const relX = clientX - rect.left;
     const relY = clientY - rect.top;
-    const left = (cw - CANCEL_ZONE_WIDTH) / 2;
-    const right = (cw + CANCEL_ZONE_WIDTH) / 2;
-    const top = ch - CANCEL_ZONE_VISIBLE_HEIGHT;
-
-    if (!cancelZoneLoggedOnce) {
-        console.log('[CancelZone] rect:', JSON.stringify({ top: rect.top, left: rect.left, width: rect.width, height: rect.height }));
-        console.log('[CancelZone] canvas.clientHeight:', canvas.clientHeight, 'canvas.height:', canvas.height);
-        console.log('[CancelZone] window.innerHeight:', window.innerHeight, 'dpr:', window.devicePixelRatio);
-        console.log('[CancelZone] zone: left=', left, 'right=', right, 'top=', top);
-        cancelZoneLoggedOnce = true;
-    }
-    console.log('[CancelZone] pointer:', { clientX, clientY, relX: relX.toFixed(0), relY: relY.toFixed(0) }, 'inZone:', relX >= left && relX <= right && relY >= top);
-
+    const left = (rect.width - CANCEL_ZONE_WIDTH) / 2;
+    const right = (rect.width + CANCEL_ZONE_WIDTH) / 2;
+    const top = rect.height - CANCEL_ZONE_VISIBLE_HEIGHT;
     return relX >= left && relX <= right && relY >= top;
 }
 
