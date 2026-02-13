@@ -15,7 +15,7 @@ import {
     animateCorrect,
     animateWrong,
     animateShowCorrect,
-    animateToCleared,
+    animateToClearedAfterReveal,
     setDisabledImmediate
 } from '../animation/country-animations'
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
@@ -800,7 +800,7 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
 
     // 7. Clear and sink
     globe.clearCountryOutline()
-    await animateToCleared(globe, correctCountryIndex)
+    await animateToClearedAfterReveal(globe, correctCountryIndex)
 }
 
 /**

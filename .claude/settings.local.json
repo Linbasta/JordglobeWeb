@@ -61,7 +61,8 @@
       "Bash(lsof:*)",
       "Bash(ps:*)",
       "Bash(git checkout:*)",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "Bash(npm run convert-medals:*)"
     ],
     "deny": [],
     "ask": []

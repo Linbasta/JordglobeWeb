@@ -251,7 +251,7 @@ export interface EarthGlobeAPI {
     // Animation control - Altitude
     setCountryAltitude(countryIndex: number, altitude: number): void;
     getCountryAltitude(countryIndex: number): number;
-    animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number): Promise<void>;
+    animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Animation control - State (STATE_NORMAL, STATE_DISABLED, STATE_CLEARED)
     setCountryState(countryIndex: number, state: number): void;
@@ -260,12 +260,12 @@ export interface EarthGlobeAPI {
     // Animation control - Blend (0 = full state effect, 1 = normal appearance)
     setCountryBlend(countryIndex: number, blend: number): void;
     getCountryBlend(countryIndex: number): number;
-    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void>;
+    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Animation control - Expansion (small countries)
     setCountryExpansion(countryIndex: number, expansion: number): void;
     getCountryExpansion(countryIndex: number): number;
-    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void>;
+    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
     isSmallCountry(countryIndex: number): boolean;
     hideSmallCountryMarker(countryIndex: number): void;
     showSmallCountryMarker(countryIndex: number): void;

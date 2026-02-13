@@ -10,6 +10,85 @@ import { Confetti } from '../../shared/effects/confetti';
 import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
 import { loadConfig } from '../../shared/config/global-config';
 
+// Expand icon (corners pointing outward)
+const EXPAND_ICON = 'M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3';
+// Compress icon (corners pointing inward)
+const COMPRESS_ICON = 'M4 14h3a2 2 0 012 2v3m6-18v3a2 2 0 01-2 2H8m12 6h-3a2 2 0 01-2-2v-3M4 10V7a2 2 0 012-2h3';
+
+function requestFullscreen(): void {
+    const doc = document.documentElement as any;
+    if (doc.requestFullscreen) {
+        doc.requestFullscreen();
+    } else if (doc.webkitRequestFullscreen) {
+        doc.webkitRequestFullscreen();
+    }
+}
+
+function exitFullscreen(): void {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+    }
+}
+
+function isFullscreen(): boolean {
+    return !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+}
+
+function canFullscreen(): boolean {
+    const doc = document.documentElement as any;
+    return !!(doc.requestFullscreen || doc.webkitRequestFullscreen);
+}
+
+function setupFullscreenButton(): void {
+    const btn = document.getElementById('fullscreenBtn') as HTMLButtonElement;
+    const prompt = document.getElementById('fullscreenPrompt') as HTMLElement;
+    if (!btn) return;
+
+    if (!canFullscreen()) {
+        btn.style.display = 'none';
+        return;
+    }
+
+    btn.style.display = 'flex';
+
+    // Show the fullscreen prompt
+    if (prompt) {
+        prompt.style.display = 'flex';
+
+        const dismissPrompt = () => {
+            prompt.style.display = 'none';
+        };
+
+        prompt.addEventListener('click', () => {
+            requestFullscreen();
+            dismissPrompt();
+        });
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(dismissPrompt, 5000);
+    }
+
+    btn.addEventListener('click', () => {
+        if (!isFullscreen()) {
+            requestFullscreen();
+        } else {
+            exitFullscreen();
+        }
+    });
+
+    const updateIcon = () => {
+        const iconPath = btn.querySelector('#fsIcon') as SVGPathElement;
+        if (iconPath) {
+            iconPath.setAttribute('d', isFullscreen() ? COMPRESS_ICON : EXPAND_ICON);
+        }
+    };
+
+    document.addEventListener('fullscreenchange', updateIcon);
+    document.addEventListener('webkitfullscreenchange', updateIcon);
+}
+
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {
     // Load configuration
@@ -281,6 +360,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (gameScreen) {
             gameScreen.classList.add('active');
         }
+
+        setupFullscreenButton();
 
         // Create the party game controller
         controller = new PartyGameController('renderCanvas', {

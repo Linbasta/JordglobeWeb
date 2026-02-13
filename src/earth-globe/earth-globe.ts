@@ -613,8 +613,8 @@ export class EarthGlobe {
      * @param targetAltitude Target altitude (0-1)
      * @param durationMs Animation duration in milliseconds
      */
-    animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number): Promise<void> {
-        return this.countryAnimator.animateAltitude(countryIndex, targetAltitude, durationMs);
+    animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
+        return this.countryAnimator.animateAltitude(countryIndex, targetAltitude, durationMs, easing);
     }
 
     /**
@@ -623,8 +623,8 @@ export class EarthGlobe {
      * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
      * @param durationMs Animation duration in milliseconds
      */
-    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void> {
-        return this.countryAnimator.animateBlend(countryIndex, targetBlend, durationMs);
+    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
+        return this.countryAnimator.animateBlend(countryIndex, targetBlend, durationMs, easing);
     }
 
     // =========================================================================
@@ -654,8 +654,8 @@ export class EarthGlobe {
      * @param targetExpansion Target expansion (1.0 = normal, >1 = magnified)
      * @param durationMs Animation duration in milliseconds
      */
-    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void> {
-        return this.countryAnimator.animateExpansion(countryIndex, targetExpansion, durationMs);
+    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
+        return this.countryAnimator.animateExpansion(countryIndex, targetExpansion, durationMs, easing);
     }
 
     /**

@@ -8,7 +8,7 @@ if (import.meta.env.DEV) {
 
 import { EarthGlobe } from '../../earth-globe';
 import { initPinManager, onPinPlaced } from '../../shared/managers/pin-manager';
-import { animateToCleared } from '../../shared/animation/country-animations';
+import { animateCorrect } from '../../shared/animation/country-animations';
 import { Game } from './game';
 
 // Initialize the application when page loads
@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // Wire Game to globe animations when country is cleared
             game.onCountryCleared((country) => {
-                animateToCleared(globeInstance, country.countryIndex);
+                animateCorrect(globeInstance, country.countryIndex);
             });
         }
     });

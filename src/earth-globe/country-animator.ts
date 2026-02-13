@@ -8,12 +8,19 @@ import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from '.
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 
+type EasingFn = (t: number) => number;
+
+function inOutQuad(t: number): number {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
 interface AnimationState {
     startValue: number;
     endValue: number;
     startTime: number;
     duration: number;
     resolve: () => void;
+    easing?: EasingFn;
 }
 
 /**
@@ -53,7 +60,7 @@ export class CountryAnimator {
      * @param durationMs Animation duration in milliseconds
      * @returns Promise that resolves when animation completes
      */
-    animateAltitude(countryIndex: number, targetAltitude: number, durationMs: number): Promise<void> {
+    animateAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: EasingFn): Promise<void> {
         return new Promise((resolve) => {
             // Cancel any existing animation for this country
             const existing = this.altitudeAnimations.get(countryIndex);
@@ -67,7 +74,8 @@ export class CountryAnimator {
                 endValue: targetAltitude,
                 startTime: performance.now(),
                 duration: durationMs,
-                resolve
+                resolve,
+                easing
             };
 
             this.altitudeAnimations.set(countryIndex, animation);
@@ -81,7 +89,7 @@ export class CountryAnimator {
      * @param durationMs Animation duration in milliseconds
      * @returns Promise that resolves when animation completes
      */
-    animateBlend(countryIndex: number, targetBlend: number, durationMs: number): Promise<void> {
+    animateBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: EasingFn): Promise<void> {
         return new Promise((resolve) => {
             // Cancel any existing animation for this country
             const existing = this.blendAnimations.get(countryIndex);
@@ -95,7 +103,8 @@ export class CountryAnimator {
                 endValue: targetBlend,
                 startTime: performance.now(),
                 duration: durationMs,
-                resolve
+                resolve,
+                easing
             };
 
             this.blendAnimations.set(countryIndex, animation);
@@ -164,7 +173,7 @@ export class CountryAnimator {
      * @param targetExpansion Target expansion (1.0 = normal, >1 = magnified)
      * @param durationMs Animation duration in milliseconds
      */
-    animateExpansion(countryIndex: number, targetExpansion: number, durationMs: number): Promise<void> {
+    animateExpansion(countryIndex: number, targetExpansion: number, durationMs: number, easing?: EasingFn): Promise<void> {
         return new Promise((resolve) => {
             const existing = this.expansionAnimations.get(countryIndex);
             if (existing) {
@@ -177,7 +186,8 @@ export class CountryAnimator {
                 endValue: targetExpansion,
                 startTime: performance.now(),
                 duration: durationMs,
-                resolve
+                resolve,
+                easing
             };
 
             this.expansionAnimations.set(countryIndex, animation);
@@ -217,8 +227,7 @@ export class CountryAnimator {
             const elapsed = now - anim.startTime;
             const progress = Math.min(1, elapsed / anim.duration);
 
-            // Ease out cubic for smooth deceleration
-            const eased = 1 - Math.pow(1 - progress, 3);
+            const eased = (anim.easing || inOutQuad)(progress);
             const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
             this.animationTexture.setAltitude(countryIndex, value);
@@ -235,8 +244,7 @@ export class CountryAnimator {
             const elapsed = now - anim.startTime;
             const progress = Math.min(1, elapsed / anim.duration);
 
-            // Ease out cubic
-            const eased = 1 - Math.pow(1 - progress, 3);
+            const eased = (anim.easing || inOutQuad)(progress);
             const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
             this.animationTexture.setBlend(countryIndex, value);
@@ -253,8 +261,7 @@ export class CountryAnimator {
             const elapsed = now - anim.startTime;
             const progress = Math.min(1, elapsed / anim.duration);
 
-            // Ease out cubic
-            const eased = 1 - Math.pow(1 - progress, 3);
+            const eased = (anim.easing || inOutQuad)(progress);
             const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
             this.animationTexture.setExpansion(countryIndex, value);
