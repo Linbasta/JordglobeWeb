@@ -4,6 +4,7 @@
  */
 
 const SMALL_COUNTRY_CODES = new Set([
+    // Original 12
     'MT', // Malta
     'SG', // Singapore
     'BH', // Bahrain
@@ -16,6 +17,76 @@ const SMALL_COUNTRY_CODES = new Set([
     'AD', // Andorra
     'GI', // Gibraltar
     'BN', // Brunei
+    // 69 from Unity MapConfig SmallMarkerCountries
+    'AG', // Antigua and Barbuda
+    'AI', // Anguilla
+    'AS', // American Samoa
+    'AW', // Aruba
+    'AX', // Åland Islands
+    'BB', // Barbados
+    'BL', // Saint Barthélemy
+    'BM', // Bermuda
+    'BQ', // Bonaire
+    'BV', // Bouvet Island
+    'CC', // Cocos Islands
+    'CK', // Cook Islands
+    'CV', // Cape Verde
+    'CW', // Curaçao
+    'CX', // Christmas Island
+    'DM', // Dominica
+    'FJ', // Fiji
+    'FK', // Falkland Islands
+    'FM', // Micronesia
+    'FO', // Faroe Islands
+    'GD', // Grenada
+    'GG', // Guernsey
+    'GP', // Guadeloupe
+    'GS', // South Georgia
+    'GU', // Guam
+    'HK', // Hong Kong
+    'HM', // Heard Island
+    'IM', // Isle of Man
+    'IO', // British Indian Ocean Territory
+    'JE', // Jersey
+    'JM', // Jamaica
+    'KI', // Kiribati
+    'KM', // Comoros
+    'KN', // Saint Kitts and Nevis
+    'KY', // Cayman Islands
+    'LC', // Saint Lucia
+    'MF', // Saint Martin
+    'MH', // Marshall Islands
+    'MO', // Macao
+    'MP', // Northern Mariana Islands
+    'MQ', // Martinique
+    'MS', // Montserrat
+    'MU', // Mauritius
+    'NF', // Norfolk Island
+    'NR', // Nauru
+    'NU', // Niue
+    'PF', // French Polynesia
+    'PM', // Saint Pierre and Miquelon
+    'PN', // Pitcairn Islands
+    'PR', // Puerto Rico
+    'PW', // Palau
+    'RE', // Réunion
+    'SC', // Seychelles
+    'SH', // Saint Helena
+    'ST', // São Tomé and Príncipe
+    'SX', // Sint Maarten
+    'TC', // Turks and Caicos
+    'TF', // French Southern Territories
+    'TK', // Tokelau
+    'TO', // Tonga
+    'TT', // Trinidad and Tobago
+    'TV', // Tuvalu
+    'UM', // US Minor Outlying Islands
+    'VC', // Saint Vincent and the Grenadines
+    'VG', // British Virgin Islands
+    'VI', // US Virgin Islands
+    'WF', // Wallis and Futuna
+    'WS', // Samoa
+    'YT', // Mayotte
 ]);
 
 export function isSmallCountry(iso2: string): boolean {
