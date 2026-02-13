@@ -13,6 +13,7 @@ import { WebSocketServer } from 'ws';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { getRandomCity, calculateDistance } from './cities.mjs';
+import { getRandomVideo, videos } from './videos.mjs';
 import basicAuth from 'express-basic-auth';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,6 +22,17 @@ const __dirname = dirname(__filename);
 // Configuration
 const PORT = process.env.PORT || 8080;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// ============================================================================
+// QUIZ CONFIGURATION
+// ============================================================================
+const QUIZ_CONFIG = {
+    mode: 'video-only',          // 'mixed' | 'text-only' | 'video-only'
+    randomOrder: false,           // true = random selection, false = sequential order
+    videoProbability: 0.3,        // Only used in 'mixed' mode (0.3 = 30% videos)
+    showPresentationOnClient: false  // false = host-only, true = show on player devices too
+};
+// ============================================================================
 
 // Express app
 const app = express();
@@ -73,6 +85,11 @@ app.get('/country-game', (req, res, next) => {
     next();
 });
 
+app.get('/medals', (req, res, next) => {
+    req.url = '/medals.html';
+    next();
+});
+
 // Serve static files
 // Vite build output (frontend)
 app.use(express.static(join(__dirname, '../dist')));
@@ -97,11 +114,12 @@ const wss = new WebSocketServer({ server });
 const players = [];
 const hosts = new Set();
 let gameStarted = false;
-let currentCity = null;
-const answers = new Map();
-const scores = new Map();
-let maxRounds = 2;
+let currentQuestion = null;  // Current question object (text or video)
+const answers = new Map();  // playerName -> { lat, lng, positions }
+const scores = new Map();   // playerName -> total score
+let maxRounds = 2;          // Default number of rounds
 let currentRound = 0;
+let videoQuestionIndex = 0; // For sequential video questions (when randomOrder=false)
 
 function broadcast(message) {
     const data = JSON.stringify(message);
@@ -123,13 +141,30 @@ function getPlayerList() {
 function startNewRound() {
     answers.clear();
     currentRound++;
-    currentCity = getRandomCity();
-    log(`Round ${currentRound}/${maxRounds}: ${currentCity.name}, ${currentCity.country}`);
+
+    // Select question based on QUIZ_CONFIG
+    if (QUIZ_CONFIG.mode === 'video-only') {
+        if (QUIZ_CONFIG.randomOrder) {
+            currentQuestion = getRandomVideo();
+        } else {
+            // Sequential order through videos array
+            currentQuestion = videos[videoQuestionIndex % videos.length];
+            videoQuestionIndex++;
+        }
+    } else if (QUIZ_CONFIG.mode === 'text-only') {
+        currentQuestion = getRandomCity();
+    } else {
+        // Mixed mode - use videoProbability
+        const useVideo = Math.random() < QUIZ_CONFIG.videoProbability;
+        currentQuestion = useVideo ? getRandomVideo() : getRandomCity();
+    }
+
+    log(`Round ${currentRound}/${maxRounds}: ${currentQuestion.present} question - ${currentQuestion.locationName || currentQuestion.prompt}`);
 
     broadcast({
         type: 'question',
-        city: currentCity.name,
-        country: currentCity.country,
+        question: currentQuestion,
+        showPresentationOnClient: QUIZ_CONFIG.showPresentationOnClient,
         round: currentRound,
         maxRounds: maxRounds
     });
@@ -145,21 +180,22 @@ function checkAllAnswered() {
     const results = players.map(p => {
         const answer = answers.get(p.name);
         const distance = calculateDistance(
-            currentCity.lat, currentCity.lon,
-            answer.lat, answer.lon
+            currentQuestion.lat, currentQuestion.lng,
+            answer.lat, answer.lng
         );
         return {
             name: p.name,
             distance: distance,
             lat: answer.lat,
-            lon: answer.lon
+            lng: answer.lng,
+            positions: answer.positions || []
         };
     });
 
     // Sort by distance (closest first)
     results.sort((a, b) => a.distance - b.distance);
 
-    // Assign points
+    // Assign points: last place = 0, 2nd last = 1, etc.
     const numPlayers = results.length;
     results.forEach((r, i) => {
         r.points = numPlayers - 1 - i;
@@ -172,11 +208,11 @@ function checkAllAnswered() {
 
     broadcast({
         type: 'reveal',
+        question: currentQuestion,  // Include original question for context
         correct: {
-            name: currentCity.name,
-            country: currentCity.country,
-            lat: currentCity.lat,
-            lon: currentCity.lon
+            lat: currentQuestion.lat,
+            lng: currentQuestion.lng,
+            locationName: currentQuestion.locationName || currentQuestion.prompt
         },
         results: results,
         players: getPlayerList(),
@@ -264,46 +300,57 @@ wss.on('connection', (ws) => {
                         gameStarted = true;
                         currentRound = 0;
                         scores.clear();
+                        videoQuestionIndex = 0;  // Reset video index for sequential mode
 
+                        // Set max rounds if provided
                         if (message.maxRounds && message.maxRounds > 0) {
                             maxRounds = message.maxRounds;
                         }
 
-                        log(`Game started! Max rounds: ${maxRounds}`);
+                        log(`Game started! Mode: ${QUIZ_CONFIG.mode}, Random: ${QUIZ_CONFIG.randomOrder}, Max rounds: ${maxRounds}`);
                         broadcast({ type: 'game-start', maxRounds });
 
+                        // Start first round after short delay
                         setTimeout(() => startNewRound(), 2000);
                     }
                     break;
                 }
 
                 case 'submit-answer': {
-                    if (!gameStarted || !currentCity) return;
-                    if (answers.has(playerName)) return;
+                    if (!gameStarted || !currentQuestion) return;
+                    if (answers.has(playerName)) return; // Already answered
 
-                    answers.set(playerName, { lat: message.lat, lon: message.lon });
-                    log(`${playerName} answered: lat=${message.lat}, lon=${message.lon}`);
+                    answers.set(playerName, {
+                        lat: message.lat,
+                        lng: message.lng || message.lon,  // Support both lng (new) and lon (old) for compatibility
+                        positions: message.positions || [] // Optional recorded positions
+                    });
+                    log(`${playerName} answered: lat=${message.lat}, lng=${message.lng || message.lon}, positions=${message.positions ? message.positions.length : 0}`);
 
+                    // Broadcast that this player answered
                     broadcast({
                         type: 'player-answered',
                         playerName: playerName
                     });
 
+                    // Check if all players have answered
                     checkAllAnswered();
                     break;
                 }
 
                 case 'next-round': {
                     const player = players.find(p => p.name === playerName);
-                    log(`next-round request from ${playerName} (isFirst: ${player?.isFirst})`);
+                    log(`next-round request from ${playerName} (isFirst: ${player?.isFirst}, gameStarted: ${gameStarted}, currentRound: ${currentRound}/${maxRounds})`);
 
                     if (player && player.isFirst && gameStarted) {
                         if (currentRound >= maxRounds) {
-                            log('Game already finished');
+                            log('Game already finished - ignoring next-round request');
                         } else {
                             log('Starting next round...');
                             startNewRound();
                         }
+                    } else {
+                        log(`next-round DENIED - player: ${!!player}, isFirst: ${player?.isFirst}, gameStarted: ${gameStarted}`);
                     }
                     break;
                 }
@@ -311,16 +358,20 @@ wss.on('connection', (ws) => {
                 case 'reset-game': {
                     log('Resetting game state...');
 
+                    // Clear all game state
                     players.length = 0;
                     hosts.clear();
                     gameStarted = false;
-                    currentCity = null;
+                    currentQuestion = null;
                     answers.clear();
                     scores.clear();
                     currentRound = 0;
                     maxRounds = 2;
+                    videoQuestionIndex = 0;
 
+                    // Notify all clients
                     broadcast({ type: 'game-reset' });
+
                     log('Game reset complete');
                     break;
                 }
