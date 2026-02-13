@@ -815,7 +815,7 @@ export async function frameCountry(
  *
  * Returns false (and skips animation) if points span more than MAX_ANGULAR_SPREAD_DEG.
  */
-const MAX_ANGULAR_SPREAD_DEG = 120
+const MAX_ANGULAR_SPREAD_DEG = 90
 
 export async function frameLocations(
     camera: ArcRotateCamera,
@@ -867,8 +867,35 @@ export async function frameLocations(
     }
 
     if (maxAngle > MAX_ANGULAR_SPREAD_DEG) {
-        console.log(`frameLocations: spread ${maxAngle.toFixed(1)}° > ${MAX_ANGULAR_SPREAD_DEG}° — skipping`)
-        return false
+        // Points too spread out to frame tightly — stay zoomed out, aim at densest cluster
+        const t0 = performance.now()
+        const CLUSTER_DEG = 70
+        const angDist = (a: LatLon, b: LatLon): number => {
+            const la = a.lat * (Math.PI / 180), oa = a.lon * (Math.PI / 180)
+            const lb = b.lat * (Math.PI / 180), ob = b.lon * (Math.PI / 180)
+            const d = Math.cos(la) * Math.cos(oa) * Math.cos(lb) * Math.cos(ob)
+                + Math.sin(la) * Math.sin(lb)
+                + Math.cos(la) * Math.sin(oa) * Math.cos(lb) * Math.sin(ob)
+            return Math.acos(Math.min(1, Math.max(-1, d))) * (180 / Math.PI)
+        }
+        let bestIdx = 0, bestCount = 0
+        for (let i = 0; i < points.length; i++) {
+            let count = 0
+            for (let j = 0; j < points.length; j++) {
+                if (angDist(points[i], points[j]) <= CLUSTER_DEG) count++
+            }
+            if (count > bestCount) { bestCount = count; bestIdx = i }
+        }
+        const target = points[bestIdx]
+        const alphaOffset = viewportRegion
+            ? (viewportRegion.x + viewportRegion.width / 2 - 0.5) * 0.3
+            : 0
+        const betaOffset = viewportRegion
+            ? -(viewportRegion.y + viewportRegion.height / 2 - 0.5) * 0.5
+            : 0
+        console.log(`frameLocations: spread ${maxAngle.toFixed(1)}° > ${MAX_ANGULAR_SPREAD_DEG}° — aiming at densest point (${target.lat.toFixed(1)}, ${target.lon.toFixed(1)}) zoomed out, n=${points.length}, cluster took ${(performance.now() - t0).toFixed(2)}ms`)
+        await animateToLocation(camera, target.lat, target.lon, 10.0, duration, alphaOffset, betaOffset)
+        return true
     }
 
     // Binary search for radius that fits all points with margin
