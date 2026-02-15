@@ -8,7 +8,7 @@ Province data serves **two distinct rendering modes**:
 
 ### Mode A: Static Border Overlay (location questions)
 
-When `answer` is `"location-guess"` or `"location-alternatives"`, the globe landmass is static. Province borders are drawn on top as a visual reference — no province surfaces, no animation texture, no picking. Just border tubes with a simple shader and zoom-based alpha fade.
+When `answer` is `"location-guess"` or `"location-alternatives"`, the globe landmass is static. Province borders are drawn on top as a visual reference — no province surfaces, no animation texture, no picking. Just border quad strips with a simple shader and zoom-based alpha fade.
 
 ### Mode B: Province Quiz (answer: "province")
 
@@ -39,9 +39,104 @@ Province-specific config from Unity that we should match:
 
 ---
 
-## Phase 1: Data Pipeline
+## Implementation Strategy
 
-**Goal**: Extract province polygon data from the legacy locations file and generate province border segments.
+### Proof of Concept Approach
+
+This plan follows a **validate-then-scale** strategy:
+
+1. **Phase 0**: Migrate country borders to quad strips first — this proves the quad strip technique works and benefits both countries and provinces
+2. **Phase 1-5**: Implement full province system using **US states only** (50 states) as proof of concept
+3. **Phase 6**: Once US states work end-to-end, scale to all 32 countries (715 provinces)
+4. **Phase 7**: Import medal data for all province quizzes
+
+### Why US States First?
+
+- **Manageable scope**: 50 states vs. 715 provinces — easier to debug and iterate
+- **Familiar geography**: Easier to spot data/rendering issues
+- **Integer IDs**: Replace bulky UUIDs with 0-49 integers — simpler, smaller files
+- **Test page**: `test-us-states.html` provides clear validation checkpoint
+- **Risk mitigation**: Discover integration issues before processing 715 provinces
+
+### Two Rendering Modes
+
+**Mode A: Static Province Borders** (Phase 2)
+- Visual overlay for location questions
+- No surface meshes, just border quad strips
+- Zoom-based alpha fade (invisible far, visible close)
+- Simple static shader
+
+**Mode B: Province Quiz** (Phase 3)
+- Full country-like rendering
+- Replaces parent country during quiz
+- Animated borders with texture lookup
+- Picker, animations, outlines — same as countries
+
+Both modes share the quad strip mesh format from Phase 0.
+
+---
+
+## Phase 0: Migrate to Quad Strip Borders
+
+**Goal**: Replace current tube-based segment borders with Unity-style quad strips. This is cleaner, more performant, and sets foundation for province borders.
+
+### Current State
+- Segment borders use `MeshBuilder.CreateTube()` with 8-sided tessellation
+- Heavy geometry (8 vertices per segment point)
+- Uses `animated.vertex.glsl` with normal-based thickness scaling
+
+### Target State
+- Quad strips with bitangent expansion (2 vertices per segment point)
+- Pre-scaled tangent attribute (±0.5)
+- Vertex shader applies thickness multiplicatively
+- Same visual result, ~4x fewer vertices
+
+### Implementation Steps
+
+**0a. Create quad strip mesh generator**
+- Add `createQuadStripBorder()` method to `BorderRenderer`
+- For each edge (p0 → p1):
+  - Compute bitangent: `normalize(cross(lineDir, surfaceNormal))`
+  - Create 4 vertices: p0 ± bitangent×0.5, p1 ± bitangent×0.5
+  - Store bitangent direction in `tangent` attribute (vec4, pre-scaled to ±0.5)
+- Two triangles per edge (quad strip)
+
+**0b. Create quad strip animated shader**
+- New vertex shader: `border-quad.vertex.glsl`
+- Reads animation from texture (like current `animated.vertex.glsl`)
+- Applies multiplicative altitude: `pos * (1 + animValue * amplitude)`
+- Adds Z-fighting offset: `pos += normalize(pos) * 0.001`
+- Expands thickness: `pos += tangent.xyz * lineThickness`
+- Fragment shader: reuse `border.fragment.glsl`
+
+**0c. Replace tube rendering in `renderSegmentBorders()`**
+- Replace `MeshBuilder.CreateTube()` calls with `createQuadStripBorder()`
+- Remove UV fixing hack (no longer needed)
+- Keep animation index mapping logic unchanged
+
+**0d. Add thickness uniform to shader material**
+- Add `lineThickness` uniform to shader material setup
+- Set to current tube radius value for visual parity
+
+**0e. Test with existing country quiz**
+- Visual check: borders look identical
+- Performance check: lower vertex count
+- Animation check: borders animate with countries
+
+**Files to create:**
+- `src/earth-globe/shaders/border-quad.vertex.glsl`
+
+**Files to modify:**
+- `src/earth-globe/border-renderer.ts` (add quad strip generator, replace tube code)
+- `src/earth-globe/shader-factory.ts` (bind lineThickness uniform)
+
+**Verify**: Load country quiz, check segment borders animate correctly with fewer vertices.
+
+---
+
+## Phase 1: US States Proof of Concept - Data Pipeline
+
+**Goal**: Extract US provinces only and generate segments. This is our proof of concept before scaling to all 32 countries.
 
 ### 1a. Source data
 
@@ -76,38 +171,42 @@ FR:13  NL:12  GE:11  BE:10  ZW:10  ZM:10  ZA:9   SK:8   KE:8   PT:7
 AU:7   DK:5
 ```
 
-### 1b. Extract provinces
+### 1b. Extract US provinces only
 
-Write `scripts/extract-provinces.ts` — reads `data/legacy/locations_en.json`, filters by `locationType === "Province"`, groups by `countryIso2s`, and writes per-country JSON files to `public/provinces/{ISO2}.json`.
+Write `scripts/extract-us-provinces.ts` — reads `data/legacy/locations_en.json`, filters by `locationType === "Province"` AND `countryIso2s === ["US"]`, writes to `public/provinces/US.json`.
+
+**IMPORTANT**: Replace bulky UUID strings with integer IDs (0-49) to reduce file size.
 
 Output format:
 ```json
 {
   "country": "US",
   "provinces": [
-    { "id": "5db71ac4-...", "name": "Alabama", "paths": "[[[lat,lon],...],...]" }
+    { "id": 0, "name": "Alabama", "paths": "[[[lat,lon],...],...]" },
+    { "id": 1, "name": "Alaska", "paths": "[[[lat,lon],...],...]" }
   ]
 }
 ```
 
-This is a simple filter+group — no coordinate conversion needed since the paths format is already identical to the country data.
+This is a simple filter+convert — no coordinate conversion needed since the paths format is already identical to the country data.
 
-### 1c. Generate province segments
+### 1c. Generate US province segments
 
-Write `scripts/generate-province-segments.ts` — reuses the edge-matching algorithm from `scripts/generate-segments.ts` but operates within one country's provinces. Output: `public/province-segments/{ISO2}.json` with same segment format (but `provinces` field instead of `countries`).
+Write `scripts/generate-us-segments.ts` — reuses the edge-matching algorithm from `scripts/generate-segments.ts` but operates on US provinces only. Output: `public/province-segments/US.json` with same segment format (but `provinces` field instead of `countries`).
 
 ### 1d. CLI test
 
-Write `scripts/test-province-data.ts` — loads one province file, prints polygon counts, runs segment generation, verifies output.
+Write `scripts/test-us-provinces.ts` — loads US province file, prints stats (50 states, polygon counts), verifies segment generation works.
 
 **Files to create:**
-- `scripts/extract-provinces.ts`
-- `scripts/generate-province-segments.ts`
-- `scripts/test-province-data.ts`
-- `public/provinces/` directory
-- `public/province-segments/` directory
+- `scripts/extract-us-provinces.ts`
+- `scripts/generate-us-segments.ts`
+- `scripts/test-us-provinces.ts`
+- `public/provinces/US.json`
+- `public/province-segments/US.json`
 
-**Verify**: `npm run test:province-data` prints stats for a sample country.
+**Verify**:
+- CLI: `npm run test:us-provinces` prints stats for 50 states
 
 ---
 
@@ -220,7 +319,7 @@ provinceBorderAlphaFar: PROVINCE_BORDER_ALPHA_FAR,
 
 **Files to modify:** `src/earth-globe/constants.ts`
 
-**Verify**: Browser test — load province borders for SE, zoom in/out, borders fade in when close and disappear when far.
+**Verify**: Browser test — load province borders for US, zoom in/out, borders fade in when close and disappear when far.
 
 ---
 
@@ -233,7 +332,7 @@ provinceBorderAlphaFar: PROVINCE_BORDER_ALPHA_FAR,
 Add to `src/earth-globe/types.ts`:
 ```typescript
 interface ProvinceJSON {
-    id: string;       // UUID from Unity: "5db71ac4-29df-4570-8004-76e91208a177"
+    id: number;       // Integer ID (0-49 for US states)
     name: string;     // "Alabama"
     paths: string;    // same format as CountryJSON.paths
 }
@@ -244,7 +343,7 @@ interface ProvinceFileJSON {
 }
 
 interface ProvinceData {
-    id: string;           // UUID from source data
+    id: number;               // Integer from source data
     name: string;
     localIndex: number;       // 0-based within this country
     polygonIndices: number[];  // indices into the province polygonsData array
@@ -285,9 +384,9 @@ Key functions:
 
 Province meshes render at `COUNTRY_ALTITUDE` (same as countries — no Z-fighting because the parent country is hidden). Province borders include:
 - **Extruded border walls** — reuse existing code from `border-renderer.ts`
-- **Segment border quad strips** — same mesh format as Mode A (position + tangent with ±0.5 bitangent), but with an **animated vertex shader**:
+- **Segment border quad strips** — reuse the quad strip mesh generator from Phase 0 (`createQuadStripBorder()` in `border-renderer.ts`), adding `objectIndex` attribute in UV0.x for animation:
   - `objectIndex` stored in UV0.x (segment's index into the province animation texture)
-  - Vertex shader samples per-segment altitude from the animation texture
+  - Vertex shader: **reuse `border-quad.vertex.glsl` from Phase 0**, just bind province animation texture instead of country texture
   - Per-frame CPU sync: segment altitude = max(altitude of adjacent provinces), written to animation texture. If all adjacent provinces are disabled, segment altitude = 0 (hidden). This follows the same pattern as `CountryAnimator.update()` via `segmentCountryMap`.
 
 Key vertex shader difference (animated vs static):
@@ -317,9 +416,14 @@ Reuses existing infrastructure:
 
 **Files to create:**
 - `src/earth-globe/province-quiz-renderer.ts`
-- `src/earth-globe/shaders/province-border-animated.vertex.glsl` (extends static shader with animation texture lookup — fragment shader is the same solid color)
 
-**Files to modify:** `src/earth-globe/types.ts`, `src/earth-globe/constants.ts`, `src/earth-globe/animation-texture.ts` (width parameter)
+**Files to modify:**
+- `src/earth-globe/types.ts` (add Province types)
+- `src/earth-globe/constants.ts` (add PROVINCE_ANIMATION_TEXTURE_WIDTH)
+- `src/earth-globe/animation-texture.ts` (width parameter)
+
+**Shaders to reuse:**
+- Reuse `border-quad.vertex.glsl` from Phase 0 for animated province borders (just bind different texture)
 
 **Verify**: CLI test triangulates provinces for one country, prints mesh stats.
 
@@ -386,9 +490,30 @@ In the render loop (`beforeRender`):
 - When province quiz is active: tick the province animator, update the province animation texture
 - When province borders are visible: update border alpha based on camera distance
 
-**Files to modify:** `src/earth-globe/earth-globe.ts`, `src/earth-globe/types.ts` (EarthGlobeAPI), `src/earth-globe/index.ts` (exports)
+**Files to create:**
+- `public/test-us-states.html` — Test page for US states quiz
 
-**Verify**: Browser test — `globe.enterProvinceQuiz("US")` hides US, shows state meshes that animate like countries. `globe.showProvinceBorders("SE")` shows static borders that fade with zoom.
+**Files to modify:**
+- `src/earth-globe/earth-globe.ts`
+- `src/earth-globe/types.ts` (EarthGlobeAPI)
+- `src/earth-globe/index.ts` (exports)
+
+### 4d. Create US states test page
+
+Now that `enterProvinceQuiz()` is implemented, create the browser test page:
+
+Write `public/test-us-states.html` — minimal test page that:
+- Loads the globe
+- Calls `globe.enterProvinceQuiz("US")`
+- Shows clickable US states
+- Logs click events to console
+
+This is the proof of concept - when this works, we know the full pipeline is correct.
+
+**Verify**:
+- Browser: `globe.enterProvinceQuiz("US")` hides US, shows state meshes that animate like countries
+- Browser: `globe.showProvinceBorders("US")` shows static borders that fade with zoom
+- Browser: Click US states, verify `globe.getProvinceAt()` returns correct province
 
 ---
 
@@ -413,7 +538,7 @@ type Question = {
     // ... existing fields ...
 
     // answer: "province"
-    provinceId?: string      // UUID: "5db71ac4-29df-4570-8004-76e91208a177"
+    provinceId?: number      // Integer ID (0-49 for US states)
     countryISO2?: string     // "US" (parent country to hide/replace)
 }
 ```
@@ -465,48 +590,169 @@ Add handlers for province steps in `src/shared/quiz/quiz-runner.ts`. Province cl
 
 ---
 
-## Phase 6: Polish
+## Phase 6: Scale to All Provinces
+
+**Goal**: Now that US states work end-to-end, scale up to all 32 countries with province data (715 total provinces).
+
+### 6a. Update extraction script
+
+Modify `scripts/extract-us-provinces.ts` → `scripts/extract-provinces.ts`:
+- Remove US-only filter
+- Process all 32 countries with province data
+- Output 32 files: `public/provinces/{ISO2}.json`
+- Assign integer IDs per country (0-indexed within each country)
+
+### 6b. Generate all province segments
+
+Modify `scripts/generate-us-segments.ts` → `scripts/generate-province-segments.ts`:
+- Process all 32 countries
+- Output 32 files: `public/province-segments/{ISO2}.json`
+
+### 6c. Test sampling
+
+Test a few diverse countries to verify data quality:
+- TR (80 provinces - largest)
+- GB (73 provinces)
+- JP (47 provinces - island nation)
+- CH (26 provinces - small landlocked)
+
+**Files to create:**
+- `scripts/extract-provinces.ts` (generalized version)
+- `scripts/generate-province-segments.ts` (generalized version)
+- `public/provinces/*.json` (32 files total)
+- `public/province-segments/*.json` (32 files total)
+
+**Verify**: CLI test prints stats for all 32 countries. Spot-check a few in browser with test pages.
+
+---
+
+## Phase 7: Import Province Medal Data
+
+**Goal**: Add medal definitions for province quizzes (e.g., "US States Master").
+
+### 7a. Medal data structure
+
+Province medals reference the parent country's ISO2 code. Example:
+
+```json
+{
+  "id": "us-states",
+  "name": "US States Master",
+  "description": "Name all 50 US states",
+  "countryISO2": "US",
+  "medalType": "province",
+  "bronzeThreshold": 30,
+  "silverThreshold": 40,
+  "goldThreshold": 50
+}
+```
+
+### 7b. Import from Unity
+
+Extract province medal data from Unity project and convert to JSON format.
+Store in `data/medals/province-medals.json`.
+
+### 7c. Medal loader
+
+Update medal loading system to support province medals.
+When loading a province medal, generate questions for all provinces in that country.
+
+**Files to create:**
+- `data/medals/province-medals.json`
+
+**Files to modify:**
+- Medal loader module (wherever medals are loaded)
+
+**Verify**: Load a province medal, verify question generation works for all 32 countries.
+
+---
+
+## Phase 8: Polish
 
 - **Province outline**: Tube outline around hovered/selected province (reuse `OutlineRenderer`)
 - **Camera transition**: Smooth zoom into country when entering province quiz
 - **Mixed quiz**: Support quizzes mixing country + province questions with automatic view transitions
 - **Cache eviction**: If memory becomes an issue, evict oldest province state (LRU)
-- **Province borders in location quiz**: Decide which countries show province borders for location questions
+- **Performance optimization**: Monitor memory usage with all province data loaded
 
 ---
 
 ## File Summary
 
+### Phase 0: Quad Strip Migration
+
 | New files | Purpose |
 |-----------|---------|
-| `scripts/extract-provinces.ts` | Filter+group provinces from `locations_en.json` |
-| `scripts/generate-province-segments.ts` | Province border segment generator |
-| `scripts/test-province-data.ts` | CLI data verification test |
-| `src/earth-globe/province-border-renderer.ts` | Mode A: quad strip mesh generation + zoom uniform updates |
-| `src/earth-globe/shaders/province-border.vertex.glsl` | Altitude + Z-offset + tangent-based thickness expansion |
-| `src/earth-globe/shaders/province-border.fragment.glsl` | Solid color with alpha uniform |
-| `src/earth-globe/province-quiz-renderer.ts` | Mode B: full country-like province meshes |
-| `src/earth-globe/shaders/province-border-animated.vertex.glsl` | Animated border: per-segment altitude from texture lookup |
-| `public/provinces/*.json` | Province polygon data (~50 files) |
-| `public/province-segments/*.json` | Province border segments (~50 files) |
+| `src/earth-globe/shaders/border-quad.vertex.glsl` | Quad strip animated border shader with tangent expansion |
 
 | Modified files | Changes |
 |----------------|---------|
-| `src/earth-globe/animation-texture.ts` | Add optional `width` parameter to constructor |
-| `src/earth-globe/types.ts` | ProvinceJSON, ProvinceFileJSON, ProvinceData types; EarthGlobeAPI extensions |
-| `src/earth-globe/constants.ts` | Province constants + zoom values |
-| `src/earth-globe/earth-globe.ts` | Province quiz entry/exit, border overlay, animation API, render loop |
-| `src/earth-globe/index.ts` | Export province types and functions |
-| `src/shared/quiz/quiz-types.ts` | `"province"` answer tag, province StepOps + Steps |
-| `src/shared/quiz/quiz-flow.ts` | Province question step generation |
-| `src/shared/quiz/quiz-runner.ts` | Province step execution handlers |
-| `package.json` | Province-related npm scripts |
+| `src/earth-globe/border-renderer.ts` | Add quad strip generator, replace tube rendering |
+| `src/earth-globe/shader-factory.ts` | Support quad border material with lineThickness uniform |
 
-| Reused as-is | Role |
-|--------------|------|
-| `triangulation.ts` | CDT2D triangulation (Mode B only) |
-| `geo-math.ts` | Coordinate conversion |
-| `CountryPicker` | Province point-in-polygon lookup (Mode B, new instance) |
-| `ShaderFactory` | Province shader materials (Mode B, same shaders, different texture) |
-| `CountryAnimator` | Province animator (Mode B, new instance) — segment syncing pattern (max of adjacent, expansion hiding) reused for province segments |
+### Phase 1: US States Data
+
+| New files | Purpose |
+|-----------|---------|
+| `scripts/extract-us-provinces.ts` | Extract US provinces only, assign integer IDs |
+| `scripts/generate-us-segments.ts` | Generate US province border segments |
+| `scripts/test-us-provinces.ts` | CLI verification for US data |
+| `public/provinces/US.json` | 50 US states with integer IDs |
+| `public/province-segments/US.json` | US state border segments |
+
+### Phase 2-5: Province Rendering & Quiz Integration
+
+| New files | Purpose |
+|-----------|---------|
+| `src/earth-globe/province-border-renderer.ts` | Mode A: quad strip mesh generation + zoom uniform updates |
+| `src/earth-globe/shaders/province-border.vertex.glsl` | Static province border: altitude + Z-offset + tangent expansion |
+| `src/earth-globe/shaders/province-border.fragment.glsl` | Solid color with alpha uniform |
+| `src/earth-globe/province-quiz-renderer.ts` | Mode B: full country-like province meshes |
+| `public/test-us-states.html` | Browser test page for US states quiz (Phase 4) |
+
+**Shaders reused from Phase 0:**
+| Shader | How it's reused |
+|--------|----------------|
+| `border-quad.vertex.glsl` | Used for animated province borders (Mode B) - same shader, different texture binding |
+
+### Phase 6: Scale to All Provinces
+
+| New files | Purpose |
+|-----------|---------|
+| `scripts/extract-provinces.ts` | Extract all 32 countries with provinces |
+| `scripts/generate-province-segments.ts` | Generate segments for all countries |
+| `public/provinces/*.json` | 32 province data files |
+| `public/province-segments/*.json` | 32 segment files |
+
+### Phase 7: Medal Import
+
+| New files | Purpose |
+|-----------|---------|
+| `data/medals/province-medals.json` | Province medal definitions |
+
+### Modified Files (across all phases)
+
+| Modified files | Changes |
+|----------------|---------|
+| `src/earth-globe/animation-texture.ts` | Add optional `width` parameter to constructor (Phase 3) |
+| `src/earth-globe/types.ts` | ProvinceJSON, ProvinceData types; EarthGlobeAPI extensions (Phase 3-4) |
+| `src/earth-globe/constants.ts` | Province constants + zoom values (Phase 2-3) |
+| `src/earth-globe/earth-globe.ts` | Province quiz entry/exit, border overlay, animation API, render loop (Phase 4) |
+| `src/earth-globe/index.ts` | Export province types and functions (Phase 4) |
+| `src/shared/quiz/quiz-types.ts` | `"province"` answer tag, province StepOps + Steps (Phase 5) |
+| `src/shared/quiz/quiz-flow.ts` | Province question step generation (Phase 5) |
+| `src/shared/quiz/quiz-runner.ts` | Province step execution handlers (Phase 5) |
+| `package.json` | Province-related npm scripts (Phase 1, 6) |
+
+### Reused Infrastructure
+
+| Module | How it's reused |
+|--------|----------------|
+| `triangulation.ts` | CDT2D triangulation for province polygons (Mode B) |
+| `geo-math.ts` | Coordinate conversion (latLonToSphere) |
+| `border-renderer.ts` | Extruded border walls + quad strip segments (both countries and provinces) |
+| `CountryPicker` | Separate instance for province point-in-polygon lookup (Mode B) |
+| `CountryAnimator` | Separate instance for province animations, segment syncing pattern (Mode B) |
+| `AnimationTexture` | Separate 256-wide instance for provinces (Mode B) |
+| `ShaderFactory` | Same shaders, bound to province animation texture (Mode B) |
 | `OutlineRenderer` | Province selection outline (Mode B) |
