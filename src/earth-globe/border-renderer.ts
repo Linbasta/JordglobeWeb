@@ -344,6 +344,89 @@ export class BorderRenderer {
     }
 
     /**
+     * Create quad strip border mesh from a path of 3D points
+     * @param points Path of 3D points (already on sphere surface)
+     * @param segmentAnimationIndex Animation texture index for this segment
+     * @returns Mesh with position, tangent, and countryIndex attributes
+     */
+    private createQuadStripBorder(points: Vector3[], segmentAnimationIndex: number): Mesh | null {
+        if (points.length < 2) return null;
+
+        const positions: number[] = [];
+        const tangents: number[] = [];
+        const indices: number[] = [];
+        const countryIndices: number[] = [];
+
+        // Generate quad strip
+        for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[i];
+            const p1 = points[i + 1];
+
+            // Line direction
+            const lineDir = p1.subtract(p0).normalizeToNew();
+
+            // Surface normal at p0 and p1
+            const normal0 = p0.normalizeToNew();
+            const normal1 = p1.normalizeToNew();
+
+            // Bitangent (perpendicular to line direction on sphere surface)
+            const bitangent0 = Vector3.Cross(lineDir, normal0).normalizeToNew();
+            const bitangent1 = Vector3.Cross(lineDir, normal1).normalizeToNew();
+
+            // Pre-scale bitangent to ±0.5 (shader multiplies by lineThickness)
+            const tangent0Plus = bitangent0.scale(0.5);
+            const tangent0Minus = bitangent0.scale(-0.5);
+            const tangent1Plus = bitangent1.scale(0.5);
+            const tangent1Minus = bitangent1.scale(-0.5);
+
+            // 4 vertices per edge: p0-, p0+, p1-, p1+
+            const baseIndex = positions.length / 3;
+
+            // p0-
+            positions.push(p0.x, p0.y, p0.z);
+            tangents.push(tangent0Minus.x, tangent0Minus.y, tangent0Minus.z, 0);
+            countryIndices.push(segmentAnimationIndex);
+
+            // p0+
+            positions.push(p0.x, p0.y, p0.z);
+            tangents.push(tangent0Plus.x, tangent0Plus.y, tangent0Plus.z, 0);
+            countryIndices.push(segmentAnimationIndex);
+
+            // p1-
+            positions.push(p1.x, p1.y, p1.z);
+            tangents.push(tangent1Minus.x, tangent1Minus.y, tangent1Minus.z, 0);
+            countryIndices.push(segmentAnimationIndex);
+
+            // p1+
+            positions.push(p1.x, p1.y, p1.z);
+            tangents.push(tangent1Plus.x, tangent1Plus.y, tangent1Plus.z, 0);
+            countryIndices.push(segmentAnimationIndex);
+
+            // Two triangles per quad
+            indices.push(baseIndex, baseIndex + 2, baseIndex + 1);
+            indices.push(baseIndex + 1, baseIndex + 2, baseIndex + 3);
+        }
+
+        // Create mesh
+        const mesh = new Mesh("quadStripBorder", this.scene);
+        const vertexData = new VertexData();
+        vertexData.positions = new Float32Array(positions);
+        vertexData.indices = new Uint32Array(indices);
+
+        // Tangent attribute (vec4)
+        const tangentBuffer = new Float32Array(tangents);
+        mesh.setVerticesData(VertexBuffer.TangentKind, tangentBuffer, false, 4);
+
+        // CountryIndex attribute (per-vertex animation index)
+        const indexBuffer = new Float32Array(countryIndices);
+        mesh.setVerticesData("countryIndex", indexBuffer, false, 1);
+
+        vertexData.applyToMesh(mesh, false);
+
+        return mesh;
+    }
+
+    /**
      * Render segment borders (international borders)
      */
     renderSegmentBorders(
@@ -359,62 +442,45 @@ export class BorderRenderer {
 
         this.segmentAnimationIndices.clear();
 
-        const segmentTubes: Mesh[] = [];
+        const segmentQuads: Mesh[] = [];
         const vertexCounts: number[] = [];
-        const segmentIndicesPerTube: number[] = [];
+        const segmentIndicesPerQuad: number[] = [];
 
         for (let segmentIdx = 0; segmentIdx < sharedSegments.length; segmentIdx++) {
             const segment = sharedSegments[segmentIdx];
             if (segment.points.length < 2) continue;
 
             try {
-                const tube = MeshBuilder.CreateTube(
-                    "segmentBorder",
-                    {
-                        path: segment.points,
-                        radius: TUBE_RADIUS * 0.8,
-                        tessellation: TUBE_TESSELLATION,
-                        cap: Mesh.CAP_ALL
-                    },
-                    this.scene
-                );
-
-                // Fix UVs for animation
-                const uvs = tube.getVerticesData(VertexBuffer.UVKind);
-                if (uvs) {
-                    for (let i = 1; i < uvs.length; i += 2) {
-                        uvs[i] = 1.0;
-                    }
-                    tube.setVerticesData(VertexBuffer.UVKind, uvs);
-                }
-
-                segmentTubes.push(tube);
-                vertexCounts.push(tube.getTotalVertices());
-
                 const segmentAnimationIndex = MAX_ANIMATION_COUNTRIES + segmentIdx;
-                segmentIndicesPerTube.push(segmentAnimationIndex);
+                const quad = this.createQuadStripBorder(segment.points, segmentAnimationIndex);
 
-                // Map segment to countries
-                const countryIndices: number[] = [];
-                for (const countryCode of segment.countries) {
-                    const countryData = countriesData.find(c => c.iso2 === countryCode);
-                    if (countryData) {
-                        countryIndices.push(countryData.index);
+                if (quad) {
+                    segmentQuads.push(quad);
+                    vertexCounts.push(quad.getTotalVertices());
+                    segmentIndicesPerQuad.push(segmentAnimationIndex);
+
+                    // Map segment to countries
+                    const countryIndices: number[] = [];
+                    for (const countryCode of segment.countries) {
+                        const countryData = countriesData.find(c => c.iso2 === countryCode);
+                        if (countryData) {
+                            countryIndices.push(countryData.index);
+                        }
                     }
+                    this.segmentAnimationIndices.set(segmentAnimationIndex, countryIndices);
                 }
-                this.segmentAnimationIndices.set(segmentAnimationIndex, countryIndices);
             } catch (error) {
-                console.error('Error creating segment tube:', error);
+                console.error('Error creating segment quad strip:', error);
             }
         }
 
-        if (segmentTubes.length === 0) {
-            console.log('No segment tubes created');
+        if (segmentQuads.length === 0) {
+            console.log('No segment quads created');
             return;
         }
 
         this.mergedSegmentBorders = Mesh.MergeMeshes(
-            segmentTubes,
+            segmentQuads,
             true, true, undefined, false, false
         );
 
@@ -425,14 +491,14 @@ export class BorderRenderer {
 
         this.mergedSegmentBorders.name = "mergedSegmentBorders";
 
-        // Rebuild animation index attribute
+        // Rebuild animation index attribute (should already be correct, but ensure consistency)
         const totalVertices = this.mergedSegmentBorders.getTotalVertices();
         const segmentIndices = new Float32Array(totalVertices);
 
         let vertexOffset = 0;
-        for (let tubeIdx = 0; tubeIdx < vertexCounts.length; tubeIdx++) {
-            const vertexCount = vertexCounts[tubeIdx];
-            const segmentAnimationIndex = segmentIndicesPerTube[tubeIdx];
+        for (let quadIdx = 0; quadIdx < vertexCounts.length; quadIdx++) {
+            const vertexCount = vertexCounts[quadIdx];
+            const segmentAnimationIndex = segmentIndicesPerQuad[quadIdx];
             for (let i = 0; i < vertexCount; i++) {
                 segmentIndices[vertexOffset + i] = segmentAnimationIndex;
             }
@@ -451,7 +517,7 @@ export class BorderRenderer {
         this.mergedSegmentBorders.material = shaderMaterial;
 
         const endTime = performance.now();
-        console.log(`Rendered ${sharedSegments.length} segment borders in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Rendered ${sharedSegments.length} segment quad strip borders in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**

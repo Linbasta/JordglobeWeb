@@ -26,6 +26,7 @@ import {
 // Import shaders
 import animatedVertexShader from './shaders/animated.vertex.glsl?raw';
 import animatedSmallVertexShader from './shaders/animated-small.vertex.glsl?raw';
+import borderQuadVertexShader from './shaders/border-quad.vertex.glsl?raw';
 import borderFragmentShader from './shaders/border.fragment.glsl?raw';
 import countryFragmentShader from './shaders/country.fragment.glsl?raw';
 import unlitVertexShader from './shaders/unlit.vertex.glsl?raw';
@@ -241,10 +242,49 @@ export class ShaderFactory {
     }
 
     /**
-     * Create the segment border shader material (white)
+     * Create the segment border shader material (white) - uses quad strip shader
      */
     createSegmentBorderMaterial(): ShaderMaterial {
-        return this.createBorderShaderMaterial("segmentBorderShader", BORDER_COLOR_BLACK);
+        const name = "segmentBorderShader";
+        // Match original tube diameter: TUBE_RADIUS * 0.8 * 2 = 0.0032
+        // (tangent is pre-scaled to ±0.5, so full width = lineThickness * 2)
+        const lineThickness = 0.0016; // Half-width to match tube radius
+
+        // Inject varyings (border-quad shader passes through to fragment)
+        const varyings = "";
+        const varyingAssignments = "";
+
+        const vertexShader = borderQuadVertexShader
+            .replace('// VARYINGS_PLACEHOLDER', varyings)
+            .replace('// VARYING_ASSIGNMENTS_PLACEHOLDER', varyingAssignments);
+
+        Effect.ShadersStore[`${name}VertexShader`] = vertexShader;
+        Effect.ShadersStore[`${name}FragmentShader`] = borderFragmentShader;
+
+        const shaderMaterial = new ShaderMaterial(name, this.scene, {
+            vertex: name,
+            fragment: name,
+        }, {
+            attributes: ["position", "tangent", "countryIndex"],
+            uniforms: ["worldViewProjection", "animationTextureWidth", "animationAmplitude", "lineThickness", "baseColor"],
+            samplers: ["animationTexture"]
+        });
+
+        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onError = (effect, errors) => {
+            console.error(`Shader compilation error in ${name}:`, errors);
+        };
+
+        if (this.animationTexture) {
+            shaderMaterial.setTexture("animationTexture", this.animationTexture);
+        }
+        shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
+        shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("lineThickness", lineThickness);
+        shaderMaterial.setColor3("baseColor", BORDER_COLOR_BLACK);
+        shaderMaterial.backFaceCulling = false;
+
+        return shaderMaterial;
     }
 
     /**
