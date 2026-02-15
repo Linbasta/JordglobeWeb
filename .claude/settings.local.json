@@ -65,7 +65,8 @@
       "Bash(npm run convert-medals:*)",
       "Bash(npm run extract-us-provinces:*)",
       "Bash(npm run generate-us-segments:*)",
-      "Bash(npm run test:us-provinces:*)"
+      "Bash(npm run test:us-provinces:*)",
+      "Bash(npm run test:province-borders:*)"
     ],
     "deny": [],
     "ask": []

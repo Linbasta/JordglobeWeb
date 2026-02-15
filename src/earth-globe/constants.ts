@@ -177,6 +177,26 @@ export const ZOOM_MARKER_HIT_RADIUS_FAR = 0.1;
 export const ZOOM_COLLIDER_SCALE_CLOSE = 1.0;
 export const ZOOM_COLLIDER_SCALE_FAR = 2.0;
 
+// ============================================================================
+// Province Rendering
+// ============================================================================
+
+/** Province border thickness when zoomed in (from Unity MapConfig) */
+export const PROVINCE_BORDER_THICKNESS_CLOSE = 0.0001;
+
+/** Province border thickness when zoomed out (from Unity MapConfig) */
+export const PROVINCE_BORDER_THICKNESS_FAR = 0.001;
+
+/** Province border alpha when zoomed in (visible) */
+export const PROVINCE_BORDER_ALPHA_CLOSE = 1.0;
+
+/** Province border alpha when zoomed out (invisible) */
+export const PROVINCE_BORDER_ALPHA_FAR = 0.0;
+
+// ============================================================================
+// Live Zoom Values
+// ============================================================================
+
 /** Live zoom values — read every frame, tweakable via dev panel (Z key) */
 export const zoom = {
     threshold: ZOOM_THRESHOLD,
@@ -192,4 +212,8 @@ export const zoom = {
     colliderScaleFar: ZOOM_COLLIDER_SCALE_FAR,
     orbitSensibilityClose: ORBIT_SENSIBILITY_CLOSE,
     orbitSensibilityFar: ORBIT_SENSIBILITY_FAR,
+    provinceBorderThicknessClose: PROVINCE_BORDER_THICKNESS_CLOSE,
+    provinceBorderThicknessFar: PROVINCE_BORDER_THICKNESS_FAR,
+    provinceBorderAlphaClose: PROVINCE_BORDER_ALPHA_CLOSE,
+    provinceBorderAlphaFar: PROVINCE_BORDER_ALPHA_FAR,
 };
