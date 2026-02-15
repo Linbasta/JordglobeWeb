@@ -5,7 +5,6 @@
  */
 
 import { SoloGameController } from './solo-game-controller';
-import { loadConfig } from '../shared/config/global-config';
 
 // Export for external use
 export { SoloGameController } from './solo-game-controller';
@@ -14,9 +13,6 @@ export type { SoloGameOptions } from './solo-game-controller';
 // Auto-initialize when loaded directly in browser
 if (typeof window !== 'undefined') {
     window.addEventListener('DOMContentLoaded', async () => {
-        // Load configuration first
-        await loadConfig();
-
         const controller = new SoloGameController('renderCanvas', {
             onReady: () => {
                 console.log('Solo game ready!');

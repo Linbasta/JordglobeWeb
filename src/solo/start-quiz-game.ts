@@ -1,14 +1,13 @@
 /**
  * Start Quiz Game — single entry point for quiz HTML pages
  *
- * Handles all boilerplate: loading screen, config, inspector,
+ * Handles all boilerplate: loading screen, inspector,
  * shuffle, country name resolution, controller creation.
  * Pages just provide questions.
  */
 
 import type { Question } from '../shared/quiz/quiz-types'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
-import { loadConfig } from '../shared/config/global-config'
 import { SoloGameController } from './solo-game-controller'
 
 export interface QuizGameConfig {
@@ -27,16 +26,13 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
     // 1. Loading screen (must exist before controller constructor queries it)
     createLoadingScreen(config.title ?? 'Loading Quiz')
 
-    // 2. Config
-    await loadConfig()
-
-    // 3. Inspector (dev only)
+    // 2. Inspector (dev only)
     if (import.meta.env.DEV) {
         await import('@babylonjs/core/Debug/debugLayer')
         await import('@babylonjs/inspector')
     }
 
-    // 4. Shuffle
+    // 3. Shuffle
     const questions = [...config.questions]
     if (config.shuffle !== false) {
         for (let i = questions.length - 1; i > 0; i--) {
@@ -45,10 +41,10 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         }
     }
 
-    // 5. Derive showCountryLabel: show if any question uses text presentation
+    // 4. Derive showCountryLabel: show if any question uses text presentation
     const showCountryLabel = questions.some(q => q.present === 'text')
 
-    // 6. Debug hint (dev only)
+    // 5. Debug hint (dev only)
     if (import.meta.env.DEV) {
         const hint = document.createElement('div')
         hint.style.cssText =
@@ -58,7 +54,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         document.body.appendChild(hint)
     }
 
-    // 7. Create controller — resolve country names in onReady
+    // 6. Create controller — resolve country names in onReady
     return new Promise<void>((resolve) => {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,

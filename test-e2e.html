@@ -90,12 +90,9 @@
 
     <script type="module">
         import { SoloGameController } from './src/solo/solo-game-controller.ts';
-        import { loadConfig } from './src/shared/config/global-config.ts';
         import { exposeTestAPI } from './src/tests/test-api.ts';
 
         window.addEventListener('DOMContentLoaded', async () => {
-            await loadConfig();
-
             const game = new SoloGameController('renderCanvas', {
                 showCountryLabel: true,
                 showHoverLabel: false,

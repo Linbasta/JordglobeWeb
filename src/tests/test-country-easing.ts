@@ -9,7 +9,6 @@
  */
 
 import { EarthGlobe, STATE_NORMAL, STATE_CLEARED } from '../earth-globe';
-import { loadConfig } from '../shared/config/global-config';
 import { getEasingFunction } from '../shared/utils/easing';
 import { CORRECT_EASING } from '../shared/animation/country-animations';
 
@@ -278,8 +277,6 @@ copyEasingButton.addEventListener('click', () => {
 // Sample the default easing (OutQuad) into altitude keyframes
 sampleEasingIntoKeyframes(easingSelect.value);
 drawEditor();
-
-await loadConfig();
 
 const globe = new EarthGlobe({
     canvasId: 'renderCanvas',

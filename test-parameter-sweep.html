@@ -259,7 +259,6 @@
 
     <script type="module">
         import { SoloGameController } from './src/solo/solo-game-controller.ts';
-        import { loadConfig } from './src/shared/config/global-config.ts';
         import { frameCountry } from './src/shared/animation/camera-utils.ts';
 
         let game = null;
@@ -281,8 +280,6 @@
 
         // Initialize globe
         async function init() {
-            await loadConfig();
-
             game = new SoloGameController('renderCanvas', {
                 showCountryLabel: false,
                 showHoverLabel: false,

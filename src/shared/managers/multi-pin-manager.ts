@@ -18,7 +18,7 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { hexToRgb } from '../../../shared/playerColors';
 import { getZoomValue } from '../animation/camera-utils';
-import { getConfig } from '../config/global-config';
+import { zoom } from '../../earth-globe';
 
 const EARTH_RADIUS = 2.0;
 
@@ -171,14 +171,8 @@ export class MultiPinManager {
         const pinContainer = new TransformNode(`pinContainer_${Date.now()}`, this.scene);
         pinContainer.parent = pinPivot;
 
-        // Scale the pin (using config values)
-        const config = getConfig();
-        const pinScale = getZoomValue(
-            this.camera,
-            config.zoom.pinScale.closeValue,
-            config.zoom.pinScale.farValue,
-            config.zoom.pinScale.easing
-        );
+        // Scale the pin based on camera zoom
+        const pinScale = getZoomValue(this.camera, zoom.pinScaleClose, zoom.pinScaleFar);
         pinContainer.scaling = new Vector3(pinScale, pinScale, pinScale);
 
         // Clone all child meshes from the template
@@ -240,14 +234,8 @@ export class MultiPinManager {
         Quaternion.FromUnitVectorsToRef(upVector, normal, quaternion);
         pinMesh.rotationQuaternion = quaternion;
 
-        // Scale based on camera distance (using config values)
-        const config = getConfig();
-        const pinScale = getZoomValue(
-            this.camera,
-            config.zoom.pinScale.closeValue,
-            config.zoom.pinScale.farValue,
-            config.zoom.pinScale.easing
-        );
+        // Scale based on camera distance
+        const pinScale = getZoomValue(this.camera, zoom.pinScaleClose, zoom.pinScaleFar);
 
         // Apply scale to the container (first child)
         const container = pinMesh.getChildren()[0] as TransformNode;
@@ -261,13 +249,7 @@ export class MultiPinManager {
      * Call this in the render loop if you want pins to scale dynamically
      */
     updatePinScales(): void {
-        const config = getConfig();
-        const pinScale = getZoomValue(
-            this.camera,
-            config.zoom.pinScale.closeValue,
-            config.zoom.pinScale.farValue,
-            config.zoom.pinScale.easing
-        );
+        const pinScale = getZoomValue(this.camera, zoom.pinScaleClose, zoom.pinScaleFar);
 
         this.pins.forEach(pin => {
             const container = pin.mesh.getChildren()[0] as TransformNode;

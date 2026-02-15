@@ -21,7 +21,7 @@ import {
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
-import { getConfig } from '../config/global-config'
+import { zoom } from '../../earth-globe'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
@@ -301,9 +301,7 @@ export function tickQuiz(now: number): boolean {
                     const clickLatLon = pendingAnswer.latLon
                     const clickPoint = latLonToSphere(clickLatLon.lat, clickLatLon.lng, 0)
                     const camera = globe.getCamera()
-                    const config = getConfig()
-                    const hr = config.zoom.markerHitRadius
-                    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing)
+                    const hitRadius = getZoomValue(camera, zoom.markerHitRadiusClose, zoom.markerHitRadiusFar)
                     const hitRadiusSqr = hitRadius * hitRadius
 
                     // Check ALL location markers for hit (find closest within radius)
@@ -518,9 +516,7 @@ export function updateLocationHover(lat: number, lon: number): void {
 
     const clickPoint = latLonToSphere(lat, lon, 0)
     const camera = globe.getCamera()
-    const cfg = getConfig()
-    const hr = cfg.zoom.markerHitRadius
-    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing)
+    const hitRadius = getZoomValue(camera, zoom.markerHitRadiusClose, zoom.markerHitRadiusFar)
     const hitRadiusSqr = hitRadius * hitRadius
 
     // Find closest marker within hit radius

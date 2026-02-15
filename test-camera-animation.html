@@ -225,7 +225,6 @@
 
     <script type="module">
         import { SoloGameController } from './src/solo/solo-game-controller.ts';
-        import { loadConfig } from './src/shared/config/global-config.ts';
         import { animateToLocation, frameCountry } from './src/shared/animation/camera-utils.ts';
         import { Vector3 } from '@babylonjs/core/Maths/math.vector';
         import { Matrix } from '@babylonjs/core/Maths/math.vector';
@@ -233,9 +232,6 @@
         let game;
         let selectedCountry = null;
         let selectedLatLon = null;
-
-        // Load config first
-        await loadConfig();
 
         // Define functions first
         function populateCountryDropdown() {

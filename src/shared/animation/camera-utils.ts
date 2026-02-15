@@ -6,9 +6,8 @@
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
-import { getConfig } from '../config/global-config';
 import { easedValue, getEasingFunction } from '../utils/easing';
-import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE } from '../../earth-globe';
+import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE, zoom } from '../../earth-globe';
 import type { CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';
 
@@ -995,9 +994,7 @@ export async function cameraShake(camera: ArcRotateCamera, duration: number = 30
  * Get an interpolated value based on current camera zoom level.
  * Replaces the ZoomBasedValue class.
  */
-export function getZoomValue(camera: ArcRotateCamera, closeValue: number, farValue: number, easingName: string = 'OutSine'): number {
-    const config = getConfig();
-    const threshold = config.zoom.threshold;
+export function getZoomValue(camera: ArcRotateCamera, closeValue: number, farValue: number, easingName: string = 'Linear'): number {
     const easing = getEasingFunction(easingName);
-    return easedValue(camera.radius, CAMERA_LOWER_RADIUS, threshold, closeValue, farValue, easing);
+    return easedValue(camera.radius, CAMERA_LOWER_RADIUS, zoom.threshold, closeValue, farValue, easing);
 }

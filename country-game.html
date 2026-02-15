@@ -163,12 +163,8 @@
 
     <script type="module">
         import { SoloGameController } from '/src/solo/solo-game-controller.ts';
-        import { loadConfig } from '/src/shared/config/global-config.ts';
 
         window.addEventListener('DOMContentLoaded', async () => {
-            // Load configuration first
-            await loadConfig();
-
             // Optionally load inspector in dev
             if (import.meta.env.DEV) {
                 await import('@babylonjs/core/Debug/debugLayer');

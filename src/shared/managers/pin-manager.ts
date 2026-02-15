@@ -19,7 +19,7 @@ import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
-import { getConfig } from '../config/global-config';
+import { zoom } from '../../earth-globe';
 import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
 
 const EARTH_RADIUS = 2.0;
@@ -369,13 +369,7 @@ export function onCancelZoneChange(callback: (inZone: boolean) => void): void {
 export function updatePinScaleIfPlacing(): void {
     if (!isPlacingMode || !previewPinContainer) return;
 
-    const config = getConfig();
-    const pinScale = getZoomValue(
-        camera,
-        config.zoom.pinScale.closeValue,
-        config.zoom.pinScale.farValue,
-        config.zoom.pinScale.easing
-    );
+    const pinScale = getZoomValue(camera, zoom.pinScaleClose, zoom.pinScaleFar);
 
     previewPinContainer.scaling.x = pinScale;
     previewPinContainer.scaling.y = pinScale;

@@ -5,10 +5,6 @@
  */
 
 import { EarthGlobe } from '../earth-globe';
-import { loadConfig } from '../shared/config/global-config';
-
-// Load config and initialize EarthGlobe
-await loadConfig();
 
 const globe = new EarthGlobe({ canvasId: 'renderCanvas' });
 (window as any).earthGlobe = globe;

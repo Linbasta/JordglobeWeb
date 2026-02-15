@@ -8,7 +8,7 @@ import { PartyGameController } from './party-game-controller';
 import { onPinPlaced, getRecordedPositions, onPlacingModeChange } from '../../shared/managers/pin-manager';
 import { Confetti } from '../../shared/effects/confetti';
 import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
-import { loadConfig } from '../../shared/config/global-config';
+
 
 // Expand icon (corners pointing outward)
 const EXPAND_ICON = 'M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3';
@@ -91,8 +91,6 @@ function setupFullscreenButton(): void {
 
 // Initialize the application when page loads
 window.addEventListener('DOMContentLoaded', async () => {
-    // Load configuration
-    await loadConfig();
     const joinScreen = new JoinScreen();
     const waitingScreen = new WaitingScreen();
     const socket = new GameSocket();

@@ -17,8 +17,8 @@ import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared
 import { handleHover, clearSelection } from '../shared/behaviors/country-selection';
 import { CountryLabelUI } from '../shared/ui/country-label-ui';
 import { HoverCountryLabel } from '../shared/ui/hover-country-label';
-import { reloadConfig, getConfig } from '../shared/config/global-config';
 import { getZoomValue } from '../shared/animation/camera-utils';
+import { zoom } from '../earth-globe';
 
 // New quiz pipeline
 import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
@@ -103,9 +103,7 @@ export class SoloGameController extends BaseGameController {
                 // Update marker debug radius based on current zoom (dev only)
                 if (import.meta.env.DEV) {
                     const camera = globe.getCamera();
-                    const config = getConfig();
-                    const hr = config.zoom.markerHitRadius;
-                    const hitRadius = getZoomValue(camera, hr.closeValue, hr.farValue, hr.easing);
+                    const hitRadius = getZoomValue(camera, zoom.markerHitRadiusClose, zoom.markerHitRadiusFar);
                     globe.updateMarkerDebugRadius(hitRadius);
                 }
             }
@@ -340,10 +338,6 @@ export class SoloGameController extends BaseGameController {
             if (e.key === 'w' || e.key === 'W') {
                 this.toggleWaterShaderControls();
             }
-            // Reload config (Z key)
-            if (e.key === 'z' || e.key === 'Z') {
-                this.reloadConfigShortcut();
-            }
             // Toggle collision/hit area debug visualization (C key)
             if (e.key === 'c' || e.key === 'C') {
                 console.log('[SoloGameController] C key detected - toggling collision debug visualization');
@@ -360,6 +354,10 @@ export class SoloGameController extends BaseGameController {
             // Toggle performance overlay (P key) - dev only
             if ((e.key === 'p' || e.key === 'P') && import.meta.env.DEV) {
                 togglePerfOverlay();
+            }
+            // Toggle zoom tweaker panel (Z key) - dev only
+            if ((e.key === 'z' || e.key === 'Z') && import.meta.env.DEV) {
+                import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel());
             }
         });
     }
@@ -429,9 +427,4 @@ export class SoloGameController extends BaseGameController {
         document.body.appendChild(panel);
     }
 
-    private async reloadConfigShortcut(): Promise<void> {
-        console.log('⚙️ Reloading configuration...');
-        const config = await reloadConfig();
-        console.log('✓ Configuration reloaded:', config);
-    }
 }

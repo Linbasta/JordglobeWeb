@@ -4,11 +4,8 @@
  */
 
 import { EarthGlobe } from '../earth-globe'
-import { loadConfig } from '../shared/config/global-config'
 import { burstAtPosition } from '../shared/effects/marker-particles'
 import type { BurstOptions } from '../shared/effects/marker-particles'
-
-await loadConfig()
 
 const globe = new EarthGlobe({ canvasId: 'renderCanvas' })
 ;(window as any).earthGlobe = globe
