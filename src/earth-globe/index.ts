@@ -75,7 +75,8 @@ export type {
 // Constants (for consumers who need to reference them)
 export {
     EARTH_RADIUS,
-    COUNTRY_ALTITUDE,
+    kmToWorld,
+    REGION_ALTITUDE,
     ANIMATION_AMPLITUDE,
     MAX_COUNTRIES,
     MAX_ANIMATION_COUNTRIES,

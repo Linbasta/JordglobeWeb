@@ -16,7 +16,7 @@ import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture
 
 import {
     EarthGlobe,
-    COUNTRY_ALTITUDE
+    REGION_ALTITUDE
 } from '../../earth-globe';
 import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
 
@@ -238,7 +238,7 @@ export abstract class BaseGameController {
         position: import('@babylonjs/core/Maths/math').Vector3;
         normal: import('@babylonjs/core/Maths/math').Vector3;
     } {
-        const defaultAltitude = aboveCountry ? COUNTRY_ALTITUDE + 0.01 : 0.01;
+        const defaultAltitude = aboveCountry ? REGION_ALTITUDE + 0.01 : 0.01;
         const finalAltitude = altitude !== undefined ? altitude : defaultAltitude;
         return this.globe.positionAtLatLon(lat, lon, finalAltitude);
     }

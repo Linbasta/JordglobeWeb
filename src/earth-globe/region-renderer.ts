@@ -15,7 +15,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
 import {
     EARTH_RADIUS,
-    COUNTRY_ALTITUDE,
+    REGION_ALTITUDE,
     MAX_COUNTRIES,
     ANIMATION_AMPLITUDE,
     COUNTRY_HSV_SATURATION,

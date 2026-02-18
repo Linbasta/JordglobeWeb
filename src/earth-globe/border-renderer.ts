@@ -16,7 +16,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
 import {
     EARTH_RADIUS,
-    COUNTRY_ALTITUDE,
+    REGION_ALTITUDE,
     EXTRUDED_BORDER_DEPTH,
     TUBE_RADIUS,
     TUBE_TESSELLATION,

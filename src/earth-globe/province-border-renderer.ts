@@ -14,7 +14,7 @@ import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Effect } from '@babylonjs/core/Materials/effect';
 
-import { COUNTRY_ALTITUDE, zoom } from './constants';
+import { REGION_ALTITUDE, zoom } from './constants';
 import { latLonToSphere } from './geo-math';
 import type { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getZoomValue } from '../shared/animation/camera-utils';
@@ -68,9 +68,9 @@ export async function loadProvinceBorders(
     for (const segment of data.segments) {
         if (segment.points.length < 2) continue;
 
-        // Countries at rest sit at exactly COUNTRY_ALTITUDE above the sphere surface.
+        // Regions at rest sit at exactly REGION_ALTITUDE above the sphere surface.
         // Place borders just above that with a small clearance to prevent z-fighting.
-        const PROVINCE_BORDER_ALTITUDE = COUNTRY_ALTITUDE + 0.002;
+        const PROVINCE_BORDER_ALTITUDE = REGION_ALTITUDE + 0.002;
 
         // Convert lat/lon to 3D sphere points
         const points3D: Vector3[] = segment.points.map(([lat, lon]) =>

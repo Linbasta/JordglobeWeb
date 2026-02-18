@@ -6,7 +6,7 @@ attribute vec4 tangent;        // Pre-scaled bitangent direction (±0.5)
 
 // Uniforms
 uniform mat4 worldViewProjection;
-uniform float altitudeOffset;  // Fixed altitude (e.g., COUNTRY_ALTITUDE)
+uniform float altitudeOffset;  // Fixed altitude (e.g., REGION_ALTITUDE)
 uniform float lineThickness;   // Zoom-interpolated thickness
 
 void main(void) {

@@ -25,7 +25,7 @@ import '@babylonjs/core/Culling/ray';  // Required for scene.pick() to work!
 // Module imports
 import {
     EARTH_RADIUS,
-    COUNTRY_ALTITUDE,
+    REGION_ALTITUDE,
     ANIMATION_AMPLITUDE,
     CAMERA_LOWER_RADIUS,
     CAMERA_UPPER_RADIUS,
@@ -223,7 +223,7 @@ export class EarthGlobe {
                 this.countryPicker,
                 (country) => {
                     // Initialize animation data for each country
-                    const defaultAnimValue = COUNTRY_ALTITUDE / ANIMATION_AMPLITUDE;
+                    const defaultAnimValue = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
                     this.animationTexture.setAltitude(country.index, defaultAnimValue);
                 }
             );
@@ -310,7 +310,7 @@ export class EarthGlobe {
             for (const country of this.countryRenderer.getCountriesData()) {
                 if (country.centroid) {
                     const normal = country.centroid.normalizeToNew();
-                    const position = country.centroid.add(normal.scale(COUNTRY_ALTITUDE + 0.01));
+                    const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
                     if (markerId >= 0) {
                         this.smallCountryMarkers.set(country.index, markerId);
@@ -461,7 +461,7 @@ export class EarthGlobe {
      * @param altitude Altitude above surface (default: just above countries)
      */
     latLonToPosition(lat: number, lon: number, altitude?: number): Vector3 {
-        const finalAltitude = altitude !== undefined ? altitude : COUNTRY_ALTITUDE + 0.01;
+        const finalAltitude = altitude !== undefined ? altitude : REGION_ALTITUDE + 0.01;
         return latLonToSphere(lat, lon, finalAltitude);
     }
 
@@ -477,7 +477,7 @@ export class EarthGlobe {
      * Get position at lat/lon with normal vector
      */
     positionAtLatLon(lat: number, lon: number, altitude?: number): { position: Vector3; normal: Vector3 } {
-        const finalAltitude = altitude !== undefined ? altitude : COUNTRY_ALTITUDE + 0.01;
+        const finalAltitude = altitude !== undefined ? altitude : REGION_ALTITUDE + 0.01;
         const position = latLonToSphere(lat, lon, finalAltitude);
         const normal = position.normalizeToNew();
         return { position, normal };
@@ -509,7 +509,7 @@ export class EarthGlobe {
         }
 
         // No country found (coastal edge case) — default to landmass altitude
-        const position = basePosition.add(normal.scale(COUNTRY_ALTITUDE + offsetAbove));
+        const position = basePosition.add(normal.scale(REGION_ALTITUDE + offsetAbove));
         return { position, normal };
     }
 
@@ -550,7 +550,7 @@ export class EarthGlobe {
      */
     getAltitudeAtLatLon(lat: number, lon: number): number {
         const country = this.countryPicker.getCountryAt({ lat, lon });
-        return country ? COUNTRY_ALTITUDE : 0;
+        return country ? REGION_ALTITUDE : 0;
     }
 
     // =========================================================================

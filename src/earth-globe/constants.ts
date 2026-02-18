@@ -13,6 +13,14 @@ import { Color3 } from '@babylonjs/core/Maths/math';
 /** Radius of the earth sphere in world units */
 export const EARTH_RADIUS = 2.0;
 
+/** Real Earth radius in km */
+const EARTH_RADIUS_KM = 6_371;
+
+/** Convert km to world units (EARTH_RADIUS world units = EARTH_RADIUS_KM km) */
+export function kmToWorld(km: number): number {
+    return km * (EARTH_RADIUS / EARTH_RADIUS_KM);
+}
+
 /** Number of sphere segments for smooth water rendering */
 export const SPHERE_SEGMENTS = 64;
 
@@ -26,11 +34,11 @@ export const MAX_COUNTRIES = 5000;
 /** Maximum countries supported in animation texture */
 export const MAX_ANIMATION_COUNTRIES = 256;
 
-/** Height of country surfaces above the globe */
-export const COUNTRY_ALTITUDE = 0.08;
+/** Height of region surfaces above the globe (artistic, not geographically accurate) */
+export const REGION_ALTITUDE = kmToWorld(75); // ~0.041 world units
 
 /** Depth of extruded border walls */
-export const EXTRUDED_BORDER_DEPTH = 0.05;
+export const EXTRUDED_BORDER_DEPTH = kmToWorld(160); // ~0.050 world units
 
 /** Grid spacing in degrees for interior triangulation points */
 export const TRIANGULATION_GRID_SPACING = 5;
@@ -39,8 +47,11 @@ export const TRIANGULATION_GRID_SPACING = 5;
 // Animation
 // ============================================================================
 
-/** Maximum amplitude for country altitude animation */
-export const ANIMATION_AMPLITUDE = 0.2;
+/** How many times the resting altitude regions can pop above their base during animation */
+const ANIMATION_AMPLITUDE_MULTIPLIER = 5;
+
+/** Maximum amplitude for region altitude animation — derived from REGION_ALTITUDE */
+export const ANIMATION_AMPLITUDE = REGION_ALTITUDE * ANIMATION_AMPLITUDE_MULTIPLIER;
 
 /** Width of the animation texture (must be power of 2) */
 export const ANIMATION_TEXTURE_WIDTH = 1024;
