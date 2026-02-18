@@ -25,7 +25,7 @@ export type { ViewportRegion } from './animation/camera-utils';
 export type { PinRecording, RecordedPosition } from './animation/pin-recorder';
 
 // Behaviors
-export { handleHover, clearSelection } from './behaviors/country-selection';
+export { handleHover, clearSelection } from './behaviors/region-selection';
 
 // UI
 export { CountryLabelUI } from './ui/country-label-ui';

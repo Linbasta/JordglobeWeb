@@ -42,15 +42,16 @@ import {
     zoom,
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './geo-math';
-import { CountryPicker } from './country-picker';
+import { RegionPicker } from './region-picker';
+import { RegionController } from './region-controller';
 import { loadSegments } from './segment-loader';
 import { GlobeSphere } from './globe-sphere';
-import { CountryRenderer } from './country-renderer';
+import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';
 import { OutlineRenderer } from './outline-renderer';
 import { Skybox } from './skybox';
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
-import { CountryAnimator } from './country-animator';
+import { RegionAnimator } from './region-animator';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
@@ -95,9 +96,13 @@ export class EarthGlobe {
     private scene: Scene;
     private camera: ArcRotateCamera;
 
+    // Region controllers (Phase 1: only countryController exists)
+    private countryController!: RegionController;
+    private activeController!: RegionController;  // routes hover/click events
+
     // Rendering components
     private globeSphere: GlobeSphere;
-    private countryRenderer: CountryRenderer;
+    private countryRenderer: RegionRenderer;
     private borderRenderer: BorderRenderer;
     private outlineRenderer: OutlineRenderer;
     private skybox: Skybox;
@@ -105,7 +110,7 @@ export class EarthGlobe {
 
     // Animation
     private animationTexture: AnimationTexture;
-    private countryAnimator: CountryAnimator;
+    private countryAnimator: RegionAnimator;
 
     // Location markers
     private markerPool: LocationMarkerPool | null = null;
@@ -117,7 +122,7 @@ export class EarthGlobe {
     private segmentBorderMaterial: ShaderMaterial | null = null;
 
     // Data
-    private countryPicker: CountryPicker;
+    private countryPicker: RegionPicker;
     private segmentData: SegmentData | null = null;
 
     // Options and callbacks
@@ -167,14 +172,22 @@ export class EarthGlobe {
         light.intensity = 1.2;
 
         // Create components
-        this.countryPicker = new CountryPicker(PICKER_CELL_SIZE);
         this.shaderFactory = new ShaderFactory(this.scene);
         this.animationTexture = new AnimationTexture(this.scene);
-        this.countryAnimator = new CountryAnimator(this.animationTexture);
         this.shaderFactory.setAnimationTexture(this.animationTexture.getTexture());
 
+        // Create the country controller (wraps renderer, animator, picker)
+        this.countryController = new RegionController(
+            'country', this.scene, this.shaderFactory, this.animationTexture
+        );
+        this.activeController = this.countryController;
+
+        // Expose inner components via shorthand fields for backward compat
+        this.countryRenderer = this.countryController.getRenderer();
+        this.countryAnimator = this.countryController.getAnimator();
+        this.countryPicker = this.countryController.getPicker();
+
         this.globeSphere = new GlobeSphere(this.scene, this.assets);
-        this.countryRenderer = new CountryRenderer(this.scene, this.shaderFactory);
         this.borderRenderer = new BorderRenderer(this.scene);
         this.outlineRenderer = new OutlineRenderer(this.scene);
         this.skybox = new Skybox(this.scene, this.assets);
@@ -419,7 +432,7 @@ export class EarthGlobe {
     /**
      * Get the country picker
      */
-    getCountryPicker(): CountryPicker {
+    getCountryPicker(): RegionPicker {
         return this.countryPicker;
     }
 

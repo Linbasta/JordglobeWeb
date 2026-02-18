@@ -15,7 +15,7 @@ import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
-import type { CountryPicker, CountryPolygon, LatLon } from '../../earth-globe';
+import type { RegionPicker, CountryPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
@@ -32,7 +32,7 @@ const CANCEL_ZONE_VISIBLE_HEIGHT = 120; // 150px panel - 30px offset
 let scene: Scene;
 let camera: ArcRotateCamera;
 let canvas: HTMLCanvasElement;
-let countryPicker: CountryPicker;
+let countryPicker: RegionPicker;
 let earthSphere: Mesh;
 let createUnlitMaterial: (mat: Material | null) => Material;
 let getCountryAltitude: (idx: number) => number;
@@ -254,7 +254,7 @@ export async function initPinManager(
     _scene: Scene,
     _camera: ArcRotateCamera,
     _canvas: HTMLCanvasElement,
-    _countryPicker: CountryPicker,
+    _countryPicker: RegionPicker,
     _earthSphere: Mesh,
     _createUnlitMaterial: (mat: Material | null) => Material,
     _getCountryAltitude: (idx: number) => number

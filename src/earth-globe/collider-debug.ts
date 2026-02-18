@@ -14,7 +14,7 @@ import { Color3 } from '@babylonjs/core/Maths/math';
 
 import { TUBE_TESSELLATION } from './constants';
 import { latLonToSphere } from './geo-math';
-import type { CountryPicker } from './country-picker';
+import type { RegionPicker } from './region-picker';
 
 const CIRCLE_SEGMENTS = 32;
 const DEBUG_TUBE_RADIUS = 0.003;
@@ -24,7 +24,7 @@ const SURFACE_ALTITUDE = 0.005; // Just above globe surface, below country meshe
 let activeMesh: Mesh | null = null;
 let hiddenMeshes: Mesh[] = [];
 let storedScene: Scene | null = null;
-let storedPicker: CountryPicker | null = null;
+let storedPicker: RegionPicker | null = null;
 let lastMultiplier = 1.0;
 
 function buildCirclePath(lat: number, lon: number, radiusDeg: number) {
@@ -51,7 +51,7 @@ function createColorMaterial(scene: Scene, color: Color3): StandardMaterial {
  * Build all collider circle tubes and merge them into one mesh.
  * Returns the merged mesh (or null if no circles).
  */
-function buildTubes(scene: Scene, picker: CountryPicker): Mesh | null {
+function buildTubes(scene: Scene, picker: RegionPicker): Mesh | null {
     const { overrides, catches } = picker.getColliderDebugInfo();
     const multiplier = picker.getColliderMultiplier();
 
@@ -98,7 +98,7 @@ function buildTubes(scene: Scene, picker: CountryPicker): Mesh | null {
     return Mesh.MergeMeshes(tubes, true, true, undefined, true, false);
 }
 
-function show(scene: Scene, picker: CountryPicker, surfaceMeshes: Mesh[]): void {
+function show(scene: Scene, picker: RegionPicker, surfaceMeshes: Mesh[]): void {
     storedScene = scene;
     storedPicker = picker;
     lastMultiplier = picker.getColliderMultiplier();
@@ -135,7 +135,7 @@ function hide(): void {
     storedPicker = null;
 }
 
-export function toggleColliderDebug(scene: Scene, picker: CountryPicker, surfaceMeshes: Mesh[]): void {
+export function toggleColliderDebug(scene: Scene, picker: RegionPicker, surfaceMeshes: Mesh[]): void {
     if (activeMesh) {
         hide();
         console.log('[ColliderDebug] Hidden');

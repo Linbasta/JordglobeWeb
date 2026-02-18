@@ -10,7 +10,7 @@
 
 import { EarthGlobe, STATE_NORMAL, STATE_CLEARED } from '../earth-globe';
 import { getEasingFunction } from '../shared/utils/easing';
-import { CORRECT_EASING } from '../shared/animation/country-animations';
+import { CORRECT_EASING } from '../shared/animation/region-animations';
 
 const NORMAL_ALTITUDE = 0.4;
 const CLEARED_ALTITUDE = 0.1;

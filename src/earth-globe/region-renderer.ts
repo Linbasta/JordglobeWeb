@@ -25,14 +25,14 @@ import {
 import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } from './geo-math';
 import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
-import { CountryPicker, calculateBoundingBox } from './country-picker';
+import { RegionPicker, calculateBoundingBox } from './region-picker';
 import type { LatLonPoint, PolygonData, CountryData, CountryJSON, TriangulationResult } from './types';
 import { isSmallCountry, isSurroundedCountry } from './small-countries';
 
 /**
- * Country Renderer - Creates and manages country meshes
+ * Region Renderer - Creates and manages region meshes
  */
-export class CountryRenderer {
+export class RegionRenderer {
     private scene: Scene;
     private engine: AbstractEngine;
     private shaderFactory: ShaderFactory;
@@ -519,7 +519,7 @@ export class CountryRenderer {
      */
     async loadCountries(
         url: string,
-        countryPicker: CountryPicker,
+        countryPicker: RegionPicker,
         onCountryAdded?: (country: CountryData) => void
     ): Promise<void> {
         const startTime = performance.now();

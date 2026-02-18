@@ -40,6 +40,50 @@ export interface BoundingBox {
 }
 
 // ============================================================================
+// Region Types (generic — used for both countries and provinces)
+// ============================================================================
+
+export type RegionType = 'country' | 'province';
+
+/**
+ * Generic region polygon for spatial lookup
+ */
+export interface RegionPolygon {
+    name: string;
+    regionIndex: number;
+    polygonIndex: number;
+    points: LatLon[];
+    bbox: BoundingBox;
+}
+
+/**
+ * Generic region metadata
+ */
+export interface RegionData {
+    type: RegionType;
+    name: string;
+    index: number;                   // 0-based within this controller
+    polygonIndices: number[];
+    parentRegionIndex?: number;      // if set: hide parent region when this is active
+    centroid: import('@babylonjs/core/Maths/math').Vector3 | null;
+    // country-only fields:
+    iso2?: string;
+    neighbourCountries?: NeighborInfo[];
+}
+
+/**
+ * Raw region JSON from data files
+ */
+export interface RegionJSON {
+    name: string;
+    paths: string;
+    holes?: Record<number, number[]>;   // polygon index → contained region indices
+    lakes?: Record<number, number[]>;   // polygon index → lake polygon indices
+    skipHole?: boolean;
+    parentRegionIndex?: number;
+}
+
+// ============================================================================
 // Country Data Types
 // ============================================================================
 
@@ -228,7 +272,7 @@ export interface EarthGlobeAPI {
     getEngine(): Engine;
     getCanvas(): HTMLCanvasElement;
     getEarthSphere(): Mesh;
-    getCountryPicker(): import('./country-picker').CountryPicker;
+    getCountryPicker(): import('./region-picker').RegionPicker;
 
     // Material creation
     createUnlitMaterial(originalMaterial: import('@babylonjs/core/Materials/material').Material | null): import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial;

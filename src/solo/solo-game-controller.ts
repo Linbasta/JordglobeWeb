@@ -14,7 +14,7 @@ import { STATE_DISABLED } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
 import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared/managers/pin-manager';
-import { handleHover, clearSelection } from '../shared/behaviors/country-selection';
+import { handleHover, clearSelection } from '../shared/behaviors/region-selection';
 import { CountryLabelUI } from '../shared/ui/country-label-ui';
 import { HoverCountryLabel } from '../shared/ui/hover-country-label';
 import { getZoomValue } from '../shared/animation/camera-utils';

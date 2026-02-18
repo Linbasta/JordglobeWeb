@@ -8,7 +8,7 @@ if (import.meta.env.DEV) {
 
 import { EarthGlobe } from '../../earth-globe';
 import { initPinManager, onPinPlaced } from '../../shared/managers/pin-manager';
-import { animateCorrect } from '../../shared/animation/country-animations';
+import { animateCorrect } from '../../shared/animation/region-animations';
 import { Game } from './game';
 
 // Initialize the application when page loads

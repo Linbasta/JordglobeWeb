@@ -37,7 +37,13 @@ export type {
     LatLonPoint,
     BoundingBox,
 
-    // Country types
+    // Region types (generic)
+    RegionType,
+    RegionPolygon,
+    RegionData,
+    RegionJSON,
+
+    // Country types (specific)
     CountryPolygon,
     CountryData,
     PolygonData,
@@ -116,8 +122,10 @@ export {
     sharesBorderPoint,
 } from './geo-math';
 
-// Country Picker
-export { CountryPicker } from './country-picker';
+// Region Picker (formerly CountryPicker)
+export { RegionPicker } from './region-picker';
+// Backward-compat alias
+export { RegionPicker as CountryPicker } from './region-picker';
 
 // Segment Loader
 export {
@@ -131,14 +139,19 @@ export {
 // Triangulation
 export { cdt2d, filterTriangles, pointInPolygon as triangulationPointInPolygon } from './triangulation';
 
+// Region Controller
+export { RegionController } from './region-controller';
+
 // Individual renderers (for advanced customization)
 export { GlobeSphere } from './globe-sphere';
-export { CountryRenderer } from './country-renderer';
+export { RegionRenderer } from './region-renderer';
+export { RegionRenderer as CountryRenderer } from './region-renderer';  // backward-compat
 export { BorderRenderer } from './border-renderer';
 export { OutlineRenderer } from './outline-renderer';
 export { Skybox } from './skybox';
 export { AnimationTexture } from './animation-texture';
-export { CountryAnimator } from './country-animator';
+export { RegionAnimator } from './region-animator';
+export { RegionAnimator as CountryAnimator } from './region-animator';  // backward-compat
 export { ShaderFactory } from './shader-factory';
 
 // Location markers

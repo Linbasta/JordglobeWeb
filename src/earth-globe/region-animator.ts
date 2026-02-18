@@ -24,9 +24,9 @@ interface AnimationState {
 }
 
 /**
- * Country Animator - Handles smooth transitions for country properties
+ * Region Animator - Handles smooth transitions for region properties
  */
-export class CountryAnimator {
+export class RegionAnimator {
     private animationTexture: AnimationTexture;
 
     /** Active altitude animations by country index */

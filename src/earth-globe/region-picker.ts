@@ -20,7 +20,7 @@ interface ColliderCircle {
     polygon: CountryPolygon; // first polygon, returned on proximity match
 }
 
-export class CountryPicker {
+export class RegionPicker {
     private grid: Map<string, GridCell>;
     private cellSize: number;
     private polygons: CountryPolygon[];

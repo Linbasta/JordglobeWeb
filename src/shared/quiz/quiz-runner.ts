@@ -17,7 +17,7 @@ import {
     animateShowCorrect,
     animateToClearedAfterReveal,
     setDisabledImmediate
-} from '../animation/country-animations'
+} from '../animation/region-animations'
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
