@@ -107,11 +107,10 @@
                 const scene = g.getScene();
                 const camera = g.getCamera();
                 scene.registerBeforeRender(() => {
-                    const dist = camera.radius;
                     for (const state of states) {
-                        updateProvinceBorderUniforms(state, dist);
+                        updateProvinceBorderUniforms(state, camera);
                     }
-                    zoomInfoEl.textContent = `zoom radius: ${dist.toFixed(2)}`;
+                    zoomInfoEl.textContent = `zoom radius: ${camera.radius.toFixed(2)}`;
                 });
             }
         });

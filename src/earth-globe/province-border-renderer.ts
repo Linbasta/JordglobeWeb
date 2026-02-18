@@ -16,6 +16,8 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 
 import { COUNTRY_ALTITUDE, zoom } from './constants';
 import { latLonToSphere } from './geo-math';
+import type { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { getZoomValue } from '../shared/animation/camera-utils';
 
 // Import shaders
 import provinceBorderVertexShader from './shaders/province-border.vertex.glsl?raw';
@@ -66,9 +68,13 @@ export async function loadProvinceBorders(
     for (const segment of data.segments) {
         if (segment.points.length < 2) continue;
 
+        // Countries at rest sit at exactly COUNTRY_ALTITUDE above the sphere surface.
+        // Place borders just above that with a small clearance to prevent z-fighting.
+        const PROVINCE_BORDER_ALTITUDE = COUNTRY_ALTITUDE + 0.002;
+
         // Convert lat/lon to 3D sphere points
         const points3D: Vector3[] = segment.points.map(([lat, lon]) =>
-            latLonToSphere(lat, lon, COUNTRY_ALTITUDE)
+            latLonToSphere(lat, lon, PROVINCE_BORDER_ALTITUDE)
         );
 
         const mesh = createQuadStripBorder(scene, points3D);
@@ -196,11 +202,11 @@ function createProvinceBorderMaterial(scene: Scene): ShaderMaterial {
         console.error(`Shader compilation error in ${name}:`, errors);
     };
 
-    // Set default uniforms
-    shaderMaterial.setFloat("altitudeOffset", COUNTRY_ALTITUDE);
-    shaderMaterial.setFloat("lineThickness", zoom.provinceBorderThicknessFar);
+    // altitudeOffset = 0: border altitude is fully baked into vertex positions
+    shaderMaterial.setFloat("altitudeOffset", 0.0);
+    shaderMaterial.setFloat("lineThickness", zoom.provinceBorderThicknessClose);
     shaderMaterial.setColor4("borderColor", new Color4(0, 0, 0, 1)); // Black
-    shaderMaterial.setFloat("lineAlpha", zoom.provinceBorderAlphaFar);
+    shaderMaterial.setFloat("lineAlpha", zoom.provinceBorderAlphaClose);
     shaderMaterial.backFaceCulling = false;
     shaderMaterial.transparencyMode = 2; // ALPHA_BLEND
 
@@ -228,19 +234,17 @@ export function hideProvinceBorders(state: ProvinceBorderState): void {
 }
 
 /**
- * Update province border uniforms based on camera distance
+ * Update province border uniforms based on camera zoom.
+ * Uses the same getZoomValue interpolation as the rest of the codebase.
  */
 export function updateProvinceBorderUniforms(
     state: ProvinceBorderState,
-    cameraDistance: number
+    camera: ArcRotateCamera
 ): void {
     if (!state.material || !state.isVisible) return;
 
-    // Interpolate between close and far values based on zoom threshold
-    const t = Math.max(0, Math.min(1, (cameraDistance - zoom.threshold) / zoom.threshold));
-
-    const lineThickness = zoom.provinceBorderThicknessClose * (1 - t) + zoom.provinceBorderThicknessFar * t;
-    const lineAlpha = zoom.provinceBorderAlphaClose * (1 - t) + zoom.provinceBorderAlphaFar * t;
+    const lineThickness = getZoomValue(camera, zoom.provinceBorderThicknessClose, zoom.provinceBorderThicknessFar);
+    const lineAlpha = getZoomValue(camera, zoom.provinceBorderAlphaClose, zoom.provinceBorderAlphaFar);
 
     state.material.setFloat("lineThickness", lineThickness);
     state.material.setFloat("lineAlpha", lineAlpha);

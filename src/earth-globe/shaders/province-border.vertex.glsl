@@ -10,15 +10,14 @@ uniform float altitudeOffset;  // Fixed altitude (e.g., COUNTRY_ALTITUDE)
 uniform float lineThickness;   // Zoom-interpolated thickness
 
 void main(void) {
-    // Start with base position
+    // position is already placed at the right altitude by the CPU
+    // (latLonToSphere with full altitude including animation headroom).
+    // We just need a small extra push to clear z-fighting with country surfaces.
     vec3 pos = position;
-
-    // Additive altitude offset (static, no animation)
     vec3 centerDir = normalize(position);
-    pos += centerDir * altitudeOffset;
 
-    // Z-fighting offset (push outward along surface normal)
-    pos += centerDir * 0.001;
+    // Extra outward push to sit clearly above country surface
+    pos += centerDir * altitudeOffset;
 
     // Thickness expansion along bitangent
     pos += tangent.xyz * lineThickness;

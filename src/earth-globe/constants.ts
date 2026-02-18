@@ -181,16 +181,16 @@ export const ZOOM_COLLIDER_SCALE_FAR = 2.0;
 // Province Rendering
 // ============================================================================
 
-/** Province border thickness when zoomed in (from Unity MapConfig) */
-export const PROVINCE_BORDER_THICKNESS_CLOSE = 0.0001;
+/** Province border thickness when zoomed in close */
+export const PROVINCE_BORDER_THICKNESS_CLOSE = 0.0005;
 
-/** Province border thickness when zoomed out (from Unity MapConfig) */
-export const PROVINCE_BORDER_THICKNESS_FAR = 0.001;
+/** Province border thickness when zoomed out far */
+export const PROVINCE_BORDER_THICKNESS_FAR = 0.003;
 
-/** Province border alpha when zoomed in (visible) */
+/** Province border alpha when zoomed in close */
 export const PROVINCE_BORDER_ALPHA_CLOSE = 1.0;
 
-/** Province border alpha when zoomed out (invisible) */
+/** Province border alpha when zoomed out far */
 export const PROVINCE_BORDER_ALPHA_FAR = 0.0;
 
 // ============================================================================
