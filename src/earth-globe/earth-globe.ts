@@ -103,9 +103,7 @@ export class EarthGlobe {
 
     // Rendering components
     private globeSphere: GlobeSphere;
-    private countryRenderer: RegionRenderer;
-    private borderRenderer: BorderRenderer;
-    private outlineRenderer: OutlineRenderer;
+    private countryRenderer: RegionRenderer;  // TODO: Remove after migration complete
     private skybox: Skybox;
     private shaderFactory: ShaderFactory;
     private provinceShaderFactory: ShaderFactory | null = null;
@@ -121,15 +119,11 @@ export class EarthGlobe {
     private smallMarkerPool: LocationMarkerPool | null = null;
 
     // Materials
-    private outlineMaterial: ShaderMaterial | null = null;
-    private smallOutlineMaterial: ShaderMaterial | null = null;
-    private segmentBorderMaterial: ShaderMaterial | null = null;
-    private provinceSegmentBorderMaterial: ShaderMaterial | null = null;
+    private outlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
+    private smallOutlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
 
     // Data
-    private countryPicker: RegionPicker;
-    private segmentData: SegmentData | null = null;
-    private provinceSegmentData: SegmentData | null = null;
+    private countryPicker: RegionPicker;  // TODO: Remove after migration complete
 
     // Options and callbacks
     private options: EarthGlobeOptions;
@@ -207,8 +201,6 @@ export class EarthGlobe {
         );
 
         this.globeSphere = new GlobeSphere(this.scene, this.assets);
-        this.borderRenderer = new BorderRenderer(this.scene);
-        this.outlineRenderer = new OutlineRenderer(this.scene);
         this.skybox = new Skybox(this.scene, this.assets);
 
         // Start initialization
