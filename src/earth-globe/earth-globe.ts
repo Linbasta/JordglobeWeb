@@ -262,10 +262,13 @@ export class EarthGlobe {
                 polygon.extrudedBorder = border;
             }
 
-            // Set up animation texture size
+            // Set up animation texture size (must include countries + segments)
             const countryCount = this.countryRenderer.getRegionCount();
-            this.animationTexture.setEntriesUsed(countryCount);
+            const segmentCount = this.countryController.getSegmentAnimationIndices().size;
+            const totalEntries = MAX_ANIMATION_COUNTRIES + segmentCount;
+            this.animationTexture.setEntriesUsed(totalEntries);
             this.animationTexture.update();
+            console.log(`[Animation] Texture sized for ${countryCount} countries + ${segmentCount} segments = ${totalEntries} total entries`);
 
             // Load world texture (cached for province loading later)
             const worldTextureUrl = this.assets.worldTexture || DEFAULT_ASSETS.worldTexture;
