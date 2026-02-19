@@ -151,45 +151,38 @@ When hovering over provinces and moving away without clicking, they remained in 
 
 **Result:** Dragging the pin across multiple provinces now correctly restores each to altitude 0.2 (flat state). Outlines are removed as expected.
 
-### 6. Import All Province Medals
+### 6. ✅ Import All Province Medals - COMPLETE
 
-**Current medal system:**
-- Location: `/public/medals.json`
-- Types: `"countries"`, `"capitals"`, `"locations"`
-- Format:
-```json
-{
-  "id": 0,
-  "name": "Africa Countries",
-  "type": "countries",
-  "questionIds": ["ZA", "NG", "EG", ...]
-}
-```
+**Commit:** `340dcfc` - "Add province medals for 13 countries (68 medals total)"
 
-**Add province medals:**
-- Add new type: `"provinces"`
-- Import province medal data
-- Format:
-```json
-{
-  "id": X,
-  "name": "US States - Northeast",
-  "type": "provinces",
-  "questionIds": [31, 20, 6, ...]  // Province IDs
-}
-```
+**What was done:**
 
-**Source data locations:**
-- `data/legacy/medal_definitions.json` - Legacy medal data with BossType="Provinces"
-- `data/legacy/medal_format.md` - Documentation of legacy medal format
-- `data/legacy/locations_en.json` - Location/province names and IDs
+1. **Extracted provinces for 13 countries** (318 total provinces)
+   - BR (27), CA (13), CN (33), DE (16), ES (19), FR (13)
+   - GB (73), IN (36), IT (20), MX (32), PL (16), SE (21)
+   - Used existing `scripts/extract-provinces.ts` script
 
-**What's needed:**
-- Extract province medals from legacy data (filter by BossType="Provinces")
-- Convert to new format (questionIds, type, etc.)
-- Update medal system to support `type: "provinces"`
-- Update medal UI to handle province questions
-- Enter region mode when playing province medals
+2. **Generated province segments** (4,141 border segments)
+   - Used `scripts/generate-province-segments.ts` for each country
+   - Files: `public/province-segments/{BR,CA,CN,DE,ES,FR,GB,IN,IT,MX,PL,SE}.json`
+
+3. **Converted 68 province medals from legacy data**
+   - Script: `scripts/convert-province-medals.ts`
+   - Mapped GUID-based question IDs → numeric province IDs
+   - Distribution: GB(13), CN(8), IN(8), US(6), MX(6), IT(5), BR(5), SE(5), DE(3), PL(3), FR(2), ES(2), CA(2)
+
+4. **Integrated into medals.json**
+   - Script: `scripts/integrate-province-medals.ts`
+   - Medal IDs: 72-139 (68 new medals)
+   - Total medals: 72 → 140
+
+5. **Added to medal menu**
+   - Script: `scripts/add-province-medals-to-menu-v2.ts`
+   - Created country-level submenus (USA, CANADA, MEXICO, etc.)
+   - Organized by continent (North America, South America, Europe, Asia)
+   - All 68 medals now visible in `/medals` menu
+
+**Result:** Complete province medal system with 68 playable quizzes across 13 countries, fully integrated into the medal menu.
 
 ## Known Issues
 
