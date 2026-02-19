@@ -411,14 +411,11 @@ export class EarthGlobe {
         const provinceCount = this.provinceController.getRegionCount();
         console.log(`[Province] Loaded: ${provinceCount} total`);
 
-        // Set animation texture entries to 0 (all hidden initially)
+        // Set animation texture entries to 0 (all hidden initially) - but DON'T size yet (segments not loaded)
         const allProvinces = this.provinceController.getAllRegions();
         for (const region of allProvinces) {
             this.provinceAnimationTexture!.setAltitude(region.index, 0);
         }
-        this.provinceAnimationTexture!.setEntriesUsed(provinceCount);
-        this.provinceAnimationTexture!.update();
-        console.log(`[Province] Animation texture: ${provinceCount} entries, texture size=${this.provinceAnimationTexture!.getTexture().getSize().width}x${this.provinceAnimationTexture!.getTexture().getSize().height}`);
 
         // Create extruded borders for all province polygons (same as country pipeline)
         const provinceBorderRenderer = this.provinceController.getBorderRenderer();
@@ -457,10 +454,17 @@ export class EarthGlobe {
 
         // Load and render province segment borders via controller
         try {
-            // Calculate offset: provinces start after countries + country segments
-            const countrySegmentCount = this.countryController.getSegmentAnimationIndices().size;
-            const provinceSegmentOffset = MAX_ANIMATION_COUNTRIES + countrySegmentCount;
+            // Province segments use their OWN animation texture, so offset starts after provinces (not after countries!)
+            const provinceSegmentOffset = provinceCount;  // Provinces 0-49, segments start at 50
             await this.provinceController.loadSegments(`/province-segments/US.json`, provinceSegmentOffset);
+
+            // NOW resize province animation texture to include provinces + province segments
+            const provinceSegmentCount = this.provinceController.getSegmentAnimationIndices().size;
+            const totalProvinceEntries = provinceCount + provinceSegmentCount;
+            this.provinceAnimationTexture!.setEntriesUsed(totalProvinceEntries);
+            this.provinceAnimationTexture!.update();
+            console.log(`[Province] Animation texture sized for ${provinceCount} provinces + ${provinceSegmentCount} segments = ${totalProvinceEntries} total entries`);
+
             const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
             console.log(`[Province] Segment borders: ${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}, enabled=${provinceSegmentMesh?.isEnabled()}`);
 

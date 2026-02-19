@@ -184,6 +184,9 @@
                 console.log(`[Test] Reset previous state ${currentStateId} to altitude 0`);
             }
 
+            // Show outline for new selection
+            globe.showCountryOutline(stateId);
+
             // Animate new selection
             globe.animateActiveRegionAltitude(stateId, 0.8, 300);
             currentStateId = stateId;
