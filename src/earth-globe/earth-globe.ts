@@ -124,6 +124,7 @@ export class EarthGlobe {
     private outlineMaterial: ShaderMaterial | null = null;
     private smallOutlineMaterial: ShaderMaterial | null = null;
     private segmentBorderMaterial: ShaderMaterial | null = null;
+    private provinceSegmentBorderMaterial: ShaderMaterial | null = null;
 
     // Data
     private countryPicker: RegionPicker;
@@ -476,11 +477,11 @@ export class EarthGlobe {
             // Province segments need a separate range to avoid collisions
             const provinceSegmentOffset = MAX_ANIMATION_COUNTRIES + (this.segmentData?.segments.length ?? 0) + 1000;
 
-            const provinceSegmentMaterial = this.provinceShaderFactory!.createSegmentBorderMaterial();
+            this.provinceSegmentBorderMaterial = this.provinceShaderFactory!.createSegmentBorderMaterial();
             this.borderRenderer.renderProvinceSegmentBorders(
                 this.provinceSegmentData,
                 allProvinces,
-                provinceSegmentMaterial,
+                this.provinceSegmentBorderMaterial,
                 provinceSegmentOffset
             );
 
@@ -509,6 +510,13 @@ export class EarthGlobe {
             const scale = getZoomValue(this.camera, zoom.borderThicknessClose, zoom.borderThicknessFar);
             const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
             this.segmentBorderMaterial.setFloat("thicknessOffset", offset);
+        }
+
+        // Update province border thickness
+        if (this.provinceSegmentBorderMaterial) {
+            const scale = getZoomValue(this.camera, zoom.borderThicknessClose, zoom.borderThicknessFar);
+            const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
+            this.provinceSegmentBorderMaterial.setFloat("thicknessOffset", offset);
         }
 
         // Update marker scale based on camera zoom
