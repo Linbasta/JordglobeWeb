@@ -2,8 +2,8 @@
  * Start Quiz Game — single entry point for quiz HTML pages
  *
  * Handles all boilerplate: loading screen, inspector,
- * shuffle, country name resolution, controller creation.
- * Pages just provide questions.
+ * shuffle, controller creation.
+ * Pages provide complete question objects with explicit prompts.
  */
 
 import type { Question } from '../shared/quiz/quiz-types'
@@ -54,20 +54,12 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         document.body.appendChild(hint)
     }
 
-    // 6. Create controller — resolve country names in onReady
+    // 6. Create controller and start quiz
     return new Promise<void>((resolve) => {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,
             showHoverLabel: false,
             onReady: (controller) => {
-                // Resolve missing prompts for country questions
-                for (const q of questions) {
-                    if (!q.prompt && q.answer === 'country' && q.countryISO2) {
-                        const country = controller.getGlobe().getCountryByISO2(q.countryISO2)
-                        q.prompt = country?.name ?? q.countryISO2
-                    }
-                }
-
                 controller.startQuizGame({
                     questions,
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
