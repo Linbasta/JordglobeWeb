@@ -193,6 +193,8 @@ export class RegionController {
      * @param animationIndexOffset Starting index for segment animations (to avoid collisions)
      */
     async loadSegments(url: string, animationIndexOffset: number): Promise<void> {
+        console.log(`[RegionController.loadSegments] type=${this.type}, url=${url}`);
+
         // Load segment data (works for both country and province formats)
         if (this.type === 'country') {
             this.segmentData = await loadSegments(url);
@@ -200,7 +202,7 @@ export class RegionController {
             this.segmentData = await loadProvinceSegments(url);
         }
 
-        console.log(`[${this.type}] Loaded ${this.segmentData.segments.length} segments`);
+        console.log(`[${this.type}] Loaded ${this.segmentData.segments.length} segments from controller`);
 
         // Create segment border material
         this.segmentBorderMaterial = this.shaderFactory.createSegmentBorderMaterial();
@@ -210,10 +212,11 @@ export class RegionController {
         this.borderRenderer.renderSegmentBorders(
             this.segmentData,
             regionsData,
-            this.segmentBorderMaterial
+            this.segmentBorderMaterial,
+            animationIndexOffset
         );
 
-        console.log(`[${this.type}] Segment borders rendered`);
+        console.log(`[${this.type}] Segment borders rendered with offset ${animationIndexOffset}`);
     }
 
     /**

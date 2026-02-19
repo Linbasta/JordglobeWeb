@@ -428,11 +428,13 @@ export class BorderRenderer {
 
     /**
      * Render segment borders (works for both countries and provinces)
+     * @param animationIndexOffset Base index for segment animations (e.g., MAX_ANIMATION_COUNTRIES for countries)
      */
     renderSegmentBorders(
         segmentData: SegmentData,
         regionsData: CountryData[],
-        shaderMaterial: ShaderMaterial
+        shaderMaterial: ShaderMaterial,
+        animationIndexOffset: number = MAX_ANIMATION_COUNTRIES
     ): void {
         console.log('Rendering segment borders...');
         const startTime = performance.now();
@@ -451,7 +453,7 @@ export class BorderRenderer {
             if (segment.points.length < 2) continue;
 
             try {
-                const segmentAnimationIndex = MAX_ANIMATION_COUNTRIES + segmentIdx;
+                const segmentAnimationIndex = animationIndexOffset + segmentIdx;
                 const quad = this.createQuadStripBorder(segment.points, segmentAnimationIndex);
 
                 if (quad) {

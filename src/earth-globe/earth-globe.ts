@@ -284,7 +284,7 @@ export class EarthGlobe {
 
             // Load and render segment borders via controller
             const segmentsUrl = this.assets.segmentsJson || DEFAULT_ASSETS.segmentsJson;
-            await this.countryController.loadSegments(segmentsUrl, 0);
+            await this.countryController.loadSegments(segmentsUrl, MAX_ANIMATION_COUNTRIES);
 
             // Set up segment animation mapping
             this.countryAnimator.setSegmentCountryMap(
@@ -454,7 +454,10 @@ export class EarthGlobe {
 
         // Load and render province segment borders via controller
         try {
-            await this.provinceController.loadSegments(`/province-segments/US.json`, 0);
+            // Calculate offset: provinces start after countries + country segments
+            const countrySegmentCount = this.countryController.getSegmentAnimationIndices().size;
+            const provinceSegmentOffset = MAX_ANIMATION_COUNTRIES + countrySegmentCount;
+            await this.provinceController.loadSegments(`/province-segments/US.json`, provinceSegmentOffset);
             const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
             console.log(`[Province] Segment borders: ${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}, enabled=${provinceSegmentMesh?.isEnabled()}`);
 
