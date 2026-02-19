@@ -223,10 +223,6 @@ export class EarthGlobe {
 
     private async init(): Promise<void> {
         try {
-            // Load segments
-            const segmentsUrl = this.assets.segmentsJson || DEFAULT_ASSETS.segmentsJson;
-            this.segmentData = await loadSegments(segmentsUrl);
-
             // Load countries
             const countriesUrl = this.assets.countriesJson || DEFAULT_ASSETS.countriesJson;
             await this.countryController.loadFromURL(
@@ -255,9 +251,10 @@ export class EarthGlobe {
             }
 
             // Create extruded borders for all country polygons
+            const borderRenderer = this.countryController.getBorderRenderer();
             const polygonsData = this.countryRenderer.getPolygonsData();
             for (const polygon of polygonsData) {
-                const border = this.borderRenderer.createPolygonBorders(
+                const border = borderRenderer.createPolygonBorders(
                     polygon.borderPoints,
                     undefined, // holes handled during loading
                     polygon.countryIndex
@@ -267,8 +264,7 @@ export class EarthGlobe {
 
             // Set up animation texture size
             const countryCount = this.countryRenderer.getRegionCount();
-            const segmentCount = this.segmentData.segments.length;
-            this.animationTexture.setEntriesUsed(countryCount + segmentCount);
+            this.animationTexture.setEntriesUsed(countryCount);
             this.animationTexture.update();
 
             // Load world texture (cached for province loading later)
@@ -279,31 +275,26 @@ export class EarthGlobe {
             const countryMaterial = this.shaderFactory.createCountryShaderMaterial(this.worldTexture);
             const smallCountryMaterial = this.shaderFactory.createSmallCountryShaderMaterial(this.worldTexture);
             this.countryRenderer.mergeRegions(countryMaterial, smallCountryMaterial);
-            this.borderRenderer.mergeExtrudedBorders(
+            borderRenderer.mergeExtrudedBorders(
                 this.countryRenderer.getPolygonsData(),
                 this.shaderFactory.createExtrudedBorderMaterial(),
                 this.shaderFactory.createSmallExtrudedBorderMaterial(),
                 this.countryRenderer.getRegionsData()
             );
 
-            // Render segment borders
-            if (this.segmentData) {
-                this.segmentBorderMaterial = this.shaderFactory.createSegmentBorderMaterial();
-                this.borderRenderer.renderSegmentBorders(
-                    this.segmentData,
-                    this.countryRenderer.getRegionsData(),
-                    this.segmentBorderMaterial
-                );
+            // Load and render segment borders via controller
+            const segmentsUrl = this.assets.segmentsJson || DEFAULT_ASSETS.segmentsJson;
+            await this.countryController.loadSegments(segmentsUrl, 0);
 
-                // Set up segment animation mapping
-                this.countryAnimator.setSegmentCountryMap(
-                    this.borderRenderer.getSegmentAnimationIndices()
-                );
-            }
+            // Set up segment animation mapping
+            this.countryAnimator.setSegmentCountryMap(
+                this.countryController.getSegmentAnimationIndices()
+            );
 
-            // Create outline material (once, reused for all outlines)
+            // Create outline materials (shared between both controllers)
             this.outlineMaterial = this.shaderFactory.createOutlineMaterial();
             this.smallOutlineMaterial = this.shaderFactory.createSmallOutlineMaterial();
+            this.countryController.initOutlineMaterials(this.outlineMaterial, this.smallOutlineMaterial);
 
             // Create location marker pool (200 markers, batched rendering)
             this.markerPool = new LocationMarkerPool(this.scene, { poolSize: 200 });
@@ -427,11 +418,12 @@ export class EarthGlobe {
         console.log(`[Province] Animation texture: ${provinceCount} entries, texture size=${this.provinceAnimationTexture!.getTexture().getSize().width}x${this.provinceAnimationTexture!.getTexture().getSize().height}`);
 
         // Create extruded borders for all province polygons (same as country pipeline)
+        const provinceBorderRenderer = this.provinceController.getBorderRenderer();
         const provinceRenderer = this.provinceController.getRenderer();
         const provincePolygons = provinceRenderer.getPolygonsData();
         console.log(`[Province] Creating borders for ${provincePolygons.length} polygons`);
         for (const polygon of provincePolygons) {
-            const border = this.borderRenderer.createPolygonBorders(
+            const border = provinceBorderRenderer.createPolygonBorders(
                 polygon.borderPoints,
                 undefined,
                 polygon.countryIndex
@@ -449,7 +441,7 @@ export class EarthGlobe {
         console.log(`[Province] Face mesh after merge: ${provinceFaceMesh ? provinceFaceMesh.name : 'NULL'}, enabled=${provinceFaceMesh?.isEnabled()}`);
 
         // Merge province extruded borders (same pipeline as countries)
-        this.borderRenderer.mergeExtrudedBorders(
+        provinceBorderRenderer.mergeExtrudedBorders(
             provincePolygons,
             this.provinceShaderFactory!.createExtrudedBorderMaterial(),
             this.provinceShaderFactory!.createSmallExtrudedBorderMaterial(),
@@ -457,27 +449,13 @@ export class EarthGlobe {
         );
 
         // Track the province border mesh for show/hide in enterRegionMode
-        this.provinceBorderMesh = this.borderRenderer.getMergedExtrudedBorders();
+        this.provinceBorderMesh = provinceBorderRenderer.getMergedExtrudedBorders();
         console.log(`[Province] Border mesh after merge: ${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}, enabled=${this.provinceBorderMesh?.isEnabled()}`);
 
-        // Load and render province segment borders
+        // Load and render province segment borders via controller
         try {
-            this.provinceSegmentData = await loadProvinceSegments(`/province-segments/US.json`);
-            console.log(`[Province] Loaded ${this.provinceSegmentData.segments.length} segments`);
-
-            // Calculate animation index offset: country segments use MAX_ANIMATION_COUNTRIES + segmentIdx
-            // Province segments need a separate range to avoid collisions
-            const provinceSegmentOffset = MAX_ANIMATION_COUNTRIES + (this.segmentData?.segments.length ?? 0) + 1000;
-
-            this.provinceSegmentBorderMaterial = this.provinceShaderFactory!.createSegmentBorderMaterial();
-            this.borderRenderer.renderProvinceSegmentBorders(
-                this.provinceSegmentData,
-                allProvinces,
-                this.provinceSegmentBorderMaterial,
-                provinceSegmentOffset
-            );
-
-            const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
+            await this.provinceController.loadSegments(`/province-segments/US.json`, 0);
+            const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
             console.log(`[Province] Segment borders: ${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}, enabled=${provinceSegmentMesh?.isEnabled()}`);
 
             // Hide segment mesh initially - activated in enterRegionMode
@@ -485,6 +463,9 @@ export class EarthGlobe {
         } catch (error) {
             console.warn('[Province] Failed to load segment borders:', error);
         }
+
+        // Initialize province outline materials
+        this.provinceController.initOutlineMaterials(this.outlineMaterial!, this.smallOutlineMaterial!);
 
         // Hide both meshes initially — activated in enterRegionMode()
         if (provinceFaceMesh) provinceFaceMesh.setEnabled(false);
@@ -497,19 +478,9 @@ export class EarthGlobe {
         this.countryAnimator.update();
         this.provinceController.tick();
 
-        // Update border thickness based on camera zoom
-        if (this.segmentBorderMaterial) {
-            const scale = getZoomValue(this.camera, zoom.borderThicknessClose, zoom.borderThicknessFar);
-            const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
-            this.segmentBorderMaterial.setFloat("thicknessOffset", offset);
-        }
-
-        // Update province border thickness
-        if (this.provinceSegmentBorderMaterial) {
-            const scale = getZoomValue(this.camera, zoom.borderThicknessClose, zoom.borderThicknessFar);
-            const offset = (scale - 1.0) * TUBE_RADIUS * 0.8;
-            this.provinceSegmentBorderMaterial.setFloat("thicknessOffset", offset);
-        }
+        // Update border thickness for both controllers
+        this.countryController.updateBorderThickness(this.camera);
+        this.provinceController.updateBorderThickness(this.camera);
 
         // Update marker scale based on camera zoom
         if (this.markerPool) {
@@ -742,7 +713,7 @@ export class EarthGlobe {
 
         // Enable province face mesh, border mesh, and segment mesh
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
-        const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
+        const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
         console.log(`[enterRegionMode] provinceMesh=${provinceMesh ? provinceMesh.name : 'NULL'}, provinceBorderMesh=${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}, provinceSegmentMesh=${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}`);
         if (provinceMesh) {
             provinceMesh.setEnabled(true);
@@ -808,7 +779,7 @@ export class EarthGlobe {
         this.provinceAnimationTexture!.update();
 
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
-        const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
+        const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
         if (provinceMesh) provinceMesh.setEnabled(false);
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
         if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(false);
@@ -1020,31 +991,15 @@ export class EarthGlobe {
      * @param countryIndex Country index
      */
     showCountryOutline(countryIndex: number): void {
-        if (!this.outlineMaterial) return;
-
-        const countryData = this.countryRenderer.getRegionByIndex(countryIndex);
-        if (!countryData) return;
-
-        const polygonsData = this.countryRenderer.getPolygonsData();
-        const borderPointArrays = countryData.polygonIndices.map(
-            idx => polygonsData[idx].borderPoints
-        );
-
-        if (countryData.centroid && this.smallOutlineMaterial) {
-            this.outlineRenderer.showOutline(
-                countryIndex, borderPointArrays, this.smallOutlineMaterial,
-                SMALL_OUTLINE_TUBE_RADIUS, countryData.centroid
-            );
-        } else {
-            this.outlineRenderer.showOutline(countryIndex, borderPointArrays, this.outlineMaterial);
-        }
+        // Delegate to active controller (works for both countries and provinces!)
+        this.activeController.showOutline(countryIndex);
     }
 
     /**
      * Clear the country outline
      */
     clearCountryOutline(): void {
-        this.outlineRenderer.clearOutline();
+        this.activeController.clearOutline();
     }
 
     // =========================================================================
@@ -1280,8 +1235,8 @@ export class EarthGlobe {
 
         this.globeSphere.dispose();
         this.countryRenderer.dispose();
-        this.borderRenderer.dispose();
-        this.outlineRenderer.dispose();
+        // BorderRenderer and OutlineRenderer are now owned by controllers
+        // (disposed via controller.dispose())
         this.skybox.dispose();
         this.animationTexture.dispose();
 
