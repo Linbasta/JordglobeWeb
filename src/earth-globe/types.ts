@@ -274,6 +274,7 @@ export interface EarthGlobeAPI {
     getCanvas(): HTMLCanvasElement;
     getEarthSphere(): Mesh;
     getCountryPicker(): import('./region-picker').RegionPicker;
+    getActivePicker(): import('./region-picker').RegionPicker;
 
     // Material creation
     createUnlitMaterial(originalMaterial: import('@babylonjs/core/Materials/material').Material | null): import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial;
@@ -345,8 +346,28 @@ export interface EarthGlobeAPI {
     exitRegionMode(): void;
     isInRegionMode(): boolean;
     getRegionModeISO2(): string | null;
+    waitForProvincesToLoad(): Promise<void>;
     getAllActiveRegions(): CountryData[];
+    getActiveRegionPolygons(): CountryPolygon[];
     animateActiveRegionAltitude(regionIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
+
+    // Province animation (when in region mode)
+    setProvinceState(provinceIndex: number, state: number): void;
+    getProvinceState(provinceIndex: number): number;
+    setProvinceAltitude(provinceIndex: number, altitude: number): void;
+    getProvinceAltitude(provinceIndex: number): number;
+    setProvinceBlend(provinceIndex: number, blend: number): void;
+    getProvinceBlend(provinceIndex: number): number;
+    animateProvinceBlend(provinceIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
+
+    // Active region (generic - works for both countries and provinces)
+    setActiveRegionState(regionIndex: number, state: number): void;
+    getActiveRegionState(regionIndex: number): number;
+    setActiveRegionBlend(regionIndex: number, blend: number): void;
+    getActiveRegionBlend(regionIndex: number): number;
+    setActiveRegionAltitude(regionIndex: number, altitude: number): void;
+    getActiveRegionAltitude(regionIndex: number): number;
+    animateActiveRegionBlend(regionIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Lifecycle
     isReady(): boolean;

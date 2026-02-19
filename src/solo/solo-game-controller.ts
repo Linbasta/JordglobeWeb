@@ -80,7 +80,7 @@ export class SoloGameController extends BaseGameController {
                 // Auto-toggle selection & small markers based on current answer type
                 const qi = getCurrentQuestionIndex();
                 const q = getQuestion(qi);
-                const wantSelection = q?.answer === 'country';
+                const wantSelection = q?.answer === 'country' || q?.answer === 'province';
                 if (wantSelection && !this.selectionEnabled) {
                     this.enableSelectionBehavior();
                 } else if (!wantSelection && this.selectionEnabled) {
@@ -114,17 +114,18 @@ export class SoloGameController extends BaseGameController {
         // Check if we're in quiz mode
         if (this.quizAdapter) {
             // For location questions, we allow clicking anywhere (country can be null)
-            // For country questions, we need a valid country and check if disabled
+            // For country/province questions, we need a valid region and check if disabled
             if (country) {
-                // Don't submit answer if country is disabled
-                const state = this.globe.getCountryState(country.countryIndex);
+                // Don't submit answer if region is disabled
+                // Use active region state (works for both countries and provinces)
+                const state = this.globe.getActiveRegionState(country.countryIndex);
                 if (state === STATE_DISABLED) {
-                    return;  // Ignore disabled countries
+                    return;  // Ignore disabled regions
                 }
-                // Submit answer with country and location (convert .lon → .lng at boundary)
+                // Submit answer with region and location (convert .lon → .lng at boundary)
                 this.quizAdapter.submitAnswer(country.countryIndex, { lat: latLon.lat, lng: latLon.lon });
             } else {
-                // No country clicked - use a placeholder index (-1) and pass the latLon
+                // No region clicked - use a placeholder index (-1) and pass the latLon
                 // The quiz runner will use latLon for distance-based hit detection
                 this.quizAdapter.submitAnswer(-1, { lat: latLon.lat, lng: latLon.lon });
             }

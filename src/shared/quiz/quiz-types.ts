@@ -17,7 +17,7 @@ export type PresentTag = "text" | "video"
 /**
  * What kind of answer the question expects
  */
-export type AnswerTag = "country" | "location-guess" | "location-alternatives"
+export type AnswerTag = "country" | "province" | "location-guess" | "location-alternatives"
 
 /**
  * Flat question struct — presentation and answer type are independent.
@@ -35,6 +35,10 @@ export type Question = {
 
     // answer: "country"
     countryISO2?: string
+
+    // answer: "province"
+    provinceId?: number
+    // countryISO2 also used for provinces (which country the province belongs to)
 
     // answer: "location-guess"
     lat?: number
@@ -60,7 +64,9 @@ export type Question = {
  * String enum preserves human-readable values in debug output
  */
 export enum StepOp {
-    DisableNonGameCountries = "disable_non_game_countries",
+    DisableNonGameCountries = "disable_non_game_countries",  // Works for both countries and provinces
+    EnterRegionMode = "enter_region_mode",
+    ExitRegionMode = "exit_region_mode",
     HighlightCountry = "highlight_country",
     ClearHighlight = "clear_highlight",
     ShowQuestion = "show_question",
@@ -88,7 +94,9 @@ export enum StepOp {
  */
 export type Step =
     // Setup
-    | { op: StepOp.DisableNonGameCountries }
+    | { op: StepOp.DisableNonGameCountries }  // Works for both countries and provinces
+    | { op: StepOp.EnterRegionMode; countryISO2: string }
+    | { op: StepOp.ExitRegionMode }
 
     // Country highlighting
     | { op: StepOp.HighlightCountry; countryIndex: number }

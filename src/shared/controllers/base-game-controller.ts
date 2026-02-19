@@ -78,12 +78,12 @@ export abstract class BaseGameController {
             onReady: async (globe) => {
                 this.updateLoadingProgress(75, 'Creating modules...');
 
-                // Initialize PinManager
+                // Initialize PinManager with callback to get active picker (routes to provinces in region mode)
                 await initPinManager(
                     globe.getScene(),
                     globe.getCamera(),
                     globe.getCanvas(),
-                    globe.getCountryPicker(),
+                    () => globe.getActivePicker(),
                     globe.getEarthSphere(),
                     (material) => globe.createUnlitMaterial(material),
                     (countryIndex) => globe.getCountryAltitude(countryIndex)

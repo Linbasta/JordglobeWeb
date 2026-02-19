@@ -32,7 +32,7 @@ const CANCEL_ZONE_VISIBLE_HEIGHT = 120; // 150px panel - 30px offset
 let scene: Scene;
 let camera: ArcRotateCamera;
 let canvas: HTMLCanvasElement;
-let countryPicker: RegionPicker;
+let getActiveRegionPicker: () => RegionPicker;
 let earthSphere: Mesh;
 let createUnlitMaterial: (mat: Material | null) => Material;
 let getCountryAltitude: (idx: number) => number;
@@ -183,9 +183,9 @@ function positionPinAtNormal(normal: Vector3): void {
 
     // Note: Pin scaling is handled by updatePinScaleIfPlacing() in the render loop
 
-    // Detect which country the pin is over
+    // Detect which region the pin is over (routes to active controller - countries or provinces)
     const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
-    const country = countryPicker.getCountryAt(latLon);
+    const country = getActiveRegionPicker().getCountryAt(latLon);
 
     // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
     const altitudeNormalized = country ? getCountryAltitude(country.countryIndex) : 0.0;
@@ -254,7 +254,7 @@ export async function initPinManager(
     _scene: Scene,
     _camera: ArcRotateCamera,
     _canvas: HTMLCanvasElement,
-    _countryPicker: RegionPicker,
+    _getActiveRegionPicker: () => RegionPicker,
     _earthSphere: Mesh,
     _createUnlitMaterial: (mat: Material | null) => Material,
     _getCountryAltitude: (idx: number) => number
@@ -262,7 +262,7 @@ export async function initPinManager(
     scene = _scene;
     camera = _camera;
     canvas = _canvas;
-    countryPicker = _countryPicker;
+    getActiveRegionPicker = _getActiveRegionPicker;
     earthSphere = _earthSphere;
     createUnlitMaterial = _createUnlitMaterial;
     getCountryAltitude = _getCountryAltitude;
@@ -315,7 +315,7 @@ export function exitPlacingMode(placePin: boolean = false): void {
     if (placePin && previewPin) {
         const pinPos = previewPin.position;
         const latLon = cartesianToLatLon(pinPos.x, pinPos.y, pinPos.z);
-        const country = countryPicker.getCountryAt(latLon);
+        const country = getActiveRegionPicker().getCountryAt(latLon);
 
         if (onPinPlacedCallback) {
             onPinPlacedCallback(country, latLon);

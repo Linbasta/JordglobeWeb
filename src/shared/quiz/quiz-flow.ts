@@ -23,8 +23,9 @@ export function generateQuizSteps(questions: Question[]): Step[] {
     // Check answer types present
     const hasLocationAlternatives = questions.some(q => q.answer === "location-alternatives")
     const hasCountryQuestions = questions.some(q => q.answer === "country")
+    const hasProvinceQuestions = questions.some(q => q.answer === "province")
 
-    // Initial setup — markers and countries are mutually exclusive
+    // Initial setup — markers, countries, and provinces are mutually exclusive
     if (hasLocationAlternatives) {
         // Show markers as clickable choices, frame them
         steps.push({ op: StepOp.ShowAllLocationMarkers })
@@ -32,8 +33,14 @@ export function generateQuizSteps(questions: Question[]): Step[] {
             .filter(q => q.answer === 'location-alternatives')
             .map(q => ({ lat: q.lat!, lon: q.lng! }))
         steps.push({ op: StepOp.FrameLocations, points: locationPoints, duration: 800 })
+    } else if (hasProvinceQuestions) {
+        // Province quiz: enter region mode and disable non-game regions
+        const firstProvinceQuestion = questions.find(q => q.answer === "province")
+        const countryISO2 = firstProvinceQuestion?.countryISO2 || 'US'  // Default to US
+        steps.push({ op: StepOp.EnterRegionMode, countryISO2 })
+        steps.push({ op: StepOp.DisableNonGameCountries })  // Works for provinces too!
     } else if (hasCountryQuestions) {
-        // Country quiz: disable non-game countries
+        // Country quiz: disable non-game regions
         steps.push({ op: StepOp.DisableNonGameCountries })
     }
     // location-guess: no setup needed — user clicks anywhere
@@ -61,6 +68,9 @@ export function generateQuizSteps(questions: Question[]): Step[] {
     }
 
     // End game
+    if (hasProvinceQuestions) {
+        steps.push({ op: StepOp.ExitRegionMode })
+    }
     steps.push({ op: StepOp.GameComplete })
 
     return steps

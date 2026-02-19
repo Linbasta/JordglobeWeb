@@ -17,11 +17,12 @@ export function handleHover(globe: EarthGlobeAPI, country: CountryPolygon | null
     // Deselect previous if different
     if (selectedIndex >= 0 && (!country || country.countryIndex !== selectedIndex)) {
         globe.clearCountryOutline();
-        const state = globe.getCountryState(selectedIndex);
+        const state = globe.getActiveRegionState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
-            globe.setCountryAltitude(selectedIndex, ALT_DEFAULT);
+            globe.setActiveRegionAltitude(selectedIndex, ALT_DEFAULT);
         }
-        if (globe.isSmallCountry(selectedIndex)) {
+        // Small country expansion only applies in country mode, not province mode
+        if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
             globe.animateCountryExpansion(selectedIndex, 1.0, 300);
             if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
                 globe.showSmallCountryMarker(selectedIndex);
@@ -32,13 +33,14 @@ export function handleHover(globe: EarthGlobeAPI, country: CountryPolygon | null
 
     if (!country) return;
 
-    const state = globe.getCountryState(country.countryIndex);
+    const state = globe.getActiveRegionState(country.countryIndex);
     if (state === STATE_DISABLED || state === STATE_CLEARED) return;
 
     selectedIndex = country.countryIndex;
     globe.showCountryOutline(country.countryIndex);
-    globe.setCountryAltitude(country.countryIndex, ALT_SELECTED);
-    if (globe.isSmallCountry(country.countryIndex)) {
+    globe.setActiveRegionAltitude(country.countryIndex, ALT_SELECTED);
+    // Small country expansion only applies in country mode, not province mode
+    if (!globe.isInRegionMode() && globe.isSmallCountry(country.countryIndex)) {
         globe.animateCountryExpansion(country.countryIndex, 5.0, 300);
         globe.hideSmallCountryMarker(country.countryIndex);
     }

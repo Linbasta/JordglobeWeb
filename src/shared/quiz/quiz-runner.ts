@@ -12,6 +12,12 @@ import type { Question, Step, DebugState } from './quiz-types'
 import { StepOp } from './quiz-types'
 import { generateQuizSteps, generateCountryAnswerSteps, generateLocationAnswerSteps, generateAlternativeAnswerSteps, generateLocationGuessAnswerSteps } from './quiz-flow'
 import {
+    animateCorrectRegion,
+    animateWrongRegion,
+    animateShowCorrectRegion,
+    animateToClearedAfterRevealRegion,
+    setRegionDisabledImmediate,
+    // Legacy exports for backward compatibility
     animateCorrect,
     animateWrong,
     animateShowCorrect,
@@ -21,7 +27,7 @@ import {
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
-import { zoom } from '../../earth-globe'
+import { zoom, STATE_DISABLED } from '../../earth-globe'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
@@ -33,6 +39,7 @@ import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay
 let steps: Step[] = []
 let questions: Question[] = []
 let gameCountries: CountryData[] = []
+let gameProvinces: CountryData[] = []  // Provinces when in region mode
 let locationMarkers: Map<number, number> = new Map() // questionIndex -> markerId
 let pc = 0                    // Program counter
 let stepStartTime = 0
@@ -84,6 +91,7 @@ export function startQuiz(
     // Reset state
     questions = qs
     gameCountries = []
+    gameProvinces = []
     locationMarkers = new Map()
     pc = 0
     stepStartTime = 0
@@ -179,15 +187,49 @@ export function tickQuiz(now: number): boolean {
     // Execute current step
     switch (step.op) {
         case StepOp.DisableNonGameCountries: {
-            const allCountries = globe.getAllCountries()
-            const gameIndices = new Set(gameCountries.map(c => c.index))
+            // Works for both countries and provinces via active region API
+            const allRegions = globe.getAllActiveRegions()
 
-            for (const country of allCountries) {
-                if (!gameIndices.has(country.index)) {
-                    setDisabledImmediate(globe, country.index)
+            // Extract game region indices from questions
+            let gameIndices: Set<number>
+            if (globe.isInRegionMode()) {
+                // Province mode: use province IDs from questions
+                gameIndices = new Set(
+                    questions
+                        .filter(q => q.answer === 'province')
+                        .map(q => q.provinceId!)
+                )
+            } else {
+                // Country mode: use country indices from gameCountries
+                gameIndices = new Set(gameCountries.map(c => c.index))
+            }
+
+            for (const region of allRegions) {
+                if (!gameIndices.has(region.index)) {
+                    setRegionDisabledImmediate(globe, region.index)
                 }
             }
 
+            advance(now)
+            break
+        }
+
+        case StepOp.EnterRegionMode: {
+            // Wait for provinces to load, then enter region mode
+            if (!activeAnimation) {
+                activeAnimation = globe.waitForProvincesToLoad()
+                    .then(() => {
+                        globe.enterRegionMode(step.countryISO2)
+                        activeAnimation = null
+                        advance(performance.now())
+                    })
+            }
+            break
+        }
+
+        case StepOp.ExitRegionMode: {
+            // Exit region mode
+            globe.exitRegionMode()
             advance(now)
             break
         }
@@ -276,6 +318,26 @@ export function tickQuiz(now: number): boolean {
                     pendingAnswer = null
                     advance(now)
 
+                } else if (q.answer === 'province') {
+                    // Province question - find correct province by ID
+                    const allProvinces = globe.getAllActiveRegions()
+                    const correctProvince = allProvinces.find(p => p.index === q.provinceId)
+                    if (!correctProvince) {
+                        console.warn(`[Quiz] Province ${q.provinceId} not found!`)
+                        break
+                    }
+
+                    // Check if clicked province is correct
+                    const isCorrect = pendingAnswer.countryIndex === correctProvince.index
+                    if (isCorrect) { score++ } else { wrongCount++ }
+
+                    // Generate answer steps (reuse country logic - works for provinces too!)
+                    waiting = false
+                    const postSteps = generateCountryAnswerSteps(isCorrect, correctProvince.index, pendingAnswer.countryIndex, revealOnWrong)
+                    steps.splice(pc + 1, 0, ...postSteps)
+                    pendingAnswer = null
+                    advance(now)
+
                 } else if (q.answer === 'location-guess') {
                     // Free-form click — accept any click, measure distance
                     const clickLatLon = pendingAnswer.latLon
@@ -284,7 +346,6 @@ export function tickQuiz(now: number): boolean {
                         q.lat!, q.lng!
                     )
                     distances.push(distKm)
-                    console.log(`[Quiz] location-guess: ${Math.round(distKm)} km from correct answer`)
                     waiting = false
                     const postSteps = generateLocationGuessAnswerSteps(
                         clickLatLon.lat, clickLatLon.lng,
@@ -751,8 +812,8 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
     await animateWrong(globe, wrongCountryIndex, removeOnWrong)
 
     // 2. Draw arc from wrong to correct
-    const wrongCenter = getCountryCenter(wrongCountryIndex)
-    const correctCenter = getCountryCenter(correctCountryIndex)
+    const wrongCenter = getActiveRegionCenter(wrongCountryIndex)
+    const correctCenter = getActiveRegionCenter(correctCountryIndex)
 
     const arcId = arcDrawer.addArc(
         wrongCenter.lat,
@@ -767,7 +828,7 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
     // 3. Animate arc and camera in parallel
     const arcAnimationPromise = arcDrawer.animateArc(arcId, 500)
 
-    const allPolygons = globe.getCountryPicker().getAllPolygons()
+    const allPolygons = globe.getActiveRegionPolygons()
     const correctPolygons = allPolygons.filter(p => p.countryIndex === correctCountryIndex)
 
     const cameraFlyPromise = frameCountry(
@@ -800,21 +861,22 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
 }
 
 /**
- * Calculate spherical center of a country
+ * Calculate spherical center of a region (country or province)
+ * Works for both country mode and region mode (provinces)
  */
-function getCountryCenter(countryIndex: number): { lat: number; lon: number } {
+function getActiveRegionCenter(regionIndex: number): { lat: number; lon: number } {
     if (!globe) return { lat: 0, lon: 0 }
 
-    const allPolygons = globe.getCountryPicker().getAllPolygons()
-    const countryPolygons = allPolygons.filter(p => p.countryIndex === countryIndex)
+    const allPolygons = globe.getActiveRegionPolygons()
+    const regionPolygons = allPolygons.filter(p => p.countryIndex === regionIndex)
 
-    if (countryPolygons.length === 0) {
+    if (regionPolygons.length === 0) {
         return { lat: 0, lon: 0 }
     }
 
     // Collect all points
     const allPoints: Array<{ lat: number; lon: number }> = []
-    for (const polygon of countryPolygons) {
+    for (const polygon of regionPolygons) {
         allPoints.push(...polygon.points)
     }
 

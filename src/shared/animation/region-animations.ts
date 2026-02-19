@@ -26,9 +26,10 @@ function lookupEasing(table: number[], t: number): number {
 /**
  * Correct Animation: Pop up then sink to cleared + gray out
  * Uses hand-authored easing curve from keyframe editor
+ * Works for both countries and provinces (uses active region API)
  */
-export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
-    globe.setCountryState(countryIndex, STATE_CLEARED);
+export function animateCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    globe.setActiveRegionState(regionIndex, STATE_CLEARED);
     return new Promise((resolve) => {
         const startTime = performance.now();
         function tick() {
@@ -36,11 +37,11 @@ export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Prom
             const t = Math.min(1, elapsed / CORRECT_DURATION);
             const eased = lookupEasing(CORRECT_EASING, t);
             const altitude = NORMAL_ALTITUDE + (CLEARED_ALTITUDE - NORMAL_ALTITUDE) * eased;
-            globe.setCountryAltitude(countryIndex, altitude);
+            globe.setActiveRegionAltitude(regionIndex, altitude);
             const blend = Math.max(0, Math.min(1,
                 (altitude - CLEARED_ALTITUDE) / (NORMAL_ALTITUDE - CLEARED_ALTITUDE)
             ));
-            globe.setCountryBlend(countryIndex, blend);
+            globe.setActiveRegionBlend(regionIndex, blend);
             if (t >= 1) { resolve(); return; }
             requestAnimationFrame(tick);
         }
@@ -49,75 +50,130 @@ export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Prom
 }
 
 /**
+ * @deprecated Use animateCorrectRegion instead
+ */
+export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateCorrectRegion(globe, countryIndex);
+}
+
+/**
  * Cleared after reveal: simple sink + gray out (no pop)
- * Used after wrong answer to clear the revealed correct country
+ * Used after wrong answer to clear the revealed correct region
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateToClearedAfterRevealRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    globe.setActiveRegionState(regionIndex, STATE_CLEARED);
+    await Promise.all([
+        globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION * 2),
+        globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION * 2),
+    ]);
+}
+
+/**
+ * @deprecated Use animateToClearedAfterRevealRegion instead
  */
 export async function animateToClearedAfterReveal(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
-    globe.setCountryState(countryIndex, STATE_CLEARED);
-    await Promise.all([
-        globe.animateCountryAltitude(countryIndex, CLEARED_ALTITUDE, ANIMATION_DURATION * 2),
-        globe.animateCountryBlend(countryIndex, 0.0, ANIMATION_DURATION * 2),
-    ]);
+    return animateToClearedAfterRevealRegion(globe, countryIndex);
 }
 
 /**
  * Disabled Animation (0.2s): Sink down + gray out immediately
- * Used at game start for non-game countries
+ * Used at game start for non-game regions
+ * Works for both countries and provinces (uses active region API)
  */
-export async function animateToDisabled(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
-    globe.setCountryState(countryIndex, STATE_DISABLED);
+export async function animateToDisabledRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    globe.setActiveRegionState(regionIndex, STATE_DISABLED);
     await Promise.all([
-        globe.animateCountryAltitude(countryIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
-        globe.animateCountryBlend(countryIndex, 0.0, ANIMATION_DURATION)
+        globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
+        globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION)
     ]);
 }
 
 /**
+ * @deprecated Use animateToDisabledRegion instead
+ */
+export async function animateToDisabled(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateToDisabledRegion(globe, countryIndex);
+}
+
+/**
  * Set disabled state immediately (no animation)
- * Used for batch-disabling countries at game start
+ * Used for batch-disabling regions at game start
+ * Works for both countries and provinces (uses active region API)
+ */
+export function setRegionDisabledImmediate(globe: EarthGlobeAPI, regionIndex: number): void {
+    globe.setActiveRegionState(regionIndex, STATE_DISABLED);
+    globe.setActiveRegionBlend(regionIndex, 0.0);
+    globe.setActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE);
+}
+
+/**
+ * @deprecated Use setRegionDisabledImmediate instead
  */
 export function setDisabledImmediate(globe: EarthGlobeAPI, countryIndex: number): void {
-    globe.setCountryState(countryIndex, STATE_DISABLED);
-    globe.setCountryBlend(countryIndex, 0.0);
-    globe.setCountryAltitude(countryIndex, CLEARED_ALTITUDE);
+    setRegionDisabledImmediate(globe, countryIndex);
 }
 
 /**
  * Wrong Animation (0.2s): Brief pop, returns to normal or cleared
- * Used when player clicks wrong country
+ * Used when player clicks wrong region
+ * Works for both countries and provinces (uses active region API)
  */
-export async function animateWrong(globe: EarthGlobeAPI, countryIndex: number, markAsCleared: boolean = false): Promise<void> {
+export async function animateWrongRegion(globe: EarthGlobeAPI, regionIndex: number, markAsCleared: boolean = false): Promise<void> {
     // Brief pop up
-    await globe.animateCountryAltitude(countryIndex, WRONG_ALTITUDE, ANIMATION_DURATION);
+    await globe.animateActiveRegionAltitude(regionIndex, WRONG_ALTITUDE, ANIMATION_DURATION);
 
     if (markAsCleared) {
         // Transition to cleared state
-        globe.setCountryState(countryIndex, STATE_CLEARED);
+        globe.setActiveRegionState(regionIndex, STATE_CLEARED);
         await Promise.all([
-            globe.animateCountryAltitude(countryIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
-            globe.animateCountryBlend(countryIndex, 0.0, ANIMATION_DURATION)
+            globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
+            globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION)
         ]);
     } else {
         // Return to normal
-        await globe.animateCountryAltitude(countryIndex, NORMAL_ALTITUDE, ANIMATION_DURATION);
+        await globe.animateActiveRegionAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION);
     }
+}
+
+/**
+ * @deprecated Use animateWrongRegion instead
+ */
+export async function animateWrong(globe: EarthGlobeAPI, countryIndex: number, markAsCleared: boolean = false): Promise<void> {
+    return animateWrongRegion(globe, countryIndex, markAsCleared);
 }
 
 /**
  * Show Correct Animation (0.3s): Rise up to highlight
  * Used to reveal the correct answer after wrong guess
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateShowCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    await globe.animateActiveRegionAltitude(regionIndex, SHOW_CORRECT_ALTITUDE, 300);
+}
+
+/**
+ * @deprecated Use animateShowCorrectRegion instead
  */
 export async function animateShowCorrect(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
-    await globe.animateCountryAltitude(countryIndex, SHOW_CORRECT_ALTITUDE, 300);
+    return animateShowCorrectRegion(globe, countryIndex);
 }
 
 /**
  * Return to Normal (0.2s): Animate back to normal state
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateToNormalRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    globe.setActiveRegionState(regionIndex, STATE_NORMAL);
+    await Promise.all([
+        globe.animateActiveRegionAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION),
+        globe.animateActiveRegionBlend(regionIndex, 1.0, ANIMATION_DURATION)
+    ]);
+}
+
+/**
+ * @deprecated Use animateToNormalRegion instead
  */
 export async function animateToNormal(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
-    globe.setCountryState(countryIndex, STATE_NORMAL);
-    await Promise.all([
-        globe.animateCountryAltitude(countryIndex, NORMAL_ALTITUDE, ANIMATION_DURATION),
-        globe.animateCountryBlend(countryIndex, 1.0, ANIMATION_DURATION)
-    ]);
+    return animateToNormalRegion(globe, countryIndex);
 }
