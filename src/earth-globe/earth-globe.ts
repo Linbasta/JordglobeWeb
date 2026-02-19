@@ -262,14 +262,6 @@ export class EarthGlobe {
                 polygon.extrudedBorder = border;
             }
 
-            // Set up animation texture size (must include countries + segments)
-            const countryCount = this.countryRenderer.getRegionCount();
-            const segmentCount = this.countryController.getSegmentAnimationIndices().size;
-            const totalEntries = MAX_ANIMATION_COUNTRIES + segmentCount;
-            this.animationTexture.setEntriesUsed(totalEntries);
-            this.animationTexture.update();
-            console.log(`[Animation] Texture sized for ${countryCount} countries + ${segmentCount} segments = ${totalEntries} total entries`);
-
             // Load world texture (cached for province loading later)
             const worldTextureUrl = this.assets.worldTexture || DEFAULT_ASSETS.worldTexture;
             this.worldTexture = new Texture(worldTextureUrl, this.scene, false, true);
@@ -288,6 +280,14 @@ export class EarthGlobe {
             // Load and render segment borders via controller
             const segmentsUrl = this.assets.segmentsJson || DEFAULT_ASSETS.segmentsJson;
             await this.countryController.loadSegments(segmentsUrl, MAX_ANIMATION_COUNTRIES);
+
+            // NOW resize animation texture to include countries + segments
+            const countryCount = this.countryRenderer.getRegionCount();
+            const segmentCount = this.countryController.getSegmentAnimationIndices().size;
+            const totalEntries = MAX_ANIMATION_COUNTRIES + segmentCount;
+            this.animationTexture.setEntriesUsed(totalEntries);
+            this.animationTexture.update();
+            console.log(`[Animation] Texture sized for ${countryCount} countries + ${segmentCount} segments = ${totalEntries} total entries`);
 
             // Set up segment animation mapping
             this.countryAnimator.setSegmentCountryMap(
