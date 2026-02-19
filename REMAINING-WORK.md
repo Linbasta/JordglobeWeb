@@ -68,43 +68,25 @@
 - Simpler code (no special cases)
 - Questions are self-contained
 
-### 2. Create Production US States Quiz (Optional)
+### 2. ✅ Create Production US States Quiz (COMPLETE)
 
-**Goal:** Create a full 50-state quiz (currently only have test quiz with 5 states)
+**Commit:** `36030d6` - "Add production US States quiz with all 50 states"
 
-**File:** `us-states-quiz.html`
+**What was created:**
+- `us-states-quiz.html` - Complete 50-state quiz
+- Extracted all state names and IDs from `public/provinces/US.json`
+- States 0-49 (Alabama through Wyoming)
+- Percentage score shown on completion
 
-**Data needed:**
-- All 50 US state names and province IDs (0-49)
-- Can extract from existing province data or create manually
-
-**Structure:**
-```html
-<script type="module">
-    import { startQuizGame } from '/src/solo/start-quiz-game.ts';
-
-    const usStates = [
-        { provinceId: 0, name: 'Alabama' },
-        { provinceId: 1, name: 'Alaska' },
-        // ... all 50 states
-        { provinceId: 49, name: 'Wyoming' }
-    ];
-
-    startQuizGame({
-        title: 'US States Quiz',
-        questions: usStates.map(state => ({
-            present: 'text',
-            answer: 'province',
-            provinceId: state.provinceId,
-            countryISO2: 'US',
-            prompt: state.name,
-        })),
-        onGameComplete: (score, total) => {
-            console.log(`Quiz Complete! Score: ${score}/${total}`);
-        }
-    });
-</script>
+**To play:**
 ```
+http://localhost:4817/us-states-quiz.html
+```
+
+**Data structure:**
+- All 50 states with correct IDs and names
+- Uses province quiz system (enters region mode for US)
+- Identical pattern to other quiz pages
 
 ## Later Steps (Major Refactoring)
 
