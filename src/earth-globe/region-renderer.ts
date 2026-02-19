@@ -1,7 +1,7 @@
 /**
- * Earth Globe Module - Country Renderer
+ * Earth Globe Module - Region Renderer
  *
- * Creates and manages country meshes from geographic data.
+ * Creates and manages region meshes from geographic data.
  */
 
 import { Scene } from '@babylonjs/core/scene';
@@ -40,17 +40,17 @@ export class RegionRenderer {
     /** Flat array of all polygon data */
     private polygonsData: PolygonData[] = [];
 
-    /** Country-level metadata */
-    private countriesData: CountryData[] = [];
+    /** Region-level metadata */
+    private regionsData: CountryData[] = [];
 
     /** Total triangle count for statistics */
     private totalTriangleCount: number = 0;
 
-    /** Merged mesh for regular country polygons */
-    private mergedCountries: Mesh | null = null;
+    /** Merged mesh for regular region polygons */
+    private mergedRegions: Mesh | null = null;
 
-    /** Merged mesh for small country polygons (expanded via shader) */
-    private mergedCountriesSmall: Mesh | null = null;
+    /** Merged mesh for small region polygons (expanded via shader) */
+    private mergedRegionsSmall: Mesh | null = null;
 
     constructor(scene: Scene, shaderFactory: ShaderFactory) {
         this.scene = scene;
@@ -66,17 +66,17 @@ export class RegionRenderer {
     }
 
     /**
-     * Get all country data
+     * Get all region data
      */
-    getCountriesData(): CountryData[] {
-        return this.countriesData;
+    getRegionsData(): CountryData[] {
+        return this.regionsData;
     }
 
     /**
-     * Get country count
+     * Get region count
      */
-    getCountryCount(): number {
-        return this.countriesData.length;
+    getRegionCount(): number {
+        return this.regionsData.length;
     }
 
     /**
@@ -94,31 +94,31 @@ export class RegionRenderer {
     }
 
     /**
-     * Get merged countries mesh
+     * Get merged regions mesh
      */
     getMergedMesh(): Mesh | null {
-        return this.mergedCountries;
+        return this.mergedRegions;
     }
 
     /**
-     * Get merged small countries mesh
+     * Get merged small regions mesh
      */
     getMergedSmallMesh(): Mesh | null {
-        return this.mergedCountriesSmall;
+        return this.mergedRegionsSmall;
     }
 
     /**
-     * Get country by ISO2 code
+     * Get region by ISO2 code (or province id string like "US-0")
      */
-    getCountryByISO2(iso2: string): CountryData | undefined {
-        return this.countriesData.find(c => c.iso2 === iso2);
+    getRegionByISO2(iso2: string): CountryData | undefined {
+        return this.regionsData.find(c => c.iso2 === iso2);
     }
 
     /**
-     * Get country by index
+     * Get region by index
      */
-    getCountryByIndex(index: number): CountryData | undefined {
-        return this.countriesData[index];
+    getRegionByIndex(index: number): CountryData | undefined {
+        return this.regionsData[index];
     }
 
     /**
@@ -339,10 +339,10 @@ export class RegionRenderer {
     }
 
     /**
-     * Add country metadata
+     * Add region metadata
      */
-    addCountry(data: CountryData): void {
-        this.countriesData.push(data);
+    addRegion(data: CountryData): void {
+        this.regionsData.push(data);
     }
 
     /**
@@ -471,11 +471,11 @@ export class RegionRenderer {
     }
 
     /**
-     * Merge all country meshes into merged meshes with animation support.
-     * Partitions into regular and small country buckets.
+     * Merge all region meshes into merged meshes with animation support.
+     * Partitions into regular and small region buckets.
      */
-    mergeCountries(regularMaterial: ShaderMaterial, smallMaterial: ShaderMaterial): void {
-        console.log('Merging country polygons...');
+    mergeRegions(regularMaterial: ShaderMaterial, smallMaterial: ShaderMaterial): void {
+        console.log('Merging region polygons...');
         const startTime = performance.now();
 
         // Partition polygons
@@ -490,43 +490,138 @@ export class RegionRenderer {
             }
         }
 
-        this.mergedCountries = this.mergeMeshBucket(
-            regularPolygons, regularMaterial, "mergedCountries"
+        this.mergedRegions = this.mergeMeshBucket(
+            regularPolygons, regularMaterial, "mergedRegions"
         );
 
         if (smallPolygons.length > 0) {
-            // Build centroid map from countriesData
+            // Build centroid map from regionsData
             const centroids = new Map<number, Vector3>();
-            for (const country of this.countriesData) {
-                if (country.centroid) {
-                    centroids.set(country.index, country.centroid);
+            for (const region of this.regionsData) {
+                if (region.centroid) {
+                    centroids.set(region.index, region.centroid);
                 }
             }
 
-            this.mergedCountriesSmall = this.mergeMeshBucket(
-                smallPolygons, smallMaterial, "mergedCountriesSmall", centroids
+            this.mergedRegionsSmall = this.mergeMeshBucket(
+                smallPolygons, smallMaterial, "mergedRegionsSmall", centroids
             );
-            console.log(`Small countries: ${smallPolygons.length} polygons in separate mesh`);
+            console.log(`Small regions: ${smallPolygons.length} polygons in separate mesh`);
         }
 
         const totalMeshes = regularPolygons.length + smallPolygons.length;
         const endTime = performance.now();
-        console.log(`Merged ${totalMeshes} country meshes in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Merged ${totalMeshes} region meshes in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**
-     * Load countries from JSON and populate the country picker
+     * Load regions from pre-parsed items.
+     * Items have { id, name, paths } where paths is JSON-stringified number[][][].
+     * No holes/lakes/enclaves — simpler than loadFromURL.
+     *
+     * @param countryISO2       The parent country ISO2 code (e.g. "US")
+     * @param items             Array of region items from the province JSON file
+     * @param picker            RegionPicker to register polygons into
+     * @param parentRegionIndex Index of the parent country in the country controller
+     * @param onAdded           Optional callback per region added
      */
-    async loadCountries(
+    async loadFromItems(
+        countryISO2: string,
+        items: Array<{ id: number; name: string; paths: string }>,
+        picker: RegionPicker,
+        parentRegionIndex: number,
+        onAdded?: (region: CountryData) => void
+    ): Promise<void> {
+        const startTime = performance.now();
+        let addedCount = 0;
+
+        for (const item of items) {
+            if (!item.paths || item.paths === '[]') continue;
+
+            try {
+                const paths = JSON.parse(item.paths) as number[][][];
+                const polygonIndices: number[] = [];
+
+                for (let polyIdx = 0; polyIdx < paths.length; polyIdx++) {
+                    const polygon = paths[polyIdx];
+                    if (polygon.length === 0) continue;
+
+                    // Check antimeridian
+                    let hasLargeJump = false;
+                    for (let i = 1; i < polygon.length; i++) {
+                        if (Math.abs(polygon[i][1] - polygon[i - 1][1]) > 180) {
+                            hasLargeJump = true;
+                            break;
+                        }
+                    }
+                    if (hasLargeJump) continue;
+
+                    const flatCoords: number[] = [];
+                    const latLonPoints: { lat: number; lon: number }[] = [];
+                    for (const point of polygon) {
+                        flatCoords.push(point[0], point[1]);
+                        latLonPoints.push({ lat: point[0], lon: point[1] });
+                    }
+
+                    if (flatCoords.length < 6) continue;
+
+                    // Provinces are never "small countries" — always full-size
+                    const polygonIndex = this.addPolygon(flatCoords, this.regionsData.length, [], false);
+                    if (polygonIndex !== null) {
+                        polygonIndices.push(polygonIndex);
+
+                        picker.addPolygon({
+                            iso2: `${countryISO2}-${item.id}`,
+                            name: item.name,
+                            countryIndex: this.regionsData.length,
+                            polygonIndex: polyIdx,
+                            points: latLonPoints,
+                            bbox: calculateBoundingBox(latLonPoints),
+                        });
+                    }
+                }
+
+                if (polygonIndices.length > 0) {
+                    const regionData: CountryData = {
+                        name: item.name,
+                        iso2: `${countryISO2}-${item.id}`,
+                        index: this.regionsData.length,
+                        polygonIndices,
+                        neighbourCountries: [],
+                        centroid: null,
+                        parentRegionIndex,
+                    };
+                    this.regionsData.push(regionData);
+
+                    if (onAdded) {
+                        onAdded(regionData);
+                    }
+
+                    addedCount++;
+                }
+            } catch (e) {
+                console.error(`Failed to add province ${item.name}:`, e);
+            }
+        }
+
+        const endTime = performance.now();
+        console.log(`Loaded ${addedCount} regions (${countryISO2}) with ${this.polygonsData.length} polygons in ${(endTime - startTime).toFixed(2)}ms`);
+    }
+
+    /**
+     * Load regions from a JSON URL and populate the region picker.
+     * The URL should return a CountryJSON[] array.
+     */
+    async loadFromURL(
         url: string,
-        countryPicker: RegionPicker,
-        onCountryAdded?: (country: CountryData) => void
+        picker: RegionPicker,
+        onRegionAdded?: (region: CountryData) => void
     ): Promise<void> {
         const startTime = performance.now();
 
         const response = await fetch(url);
         const countries = await response.json() as CountryJSON[];
-        console.log(`Fetched ${countries.length} countries`);
+        console.log(`Fetched ${countries.length} regions from URL`);
 
         // Build enclave set
         const enclaveISO2Set = new Set<string>();
@@ -614,15 +709,15 @@ export class RegionRenderer {
                     }
 
                     const small = isSmallCountry(country.iso2);
-                    const polygonIndex = this.addPolygon(flatCoords, this.countriesData.length, holePolygons, small);
+                    const polygonIndex = this.addPolygon(flatCoords, this.regionsData.length, holePolygons, small);
                     if (polygonIndex !== null) {
                         polygonIndices.push(polygonIndex);
 
                         // Add to picker
-                        countryPicker.addPolygon({
+                        picker.addPolygon({
                             iso2: country.iso2,
                             name: country.name_en,
-                            countryIndex: this.countriesData.length,
+                            countryIndex: this.regionsData.length,
                             polygonIndex: polyIdx,
                             points: latLonPoints,
                             bbox: calculateBoundingBox(latLonPoints)
@@ -636,44 +731,44 @@ export class RegionRenderer {
                     const needsCentroid = small || surrounded;
                     const centroid = needsCentroid ? this.computeCentroid(polygonIndices) : null;
 
-                    const countryData: CountryData = {
+                    const regionData: CountryData = {
                         name: country.name_en,
                         iso2: country.iso2,
-                        index: this.countriesData.length,
+                        index: this.regionsData.length,
                         polygonIndices,
                         neighbourCountries: [],
                         centroid
                     };
-                    this.countriesData.push(countryData);
+                    this.regionsData.push(regionData);
 
-                    if (onCountryAdded) {
-                        onCountryAdded(countryData);
+                    if (onRegionAdded) {
+                        onRegionAdded(regionData);
                     }
 
                     addedCount++;
                 }
             } catch (e) {
-                console.error('Failed to add country', country.name_en, ':', e);
+                console.error('Failed to add region', country.name_en, ':', e);
             }
         }
 
         const endTime = performance.now();
-        console.log(`Loaded ${addedCount} countries with ${this.polygonsData.length} polygons, ${this.totalTriangleCount} triangles in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Loaded ${addedCount} regions with ${this.polygonsData.length} polygons, ${this.totalTriangleCount} triangles in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**
      * Dispose of all meshes
      */
     dispose(): void {
-        if (this.mergedCountries) {
-            this.mergedCountries.dispose();
-            this.mergedCountries = null;
+        if (this.mergedRegions) {
+            this.mergedRegions.dispose();
+            this.mergedRegions = null;
         }
-        if (this.mergedCountriesSmall) {
-            this.mergedCountriesSmall.dispose();
-            this.mergedCountriesSmall = null;
+        if (this.mergedRegionsSmall) {
+            this.mergedRegionsSmall.dispose();
+            this.mergedRegionsSmall = null;
         }
         this.polygonsData = [];
-        this.countriesData = [];
+        this.regionsData = [];
     }
 }

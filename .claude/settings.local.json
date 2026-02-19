@@ -66,7 +66,12 @@
       "Bash(npm run extract-us-provinces:*)",
       "Bash(npm run generate-us-segments:*)",
       "Bash(npm run test:us-provinces:*)",
-      "Bash(npm run test:province-borders:*)"
+      "Bash(npm run test:province-borders:*)",
+      "Bash(npm run extract-provinces:*)",
+      "Bash(npm run generate-province-segments:*)",
+      "Bash(npm run generate-province-index:*)",
+      "Bash(npm run test:regions:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

@@ -96,8 +96,9 @@ export class EarthGlobe {
     private scene: Scene;
     private camera: ArcRotateCamera;
 
-    // Region controllers (Phase 1: only countryController exists)
+    // Region controllers
     private countryController!: RegionController;
+    private provinceController!: RegionController;
     private activeController!: RegionController;  // routes hover/click events
 
     // Rendering components
@@ -107,9 +108,12 @@ export class EarthGlobe {
     private outlineRenderer: OutlineRenderer;
     private skybox: Skybox;
     private shaderFactory: ShaderFactory;
+    private provinceShaderFactory: ShaderFactory | null = null;
+    private worldTexture: Texture | null = null;
 
     // Animation
     private animationTexture: AnimationTexture;
+    private provinceAnimationTexture: AnimationTexture | null = null;
     private countryAnimator: RegionAnimator;
 
     // Location markers
@@ -138,6 +142,11 @@ export class EarthGlobe {
     private isInitialized: boolean = false;
     private isMobile: boolean = false;
     private colliderDebugUpdate: (() => void) | null = null;
+
+    // Region mode state
+    private regionModeISO2: string | null = null;
+    private regionModeParentIndex: number = -1;  // country index hidden while in region mode
+    private provinceBorderMesh: Mesh | null = null;  // merged extruded border mesh for provinces
 
     constructor(options: EarthGlobeOptions = {}) {
         this.options = options;
@@ -187,6 +196,14 @@ export class EarthGlobe {
         this.countryAnimator = this.countryController.getAnimator();
         this.countryPicker = this.countryController.getPicker();
 
+        // Create province controller (provinces loaded lazily in init())
+        this.provinceAnimationTexture = new AnimationTexture(this.scene);
+        this.provinceShaderFactory = new ShaderFactory(this.scene, 'province_');
+        this.provinceShaderFactory.setAnimationTexture(this.provinceAnimationTexture.getTexture());
+        this.provinceController = new RegionController(
+            'province', this.scene, this.provinceShaderFactory, this.provinceAnimationTexture
+        );
+
         this.globeSphere = new GlobeSphere(this.scene, this.assets);
         this.borderRenderer = new BorderRenderer(this.scene);
         this.outlineRenderer = new OutlineRenderer(this.scene);
@@ -218,13 +235,12 @@ export class EarthGlobe {
 
             // Load countries
             const countriesUrl = this.assets.countriesJson || DEFAULT_ASSETS.countriesJson;
-            await this.countryRenderer.loadCountries(
+            await this.countryController.loadFromURL(
                 countriesUrl,
-                this.countryPicker,
-                (country) => {
+                (region) => {
                     // Initialize animation data for each country
                     const defaultAnimValue = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
-                    this.animationTexture.setAltitude(country.index, defaultAnimValue);
+                    this.animationTexture.setAltitude(region.index, defaultAnimValue);
                 }
             );
 
@@ -244,36 +260,36 @@ export class EarthGlobe {
                 );
             }
 
-            // Create borders for polygons
+            // Create extruded borders for all country polygons
             const polygonsData = this.countryRenderer.getPolygonsData();
             for (const polygon of polygonsData) {
                 const border = this.borderRenderer.createPolygonBorders(
                     polygon.borderPoints,
-                    undefined, // holes handled during country loading
+                    undefined, // holes handled during loading
                     polygon.countryIndex
                 );
                 polygon.extrudedBorder = border;
             }
 
             // Set up animation texture size
-            const countryCount = this.countryRenderer.getCountryCount();
+            const countryCount = this.countryRenderer.getRegionCount();
             const segmentCount = this.segmentData.segments.length;
             this.animationTexture.setEntriesUsed(countryCount + segmentCount);
             this.animationTexture.update();
 
-            // Load world texture
+            // Load world texture (cached for province loading later)
             const worldTextureUrl = this.assets.worldTexture || DEFAULT_ASSETS.worldTexture;
-            const worldTexture = new Texture(worldTextureUrl, this.scene, false, true);
+            this.worldTexture = new Texture(worldTextureUrl, this.scene, false, true);
 
             // Merge meshes for performance
-            const countryMaterial = this.shaderFactory.createCountryShaderMaterial(worldTexture);
-            const smallCountryMaterial = this.shaderFactory.createSmallCountryShaderMaterial(worldTexture);
-            this.countryRenderer.mergeCountries(countryMaterial, smallCountryMaterial);
+            const countryMaterial = this.shaderFactory.createCountryShaderMaterial(this.worldTexture);
+            const smallCountryMaterial = this.shaderFactory.createSmallCountryShaderMaterial(this.worldTexture);
+            this.countryRenderer.mergeRegions(countryMaterial, smallCountryMaterial);
             this.borderRenderer.mergeExtrudedBorders(
                 this.countryRenderer.getPolygonsData(),
                 this.shaderFactory.createExtrudedBorderMaterial(),
                 this.shaderFactory.createSmallExtrudedBorderMaterial(),
-                this.countryRenderer.getCountriesData()
+                this.countryRenderer.getRegionsData()
             );
 
             // Render segment borders
@@ -281,7 +297,7 @@ export class EarthGlobe {
                 this.segmentBorderMaterial = this.shaderFactory.createSegmentBorderMaterial();
                 this.borderRenderer.renderSegmentBorders(
                     this.segmentData,
-                    this.countryRenderer.getCountriesData(),
+                    this.countryRenderer.getRegionsData(),
                     this.segmentBorderMaterial
                 );
 
@@ -307,7 +323,7 @@ export class EarthGlobe {
             });
 
             // Place markers at small country centroids
-            for (const country of this.countryRenderer.getCountriesData()) {
+            for (const country of this.countryRenderer.getRegionsData()) {
                 if (country.centroid) {
                     const normal = country.centroid.normalizeToNew();
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
@@ -341,14 +357,125 @@ export class EarthGlobe {
             if (this.options.onReady) {
                 this.options.onReady(this);
             }
+
+            // Load provinces in background (non-blocking)
+            this.loadProvinces().catch(err => {
+                console.warn('Province loading failed (non-fatal):', err);
+            });
+
         } catch (error) {
             console.error('Failed to initialize EarthGlobe:', error);
         }
     }
 
+    /**
+     * Load all province data in the background.
+     * Fetches public/provinces/index.json, then loads each country's province file.
+     * Province meshes start hidden (all altitudes at 0).
+     */
+    private async loadProvinces(): Promise<void> {
+        // Fetch province index
+        let provinceCodes: string[];
+        try {
+            const indexResponse = await fetch('/provinces/index.json');
+            if (!indexResponse.ok) {
+                console.log('No province index found — skipping province loading');
+                return;
+            }
+            provinceCodes = await indexResponse.json() as string[];
+        } catch {
+            console.log('No province index found — skipping province loading');
+            return;
+        }
+
+        if (provinceCodes.length === 0) {
+            console.log('Province index is empty — skipping province loading');
+            return;
+        }
+
+        console.log(`Loading provinces for: ${provinceCodes.join(', ')}`);
+
+        // Load all province files in parallel
+        const loadPromises = provinceCodes.map(async (iso2) => {
+            const response = await fetch(`/provinces/${iso2}.json`);
+            if (!response.ok) {
+                console.warn(`Province file not found: /provinces/${iso2}.json`);
+                return;
+            }
+            const data = await response.json() as { country: string; provinces: Array<{ id: number; name: string; paths: string }> };
+
+            // Look up parent country index so provinces can reference it
+            const parentCountry = this.countryController.getRegionByISO2(iso2);
+            const parentRegionIndex = parentCountry?.index ?? -1;
+            if (parentRegionIndex < 0) {
+                console.warn(`Province parent country not found: ${iso2}`);
+            }
+
+            await this.provinceController.loadFromItems(
+                iso2,
+                data.provinces,
+                parentRegionIndex
+            );
+        });
+
+        await Promise.all(loadPromises);
+
+        const provinceCount = this.provinceController.getRegionCount();
+        console.log(`[Province] Loaded: ${provinceCount} total`);
+
+        // Set animation texture entries to 0 (all hidden initially)
+        const allProvinces = this.provinceController.getAllRegions();
+        for (const region of allProvinces) {
+            this.provinceAnimationTexture!.setAltitude(region.index, 0);
+        }
+        this.provinceAnimationTexture!.setEntriesUsed(provinceCount);
+        this.provinceAnimationTexture!.update();
+        console.log(`[Province] Animation texture: ${provinceCount} entries, texture size=${this.provinceAnimationTexture!.getTexture().getSize().width}x${this.provinceAnimationTexture!.getTexture().getSize().height}`);
+
+        // Create extruded borders for all province polygons (same as country pipeline)
+        const provinceRenderer = this.provinceController.getRenderer();
+        const provincePolygons = provinceRenderer.getPolygonsData();
+        console.log(`[Province] Creating borders for ${provincePolygons.length} polygons`);
+        for (const polygon of provincePolygons) {
+            const border = this.borderRenderer.createPolygonBorders(
+                polygon.borderPoints,
+                undefined,
+                polygon.countryIndex
+            );
+            polygon.extrudedBorder = border;
+        }
+        const bordersCreated = provincePolygons.filter(p => p.extrudedBorder !== null).length;
+        console.log(`[Province] Extruded borders created: ${bordersCreated}/${provincePolygons.length}`);
+
+        // Merge province face meshes (reuse cached world texture)
+        const provinceMaterial = this.provinceShaderFactory!.createCountryShaderMaterial(this.worldTexture!);
+        console.log(`[Province] worldTexture null? ${this.worldTexture === null}`);
+        provinceRenderer.mergeRegions(provinceMaterial, provinceMaterial);
+        const provinceFaceMesh = provinceRenderer.getMergedMesh();
+        console.log(`[Province] Face mesh after merge: ${provinceFaceMesh ? provinceFaceMesh.name : 'NULL'}, enabled=${provinceFaceMesh?.isEnabled()}`);
+
+        // Merge province extruded borders (same pipeline as countries)
+        this.borderRenderer.mergeExtrudedBorders(
+            provincePolygons,
+            this.provinceShaderFactory!.createExtrudedBorderMaterial(),
+            this.provinceShaderFactory!.createSmallExtrudedBorderMaterial(),
+            allProvinces
+        );
+
+        // Track the province border mesh for show/hide in enterRegionMode
+        this.provinceBorderMesh = this.borderRenderer.getMergedExtrudedBorders();
+        console.log(`[Province] Border mesh after merge: ${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}, enabled=${this.provinceBorderMesh?.isEnabled()}`);
+
+        // Hide both meshes initially — activated in enterRegionMode()
+        if (provinceFaceMesh) provinceFaceMesh.setEnabled(false);
+        if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
+        console.log(`[Province] Meshes hidden. Face=${provinceFaceMesh?.name ?? 'NULL'} Border=${this.provinceBorderMesh?.name ?? 'NULL'}`);
+    }
+
     private update(): void {
         // Update animations
         this.countryAnimator.update();
+        this.provinceController.tick();
 
         // Update border thickness based on camera zoom
         if (this.segmentBorderMaterial) {
@@ -518,31 +645,33 @@ export class EarthGlobe {
     // =========================================================================
 
     /**
-     * Get the country at the given coordinates
+     * Get the region at the given coordinates (routes to activeController).
+     * In country mode: returns a country polygon.
+     * In region mode: returns a province polygon.
      */
     getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null {
-        return this.countryPicker.getCountryAt({ lat, lon });
+        return this.activeController.getRegionAt({ lat, lon });
     }
 
     /**
      * Get country data by ISO2 code
      */
     getCountryByISO2(iso2: string): CountryData | undefined {
-        return this.countryRenderer.getCountryByISO2(iso2);
+        return this.countryRenderer.getRegionByISO2(iso2);
     }
 
     /**
      * Get country data by index
      */
     getCountryByIndex(index: number): CountryData | undefined {
-        return this.countryRenderer.getCountryByIndex(index);
+        return this.countryRenderer.getRegionByIndex(index);
     }
 
     /**
      * Get all countries
      */
     getAllCountries(): CountryData[] {
-        return this.countryRenderer.getCountriesData();
+        return this.countryRenderer.getRegionsData();
     }
 
     /**
@@ -551,6 +680,141 @@ export class EarthGlobe {
     getAltitudeAtLatLon(lat: number, lon: number): number {
         const country = this.countryPicker.getCountryAt({ lat, lon });
         return country ? REGION_ALTITUDE : 0;
+    }
+
+    // =========================================================================
+    // Public API - Region Mode (province drill-down)
+    // =========================================================================
+
+    /**
+     * Enter province mode for a given country.
+     * - Shows province meshes for that country
+     * - Hides (disables) the parent country
+     * - Routes getCountryAtLatLon() to the province picker
+     *
+     * No-op if provinces for this iso2 have not been loaded yet.
+     */
+    enterRegionMode(iso2: string): void {
+        if (this.regionModeISO2 === iso2) return;  // already in this mode
+        if (this.regionModeISO2 !== null) {
+            this.exitRegionMode();  // exit previous mode first
+        }
+
+        const parentCountry = this.countryController.getRegionByISO2(iso2);
+        if (!parentCountry) {
+            console.warn(`enterRegionMode: country not found: ${iso2}`);
+            return;
+        }
+
+        const parentIndex = parentCountry.index;
+        const provinceCount = this.provinceController.getRegionCount();
+        if (provinceCount === 0) {
+            console.warn(`enterRegionMode: no provinces loaded yet for ${iso2}`);
+            return;
+        }
+
+        // Enable province face mesh and border mesh
+        const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
+        console.log(`[enterRegionMode] provinceMesh=${provinceMesh ? provinceMesh.name : 'NULL'}, provinceBorderMesh=${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}`);
+        if (provinceMesh) {
+            provinceMesh.setEnabled(true);
+            console.log(`[enterRegionMode] Face mesh enabled, isEnabled=${provinceMesh.isEnabled()}, vertices=${provinceMesh.getTotalVertices()}`);
+        } else {
+            console.warn(`[enterRegionMode] Province face mesh is NULL - provinces not loaded yet!`);
+        }
+        if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(true);
+
+        // Set all provinces belonging to this country to normal altitude, hide others
+        const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
+        console.log(`[enterRegionMode] defaultAltitude=${defaultAltitude} (REGION_ALTITUDE=${REGION_ALTITUDE}, ANIMATION_AMPLITUDE=${ANIMATION_AMPLITUDE})`);
+        const allProvinces = this.provinceController.getAllRegions();
+        let matchCount = 0;
+        for (const province of allProvinces) {
+            if (province.parentRegionIndex === parentIndex) {
+                this.provinceAnimationTexture!.setAltitude(province.index, defaultAltitude);
+                matchCount++;
+            } else {
+                this.provinceAnimationTexture!.setAltitude(province.index, 0);
+            }
+        }
+        this.provinceAnimationTexture!.update();
+        console.log(`[enterRegionMode] Set ${matchCount}/${allProvinces.length} provinces to altitude ${defaultAltitude} (parentIndex=${parentIndex})`);
+        // Log first few province parentRegionIndex values for verification
+        for (let i = 0; i < Math.min(5, allProvinces.length); i++) {
+            console.log(`  province[${i}] name=${allProvinces[i].name} parentRegionIndex=${allProvinces[i].parentRegionIndex} index=${allProvinces[i].index}`);
+        }
+
+        // Hide the parent country: push altitude to 0 (recedes into globe) and grey it out
+        this.animationTexture.setAltitude(parentIndex, 0);
+        this.animationTexture.update();
+        this.setCountryState(parentIndex, STATE_DISABLED);
+
+        // Switch active controller so hit-testing goes through provinces
+        this.activeController = this.provinceController;
+        this.regionModeISO2 = iso2;
+        this.regionModeParentIndex = parentIndex;
+
+        console.log(`[enterRegionMode] Done. ${matchCount} provinces active, parentIndex=${parentIndex}`);
+    }
+
+    /**
+     * Exit province mode, returning to country view.
+     */
+    exitRegionMode(): void {
+        if (this.regionModeISO2 === null) return;
+
+        // Restore parent country altitude and state
+        if (this.regionModeParentIndex >= 0) {
+            const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
+            this.animationTexture.setAltitude(this.regionModeParentIndex, defaultAltitude);
+            this.animationTexture.update();
+            this.setCountryState(this.regionModeParentIndex, STATE_NORMAL);
+        }
+
+        // Hide all province meshes
+        const allProvinces = this.provinceController.getAllRegions();
+        for (const province of allProvinces) {
+            this.provinceAnimationTexture!.setAltitude(province.index, 0);
+        }
+        this.provinceAnimationTexture!.update();
+
+        const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
+        if (provinceMesh) provinceMesh.setEnabled(false);
+        if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
+
+        // Restore active controller
+        this.activeController = this.countryController;
+        this.regionModeISO2 = null;
+        this.regionModeParentIndex = -1;
+    }
+
+    /**
+     * Returns true if currently in province mode.
+     */
+    isInRegionMode(): boolean {
+        return this.regionModeISO2 !== null;
+    }
+
+    /**
+     * Returns the ISO2 of the active region mode country, or null if not in region mode.
+     */
+    getRegionModeISO2(): string | null {
+        return this.regionModeISO2;
+    }
+
+    /**
+     * Get all regions from the active controller (countries or provinces).
+     */
+    getAllActiveRegions(): CountryData[] {
+        return this.activeController.getAllRegions();
+    }
+
+    /**
+     * Animate a region's altitude via the active controller.
+     * In country mode: animates a country. In region mode: animates a province.
+     */
+    animateActiveRegionAltitude(regionIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
+        return this.activeController.animateAltitude(regionIndex, targetAltitude, durationMs, easing);
     }
 
     // =========================================================================
@@ -672,7 +936,7 @@ export class EarthGlobe {
      * Check if a country is classified as small (needs magnification)
      */
     isSmallCountry(countryIndex: number): boolean {
-        const country = this.countryRenderer.getCountryByIndex(countryIndex);
+        const country = this.countryRenderer.getRegionByIndex(countryIndex);
         return country ? checkSmallCountry(country.iso2) : false;
     }
 
@@ -727,7 +991,7 @@ export class EarthGlobe {
     showCountryOutline(countryIndex: number): void {
         if (!this.outlineMaterial) return;
 
-        const countryData = this.countryRenderer.getCountryByIndex(countryIndex);
+        const countryData = this.countryRenderer.getRegionByIndex(countryIndex);
         if (!countryData) return;
 
         const polygonsData = this.countryRenderer.getPolygonsData();

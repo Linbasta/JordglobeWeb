@@ -40,10 +40,12 @@ export class ShaderFactory {
     private engine: AbstractEngine;
     private animationTexture: DynamicTexture | null = null;
     private shaderCounter: number = 0;
+    private namePrefix: string;
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene, namePrefix: string = '') {
         this.scene = scene;
         this.engine = scene.getEngine();
+        this.namePrefix = namePrefix;
     }
 
     /**
@@ -125,7 +127,7 @@ export class ShaderFactory {
         ].join("\n    ");
 
         const material = this.createShaderMaterial(
-            "countryShader",
+            `${this.namePrefix}countryShader`,
             countryFragmentShader,
             [],
             varyings,
@@ -198,7 +200,7 @@ export class ShaderFactory {
         ].join("\n    ");
 
         const material = this.createSmallShaderMaterial(
-            "smallCountryShader",
+            `${this.namePrefix}smallCountryShader`,
             countryFragmentShader,
             [],
             varyings,
@@ -225,7 +227,7 @@ export class ShaderFactory {
      * Create the extruded border shader material (gray)
      */
     createExtrudedBorderMaterial(): ShaderMaterial {
-        return this.createBorderShaderMaterial("extrudedBorderShader", BORDER_COLOR_GRAY);
+        return this.createBorderShaderMaterial(`${this.namePrefix}extrudedBorderShader`, BORDER_COLOR_GRAY);
     }
 
     /**
@@ -233,7 +235,7 @@ export class ShaderFactory {
      */
     createSmallExtrudedBorderMaterial(): ShaderMaterial {
         const material = this.createSmallShaderMaterial(
-            "smallExtrudedBorderShader",
+            `${this.namePrefix}smallExtrudedBorderShader`,
             borderFragmentShader,
             ["baseColor"]
         );
@@ -291,7 +293,7 @@ export class ShaderFactory {
      * Create the outline shader material (gold)
      */
     createOutlineMaterial(): ShaderMaterial {
-        return this.createBorderShaderMaterial("outlineShader", OUTLINE_COLOR);
+        return this.createBorderShaderMaterial(`${this.namePrefix}outlineShader`, OUTLINE_COLOR);
     }
 
     /**
@@ -299,7 +301,7 @@ export class ShaderFactory {
      */
     createSmallOutlineMaterial(): ShaderMaterial {
         const material = this.createSmallShaderMaterial(
-            "smallOutlineShader",
+            `${this.namePrefix}smallOutlineShader`,
             borderFragmentShader,
             ["baseColor"]
         );

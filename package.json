@@ -20,6 +20,7 @@
     "test:small-countries": "tsx scripts/test-small-countries.ts",
     "test:us-provinces": "tsx scripts/test-us-provinces.ts",
     "test:province-borders": "tsx scripts/test-province-borders.ts",
+    "test:regions": "tsx scripts/test-regions.ts",
     "generate-borders": "node scripts/generate-borders.mjs",
     "generate-segments": "tsx scripts/generate-segments.ts",
     "enrich-countries": "tsx scripts/enrich-countries.ts",

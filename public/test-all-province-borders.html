@@ -103,6 +103,11 @@
 
                 setStatus(`${states.length}/${countries.length} overlays loaded`, states.length === countries.length ? 'ok' : 'err');
 
+                // Expose globe for DevTools testing:
+                // globe.enterRegionMode('US')  → show US states
+                // globe.exitRegionMode()        → back to countries
+                window.globe = g;
+
                 // Update border uniforms each frame based on zoom
                 const scene = g.getScene();
                 const camera = g.getCamera();

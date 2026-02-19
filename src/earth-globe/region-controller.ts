@@ -64,11 +64,20 @@ export class RegionController {
     // Loading
     // =========================================================================
 
-    async load(
+    async loadFromURL(
         url: string,
         onRegionAdded?: (region: CountryData) => void
     ): Promise<void> {
-        await this.renderer.loadCountries(url, this.picker, onRegionAdded);
+        await this.renderer.loadFromURL(url, this.picker, onRegionAdded);
+    }
+
+    async loadFromItems(
+        countryISO2: string,
+        items: Array<{ id: number; name: string; paths: string }>,
+        parentRegionIndex: number,
+        onRegionAdded?: (region: CountryData) => void
+    ): Promise<void> {
+        await this.renderer.loadFromItems(countryISO2, items, this.picker, parentRegionIndex, onRegionAdded);
     }
 
     // =========================================================================
@@ -80,19 +89,19 @@ export class RegionController {
     }
 
     getRegionByIndex(index: number): CountryData | undefined {
-        return this.renderer.getCountryByIndex(index);
+        return this.renderer.getRegionByIndex(index);
     }
 
     getRegionByISO2(iso2: string): CountryData | undefined {
-        return this.renderer.getCountryByISO2(iso2);
+        return this.renderer.getRegionByISO2(iso2);
     }
 
     getAllRegions(): CountryData[] {
-        return this.renderer.getCountriesData();
+        return this.renderer.getRegionsData();
     }
 
     getRegionCount(): number {
-        return this.renderer.getCountryCount();
+        return this.renderer.getRegionCount();
     }
 
     // =========================================================================

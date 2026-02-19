@@ -129,6 +129,7 @@ export interface CountryData {
     polygonIndices: number[];    // Indices into polygonsData array
     neighbourCountries: NeighborInfo[];
     centroid: import('@babylonjs/core/Maths/math').Vector3 | null;  // Sphere-surface centroid (small countries only)
+    parentRegionIndex?: number;  // For provinces: index of the parent country in countryController
 }
 
 /**
@@ -338,6 +339,14 @@ export interface EarthGlobeAPI {
     // Event callbacks
     onCountryHover(callback: (event: CountryHoverEvent) => void): void;
     onCountryClick(callback: (event: CountryClickEvent) => void): void;
+
+    // Region mode (province drill-down)
+    enterRegionMode(iso2: string): void;
+    exitRegionMode(): void;
+    isInRegionMode(): boolean;
+    getRegionModeISO2(): string | null;
+    getAllActiveRegions(): CountryData[];
+    animateActiveRegionAltitude(regionIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Lifecycle
     isReady(): boolean;
