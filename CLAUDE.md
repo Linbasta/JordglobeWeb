@@ -196,6 +196,92 @@ try {
 
 **Default to CLI testing** unless visual/interactive verification is required. This creates a faster, more reliable development workflow for both Claude and the developer.
 
+## Automated Refactoring with ts-morph
+
+**For large-scale type/interface renames, use ts-morph instead of manual editing.**
+
+### Why ts-morph?
+
+Manual find-replace across many files:
+- ❌ Uses lots of tokens (expensive)
+- ❌ High risk of missing edge cases
+- ❌ Error-prone with partial updates
+- ❌ Can break imports/exports
+
+ts-morph automated refactoring:
+- ✅ Type-safe - understands TypeScript semantics
+- ✅ Comprehensive - finds ALL references automatically
+- ✅ Safe - won't rename unrelated identifiers
+- ✅ Fast - completes in seconds
+- ✅ Reliable - updates imports, exports, everything
+
+### Pattern
+
+**When to use:** Renaming interfaces, types, or properties across 10+ files
+
+**Example task:** Rename `CountryData` → `RegionData` across entire codebase
+
+**Steps:**
+
+1. **Install ts-morph** (if not already installed)
+   ```bash
+   npm install --save-dev ts-morph
+   ```
+
+2. **Write a refactor script** (e.g., `scripts/refactor-rename-country-to-region.ts`)
+   ```typescript
+   import { Project } from 'ts-morph';
+
+   const project = new Project({
+       tsConfigFilePath: './tsconfig.json',
+   });
+
+   const typesFile = project.getSourceFile('src/earth-globe/types.ts');
+
+   // Rename interface
+   const countryData = typesFile?.getInterface('CountryData');
+   if (countryData) {
+       countryData.rename('RegionData');
+   }
+
+   // Rename property
+   const countryPolygon = typesFile?.getInterface('CountryPolygon');
+   const countryIndexProp = countryPolygon?.getProperty('countryIndex');
+   if (countryIndexProp) {
+       countryIndexProp.rename('regionIndex');
+   }
+
+   await project.save();
+   ```
+
+3. **Run the script**
+   ```bash
+   npx tsx scripts/refactor-rename-whatever.ts
+   ```
+
+4. **STOP and wait for user verification** - Never skip this!
+
+5. **Commit after verification**
+
+### Important Notes
+
+- **No backward compatibility** - This is exploratory phase, clean breaks are fine
+- **No type aliases** - Don't create `type OldName = NewName` shims
+- **Test before committing** - Always verify quizzes/features work after refactor
+- **Use temporary names** if needed - Rename to `Foo_OLD` first, save, then `Foo_OLD` → `NewFoo`
+- **Reusable scripts** - Keep refactor scripts in `scripts/` for reference
+
+### Real Example
+
+See `scripts/refactor-rename-country-to-region.ts` for a complete working example that:
+- Renamed `CountryData` → `RegionData`
+- Renamed `CountryPolygon` → `RegionPolygon`
+- Renamed `countryIndex` property → `regionIndex`
+- Updated 18 files automatically
+- Completed in ~2 seconds
+
+**Commit:** `703dd4b` - "Refactor: CountryData → RegionData, CountryPolygon → RegionPolygon"
+
 ## Code Architecture Principles (Handmade Philosophy)
 
 **Write simple, direct code that you understand completely.**
