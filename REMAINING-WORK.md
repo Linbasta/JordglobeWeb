@@ -53,27 +53,20 @@
 
 ## Immediate Next Steps
 
-### 1. Refactor Quiz System - Remove Auto Name Resolution (Optional Cleanup)
+### 1. ✅ Refactor Quiz System - Remove Auto Name Resolution (COMPLETE)
 
-**Current behavior:**
-```typescript
-// start-quiz-game.ts lines 64-68
-for (const q of questions) {
-    if (!q.prompt && q.answer === 'country' && q.countryISO2) {
-        const country = controller.getGlobe().getCountryByISO2(q.countryISO2)
-        q.prompt = country?.name ?? q.countryISO2
-    }
-}
-```
+**Commit:** `c1c42c0` - "Remove auto name resolution from quiz system"
 
-**Problem:** Auto-resolves country names, makes system complex
+**What was done:**
+- Removed auto-resolution code from `start-quiz-game.ts`
+- Updated `country-quiz.html` with explicit country name mapping
+- Updated file comment to reflect new behavior
+- Verified all quiz files have explicit prompts
 
-**Fix:** Remove this code. Questions should always provide explicit `prompt` field.
-
-**Files to update:**
-- `/src/solo/start-quiz-game.ts` - Remove auto-resolution code
-- `/country-quiz.html` - Add country names to prompts
-- Keep `capitals-quiz.html` as-is (already has prompts)
+**Benefits:**
+- More explicit and predictable
+- Simpler code (no special cases)
+- Questions are self-contained
 
 ### 2. Create Production US States Quiz (Optional)
 
