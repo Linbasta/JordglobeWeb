@@ -90,10 +90,10 @@ export interface RegionJSON {
 /**
  * Country polygon for spatial lookup
  */
-export interface CountryPolygon {
+export interface RegionPolygon {
     iso2: string;
     name: string;
-    countryIndex: number;
+    regionIndex: number;
     polygonIndex: number;  // Index within the country's polygons
     points: LatLon[];
     bbox: BoundingBox;
@@ -122,7 +122,7 @@ export interface NeighborInfo {
 /**
  * Country metadata
  */
-export interface CountryData {
+export interface RegionData {
     name: string;
     iso2: string;
     index: number;
@@ -246,7 +246,7 @@ export interface EarthGlobeOptions {
  * Country hover event data
  */
 export interface CountryHoverEvent {
-    country: CountryPolygon | null;
+    country: RegionPolygon | null;
     latLon: LatLon;
 }
 
@@ -254,7 +254,7 @@ export interface CountryHoverEvent {
  * Country click event data
  */
 export interface CountryClickEvent {
-    country: CountryPolygon | null;
+    country: RegionPolygon | null;
     latLon: LatLon;
 }
 
@@ -288,10 +288,10 @@ export interface EarthGlobeAPI {
     };
 
     // Country queries
-    getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null;
-    getCountryByISO2(iso2: string): CountryData | undefined;
-    getCountryByIndex(index: number): CountryData | undefined;
-    getAllCountries(): CountryData[];
+    getCountryAtLatLon(lat: number, lon: number): RegionPolygon | null;
+    getCountryByISO2(iso2: string): RegionData | undefined;
+    getCountryByIndex(index: number): RegionData | undefined;
+    getAllCountries(): RegionData[];
     getAltitudeAtLatLon(lat: number, lon: number): number;
 
     // Animation control - Altitude
@@ -347,8 +347,8 @@ export interface EarthGlobeAPI {
     isInRegionMode(): boolean;
     getRegionModeISO2(): string | null;
     waitForProvincesToLoad(): Promise<void>;
-    getAllActiveRegions(): CountryData[];
-    getActiveRegionPolygons(): CountryPolygon[];
+    getAllActiveRegions(): RegionData[];
+    getActiveRegionPolygons(): RegionPolygon[];
     animateActiveRegionAltitude(regionIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Province animation (when in region mode)
@@ -390,5 +390,5 @@ export interface TriangulationResult {
  * Grid cell for spatial indexing
  */
 export interface GridCell {
-    polygons: CountryPolygon[];
+    polygons: RegionPolygon[];
 }

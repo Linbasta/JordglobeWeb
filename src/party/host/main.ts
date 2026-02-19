@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // Wire Game to globe animations when country is cleared
             game.onCountryCleared((country) => {
-                animateCorrect(globeInstance, country.countryIndex);
+                animateCorrect(globeInstance, country.regionIndex);
             });
         }
     });
@@ -51,4 +51,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Export for external use
 export { EarthGlobe };
-export type { CountryPolygon, LatLon } from '../../earth-globe';
+export type { RegionPolygon, LatLon } from '../../earth-globe';

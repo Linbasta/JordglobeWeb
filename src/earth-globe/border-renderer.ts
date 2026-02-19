@@ -24,7 +24,7 @@ import {
 } from './constants';
 import { latLonToSphere } from './geo-math';
 import { getSharedSegments } from './segment-loader';
-import type { LatLonPoint, PolygonData, CountryData, SegmentData, Segment3D } from './types';
+import type { LatLonPoint, PolygonData, RegionData, SegmentData, Segment3D } from './types';
 
 /**
  * Border Renderer - Creates extruded border walls and segment tubes
@@ -298,7 +298,7 @@ export class BorderRenderer {
         polygonsData: PolygonData[],
         regularMaterial: ShaderMaterial,
         smallMaterial: ShaderMaterial,
-        countriesData: CountryData[]
+        countriesData: RegionData[]
     ): void {
         console.log('Merging extruded borders...');
         const startTime = performance.now();
@@ -434,7 +434,7 @@ export class BorderRenderer {
      */
     renderSegmentBorders(
         segmentData: SegmentData,
-        regionsData: CountryData[],
+        regionsData: RegionData[],
         shaderMaterial: ShaderMaterial,
         animationIndexOffset: number = MAX_ANIMATION_COUNTRIES
     ): void {

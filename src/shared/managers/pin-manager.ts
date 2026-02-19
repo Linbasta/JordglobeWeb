@@ -15,7 +15,7 @@ import { Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
-import type { RegionPicker, CountryPolygon, LatLon } from '../../earth-globe';
+import type { RegionPicker, RegionPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
@@ -41,15 +41,15 @@ let bossPinTemplate: AbstractMesh | null = null;
 let previewPin: TransformNode | null = null;
 let previewPinContainer: TransformNode | null = null;
 let isPlacingMode = false;
-let hoveredCountry: CountryPolygon | null = null;
+let hoveredCountry: RegionPolygon | null = null;
 let pinRecorder = new PinRecorder();
 let inCancelZone = false;
 
 let lastClientX = 0;
 let lastClientY = 0;
 
-let onPinPlacedCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
-let onCountryHoverCallback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
+let onPinPlacedCallback: ((country: RegionPolygon | null, latLon: LatLon) => void) | null = null;
+let onCountryHoverCallback: ((country: RegionPolygon | null, latLon: LatLon) => void) | null = null;
 let onPlacingModeChangeCallback: ((isPlacing: boolean) => void) | null = null;
 let onPinMoveCallback: ((latLon: LatLon) => void) | null = null;
 let onCancelZoneChangeCallback: ((inZone: boolean) => void) | null = null;
@@ -188,7 +188,7 @@ function positionPinAtNormal(normal: Vector3): void {
     const country = getActiveRegionPicker().getCountryAt(latLon);
 
     // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
-    const altitudeNormalized = country ? getCountryAltitude(country.countryIndex) : 0.0;
+    const altitudeNormalized = country ? getCountryAltitude(country.regionIndex) : 0.0;
     const altitudeWorldSpace = altitudeNormalized * ANIMATION_AMPLITUDE;
 
     // Position pin at globe surface + country altitude
@@ -341,11 +341,11 @@ export function clearRecordedPositions(): void {
     pinRecorder.clear();
 }
 
-export function onPinPlaced(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
+export function onPinPlaced(callback: (country: RegionPolygon | null, latLon: LatLon) => void): void {
     onPinPlacedCallback = callback;
 }
 
-export function onCountryHover(callback: (country: CountryPolygon | null, latLon: LatLon) => void): void {
+export function onCountryHover(callback: (country: RegionPolygon | null, latLon: LatLon) => void): void {
     onCountryHoverCallback = callback;
 }
 

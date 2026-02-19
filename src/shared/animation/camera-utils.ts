@@ -8,7 +8,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import { easedValue, getEasingFunction } from '../utils/easing';
 import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE, zoom } from '../../earth-globe';
-import type { CountryPolygon, LatLon } from '../../earth-globe';
+import type { RegionPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';
 
 /**
@@ -311,7 +311,7 @@ export async function animateToLocation(
 export async function frameCountry(
     camera: ArcRotateCamera,
     globe: any,
-    polygons: CountryPolygon[],
+    polygons: RegionPolygon[],
     countryName: string,
     duration: number,
     margin: number = 0.8,
@@ -342,7 +342,7 @@ export async function frameCountry(
     }
 
     // Get country index from first polygon (all polygons belong to same country)
-    const countryIndex = polygons[0].countryIndex;
+    const countryIndex = polygons[0].regionIndex;
 
     // Get altitude to use for framing
     const altitudeNormalized = gridConfig?.overrideAltitude !== undefined

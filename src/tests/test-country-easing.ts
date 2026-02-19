@@ -310,7 +310,7 @@ const globe = new EarthGlobe({
         api.onCountryClick(async (event) => {
             if (!event.country) return;
 
-            const idx = event.country.countryIndex;
+            const idx = event.country.regionIndex;
             const name = event.country.name;
             const duration = parseInt(durationSlider.value, 10);
             const easingName = easingSelect.value;

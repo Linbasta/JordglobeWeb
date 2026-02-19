@@ -7,7 +7,7 @@
 
 import { PICKER_CELL_SIZE } from './constants';
 import { pointInBoundingBox, pointInPolygon, calculateBoundingBox } from './geo-math';
-import type { LatLon, CountryPolygon, BoundingBox, GridCell, LofiCircle } from './types';
+import type { LatLon, RegionPolygon, BoundingBox, GridCell, LofiCircle } from './types';
 
 /**
  * A single collider circle registered for hit detection
@@ -17,13 +17,13 @@ interface ColliderCircle {
     lon: number;
     radiusDegSq: number;    // pre-squared for fast comparison
     countryIndex: number;
-    polygon: CountryPolygon; // first polygon, returned on proximity match
+    polygon: RegionPolygon; // first polygon, returned on proximity match
 }
 
 export class RegionPicker {
     private grid: Map<string, GridCell>;
     private cellSize: number;
-    private polygons: CountryPolygon[];
+    private polygons: RegionPolygon[];
     private overrideColliders: ColliderCircle[] = [];  // Tier 2: checked before PIP
     private catchColliders: ColliderCircle[] = [];     // Tier 3: checked when PIP finds nothing
     private colliderMultiplierSq = 1.0;
@@ -56,7 +56,7 @@ export class RegionPicker {
     /**
      * Add a country polygon to the spatial index
      */
-    addPolygon(polygon: CountryPolygon): void {
+    addPolygon(polygon: RegionPolygon): void {
         this.polygons.push(polygon);
 
         // Calculate which grid cells this polygon overlaps
@@ -83,7 +83,7 @@ export class RegionPicker {
      * Get which country contains the given point
      * @returns The country polygon containing the point, or null if over ocean/no country
      */
-    getCountryAt(point: LatLon): CountryPolygon | null {
+    getCountryAt(point: LatLon): RegionPolygon | null {
         // Tier 1: standard point-in-polygon via spatial grid
         const pipResult = this.pointInPolygonSearch(point);
 
@@ -101,7 +101,7 @@ export class RegionPicker {
     /**
      * Tier 1: standard point-in-polygon search via spatial grid
      */
-    private pointInPolygonSearch(point: LatLon): CountryPolygon | null {
+    private pointInPolygonSearch(point: LatLon): RegionPolygon | null {
         const cellX = Math.floor(point.lon / this.cellSize);
         const cellY = Math.floor(point.lat / this.cellSize);
         const key = `${cellX},${cellY}`;
@@ -121,9 +121,9 @@ export class RegionPicker {
      * Tier 2: override — check override colliders (surrounded countries).
      * Returns the closest match within any circle's radius.
      */
-    private checkOverride(point: LatLon): CountryPolygon | null {
+    private checkOverride(point: LatLon): RegionPolygon | null {
         let bestDist = Infinity;
-        let bestMatch: CountryPolygon | null = null;
+        let bestMatch: RegionPolygon | null = null;
 
         for (const c of this.overrideColliders) {
             const dlat = point.lat - c.lat;
@@ -144,9 +144,9 @@ export class RegionPicker {
      * Tier 3: catch — PIP found nothing, check all catch colliders.
      * Returns the closest match within any circle's radius.
      */
-    private checkCatch(point: LatLon): CountryPolygon | null {
+    private checkCatch(point: LatLon): RegionPolygon | null {
         let bestDist = Infinity;
-        let bestMatch: CountryPolygon | null = null;
+        let bestMatch: RegionPolygon | null = null;
 
         for (const c of this.catchColliders) {
             const dlat = point.lat - c.lat;
@@ -168,7 +168,7 @@ export class RegionPicker {
      * @param isOverride true for surrounded countries (checked before PIP)
      */
     registerColliders(countryIndex: number, circles: LofiCircle[], isOverride: boolean): void {
-        const polygon = this.polygons.find(p => p.countryIndex === countryIndex);
+        const polygon = this.polygons.find(p => p.regionIndex === countryIndex);
         if (!polygon) return;
 
         for (const circle of circles) {
@@ -191,7 +191,7 @@ export class RegionPicker {
     /**
      * Get all polygons in the picker
      */
-    getAllPolygons(): CountryPolygon[] {
+    getAllPolygons(): RegionPolygon[] {
         return this.polygons;
     }
 

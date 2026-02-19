@@ -5,7 +5,7 @@
  * Uses the globe API directly for altitude/outline/state.
  */
 
-import type { EarthGlobeAPI, CountryPolygon, LatLon } from '../../earth-globe';
+import type { EarthGlobeAPI, RegionPolygon, LatLon } from '../../earth-globe';
 import { STATE_CLEARED, STATE_DISABLED } from '../../earth-globe';
 
 const ALT_DEFAULT = 0.4;
@@ -13,9 +13,9 @@ const ALT_SELECTED = 0.5;
 
 let selectedIndex = -1;
 
-export function handleHover(globe: EarthGlobeAPI, country: CountryPolygon | null, _latLon: LatLon): void {
+export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null, _latLon: LatLon): void {
     // Deselect previous if different
-    if (selectedIndex >= 0 && (!country || country.countryIndex !== selectedIndex)) {
+    if (selectedIndex >= 0 && (!country || country.regionIndex !== selectedIndex)) {
         globe.clearCountryOutline();
         const state = globe.getActiveRegionState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
@@ -33,16 +33,16 @@ export function handleHover(globe: EarthGlobeAPI, country: CountryPolygon | null
 
     if (!country) return;
 
-    const state = globe.getActiveRegionState(country.countryIndex);
+    const state = globe.getActiveRegionState(country.regionIndex);
     if (state === STATE_DISABLED || state === STATE_CLEARED) return;
 
-    selectedIndex = country.countryIndex;
-    globe.showCountryOutline(country.countryIndex);
-    globe.setActiveRegionAltitude(country.countryIndex, ALT_SELECTED);
+    selectedIndex = country.regionIndex;
+    globe.showCountryOutline(country.regionIndex);
+    globe.setActiveRegionAltitude(country.regionIndex, ALT_SELECTED);
     // Small country expansion only applies in country mode, not province mode
-    if (!globe.isInRegionMode() && globe.isSmallCountry(country.countryIndex)) {
-        globe.animateCountryExpansion(country.countryIndex, 5.0, 300);
-        globe.hideSmallCountryMarker(country.countryIndex);
+    if (!globe.isInRegionMode() && globe.isSmallCountry(country.regionIndex)) {
+        globe.animateCountryExpansion(country.regionIndex, 5.0, 300);
+        globe.hideSmallCountryMarker(country.regionIndex);
     }
 }
 

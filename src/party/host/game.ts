@@ -3,18 +3,18 @@
  * Handles game logic - what happens when pins are placed
  */
 
-import type { CountryPolygon, LatLon } from '../../earth-globe';
+import type { RegionPolygon, LatLon } from '../../earth-globe';
 
 export class Game {
     private clearedCountries: Set<string> = new Set();
     private score: number = 0;
-    private onCountryClearedCallback: ((country: CountryPolygon) => void) | null = null;
+    private onCountryClearedCallback: ((country: RegionPolygon) => void) | null = null;
 
     start(): void {
         console.log('Game started!');
     }
 
-    handlePinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
+    handlePinPlaced(country: RegionPolygon | null, latLon: LatLon): void {
         if (!country) {
             console.log('Pin placed in ocean - no country to clear');
             return;
@@ -40,11 +40,11 @@ export class Game {
         return this.score;
     }
 
-    onCountryCleared(callback: (country: CountryPolygon) => void): void {
+    onCountryCleared(callback: (country: RegionPolygon) => void): void {
         this.onCountryClearedCallback = callback;
     }
 
-    private clearCountry(country: CountryPolygon): void {
+    private clearCountry(country: RegionPolygon): void {
         this.clearedCountries.add(country.iso2);
         this.score += 100;
 

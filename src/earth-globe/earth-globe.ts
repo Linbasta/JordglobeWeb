@@ -64,8 +64,8 @@ import type {
     EarthGlobeOptions,
     AssetPaths,
     LatLon,
-    CountryPolygon,
-    CountryData,
+    RegionPolygon,
+    RegionData,
     CountryHoverEvent,
     CountryClickEvent,
     SegmentData,
@@ -644,7 +644,7 @@ export class EarthGlobe {
 
         // If there's a country, account for its current displacement
         if (country) {
-            const animValue = this.countryAnimator.getAltitude(country.countryIndex);
+            const animValue = this.countryAnimator.getAltitude(country.regionIndex);
             const displacement = animValue * ANIMATION_AMPLITUDE;
             const position = basePosition.add(normal.scale(displacement + offsetAbove));
             return { position, normal };
@@ -664,28 +664,28 @@ export class EarthGlobe {
      * In country mode: returns a country polygon.
      * In region mode: returns a province polygon.
      */
-    getCountryAtLatLon(lat: number, lon: number): CountryPolygon | null {
+    getCountryAtLatLon(lat: number, lon: number): RegionPolygon | null {
         return this.activeController.getRegionAt({ lat, lon });
     }
 
     /**
      * Get country data by ISO2 code
      */
-    getCountryByISO2(iso2: string): CountryData | undefined {
+    getCountryByISO2(iso2: string): RegionData | undefined {
         return this.countryRenderer.getRegionByISO2(iso2);
     }
 
     /**
      * Get country data by index
      */
-    getCountryByIndex(index: number): CountryData | undefined {
+    getCountryByIndex(index: number): RegionData | undefined {
         return this.countryRenderer.getRegionByIndex(index);
     }
 
     /**
      * Get all countries
      */
-    getAllCountries(): CountryData[] {
+    getAllCountries(): RegionData[] {
         return this.countryRenderer.getRegionsData();
     }
 
@@ -828,7 +828,7 @@ export class EarthGlobe {
     /**
      * Get all regions from the active controller (countries or provinces).
      */
-    getAllActiveRegions(): CountryData[] {
+    getAllActiveRegions(): RegionData[] {
         return this.activeController.getAllRegions();
     }
 
@@ -837,7 +837,7 @@ export class EarthGlobe {
      * In country mode: returns country polygons.
      * In region mode: returns province polygons.
      */
-    getActiveRegionPolygons(): CountryPolygon[] {
+    getActiveRegionPolygons(): RegionPolygon[] {
         return this.activeController.getPicker().getAllPolygons();
     }
 
@@ -1233,7 +1233,7 @@ export class EarthGlobe {
     /**
      * Trigger a hover event (call from external pointer handler)
      */
-    triggerCountryHover(country: CountryPolygon | null, latLon: LatLon): void {
+    triggerCountryHover(country: RegionPolygon | null, latLon: LatLon): void {
         if (this.onCountryHoverCallback) {
             this.onCountryHoverCallback({ country, latLon });
         }
@@ -1242,7 +1242,7 @@ export class EarthGlobe {
     /**
      * Trigger a click event (call from external pointer handler)
      */
-    triggerCountryClick(country: CountryPolygon | null, latLon: LatLon): void {
+    triggerCountryClick(country: RegionPolygon | null, latLon: LatLon): void {
         if (this.onCountryClickCallback) {
             this.onCountryClickCallback({ country, latLon });
         }

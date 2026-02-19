@@ -26,7 +26,7 @@ import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } fr
 import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
 import { RegionPicker, calculateBoundingBox } from './region-picker';
-import type { LatLonPoint, PolygonData, CountryData, CountryJSON, TriangulationResult } from './types';
+import type { LatLonPoint, PolygonData, RegionData, CountryJSON, TriangulationResult } from './types';
 import { isSmallCountry, isSurroundedCountry } from './small-countries';
 
 /**
@@ -41,7 +41,7 @@ export class RegionRenderer {
     private polygonsData: PolygonData[] = [];
 
     /** Region-level metadata */
-    private regionsData: CountryData[] = [];
+    private regionsData: RegionData[] = [];
 
     /** Total triangle count for statistics */
     private totalTriangleCount: number = 0;
@@ -68,7 +68,7 @@ export class RegionRenderer {
     /**
      * Get all region data
      */
-    getRegionsData(): CountryData[] {
+    getRegionsData(): RegionData[] {
         return this.regionsData;
     }
 
@@ -110,14 +110,14 @@ export class RegionRenderer {
     /**
      * Get region by ISO2 code (or province id string like "US-0")
      */
-    getRegionByISO2(iso2: string): CountryData | undefined {
+    getRegionByISO2(iso2: string): RegionData | undefined {
         return this.regionsData.find(c => c.iso2 === iso2);
     }
 
     /**
      * Get region by index
      */
-    getRegionByIndex(index: number): CountryData | undefined {
+    getRegionByIndex(index: number): RegionData | undefined {
         return this.regionsData[index];
     }
 
@@ -341,7 +341,7 @@ export class RegionRenderer {
     /**
      * Add region metadata
      */
-    addRegion(data: CountryData): void {
+    addRegion(data: RegionData): void {
         this.regionsData.push(data);
     }
 
@@ -530,7 +530,7 @@ export class RegionRenderer {
         items: Array<{ id: number; name: string; paths: string }>,
         picker: RegionPicker,
         parentRegionIndex: number,
-        onAdded?: (region: CountryData) => void
+        onAdded?: (region: RegionData) => void
     ): Promise<void> {
         const startTime = performance.now();
         let addedCount = 0;
@@ -573,7 +573,7 @@ export class RegionRenderer {
                         picker.addPolygon({
                             iso2: `${countryISO2}-${item.id}`,
                             name: item.name,
-                            countryIndex: this.regionsData.length,
+                            regionIndex: this.regionsData.length,
                             polygonIndex: polyIdx,
                             points: latLonPoints,
                             bbox: calculateBoundingBox(latLonPoints),
@@ -582,7 +582,7 @@ export class RegionRenderer {
                 }
 
                 if (polygonIndices.length > 0) {
-                    const regionData: CountryData = {
+                    const regionData: RegionData = {
                         name: item.name,
                         iso2: `${countryISO2}-${item.id}`,
                         index: this.regionsData.length,
@@ -615,7 +615,7 @@ export class RegionRenderer {
     async loadFromURL(
         url: string,
         picker: RegionPicker,
-        onRegionAdded?: (region: CountryData) => void
+        onRegionAdded?: (region: RegionData) => void
     ): Promise<void> {
         const startTime = performance.now();
 
@@ -717,7 +717,7 @@ export class RegionRenderer {
                         picker.addPolygon({
                             iso2: country.iso2,
                             name: country.name_en,
-                            countryIndex: this.regionsData.length,
+                            regionIndex: this.regionsData.length,
                             polygonIndex: polyIdx,
                             points: latLonPoints,
                             bbox: calculateBoundingBox(latLonPoints)
@@ -731,7 +731,7 @@ export class RegionRenderer {
                     const needsCentroid = small || surrounded;
                     const centroid = needsCentroid ? this.computeCentroid(polygonIndices) : null;
 
-                    const regionData: CountryData = {
+                    const regionData: RegionData = {
                         name: country.name_en,
                         iso2: country.iso2,
                         index: this.regionsData.length,

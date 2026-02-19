@@ -22,7 +22,7 @@ import { ShaderFactory } from './shader-factory';
 import { loadSegments, loadProvinceSegments } from './segment-loader';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
-import type { CountryData, CountryPolygon, RegionType, SegmentData } from './types';
+import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
 
 export type { RegionType };
 
@@ -88,7 +88,7 @@ export class RegionController {
 
     async loadFromURL(
         url: string,
-        onRegionAdded?: (region: CountryData) => void
+        onRegionAdded?: (region: RegionData) => void
     ): Promise<void> {
         await this.renderer.loadFromURL(url, this.picker, onRegionAdded);
     }
@@ -97,7 +97,7 @@ export class RegionController {
         countryISO2: string,
         items: Array<{ id: number; name: string; paths: string }>,
         parentRegionIndex: number,
-        onRegionAdded?: (region: CountryData) => void
+        onRegionAdded?: (region: RegionData) => void
     ): Promise<void> {
         await this.renderer.loadFromItems(countryISO2, items, this.picker, parentRegionIndex, onRegionAdded);
     }
@@ -106,19 +106,19 @@ export class RegionController {
     // Region queries
     // =========================================================================
 
-    getRegionAt(latLon: { lat: number; lon: number }): CountryPolygon | null {
+    getRegionAt(latLon: { lat: number; lon: number }): RegionPolygon | null {
         return this.picker.getCountryAt(latLon);
     }
 
-    getRegionByIndex(index: number): CountryData | undefined {
+    getRegionByIndex(index: number): RegionData | undefined {
         return this.renderer.getRegionByIndex(index);
     }
 
-    getRegionByISO2(iso2: string): CountryData | undefined {
+    getRegionByISO2(iso2: string): RegionData | undefined {
         return this.renderer.getRegionByISO2(iso2);
     }
 
-    getAllRegions(): CountryData[] {
+    getAllRegions(): RegionData[] {
         return this.renderer.getRegionsData();
     }
 

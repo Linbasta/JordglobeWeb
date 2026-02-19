@@ -18,7 +18,7 @@ import {
     EarthGlobe,
     REGION_ALTITUDE
 } from '../../earth-globe';
-import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
+import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../../earth-globe';
 
 import { initPinManager, onPlacingModeChange, onCancelZoneChange, onPinPlaced as onPinPlacedCb, enterPlacingMode, updatePinScaleIfPlacing } from '../managers/pin-manager';
 import { PinUI } from '../ui/pin-ui';
@@ -168,7 +168,7 @@ export abstract class BaseGameController {
      * @param country - The country the pin was placed on (or null if not on a country)
      * @param latLon - The latitude/longitude of the pin
      */
-    protected abstract onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void;
+    protected abstract onPinPlaced(country: RegionPolygon | null, latLon: LatLon): void;
 
     // =========================================================================
     // Optional Hook Methods - Subclasses MAY override these

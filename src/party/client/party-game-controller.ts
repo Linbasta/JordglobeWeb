@@ -6,13 +6,13 @@
  * - Network communication for pin placement
  */
 
-import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../../earth-globe';
+import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../../shared/controllers/base-game-controller';
 
 export interface PartyGameOptions extends BaseGameOptions {
     onReady?: (controller: PartyGameController) => void;
-    onPinPlaced?: (country: CountryPolygon | null, latLon: LatLon) => void;
+    onPinPlaced?: (country: RegionPolygon | null, latLon: LatLon) => void;
 }
 
 /**
@@ -38,7 +38,7 @@ export class PartyGameController extends BaseGameController {
         globe.hideAllSmallCountryMarkers();
     }
 
-    protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
+    protected onPinPlaced(country: RegionPolygon | null, latLon: LatLon): void {
         console.log('[PartyGameController] Pin placed:', country?.name || 'ocean', latLon);
 
         // Delegate to user callback if provided

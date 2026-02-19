@@ -9,7 +9,7 @@
 
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
-import type { LatLon, CountryPolygon, EarthGlobeAPI } from '../earth-globe';
+import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../earth-globe';
 import { STATE_DISABLED } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
@@ -52,9 +52,9 @@ export class SoloGameController extends BaseGameController {
     private quizDebugManager: QuizDebugManager | null = null;
 
     // Solo-specific callbacks
-    private onCountrySelected: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
-    private onCountryHovered: ((country: CountryPolygon | null, latLon: LatLon) => void) | null = null;
-    private hoveredCountry: CountryPolygon | null = null;
+    private onCountrySelected: ((country: RegionPolygon | null, latLon: LatLon) => void) | null = null;
+    private onCountryHovered: ((country: RegionPolygon | null, latLon: LatLon) => void) | null = null;
+    private hoveredCountry: RegionPolygon | null = null;
     private smallMarkersHidden = false;
 
     constructor(canvasId: string = 'renderCanvas', options?: SoloGameOptions) {
@@ -110,7 +110,7 @@ export class SoloGameController extends BaseGameController {
         });
     }
 
-    protected onPinPlaced(country: CountryPolygon | null, latLon: LatLon): void {
+    protected onPinPlaced(country: RegionPolygon | null, latLon: LatLon): void {
         // Check if we're in quiz mode
         if (this.quizAdapter) {
             // For location questions, we allow clicking anywhere (country can be null)
@@ -118,12 +118,12 @@ export class SoloGameController extends BaseGameController {
             if (country) {
                 // Don't submit answer if region is disabled
                 // Use active region state (works for both countries and provinces)
-                const state = this.globe.getActiveRegionState(country.countryIndex);
+                const state = this.globe.getActiveRegionState(country.regionIndex);
                 if (state === STATE_DISABLED) {
                     return;  // Ignore disabled regions
                 }
                 // Submit answer with region and location (convert .lon → .lng at boundary)
-                this.quizAdapter.submitAnswer(country.countryIndex, { lat: latLon.lat, lng: latLon.lon });
+                this.quizAdapter.submitAnswer(country.regionIndex, { lat: latLon.lat, lng: latLon.lon });
             } else {
                 // No region clicked - use a placeholder index (-1) and pass the latLon
                 // The quiz runner will use latLon for distance-based hit detection
@@ -263,7 +263,7 @@ export class SoloGameController extends BaseGameController {
      * Get the currently hovered country (from selection behavior).
      * Note: For raw country queries, use getGlobe().getCountryAtLatLon()
      */
-    getHoveredCountry(): CountryPolygon | null {
+    getHoveredCountry(): RegionPolygon | null {
         return this.hoveredCountry;
     }
 
@@ -317,11 +317,11 @@ export class SoloGameController extends BaseGameController {
     // Public API - Callbacks
     // =========================================================================
 
-    setCountrySelectedCallback(callback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null): void {
+    setCountrySelectedCallback(callback: ((country: RegionPolygon | null, latLon: LatLon) => void) | null): void {
         this.onCountrySelected = callback;
     }
 
-    setCountryHoveredCallback(callback: ((country: CountryPolygon | null, latLon: LatLon) => void) | null): void {
+    setCountryHoveredCallback(callback: ((country: RegionPolygon | null, latLon: LatLon) => void) | null): void {
         this.onCountryHovered = callback;
     }
 

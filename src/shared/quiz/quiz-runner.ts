@@ -7,7 +7,7 @@
 
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 
-import type { EarthGlobeAPI, CountryData } from '../../earth-globe/types'
+import type { EarthGlobeAPI, RegionData } from '../../earth-globe/types'
 import type { Question, Step, DebugState } from './quiz-types'
 import { StepOp } from './quiz-types'
 import { generateQuizSteps, generateCountryAnswerSteps, generateLocationAnswerSteps, generateAlternativeAnswerSteps, generateLocationGuessAnswerSteps } from './quiz-flow'
@@ -38,8 +38,8 @@ import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay
 
 let steps: Step[] = []
 let questions: Question[] = []
-let gameCountries: CountryData[] = []
-let gameProvinces: CountryData[] = []  // Provinces when in region mode
+let gameCountries: RegionData[] = []
+let gameProvinces: RegionData[] = []  // Provinces when in region mode
 let locationMarkers: Map<number, number> = new Map() // questionIndex -> markerId
 let pc = 0                    // Program counter
 let stepStartTime = 0
@@ -127,7 +127,7 @@ export function startQuiz(
     if (gameCountries.length > 0) {
         const allPolygons = globe.getCountryPicker().getAllPolygons()
         const gamePolygons = allPolygons.filter(p =>
-            gameCountries.some(c => c.index === p.countryIndex)
+            gameCountries.some(c => c.index === p.regionIndex)
         )
 
         // Collect all perimeter points, sampled
@@ -829,7 +829,7 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
     const arcAnimationPromise = arcDrawer.animateArc(arcId, 500)
 
     const allPolygons = globe.getActiveRegionPolygons()
-    const correctPolygons = allPolygons.filter(p => p.countryIndex === correctCountryIndex)
+    const correctPolygons = allPolygons.filter(p => p.regionIndex === correctCountryIndex)
 
     const cameraFlyPromise = frameCountry(
         globe.getCamera(),
@@ -868,7 +868,7 @@ function getActiveRegionCenter(regionIndex: number): { lat: number; lon: number 
     if (!globe) return { lat: 0, lon: 0 }
 
     const allPolygons = globe.getActiveRegionPolygons()
-    const regionPolygons = allPolygons.filter(p => p.countryIndex === regionIndex)
+    const regionPolygons = allPolygons.filter(p => p.regionIndex === regionIndex)
 
     if (regionPolygons.length === 0) {
         return { lat: 0, lon: 0 }
