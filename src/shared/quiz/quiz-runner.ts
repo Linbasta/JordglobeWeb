@@ -319,6 +319,12 @@ export function tickQuiz(now: number): boolean {
                     advance(now)
 
                 } else if (q.answer === 'province') {
+                    // Ignore ocean clicks (no province selected)
+                    if (pendingAnswer.countryIndex === -1) {
+                        pendingAnswer = null
+                        break
+                    }
+
                     // Province question - find correct province by ID
                     const allProvinces = globe.getAllActiveRegions()
                     const correctProvince = allProvinces.find(p => p.index === q.provinceId)

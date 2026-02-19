@@ -124,6 +124,8 @@ export class SoloGameController extends BaseGameController {
                 }
                 // Submit answer with region and location (convert .lon → .lng at boundary)
                 this.quizAdapter.submitAnswer(country.regionIndex, { lat: latLon.lat, lng: latLon.lon });
+                // Clear selection (outline + raised altitude) after submitting answer
+                clearSelection(this.globe);
             } else {
                 // No region clicked - use a placeholder index (-1) and pass the latLon
                 // The quiz runner will use latLon for distance-based hit detection
