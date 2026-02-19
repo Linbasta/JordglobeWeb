@@ -109,22 +109,25 @@ http://localhost:4817/us-states-quiz.html
 - ✅ Country quiz working
 - ✅ All animations functioning correctly
 
-### 4. Unify ID Field
+### 4. ✅ Unify ID Field - COMPLETE
 
-**Current:**
-- Countries: `iso2` field (string like "US", "SE")
-- Provinces: numeric `id` field (0-49)
+**Commit:** `0799542` - "Refactor: iso2 → id field for unified region identification"
 
-**Goal:**
-- Single `id` field for both
-- Consistent data structure
-- Eliminates bugs like the segment mapping issue we just fixed
+**What was done:**
+- Used ts-morph for automated refactoring (26 files updated)
+- Renamed `iso2` → `id` in RegionData and RegionPolygon
+- Fixed duplicate type definitions in types.ts
+- Updated province segment generation to use composite IDs
+- Regenerated US province segments (414 segments)
+- Simplified border-renderer lookup logic
 
-**Approach:**
-- Decide on ID format (string? number? both?)
-- Update data structures
-- Update all lookups and comparisons
-- May need migration/conversion code
+**ID format:**
+- Countries: `id: "US"`, `id: "SE"` (ISO2 code)
+- Provinces: `id: "US-0"`, `id: "US-1"` (composite: COUNTRY-INDEX)
+
+**Tool used:** `scripts/refactor-rename-iso2-to-id.ts`
+
+**Result:** Clean, consistent ID field across all regions. No more misleading `iso2` name.
 
 ### 5. Import All Province Medals
 
