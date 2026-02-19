@@ -90,22 +90,24 @@ http://localhost:4817/us-states-quiz.html
 
 ## Later Steps (Major Refactoring)
 
-### 3. Full Rename (CountryData → RegionData)
+### 3. ✅ Full Rename (CountryData → RegionData) - COMPLETE
 
-**Motivation:** "We should not make use of iso2, we should have a common id field instead"
+**Commit:** `703dd4b` - "Refactor: CountryData → RegionData, CountryPolygon → RegionPolygon"
 
-**What to rename:**
-- `CountryData` → `RegionData`
-- `countryIndex` → `regionIndex`
-- `countryISO2` → `regionId` (or keep for backward compat)
-- Update all references throughout codebase
+**What was done:**
+- Used ts-morph for automated type-safe refactoring
+- Renamed `CountryData` → `RegionData`
+- Renamed `CountryPolygon` → `RegionPolygon`
+- Renamed `countryIndex` field → `regionIndex` in RegionPolygon
+- Updated all references across 18 files automatically
+- No backward compatibility shims (clean break)
 
-**Files affected:** Many files in `/src/earth-globe/`
+**Tool used:** `scripts/refactor-rename-country-to-region.ts`
 
-**Approach:**
-- Do one rename at a time
-- Commit after each rename to track progress
-- Test after each step
+**Test results:**
+- ✅ US States quiz working
+- ✅ Country quiz working
+- ✅ All animations functioning correctly
 
 ### 4. Unify ID Field
 
