@@ -59,7 +59,10 @@ export class RegionController {
         this.renderer = new RegionRenderer(scene, shaderFactory);
         this.animator = new RegionAnimator(animationTexture);
         this.picker = new RegionPicker(PICKER_CELL_SIZE);
-        this.borderRenderer = new BorderRenderer(scene);
+
+        // Use type as name prefix (e.g. "province_" for provinces, "" for countries)
+        const namePrefix = type === 'province' ? 'province_' : '';
+        this.borderRenderer = new BorderRenderer(scene, namePrefix);
         this.outlineRenderer = new OutlineRenderer(scene);
     }
 
@@ -193,7 +196,7 @@ export class RegionController {
      * @param animationIndexOffset Starting index for segment animations (to avoid collisions)
      */
     async loadSegments(url: string, animationIndexOffset: number): Promise<void> {
-        console.log(`[RegionController.loadSegments] type=${this.type}, url=${url}`);
+        console.log(`[RegionController.loadSegments] type=${this.type}, url=${url}, offset=${animationIndexOffset}`);
 
         // Load segment data (works for both country and province formats)
         if (this.type === 'country') {
@@ -206,6 +209,7 @@ export class RegionController {
 
         // Create segment border material
         this.segmentBorderMaterial = this.shaderFactory.createSegmentBorderMaterial();
+        console.log(`[${this.type}] Created segment material: ${this.segmentBorderMaterial.name}`);
 
         // Render segment borders
         const regionsData = this.renderer.getRegionsData();
@@ -216,6 +220,8 @@ export class RegionController {
             animationIndexOffset
         );
 
+        const mesh = this.borderRenderer.getMergedSegmentBorders();
+        console.log(`[${this.type}] Segment mesh: name=${mesh?.name}, vertices=${mesh?.getTotalVertices()}, enabled=${mesh?.isEnabled()}, material=${mesh?.material?.name}`);
         console.log(`[${this.type}] Segment borders rendered with offset ${animationIndexOffset}`);
     }
 

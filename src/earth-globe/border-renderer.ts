@@ -32,6 +32,7 @@ import type { LatLonPoint, PolygonData, CountryData, SegmentData, Segment3D } fr
 export class BorderRenderer {
     private scene: Scene;
     private engine: AbstractEngine;
+    private namePrefix: string;
 
     /** Merged mesh for regular extruded borders */
     private mergedExtrudedBorders: Mesh | null = null;
@@ -45,9 +46,10 @@ export class BorderRenderer {
     /** Map from segment animation index to region indices */
     private segmentAnimationIndices: Map<number, number[]> = new Map();
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene, namePrefix: string = '') {
         this.scene = scene;
         this.engine = scene.getEngine();
+        this.namePrefix = namePrefix;
     }
 
     /**
@@ -464,7 +466,11 @@ export class BorderRenderer {
                     // Map segment to regions
                     const regionIndices: number[] = [];
                     for (const regionId of segment.regions) {
-                        const regionData = regionsData.find(r => r.iso2 === regionId);
+                        // For countries: regionId is ISO2 string like "US"
+                        // For provinces: regionId is numeric string like "4" (or number 4)
+                        const regionData = regionsData.find(r =>
+                            r.iso2 === regionId || r.index === Number(regionId)
+                        );
                         if (regionData) {
                             regionIndices.push(regionData.index);
                         }
@@ -491,7 +497,7 @@ export class BorderRenderer {
             return;
         }
 
-        this.mergedSegmentBorders.name = "mergedSegmentBorders";
+        this.mergedSegmentBorders.name = `${this.namePrefix}mergedSegmentBorders`;
 
         // Rebuild animation index attribute (should already be correct, but ensure consistency)
         const totalVertices = this.mergedSegmentBorders.getTotalVertices();

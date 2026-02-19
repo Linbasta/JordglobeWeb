@@ -465,6 +465,11 @@ export class EarthGlobe {
             this.provinceAnimationTexture!.update();
             console.log(`[Province] Animation texture sized for ${provinceCount} provinces + ${provinceSegmentCount} segments = ${totalProvinceEntries} total entries`);
 
+            // Set up segment animation mapping (so segments follow province altitudes)
+            this.provinceController.getAnimator().setSegmentCountryMap(
+                this.provinceController.getSegmentAnimationIndices()
+            );
+
             const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
             console.log(`[Province] Segment borders: ${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}, enabled=${provinceSegmentMesh?.isEnabled()}`);
 
@@ -474,8 +479,10 @@ export class EarthGlobe {
             console.warn('[Province] Failed to load segment borders:', error);
         }
 
-        // Initialize province outline materials
-        this.provinceController.initOutlineMaterials(this.outlineMaterial!, this.smallOutlineMaterial!);
+        // Initialize province outline materials (use province shader factory so they reference province animation texture)
+        const provinceOutlineMaterial = this.provinceShaderFactory!.createOutlineMaterial();
+        const provinceSmallOutlineMaterial = this.provinceShaderFactory!.createSmallOutlineMaterial();
+        this.provinceController.initOutlineMaterials(provinceOutlineMaterial, provinceSmallOutlineMaterial);
 
         // Hide both meshes initially — activated in enterRegionMode()
         if (provinceFaceMesh) provinceFaceMesh.setEnabled(false);
@@ -734,21 +741,26 @@ export class EarthGlobe {
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(true);
         if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(true);
 
-        // Set all provinces belonging to this country to normal altitude, hide others
+        // Set all provinces to normal altitude, but disable provinces that don't belong to this country
         const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
         console.log(`[enterRegionMode] defaultAltitude=${defaultAltitude} (REGION_ALTITUDE=${REGION_ALTITUDE}, ANIMATION_AMPLITUDE=${ANIMATION_AMPLITUDE})`);
         const allProvinces = this.provinceController.getAllRegions();
         let matchCount = 0;
         for (const province of allProvinces) {
+            // All provinces get normal altitude (visible)
+            this.provinceAnimationTexture!.setAltitude(province.index, defaultAltitude);
+
             if (province.parentRegionIndex === parentIndex) {
-                this.provinceAnimationTexture!.setAltitude(province.index, defaultAltitude);
+                // Active provinces: normal state
+                this.provinceAnimationTexture!.setState(province.index, STATE_NORMAL);
                 matchCount++;
             } else {
-                this.provinceAnimationTexture!.setAltitude(province.index, 0);
+                // Inactive provinces: disabled state (greyed out, like countries)
+                this.provinceAnimationTexture!.setState(province.index, STATE_DISABLED);
             }
         }
         this.provinceAnimationTexture!.update();
-        console.log(`[enterRegionMode] Set ${matchCount}/${allProvinces.length} provinces to altitude ${defaultAltitude} (parentIndex=${parentIndex})`);
+        console.log(`[enterRegionMode] Set ${matchCount}/${allProvinces.length} provinces active (others disabled), parentIndex=${parentIndex}`);
         // Log first few province parentRegionIndex values for verification
         for (let i = 0; i < Math.min(5, allProvinces.length); i++) {
             console.log(`  province[${i}] name=${allProvinces[i].name} parentRegionIndex=${allProvinces[i].parentRegionIndex} index=${allProvinces[i].index}`);
@@ -781,10 +793,11 @@ export class EarthGlobe {
             this.setCountryState(this.regionModeParentIndex, STATE_NORMAL);
         }
 
-        // Hide all province meshes
+        // Hide all province meshes and reset state
         const allProvinces = this.provinceController.getAllRegions();
         for (const province of allProvinces) {
             this.provinceAnimationTexture!.setAltitude(province.index, 0);
+            this.provinceAnimationTexture!.setState(province.index, STATE_NORMAL);
         }
         this.provinceAnimationTexture!.update();
 

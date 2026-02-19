@@ -41,6 +41,9 @@ export class RegionAnimator {
     /** Segment animation index mappings (segment -> country indices) */
     private segmentCountryMap: Map<number, number[]> = new Map();
 
+    /** Debug flag - log segment altitudes only once */
+    private hasLoggedSegmentAltitudes = false;
+
     constructor(animationTexture: AnimationTexture) {
         this.animationTexture = animationTexture;
     }
@@ -51,6 +54,14 @@ export class RegionAnimator {
      */
     setSegmentCountryMap(map: Map<number, number[]>): void {
         this.segmentCountryMap = map;
+        console.log(`[RegionAnimator] Segment map set: ${map.size} segments mapped to regions`);
+        // Log first few mappings for debugging
+        let count = 0;
+        for (const [segmentIndex, regionIndices] of map) {
+            if (count++ < 3) {
+                console.log(`  segment ${segmentIndex} → regions [${regionIndices.join(', ')}]`);
+            }
+        }
     }
 
     /**
@@ -283,7 +294,15 @@ export class RegionAnimator {
                     anyExpanding = true;
                 }
             }
-            this.animationTexture.setAltitude(segmentIndex, anyExpanding ? 0 : maxAltitude);
+            const finalAltitude = anyExpanding ? 0 : maxAltitude;
+            this.animationTexture.setAltitude(segmentIndex, finalAltitude);
+
+            // Log first time we set non-zero altitude for debugging
+            if (!this.hasLoggedSegmentAltitudes && finalAltitude > 0) {
+                console.log(`[RegionAnimator] Setting segment ${segmentIndex} altitude=${finalAltitude.toFixed(3)} (from regions [${countryIndices.join(', ')}])`);
+                this.hasLoggedSegmentAltitudes = true;
+            }
+
             needsUpdate = true;
         }
 
