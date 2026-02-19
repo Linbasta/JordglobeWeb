@@ -1,5 +1,36 @@
 # Development Strategy for Claude Code
 
+## CRITICAL: Quiz vs Test Page - ALWAYS CHECK FIRST
+
+**When the user says "create a quiz" or "make a game":**
+
+### What is a REAL QUIZ/GAME:
+- Uses **PIN PLACEMENT UI** for answering (player places a pin on the globe)
+- Uses **ESTABLISHED PRESENTATION COMPONENTS** for displaying questions, score, feedback
+- Follows the architecture in `capitals-quiz.html`, `country-quiz.html`, or medal systems
+- Uses `/src/solo/start-quiz-game.ts` infrastructure
+- Consistent UI/UX with the rest of the game
+- **Examples**: `capitals-quiz.html`, `country-quiz.html`
+
+### What is a TEST PAGE:
+- **One-off pages to try out specific functionality**
+- UI and interaction can be ANYTHING - doesn't have to follow game patterns
+- Used for testing/debugging features, NOT for gameplay
+- Can use custom buttons, click handlers, whatever makes testing easiest
+- **Examples**: `test-province-selection.html`, `test-segments.html`, `test-belgium-netherlands.html`
+
+### CRITICAL RULES:
+1. **NEVER create a quiz with direct click interaction** - that's a test page, not a quiz!
+2. **ALWAYS use pin placement UI** for quizzes - it's the core game mechanic
+3. **ASK which presentation components to use** if unsure
+4. **Check existing quiz files FIRST** (`capitals-quiz.html`, `country-quiz.html`) to understand the pattern
+5. **Never reinvent quiz UI/presentation** - always use existing components
+
+### Before Creating a Quiz:
+1. Read `capitals-quiz.html` and `country-quiz.html` to understand the pattern
+2. Ask user which presentation components to use
+3. Confirm the approach before implementing
+
 ## CRITICAL: Wait for User Verification at Checkpoints
 
 **MOST IMPORTANT RULE:**
