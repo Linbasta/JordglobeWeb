@@ -33,7 +33,7 @@ function segment2DTo3D(segment2D: Segment2D, altitude: number): Segment3D {
 
     return {
         points: points3D,
-        countries: segment2D.countries,
+        regions: segment2D.regions,
         type: segment2D.type
     };
 }
@@ -53,41 +53,47 @@ export async function loadSegments(url: string = DEFAULT_ASSETS.segmentsJson): P
         throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
     }
 
-    const segments2D: Segment2D[] = await response.json();
+    const rawSegments = await response.json() as any[];
+    // Convert legacy "countries" field to "regions" if needed
+    const segments2D: Segment2D[] = rawSegments.map(seg => ({
+        points: seg.points,
+        regions: seg.regions || seg.countries,  // Support both field names
+        type: seg.type
+    }));
     console.log(`  Loaded ${segments2D.length} segments`);
 
     // Convert to 3D at altitude 0 (same as country surface base, so they animate together)
     const segments3D = segments2D.map(segment => segment2DTo3D(segment, 0));
 
-    // Build country index
-    const segmentsByCountry = new Map<string, Segment3D[]>();
+    // Build region index
+    const segmentsByRegion = new Map<string, Segment3D[]>();
     for (const segment of segments3D) {
-        for (const country of segment.countries) {
-            if (!segmentsByCountry.has(country)) {
-                segmentsByCountry.set(country, []);
+        for (const regionId of segment.regions) {
+            if (!segmentsByRegion.has(regionId)) {
+                segmentsByRegion.set(regionId, []);
             }
-            segmentsByCountry.get(country)!.push(segment);
+            segmentsByRegion.get(regionId)!.push(segment);
         }
     }
 
     const endTime = performance.now();
     console.log(`  Conversion took ${(endTime - startTime).toFixed(2)}ms`);
-    console.log(`  Indexed ${segmentsByCountry.size} countries`);
+    console.log(`  Indexed ${segmentsByRegion.size} regions`);
 
     return {
         segments: segments3D,
-        segmentsByCountry
+        segmentsByRegion
     };
 }
 
 /**
- * Get segments for a specific country
+ * Get segments for a specific region
  * @param data Loaded segment data
- * @param iso2 Country ISO2 code
- * @returns Array of segments for this country
+ * @param regionId Region identifier (ISO2 for countries, numeric string for provinces)
+ * @returns Array of segments for this region
  */
-export function getCountrySegments(data: SegmentData, iso2: string): Segment3D[] {
-    return data.segmentsByCountry.get(iso2) || [];
+export function getRegionSegments(data: SegmentData, regionId: string): Segment3D[] {
+    return data.segmentsByRegion.get(regionId) || [];
 }
 
 /**
@@ -100,18 +106,18 @@ export function getSharedSegments(data: SegmentData): Segment3D[] {
 }
 
 /**
- * Get segments between two specific countries
+ * Get segments between two specific regions
  * @param data Loaded segment data
- * @param iso2A First country ISO2 code
- * @param iso2B Second country ISO2 code
- * @returns Array of segments shared by both countries
+ * @param regionIdA First region identifier
+ * @param regionIdB Second region identifier
+ * @returns Array of segments shared by both regions
  */
-export function getSegmentsBetween(data: SegmentData, iso2A: string, iso2B: string): Segment3D[] {
-    const segmentsA = data.segmentsByCountry.get(iso2A);
+export function getSegmentsBetween(data: SegmentData, regionIdA: string, regionIdB: string): Segment3D[] {
+    const segmentsA = data.segmentsByRegion.get(regionIdA);
     if (!segmentsA) return [];
 
     return segmentsA.filter(segment =>
-        segment.countries.includes(iso2B)
+        segment.regions.includes(regionIdB)
     );
 }
 
@@ -133,6 +139,6 @@ export function getSegmentStats(data: SegmentData) {
         sharedSegments: sharedCount,
         multiPointSegments: multiPointCount,
         standaloneSegments: standaloneCount,
-        countriesWithSegments: data.segmentsByCountry.size
+        regionsWithSegments: data.segmentsByRegion.size
     };
 }

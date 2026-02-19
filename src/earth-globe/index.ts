@@ -131,7 +131,7 @@ export { RegionPicker as CountryPicker } from './region-picker';
 // Segment Loader
 export {
     loadSegments,
-    getCountrySegments,
+    getRegionSegments,
     getSharedSegments,
     getSegmentsBetween,
     getSegmentStats,

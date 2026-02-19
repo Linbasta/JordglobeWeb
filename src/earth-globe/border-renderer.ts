@@ -431,7 +431,7 @@ export class BorderRenderer {
      */
     renderSegmentBorders(
         segmentData: SegmentData,
-        countriesData: CountryData[],
+        regionsData: CountryData[],
         shaderMaterial: ShaderMaterial
     ): void {
         console.log('Rendering segment borders...');
@@ -459,15 +459,15 @@ export class BorderRenderer {
                     vertexCounts.push(quad.getTotalVertices());
                     segmentIndicesPerQuad.push(segmentAnimationIndex);
 
-                    // Map segment to countries
-                    const countryIndices: number[] = [];
-                    for (const countryCode of segment.countries) {
-                        const countryData = countriesData.find(c => c.iso2 === countryCode);
-                        if (countryData) {
-                            countryIndices.push(countryData.index);
+                    // Map segment to regions
+                    const regionIndices: number[] = [];
+                    for (const regionId of segment.regions) {
+                        const regionData = regionsData.find(r => r.iso2 === regionId);
+                        if (regionData) {
+                            regionIndices.push(regionData.index);
                         }
                     }
-                    this.segmentAnimationIndices.set(segmentAnimationIndex, countryIndices);
+                    this.segmentAnimationIndices.set(segmentAnimationIndex, regionIndices);
                 }
             } catch (error) {
                 console.error('Error creating segment quad strip:', error);

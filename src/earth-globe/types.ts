@@ -161,7 +161,7 @@ export interface Point2D {
  */
 export interface Segment2D {
     points: Point2D[];
-    countries: string[];  // ISO2 codes
+    regions: string[];  // ISO2 codes for countries, or numeric IDs as strings for provinces
     type: 'standalone' | 'shared' | 'multipoint';
 }
 
@@ -170,7 +170,7 @@ export interface Segment2D {
  */
 export interface Segment3D {
     points: import('@babylonjs/core/Maths/math').Vector3[];
-    countries: string[];
+    regions: string[];  // ISO2 codes for countries, or numeric IDs as strings for provinces
     type: 'standalone' | 'shared' | 'multipoint';
 }
 
@@ -179,7 +179,7 @@ export interface Segment3D {
  */
 export interface SegmentData {
     segments: Segment3D[];
-    segmentsByCountry: Map<string, Segment3D[]>;
+    segmentsByRegion: Map<string, Segment3D[]>;
 }
 
 // ============================================================================
