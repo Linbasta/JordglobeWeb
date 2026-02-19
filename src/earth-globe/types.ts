@@ -318,7 +318,7 @@ export interface EarthGlobeAPI {
     onCountryClick(callback: (event: CountryClickEvent) => void): void;
 
     // Region mode (province drill-down)
-    enterRegionMode(iso2: string): void;
+    enterRegionMode(iso2: string): Promise<void>;
     exitRegionMode(): void;
     isInRegionMode(): boolean;
     getRegionModeISO2(): string | null;

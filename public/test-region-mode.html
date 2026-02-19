@@ -70,8 +70,8 @@
                 window.globe = g;
 
                 btnEnter.disabled = false;
-                btnEnter.addEventListener('click', () => {
-                    g.enterRegionMode('US');
+                btnEnter.addEventListener('click', async () => {
+                    await g.enterRegionMode('US');
 
                     // Animate each state to a random altitude so they're visually distinct
                     const regions = g.getAllActiveRegions();

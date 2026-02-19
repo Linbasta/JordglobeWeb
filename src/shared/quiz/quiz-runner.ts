@@ -190,23 +190,26 @@ export function tickQuiz(now: number): boolean {
             // Works for both countries and provinces via active region API
             const allRegions = globe.getAllActiveRegions()
 
-            // Extract game region indices from questions
-            let gameIndices: Set<number>
+            // Extract game region IDs/indices from questions
             if (globe.isInRegionMode()) {
-                // Province mode: use province IDs from questions
-                gameIndices = new Set(
-                    questions
-                        .filter(q => q.answer === 'province')
-                        .map(q => q.provinceId!)
+                // Province mode: build composite IDs (e.g., "IT-10") and find matching provinces
+                const provinceQuestions = questions.filter(q => q.answer === 'province')
+                const gameProvinceIds = new Set(
+                    provinceQuestions.map(q => `${q.countryISO2}-${q.provinceId}`)
                 )
+
+                for (const region of allRegions) {
+                    if (!gameProvinceIds.has(region.id)) {
+                        setRegionDisabledImmediate(globe, region.index)
+                    }
+                }
             } else {
                 // Country mode: use country indices from gameCountries
-                gameIndices = new Set(gameCountries.map(c => c.index))
-            }
-
-            for (const region of allRegions) {
-                if (!gameIndices.has(region.index)) {
-                    setRegionDisabledImmediate(globe, region.index)
+                const gameIndices = new Set(gameCountries.map(c => c.index))
+                for (const region of allRegions) {
+                    if (!gameIndices.has(region.index)) {
+                        setRegionDisabledImmediate(globe, region.index)
+                    }
                 }
             }
 
@@ -218,8 +221,8 @@ export function tickQuiz(now: number): boolean {
             // Wait for provinces to load, then enter region mode
             if (!activeAnimation) {
                 activeAnimation = globe.waitForProvincesToLoad()
-                    .then(() => {
-                        globe.enterRegionMode(step.countryISO2)
+                    .then(async () => {
+                        await globe.enterRegionMode(step.countryISO2)
                         activeAnimation = null
                         advance(performance.now())
                     })
@@ -325,11 +328,12 @@ export function tickQuiz(now: number): boolean {
                         break
                     }
 
-                    // Province question - find correct province by ID
+                    // Province question - find correct province by composite ID (e.g., "IT-10")
                     const allProvinces = globe.getAllActiveRegions()
-                    const correctProvince = allProvinces.find(p => p.index === q.provinceId)
+                    const provinceId = `${q.countryISO2}-${q.provinceId}`
+                    const correctProvince = allProvinces.find(p => p.id === provinceId)
                     if (!correctProvince) {
-                        console.warn(`[Quiz] Province ${q.provinceId} not found!`)
+                        console.warn(`[Quiz] Province ${provinceId} not found!`)
                         break
                     }
 

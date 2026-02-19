@@ -144,6 +144,7 @@ export class EarthGlobe {
     private regionModeParentIndex: number = -1;  // country index hidden while in region mode
     private provinceBorderMesh: Mesh | null = null;  // merged extruded border mesh for provinces
     private provinceLoadingPromise: Promise<void> | null = null;  // tracks province loading status
+    private loadedSegmentCountry: string | null = null;  // tracks which country's province segments are loaded
 
     constructor(options: EarthGlobeOptions = {}) {
         this.options = options;
@@ -447,29 +448,8 @@ export class EarthGlobe {
         // Track the province border mesh for show/hide in enterRegionMode
         this.provinceBorderMesh = provinceBorderRenderer.getMergedExtrudedBorders();
 
-        // Load and render province segment borders via controller
-        try {
-            // Province segments use their OWN animation texture, so offset starts after provinces (not after countries!)
-            const provinceSegmentOffset = provinceCount;  // Provinces 0-49, segments start at 50
-            await this.provinceController.loadSegments(`/province-segments/US.json`, provinceSegmentOffset);
-
-            // NOW resize province animation texture to include provinces + province segments
-            const provinceSegmentCount = this.provinceController.getSegmentAnimationIndices().size;
-            const totalProvinceEntries = provinceCount + provinceSegmentCount;
-            this.provinceAnimationTexture!.setEntriesUsed(totalProvinceEntries);
-            this.provinceAnimationTexture!.update();
-
-            // Set up segment animation mapping (so segments follow province altitudes)
-            this.provinceController.getAnimator().setSegmentCountryMap(
-                this.provinceController.getSegmentAnimationIndices()
-            );
-
-            const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
-            // Hide segment mesh initially - activated in enterRegionMode
-            if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(false);
-        } catch (error) {
-            console.warn('[Province] Failed to load segment borders:', error);
-        }
+        // Province segments will be loaded dynamically when entering region mode
+        // (see enterRegionMode() method)
 
         // Initialize province outline materials (use province shader factory so they reference province animation texture)
         const provinceOutlineMaterial = this.provinceShaderFactory!.createOutlineMaterial();
@@ -709,7 +689,7 @@ export class EarthGlobe {
      *
      * No-op if provinces for this iso2 have not been loaded yet.
      */
-    enterRegionMode(iso2: string): void {
+    async enterRegionMode(iso2: string): Promise<void> {
         if (this.regionModeISO2 === iso2) return;  // already in this mode
         if (this.regionModeISO2 !== null) {
             this.exitRegionMode();  // exit previous mode first
@@ -728,6 +708,31 @@ export class EarthGlobe {
             return;
         }
 
+        // Load province segments if not already loaded for this country
+        if (this.loadedSegmentCountry !== iso2) {
+            try {
+                // Province segments use their OWN animation texture, so offset starts after provinces (not after countries!)
+                const provinceSegmentOffset = provinceCount;
+                await this.provinceController.loadSegments(`/province-segments/${iso2}.json`, provinceSegmentOffset);
+
+                // NOW resize province animation texture to include provinces + province segments
+                const provinceSegmentCount = this.provinceController.getSegmentAnimationIndices().size;
+                const totalProvinceEntries = provinceCount + provinceSegmentCount;
+                this.provinceAnimationTexture!.setEntriesUsed(totalProvinceEntries);
+                this.provinceAnimationTexture!.update();
+
+                // Set up segment animation mapping (so segments follow province altitudes)
+                this.provinceController.getAnimator().setSegmentCountryMap(
+                    this.provinceController.getSegmentAnimationIndices()
+                );
+
+                this.loadedSegmentCountry = iso2;
+            } catch (error) {
+                console.warn(`[enterRegionMode] Failed to load segments for ${iso2}:`, error);
+                // Continue without segments - the quiz will work, just no segment borders
+            }
+        }
+
         // Enable province face mesh, border mesh, and segment mesh
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
         const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
@@ -736,8 +741,12 @@ export class EarthGlobe {
         } else {
             console.warn(`[enterRegionMode] Province face mesh is NULL - provinces not loaded yet!`);
         }
-        if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(true);
-        if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(true);
+        if (this.provinceBorderMesh) {
+            this.provinceBorderMesh.setEnabled(true);
+        }
+        if (provinceSegmentMesh) {
+            provinceSegmentMesh.setEnabled(true);
+        }
 
         // Set all provinces to normal altitude, but disable provinces that don't belong to this country
         const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;

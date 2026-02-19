@@ -151,7 +151,9 @@ function createMedalLeaf(medal: Medal): HTMLElement {
         ? `${count} countries`
         : medal.type === 'capitals'
             ? `${count} capitals`
-            : `${count} sights`
+            : medal.type === 'provinces'
+                ? `${count} provinces`
+                : `${count} sights`
 
     el.appendChild(name)
     el.appendChild(badge)
@@ -171,13 +173,44 @@ async function startMedal(medalId: number) {
             questions.push({
                 present: 'text',
                 answer: 'country',
-                countryISO2: iso2,
+                countryISO2: iso2 as string,
                 prompt: '',
+            })
+        }
+    } else if (medal.type === 'provinces') {
+        // Load province data for the country
+        if (!medal.countryISO2) {
+            console.error('Province medal missing countryISO2:', medal)
+            return
+        }
+
+        const provinceRes = await fetch(`/provinces/${medal.countryISO2}.json`)
+        const provinceData: { country: string; provinces: { id: number; name: string }[] } = await provinceRes.json()
+
+        // Create map of province ID → name
+        const provinceNames = new Map<number, string>()
+        for (const p of provinceData.provinces) {
+            provinceNames.set(p.id, p.name)
+        }
+
+        // Create province questions
+        for (const provinceId of medal.questionIds) {
+            const name = provinceNames.get(provinceId as number)
+            if (!name) {
+                console.warn(`Province ID ${provinceId} not found in ${medal.countryISO2}`)
+                continue
+            }
+            questions.push({
+                present: 'text',
+                answer: 'province',
+                provinceId: provinceId as number,
+                countryISO2: medal.countryISO2,
+                prompt: name,
             })
         }
     } else if (medal.type === 'locations' || medal.type === 'capitals') {
         for (const locId of medal.questionIds) {
-            const loc = locationsData[locId]
+            const loc = locationsData[locId as string]
             if (!loc) continue
             questions.push({
                 present: 'text',

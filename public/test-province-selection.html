@@ -116,11 +116,11 @@
         });
 
         // Enter US mode
-        enterModeBtn.addEventListener('click', () => {
+        enterModeBtn.addEventListener('click', async () => {
             if (!globe) return;
 
             console.log('[Test] Entering US region mode');
-            globe.enterRegionMode('US');
+            await globe.enterRegionMode('US');
 
             enterModeBtn.style.display = 'none';
             exitModeBtn.style.display = 'inline-block';
