@@ -129,7 +129,29 @@ http://localhost:4817/us-states-quiz.html
 
 **Result:** Clean, consistent ID field across all regions. No more misleading `iso2` name.
 
-### 5. Import All Province Medals
+### 5. ✅ Fix Province Deselection - COMPLETE
+
+**Commit:** `c709d33` - "Fix: Province deselection restores correct altitude"
+
+**Problem:**
+When hovering over provinces and moving away without clicking, they remained in a raised state (altitude 0.4) instead of returning to their default flat state (altitude 0.2).
+
+**Root Cause:**
+- Countries have default altitude 0.4
+- Provinces have default altitude 0.2
+- `region-selection.ts` was hardcoded to restore to 0.4 for both
+
+**Solution:**
+1. Added `getDefaultAltitude()` helper that checks `globe.isInRegionMode()`
+   - Province mode: restore to 0.2
+   - Country mode: restore to 0.4
+2. Updated `handleHover()` and `clearSelection()` to use dynamic altitude
+3. Added `clearSelection()` call after quiz answer submission
+4. Added ocean click handling for province quiz questions
+
+**Result:** Dragging the pin across multiple provinces now correctly restores each to altitude 0.2 (flat state). Outlines are removed as expected.
+
+### 6. Import All Province Medals
 
 **Current medal system:**
 - Location: `/public/medals.json`

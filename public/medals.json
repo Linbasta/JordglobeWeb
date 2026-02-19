@@ -1844,6 +1844,1298 @@
         "TF",
         "YT"
       ]
+    },
+    {
+      "id": 72,
+      "name": "United States of America: 5 states",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        1,
+        4,
+        8,
+        10,
+        42
+      ]
+    },
+    {
+      "id": 73,
+      "name": "United States of America: West",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        1,
+        2,
+        4,
+        5,
+        10,
+        11,
+        25,
+        27,
+        30,
+        36,
+        43,
+        46,
+        49
+      ]
+    },
+    {
+      "id": 74,
+      "name": "United States of America: Midwest",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        12,
+        13,
+        14,
+        15,
+        21,
+        22,
+        24,
+        26,
+        33,
+        34,
+        40,
+        48
+      ]
+    },
+    {
+      "id": 75,
+      "name": "United States of America: Northeast",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        6,
+        18,
+        20,
+        28,
+        29,
+        31,
+        37,
+        38,
+        44
+      ]
+    },
+    {
+      "id": 76,
+      "name": "United States of America: The South",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        0,
+        3,
+        7,
+        8,
+        9,
+        16,
+        17,
+        19,
+        23,
+        32,
+        35,
+        39,
+        41,
+        42,
+        45,
+        47
+      ]
+    },
+    {
+      "id": 77,
+      "name": "China 5 Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        5,
+        24,
+        27,
+        31,
+        32
+      ]
+    },
+    {
+      "id": 78,
+      "name": "North China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        1,
+        9,
+        15,
+        26,
+        28
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Northeast China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        10,
+        18,
+        19
+      ]
+    },
+    {
+      "id": 80,
+      "name": "East China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        0,
+        3,
+        16,
+        17,
+        24,
+        25,
+        32
+      ]
+    },
+    {
+      "id": 81,
+      "name": "South Central China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        5,
+        6,
+        8,
+        11,
+        12,
+        13,
+        14,
+        20
+      ]
+    },
+    {
+      "id": 82,
+      "name": "Southwest China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        2,
+        7,
+        27,
+        29,
+        31
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Northwestern China Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        4,
+        21,
+        22,
+        23,
+        30
+      ]
+    },
+    {
+      "id": 84,
+      "name": "India: 5 Provinces",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        9,
+        16,
+        20,
+        28,
+        35
+      ]
+    },
+    {
+      "id": 85,
+      "name": "India: North India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        5,
+        8,
+        11,
+        12,
+        13,
+        17,
+        27,
+        28
+      ]
+    },
+    {
+      "id": 86,
+      "name": "India: Northeast India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        2,
+        3,
+        21,
+        22,
+        23,
+        24,
+        29,
+        32
+      ]
+    },
+    {
+      "id": 87,
+      "name": "India: East India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        0,
+        4,
+        14,
+        25,
+        35
+      ]
+    },
+    {
+      "id": 88,
+      "name": "India: South India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        1,
+        15,
+        16,
+        18,
+        26,
+        30,
+        31
+      ]
+    },
+    {
+      "id": 89,
+      "name": "India: Western India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        7,
+        9,
+        10,
+        20
+      ]
+    },
+    {
+      "id": 90,
+      "name": "India: Central India",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        6,
+        19,
+        33,
+        34
+      ]
+    },
+    {
+      "id": 91,
+      "name": "United Kingdom: 5 Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        8,
+        17,
+        36,
+        37,
+        55
+      ]
+    },
+    {
+      "id": 92,
+      "name": "North East England Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        20,
+        45,
+        47,
+        65
+      ]
+    },
+    {
+      "id": 93,
+      "name": "North West England Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        6,
+        15,
+        28,
+        37,
+        42
+      ]
+    },
+    {
+      "id": 94,
+      "name": "England: Yorkshire & the Humber Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        22,
+        39,
+        59,
+        70
+      ]
+    },
+    {
+      "id": 95,
+      "name": "England: East Midlands Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        16,
+        38,
+        46,
+        48,
+        53
+      ]
+    },
+    {
+      "id": 96,
+      "name": "England: West Midlands Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        32,
+        56,
+        60,
+        66,
+        68,
+        72
+      ]
+    },
+    {
+      "id": 97,
+      "name": "East of England Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        0,
+        4,
+        24,
+        33,
+        44,
+        62
+      ]
+    },
+    {
+      "id": 98,
+      "name": "South East England Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        1,
+        3,
+        23,
+        31,
+        35,
+        36,
+        40,
+        51,
+        63,
+        69
+      ]
+    },
+    {
+      "id": 99,
+      "name": "South West England Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        2,
+        8,
+        17,
+        18,
+        26,
+        57,
+        71
+      ]
+    },
+    {
+      "id": 100,
+      "name": "Scotland: counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        5,
+        19,
+        25,
+        27,
+        34,
+        41,
+        49,
+        50,
+        54,
+        55,
+        61,
+        64
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Wales: Preserved Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        7,
+        21,
+        29,
+        30,
+        43,
+        52,
+        58,
+        67
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Northern Ireland: Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 103,
+      "name": "France: 5 Provinces",
+      "type": "provinces",
+      "countryISO2": "FR",
+      "questionIds": [
+        1,
+        3,
+        4,
+        9,
+        12
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Spain: 5 Autonomous communities",
+      "type": "provinces",
+      "countryISO2": "ES",
+      "questionIds": [
+        0,
+        1,
+        3,
+        5,
+        9
+      ]
+    },
+    {
+      "id": 105,
+      "name": "West Poland: Voidvodeships",
+      "type": "provinces",
+      "countryISO2": "PL",
+      "questionIds": [
+        0,
+        1,
+        4,
+        6,
+        8,
+        10,
+        11,
+        15
+      ]
+    },
+    {
+      "id": 106,
+      "name": "East Poland: Voivoideships",
+      "type": "provinces",
+      "countryISO2": "PL",
+      "questionIds": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "id": 107,
+      "name": "West Germany: Bundesländer",
+      "type": "provinces",
+      "countryISO2": "DE",
+      "questionIds": [
+        0,
+        1,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        14
+      ]
+    },
+    {
+      "id": 108,
+      "name": "East Germany: Bundesländer",
+      "type": "provinces",
+      "countryISO2": "DE",
+      "questionIds": [
+        2,
+        3,
+        8,
+        12,
+        13,
+        15
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Canada: 5 Provinces",
+      "type": "provinces",
+      "countryISO2": "CA",
+      "questionIds": [
+        0,
+        1,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Italy: 5 Regions",
+      "type": "provinces",
+      "countryISO2": "IT",
+      "questionIds": [
+        10,
+        14,
+        15,
+        17,
+        19
+      ]
+    },
+    {
+      "id": 111,
+      "name": "Northern Italy Regions",
+      "type": "provinces",
+      "countryISO2": "IT",
+      "questionIds": [
+        1,
+        6,
+        7,
+        9,
+        10,
+        13,
+        16,
+        19
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Central Italy Regions",
+      "type": "provinces",
+      "countryISO2": "IT",
+      "questionIds": [
+        8,
+        11,
+        17,
+        18
+      ]
+    },
+    {
+      "id": 113,
+      "name": "South Italy Regions",
+      "type": "provinces",
+      "countryISO2": "IT",
+      "questionIds": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        12,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Mexico: 5 States",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        1,
+        5,
+        12,
+        22,
+        30
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Northern States Mexico",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        1,
+        2,
+        5,
+        6,
+        8,
+        18,
+        24,
+        25,
+        27
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Centerwest States Mexico",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        0,
+        7,
+        9,
+        12,
+        15,
+        17,
+        21,
+        23,
+        31
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Centersouth States Mexico",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        11,
+        13,
+        14,
+        16,
+        20,
+        28
+      ]
+    },
+    {
+      "id": 118,
+      "name": "South States Mexico",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        3,
+        4,
+        10,
+        19,
+        22,
+        26,
+        29,
+        30
+      ]
+    },
+    {
+      "id": 119,
+      "name": "Brazil: 5 States",
+      "type": "provinces",
+      "countryISO2": "BR",
+      "questionIds": [
+        3,
+        4,
+        12,
+        18,
+        24
+      ]
+    },
+    {
+      "id": 120,
+      "name": "Brazil: Amazonia states",
+      "type": "provinces",
+      "countryISO2": "BR",
+      "questionIds": [
+        0,
+        2,
+        3,
+        9,
+        10,
+        13,
+        21,
+        22,
+        26
+      ]
+    },
+    {
+      "id": 121,
+      "name": "Brazil: Nordeste states",
+      "type": "provinces",
+      "countryISO2": "BR",
+      "questionIds": [
+        1,
+        4,
+        5,
+        14,
+        16,
+        17,
+        19,
+        25
+      ]
+    },
+    {
+      "id": 122,
+      "name": "Brazil: Centro-Sul states",
+      "type": "provinces",
+      "countryISO2": "BR",
+      "questionIds": [
+        6,
+        7,
+        8,
+        11,
+        12,
+        15,
+        18,
+        20,
+        23,
+        24
+      ]
+    },
+    {
+      "id": 123,
+      "name": "Sweden 5 counties",
+      "type": "provinces",
+      "countryISO2": "SE",
+      "questionIds": [
+        1,
+        3,
+        12,
+        14,
+        20
+      ]
+    },
+    {
+      "id": 124,
+      "name": "Götaland: counties",
+      "type": "provinces",
+      "countryISO2": "SE",
+      "questionIds": [
+        0,
+        3,
+        4,
+        6,
+        7,
+        8,
+        11,
+        12,
+        20
+      ]
+    },
+    {
+      "id": 125,
+      "name": "Svealand: counties",
+      "type": "provinces",
+      "countryISO2": "SE",
+      "questionIds": [
+        1,
+        10,
+        13,
+        14,
+        15,
+        16,
+        19
+      ]
+    },
+    {
+      "id": 126,
+      "name": "Norrland: counties",
+      "type": "provinces",
+      "countryISO2": "SE",
+      "questionIds": [
+        2,
+        5,
+        9,
+        17,
+        18
+      ]
+    },
+    {
+      "id": 127,
+      "name": "Italy: Regions",
+      "type": "provinces",
+      "countryISO2": "IT",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "id": 128,
+      "name": "Brazil: States",
+      "type": "provinces",
+      "countryISO2": "BR",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ]
+    },
+    {
+      "id": 129,
+      "name": "Mexico: States",
+      "type": "provinces",
+      "countryISO2": "MX",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    {
+      "id": 130,
+      "name": "United States of America: States",
+      "type": "provinces",
+      "countryISO2": "US",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ]
+    },
+    {
+      "id": 131,
+      "name": "Canada: Provinces",
+      "type": "provinces",
+      "countryISO2": "CA",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 132,
+      "name": "Spain: Autonomous communities",
+      "type": "provinces",
+      "countryISO2": "ES",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    },
+    {
+      "id": 133,
+      "name": "India: States",
+      "type": "provinces",
+      "countryISO2": "IN",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ]
+    },
+    {
+      "id": 134,
+      "name": "China: Provinces",
+      "type": "provinces",
+      "countryISO2": "CN",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "id": 135,
+      "name": "France: Regions",
+      "type": "provinces",
+      "countryISO2": "FR",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": 136,
+      "name": "Germany: States",
+      "type": "provinces",
+      "countryISO2": "DE",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "id": 137,
+      "name": "United Kingdom: Counties",
+      "type": "provinces",
+      "countryISO2": "GB",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72
+      ]
+    },
+    {
+      "id": 138,
+      "name": "Sweden: Counties",
+      "type": "provinces",
+      "countryISO2": "SE",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ]
+    },
+    {
+      "id": 139,
+      "name": "Poland: Voivodeships",
+      "type": "provinces",
+      "countryISO2": "PL",
+      "questionIds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
     }
   ],
   "menu": [
@@ -1887,6 +3179,77 @@
               "medalId": 69
             }
           ]
+        },
+        {
+          "name": "CANADA",
+          "children": [
+            {
+              "name": "Canada: 5 Provinces",
+              "medalId": 109
+            },
+            {
+              "name": "Canada: Provinces",
+              "medalId": 131
+            }
+          ]
+        },
+        {
+          "name": "MEXICO",
+          "children": [
+            {
+              "name": "Mexico: 5 States",
+              "medalId": 114
+            },
+            {
+              "name": "Northern States Mexico",
+              "medalId": 115
+            },
+            {
+              "name": "Centerwest States Mexico",
+              "medalId": 116
+            },
+            {
+              "name": "Centersouth States Mexico",
+              "medalId": 117
+            },
+            {
+              "name": "South States Mexico",
+              "medalId": 118
+            },
+            {
+              "name": "Mexico: States",
+              "medalId": 129
+            }
+          ]
+        },
+        {
+          "name": "USA",
+          "children": [
+            {
+              "name": "United States of America: 5 states",
+              "medalId": 72
+            },
+            {
+              "name": "United States of America: West",
+              "medalId": 73
+            },
+            {
+              "name": "United States of America: Midwest",
+              "medalId": 74
+            },
+            {
+              "name": "United States of America: Northeast",
+              "medalId": 75
+            },
+            {
+              "name": "United States of America: The South",
+              "medalId": 76
+            },
+            {
+              "name": "United States of America: States",
+              "medalId": 130
+            }
+          ]
         }
       ]
     },
@@ -1900,6 +3263,31 @@
         {
           "name": "South America Capitals",
           "medalId": 51
+        },
+        {
+          "name": "BRAZIL",
+          "children": [
+            {
+              "name": "Brazil: 5 States",
+              "medalId": 119
+            },
+            {
+              "name": "Brazil: Amazonia states",
+              "medalId": 120
+            },
+            {
+              "name": "Brazil: Nordeste states",
+              "medalId": 121
+            },
+            {
+              "name": "Brazil: Centro-Sul states",
+              "medalId": 122
+            },
+            {
+              "name": "Brazil: States",
+              "medalId": 128
+            }
+          ]
         }
       ]
     },
@@ -1967,6 +3355,173 @@
             {
               "name": "Southern Europe Capitals",
               "medalId": 36
+            }
+          ]
+        },
+        {
+          "name": "GERMANY",
+          "children": [
+            {
+              "name": "West Germany: Bundesländer",
+              "medalId": 107
+            },
+            {
+              "name": "East Germany: Bundesländer",
+              "medalId": 108
+            },
+            {
+              "name": "Germany: States",
+              "medalId": 136
+            }
+          ]
+        },
+        {
+          "name": "SPAIN",
+          "children": [
+            {
+              "name": "Spain: 5 Autonomous communities",
+              "medalId": 104
+            },
+            {
+              "name": "Spain: Autonomous communities",
+              "medalId": 132
+            }
+          ]
+        },
+        {
+          "name": "FRANCE",
+          "children": [
+            {
+              "name": "France: 5 Provinces",
+              "medalId": 103
+            },
+            {
+              "name": "France: Regions",
+              "medalId": 135
+            }
+          ]
+        },
+        {
+          "name": "UNITED KINGDOM",
+          "children": [
+            {
+              "name": "United Kingdom: 5 Counties",
+              "medalId": 91
+            },
+            {
+              "name": "North East England Counties",
+              "medalId": 92
+            },
+            {
+              "name": "North West England Counties",
+              "medalId": 93
+            },
+            {
+              "name": "England: Yorkshire & the Humber Counties",
+              "medalId": 94
+            },
+            {
+              "name": "England: East Midlands Counties",
+              "medalId": 95
+            },
+            {
+              "name": "England: West Midlands Counties",
+              "medalId": 96
+            },
+            {
+              "name": "East of England Counties",
+              "medalId": 97
+            },
+            {
+              "name": "South East England Counties",
+              "medalId": 98
+            },
+            {
+              "name": "South West England Counties",
+              "medalId": 99
+            },
+            {
+              "name": "Scotland: counties",
+              "medalId": 100
+            },
+            {
+              "name": "Wales: Preserved Counties",
+              "medalId": 101
+            },
+            {
+              "name": "Northern Ireland: Counties",
+              "medalId": 102
+            },
+            {
+              "name": "United Kingdom: Counties",
+              "medalId": 137
+            }
+          ]
+        },
+        {
+          "name": "ITALY",
+          "children": [
+            {
+              "name": "Italy: 5 Regions",
+              "medalId": 110
+            },
+            {
+              "name": "Northern Italy Regions",
+              "medalId": 111
+            },
+            {
+              "name": "Central Italy Regions",
+              "medalId": 112
+            },
+            {
+              "name": "South Italy Regions",
+              "medalId": 113
+            },
+            {
+              "name": "Italy: Regions",
+              "medalId": 127
+            }
+          ]
+        },
+        {
+          "name": "POLAND",
+          "children": [
+            {
+              "name": "West Poland: Voidvodeships",
+              "medalId": 105
+            },
+            {
+              "name": "East Poland: Voivoideships",
+              "medalId": 106
+            },
+            {
+              "name": "Poland: Voivodeships",
+              "medalId": 139
+            }
+          ]
+        },
+        {
+          "name": "SWEDEN",
+          "children": [
+            {
+              "name": "Sweden 5 counties",
+              "medalId": 123
+            },
+            {
+              "name": "Götaland: counties",
+              "medalId": 124
+            },
+            {
+              "name": "Svealand: counties",
+              "medalId": 125
+            },
+            {
+              "name": "Norrland: counties",
+              "medalId": 126
+            },
+            {
+              "name": "Sweden: Counties",
+              "medalId": 138
             }
           ]
         }
@@ -2125,6 +3680,80 @@
               "medalId": 21
             }
           ]
+        },
+        {
+          "name": "CHINA",
+          "children": [
+            {
+              "name": "China 5 Provinces",
+              "medalId": 77
+            },
+            {
+              "name": "North China Provinces",
+              "medalId": 78
+            },
+            {
+              "name": "Northeast China Provinces",
+              "medalId": 79
+            },
+            {
+              "name": "East China Provinces",
+              "medalId": 80
+            },
+            {
+              "name": "South Central China Provinces",
+              "medalId": 81
+            },
+            {
+              "name": "Southwest China Provinces",
+              "medalId": 82
+            },
+            {
+              "name": "Northwestern China Provinces",
+              "medalId": 83
+            },
+            {
+              "name": "China: Provinces",
+              "medalId": 134
+            }
+          ]
+        },
+        {
+          "name": "INDIA",
+          "children": [
+            {
+              "name": "India: 5 Provinces",
+              "medalId": 84
+            },
+            {
+              "name": "India: North India",
+              "medalId": 85
+            },
+            {
+              "name": "India: Northeast India",
+              "medalId": 86
+            },
+            {
+              "name": "India: East India",
+              "medalId": 87
+            },
+            {
+              "name": "India: South India",
+              "medalId": 88
+            },
+            {
+              "name": "India: Western India",
+              "medalId": 89
+            },
+            {
+              "name": "India: Central India",
+              "medalId": 90
+            },
+            {
+              "name": "India: States",
+              "medalId": 133
+            }
+          ]
         }
       ]
     },
@@ -2205,7 +3834,41 @@
         },
         {
           "name": "Indian Ocean dependent territories",
-          "medalId": 71
+          "medalId": 71,
+          "children": [
+            {
+              "name": "India: 5 Provinces",
+              "medalId": 84
+            },
+            {
+              "name": "India: North India",
+              "medalId": 85
+            },
+            {
+              "name": "India: Northeast India",
+              "medalId": 86
+            },
+            {
+              "name": "India: East India",
+              "medalId": 87
+            },
+            {
+              "name": "India: South India",
+              "medalId": 88
+            },
+            {
+              "name": "India: Western India",
+              "medalId": 89
+            },
+            {
+              "name": "India: Central India",
+              "medalId": 90
+            },
+            {
+              "name": "India: States",
+              "medalId": 133
+            }
+          ]
         },
         {
           "name": "Pacific dependent territories",

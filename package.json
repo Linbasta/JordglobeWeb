@@ -25,6 +25,7 @@
     "generate-segments": "tsx scripts/generate-segments.ts",
     "enrich-countries": "tsx scripts/enrich-countries.ts",
     "convert-medals": "tsx scripts/convert-medals.ts",
+    "convert-province-medals": "tsx scripts/convert-province-medals.ts",
     "extract-us-provinces": "tsx scripts/extract-us-provinces.ts",
     "generate-us-segments": "tsx scripts/generate-us-segments.ts",
     "extract-provinces": "tsx scripts/extract-provinces.ts",
