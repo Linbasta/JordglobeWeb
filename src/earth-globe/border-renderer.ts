@@ -466,11 +466,8 @@ export class BorderRenderer {
                     // Map segment to regions
                     const regionIndices: number[] = [];
                     for (const regionId of segment.regions) {
-                        // For countries: regionId is ISO2 string like "US"
-                        // For provinces: regionId is numeric string like "4" (or number 4)
-                        const regionData = regionsData.find(r =>
-                            r.iso2 === regionId || r.index === Number(regionId)
-                        );
+                        // regionId is the composite ID: "US", "SE" for countries; "US-0", "US-1" for provinces
+                        const regionData = regionsData.find(r => r.id === regionId);
                         if (regionData) {
                             regionIndices.push(regionData.index);
                         }

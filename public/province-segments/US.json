@@ -17,8 +17,8 @@
         ]
       ],
       "provinces": [
-        0,
-        8
+        "US-0",
+        "US-8"
       ],
       "type": "shared"
     },
@@ -34,8 +34,8 @@
         ]
       ],
       "provinces": [
-        0,
-        8
+        "US-0",
+        "US-8"
       ],
       "type": "shared"
     },
@@ -67,8 +67,8 @@
         ]
       ],
       "provinces": [
-        0,
-        9
+        "US-0",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -96,8 +96,8 @@
         ]
       ],
       "provinces": [
-        0,
-        9
+        "US-0",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -121,8 +121,8 @@
         ]
       ],
       "provinces": [
-        0,
-        9
+        "US-0",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -142,8 +142,8 @@
         ]
       ],
       "provinces": [
-        0,
-        9
+        "US-0",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -159,8 +159,8 @@
         ]
       ],
       "provinces": [
-        0,
-        9
+        "US-0",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -184,8 +184,8 @@
         ]
       ],
       "provinces": [
-        0,
-        23
+        "US-0",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -205,8 +205,8 @@
         ]
       ],
       "provinces": [
-        0,
-        23
+        "US-0",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -222,8 +222,8 @@
         ]
       ],
       "provinces": [
-        0,
-        23
+        "US-0",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -243,8 +243,8 @@
         ]
       ],
       "provinces": [
-        0,
-        41
+        "US-0",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -260,8 +260,8 @@
         ]
       ],
       "provinces": [
-        0,
-        41
+        "US-0",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -321,8 +321,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -378,8 +378,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -431,8 +431,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -480,8 +480,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -525,8 +525,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -566,8 +566,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -603,8 +603,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -636,8 +636,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -665,8 +665,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -690,8 +690,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -711,8 +711,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -728,8 +728,8 @@
         ]
       ],
       "provinces": [
-        2,
-        4
+        "US-2",
+        "US-4"
       ],
       "type": "shared"
     },
@@ -753,8 +753,8 @@
         ]
       ],
       "provinces": [
-        2,
-        27
+        "US-2",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -774,8 +774,8 @@
         ]
       ],
       "provinces": [
-        2,
-        27
+        "US-2",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -791,8 +791,8 @@
         ]
       ],
       "provinces": [
-        2,
-        27
+        "US-2",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -808,8 +808,8 @@
         ]
       ],
       "provinces": [
-        2,
-        30
+        "US-2",
+        "US-30"
       ],
       "type": "shared"
     },
@@ -829,8 +829,8 @@
         ]
       ],
       "provinces": [
-        2,
-        43
+        "US-2",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -846,8 +846,8 @@
         ]
       ],
       "provinces": [
-        2,
-        43
+        "US-2",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -863,8 +863,8 @@
         ]
       ],
       "provinces": [
-        3,
-        17
+        "US-3",
+        "US-17"
       ],
       "type": "shared"
     },
@@ -900,8 +900,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -933,8 +933,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -962,8 +962,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -987,8 +987,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -1008,8 +1008,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -1025,8 +1025,8 @@
         ]
       ],
       "provinces": [
-        3,
-        23
+        "US-3",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -1058,8 +1058,8 @@
         ]
       ],
       "provinces": [
-        3,
-        24
+        "US-3",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -1087,8 +1087,8 @@
         ]
       ],
       "provinces": [
-        3,
-        24
+        "US-3",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -1112,8 +1112,8 @@
         ]
       ],
       "provinces": [
-        3,
-        24
+        "US-3",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -1133,8 +1133,8 @@
         ]
       ],
       "provinces": [
-        3,
-        24
+        "US-3",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -1150,8 +1150,8 @@
         ]
       ],
       "provinces": [
-        3,
-        24
+        "US-3",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -1175,8 +1175,8 @@
         ]
       ],
       "provinces": [
-        3,
-        35
+        "US-3",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -1196,8 +1196,8 @@
         ]
       ],
       "provinces": [
-        3,
-        35
+        "US-3",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -1213,8 +1213,8 @@
         ]
       ],
       "provinces": [
-        3,
-        35
+        "US-3",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -1246,8 +1246,8 @@
         ]
       ],
       "provinces": [
-        3,
-        41
+        "US-3",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -1275,8 +1275,8 @@
         ]
       ],
       "provinces": [
-        3,
-        41
+        "US-3",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -1300,8 +1300,8 @@
         ]
       ],
       "provinces": [
-        3,
-        41
+        "US-3",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -1321,8 +1321,8 @@
         ]
       ],
       "provinces": [
-        3,
-        41
+        "US-3",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -1338,8 +1338,8 @@
         ]
       ],
       "provinces": [
-        3,
-        41
+        "US-3",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -1363,8 +1363,8 @@
         ]
       ],
       "provinces": [
-        3,
-        42
+        "US-3",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -1384,8 +1384,8 @@
         ]
       ],
       "provinces": [
-        3,
-        42
+        "US-3",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -1401,8 +1401,8 @@
         ]
       ],
       "provinces": [
-        3,
-        42
+        "US-3",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -1426,8 +1426,8 @@
         ]
       ],
       "provinces": [
-        4,
-        27
+        "US-4",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -1447,8 +1447,8 @@
         ]
       ],
       "provinces": [
-        4,
-        27
+        "US-4",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -1464,8 +1464,8 @@
         ]
       ],
       "provinces": [
-        4,
-        27
+        "US-4",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -1481,8 +1481,8 @@
         ]
       ],
       "provinces": [
-        4,
-        36
+        "US-4",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -1502,8 +1502,8 @@
         ]
       ],
       "provinces": [
-        5,
-        15
+        "US-5",
+        "US-15"
       ],
       "type": "shared"
     },
@@ -1519,8 +1519,8 @@
         ]
       ],
       "provinces": [
-        5,
-        15
+        "US-5",
+        "US-15"
       ],
       "type": "shared"
     },
@@ -1544,8 +1544,8 @@
         ]
       ],
       "provinces": [
-        5,
-        26
+        "US-5",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -1565,8 +1565,8 @@
         ]
       ],
       "provinces": [
-        5,
-        26
+        "US-5",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -1582,8 +1582,8 @@
         ]
       ],
       "provinces": [
-        5,
-        26
+        "US-5",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -1599,8 +1599,8 @@
         ]
       ],
       "provinces": [
-        5,
-        30
+        "US-5",
+        "US-30"
       ],
       "type": "shared"
     },
@@ -1616,8 +1616,8 @@
         ]
       ],
       "provinces": [
-        5,
-        35
+        "US-5",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -1633,8 +1633,8 @@
         ]
       ],
       "provinces": [
-        5,
-        43
+        "US-5",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -1650,8 +1650,8 @@
         ]
       ],
       "provinces": [
-        5,
-        49
+        "US-5",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -1671,8 +1671,8 @@
         ]
       ],
       "provinces": [
-        6,
-        20
+        "US-6",
+        "US-20"
       ],
       "type": "shared"
     },
@@ -1688,8 +1688,8 @@
         ]
       ],
       "provinces": [
-        6,
-        20
+        "US-6",
+        "US-20"
       ],
       "type": "shared"
     },
@@ -1717,8 +1717,8 @@
         ]
       ],
       "provinces": [
-        6,
-        31
+        "US-6",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -1742,8 +1742,8 @@
         ]
       ],
       "provinces": [
-        6,
-        31
+        "US-6",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -1763,8 +1763,8 @@
         ]
       ],
       "provinces": [
-        6,
-        31
+        "US-6",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -1780,8 +1780,8 @@
         ]
       ],
       "provinces": [
-        6,
-        31
+        "US-6",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -1801,8 +1801,8 @@
         ]
       ],
       "provinces": [
-        6,
-        38
+        "US-6",
+        "US-38"
       ],
       "type": "shared"
     },
@@ -1818,8 +1818,8 @@
         ]
       ],
       "provinces": [
-        6,
-        38
+        "US-6",
+        "US-38"
       ],
       "type": "shared"
     },
@@ -1839,8 +1839,8 @@
         ]
       ],
       "provinces": [
-        7,
-        19
+        "US-7",
+        "US-19"
       ],
       "type": "shared"
     },
@@ -1856,8 +1856,8 @@
         ]
       ],
       "provinces": [
-        7,
-        19
+        "US-7",
+        "US-19"
       ],
       "type": "shared"
     },
@@ -1873,8 +1873,8 @@
         ]
       ],
       "provinces": [
-        7,
-        29
+        "US-7",
+        "US-29"
       ],
       "type": "shared"
     },
@@ -1894,8 +1894,8 @@
         ]
       ],
       "provinces": [
-        7,
-        37
+        "US-7",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -1911,8 +1911,8 @@
         ]
       ],
       "provinces": [
-        7,
-        37
+        "US-7",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -1944,8 +1944,8 @@
         ]
       ],
       "provinces": [
-        8,
-        9
+        "US-8",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -1973,8 +1973,8 @@
         ]
       ],
       "provinces": [
-        8,
-        9
+        "US-8",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -1998,8 +1998,8 @@
         ]
       ],
       "provinces": [
-        8,
-        9
+        "US-8",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -2019,8 +2019,8 @@
         ]
       ],
       "provinces": [
-        8,
-        9
+        "US-8",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -2036,8 +2036,8 @@
         ]
       ],
       "provinces": [
-        8,
-        9
+        "US-8",
+        "US-9"
       ],
       "type": "shared"
     },
@@ -2053,8 +2053,8 @@
         ]
       ],
       "provinces": [
-        9,
-        32
+        "US-9",
+        "US-32"
       ],
       "type": "shared"
     },
@@ -2094,8 +2094,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2131,8 +2131,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2164,8 +2164,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2193,8 +2193,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2218,8 +2218,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2239,8 +2239,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2256,8 +2256,8 @@
         ]
       ],
       "provinces": [
-        9,
-        39
+        "US-9",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -2273,8 +2273,8 @@
         ]
       ],
       "provinces": [
-        9,
-        41
+        "US-9",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -2346,8 +2346,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2415,8 +2415,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2480,8 +2480,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2541,8 +2541,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2598,8 +2598,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2651,8 +2651,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2700,8 +2700,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2745,8 +2745,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2786,8 +2786,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2823,8 +2823,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2856,8 +2856,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2885,8 +2885,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2910,8 +2910,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2931,8 +2931,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2948,8 +2948,8 @@
         ]
       ],
       "provinces": [
-        11,
-        25
+        "US-11",
+        "US-25"
       ],
       "type": "shared"
     },
@@ -2965,8 +2965,8 @@
         ]
       ],
       "provinces": [
-        11,
-        27
+        "US-11",
+        "US-27"
       ],
       "type": "shared"
     },
@@ -3006,8 +3006,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3043,8 +3043,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3076,8 +3076,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3105,8 +3105,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3130,8 +3130,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3151,8 +3151,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3168,8 +3168,8 @@
         ]
       ],
       "provinces": [
-        11,
-        36
+        "US-11",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -3189,8 +3189,8 @@
         ]
       ],
       "provinces": [
-        11,
-        43
+        "US-11",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -3206,8 +3206,8 @@
         ]
       ],
       "provinces": [
-        11,
-        43
+        "US-11",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -3227,8 +3227,8 @@
         ]
       ],
       "provinces": [
-        11,
-        46
+        "US-11",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -3244,8 +3244,8 @@
         ]
       ],
       "provinces": [
-        11,
-        46
+        "US-11",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -3261,8 +3261,8 @@
         ]
       ],
       "provinces": [
-        11,
-        49
+        "US-11",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -3302,8 +3302,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3339,8 +3339,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3372,8 +3372,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3401,8 +3401,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3426,8 +3426,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3447,8 +3447,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3464,8 +3464,8 @@
         ]
       ],
       "provinces": [
-        12,
-        13
+        "US-12",
+        "US-13"
       ],
       "type": "shared"
     },
@@ -3521,8 +3521,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3574,8 +3574,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3623,8 +3623,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3668,8 +3668,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3709,8 +3709,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3746,8 +3746,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3779,8 +3779,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3808,8 +3808,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3833,8 +3833,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3854,8 +3854,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3871,8 +3871,8 @@
         ]
       ],
       "provinces": [
-        12,
-        14
+        "US-12",
+        "US-14"
       ],
       "type": "shared"
     },
@@ -3916,8 +3916,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -3957,8 +3957,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -3994,8 +3994,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4027,8 +4027,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4056,8 +4056,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4081,8 +4081,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4102,8 +4102,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4119,8 +4119,8 @@
         ]
       ],
       "provinces": [
-        12,
-        16
+        "US-12",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4184,8 +4184,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4245,8 +4245,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4302,8 +4302,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4355,8 +4355,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4404,8 +4404,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4449,8 +4449,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4490,8 +4490,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4527,8 +4527,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4560,8 +4560,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4589,8 +4589,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4614,8 +4614,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4635,8 +4635,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4652,8 +4652,8 @@
         ]
       ],
       "provinces": [
-        12,
-        24
+        "US-12",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -4669,8 +4669,8 @@
         ]
       ],
       "provinces": [
-        12,
-        48
+        "US-12",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -4742,8 +4742,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4811,8 +4811,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4876,8 +4876,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4937,8 +4937,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -4994,8 +4994,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5047,8 +5047,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5096,8 +5096,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5141,8 +5141,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5182,8 +5182,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5219,8 +5219,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5252,8 +5252,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5281,8 +5281,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5306,8 +5306,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5327,8 +5327,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5344,8 +5344,8 @@
         ]
       ],
       "provinces": [
-        13,
-        16
+        "US-13",
+        "US-16"
       ],
       "type": "shared"
     },
@@ -5361,8 +5361,8 @@
         ]
       ],
       "provinces": [
-        13,
-        21
+        "US-13",
+        "US-21"
       ],
       "type": "shared"
     },
@@ -5378,8 +5378,8 @@
         ]
       ],
       "provinces": [
-        13,
-        34
+        "US-13",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -5395,8 +5395,8 @@
         ]
       ],
       "provinces": [
-        14,
-        22
+        "US-14",
+        "US-22"
       ],
       "type": "shared"
     },
@@ -5420,8 +5420,8 @@
         ]
       ],
       "provinces": [
-        14,
-        24
+        "US-14",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5441,8 +5441,8 @@
         ]
       ],
       "provinces": [
-        14,
-        24
+        "US-14",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5458,8 +5458,8 @@
         ]
       ],
       "provinces": [
-        14,
-        24
+        "US-14",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5487,8 +5487,8 @@
         ]
       ],
       "provinces": [
-        14,
-        26
+        "US-14",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -5512,8 +5512,8 @@
         ]
       ],
       "provinces": [
-        14,
-        26
+        "US-14",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -5533,8 +5533,8 @@
         ]
       ],
       "provinces": [
-        14,
-        26
+        "US-14",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -5550,8 +5550,8 @@
         ]
       ],
       "provinces": [
-        14,
-        26
+        "US-14",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -5579,8 +5579,8 @@
         ]
       ],
       "provinces": [
-        14,
-        40
+        "US-14",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -5604,8 +5604,8 @@
         ]
       ],
       "provinces": [
-        14,
-        40
+        "US-14",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -5625,8 +5625,8 @@
         ]
       ],
       "provinces": [
-        14,
-        40
+        "US-14",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -5642,8 +5642,8 @@
         ]
       ],
       "provinces": [
-        14,
-        40
+        "US-14",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -5671,8 +5671,8 @@
         ]
       ],
       "provinces": [
-        14,
-        48
+        "US-14",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -5696,8 +5696,8 @@
         ]
       ],
       "provinces": [
-        14,
-        48
+        "US-14",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -5717,8 +5717,8 @@
         ]
       ],
       "provinces": [
-        14,
-        48
+        "US-14",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -5734,8 +5734,8 @@
         ]
       ],
       "provinces": [
-        14,
-        48
+        "US-14",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -5775,8 +5775,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5812,8 +5812,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5845,8 +5845,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5874,8 +5874,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5899,8 +5899,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5920,8 +5920,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5937,8 +5937,8 @@
         ]
       ],
       "provinces": [
-        15,
-        24
+        "US-15",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -5954,8 +5954,8 @@
         ]
       ],
       "provinces": [
-        15,
-        26
+        "US-15",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -5971,8 +5971,8 @@
         ]
       ],
       "provinces": [
-        15,
-        35
+        "US-15",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -6000,8 +6000,8 @@
         ]
       ],
       "provinces": [
-        16,
-        24
+        "US-16",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -6025,8 +6025,8 @@
         ]
       ],
       "provinces": [
-        16,
-        24
+        "US-16",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -6046,8 +6046,8 @@
         ]
       ],
       "provinces": [
-        16,
-        24
+        "US-16",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -6063,8 +6063,8 @@
         ]
       ],
       "provinces": [
-        16,
-        24
+        "US-16",
+        "US-24"
       ],
       "type": "shared"
     },
@@ -6100,8 +6100,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6133,8 +6133,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6162,8 +6162,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6187,8 +6187,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6208,8 +6208,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6225,8 +6225,8 @@
         ]
       ],
       "provinces": [
-        16,
-        34
+        "US-16",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -6254,8 +6254,8 @@
         ]
       ],
       "provinces": [
-        16,
-        41
+        "US-16",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -6279,8 +6279,8 @@
         ]
       ],
       "provinces": [
-        16,
-        41
+        "US-16",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -6300,8 +6300,8 @@
         ]
       ],
       "provinces": [
-        16,
-        41
+        "US-16",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -6317,8 +6317,8 @@
         ]
       ],
       "provinces": [
-        16,
-        41
+        "US-16",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -6338,8 +6338,8 @@
         ]
       ],
       "provinces": [
-        16,
-        45
+        "US-16",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -6355,8 +6355,8 @@
         ]
       ],
       "provinces": [
-        16,
-        45
+        "US-16",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -6384,8 +6384,8 @@
         ]
       ],
       "provinces": [
-        16,
-        47
+        "US-16",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -6409,8 +6409,8 @@
         ]
       ],
       "provinces": [
-        16,
-        47
+        "US-16",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -6430,8 +6430,8 @@
         ]
       ],
       "provinces": [
-        16,
-        47
+        "US-16",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -6447,8 +6447,8 @@
         ]
       ],
       "provinces": [
-        16,
-        47
+        "US-16",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -6492,8 +6492,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6533,8 +6533,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6570,8 +6570,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6603,8 +6603,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6632,8 +6632,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6657,8 +6657,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6678,8 +6678,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6695,8 +6695,8 @@
         ]
       ],
       "provinces": [
-        17,
-        23
+        "US-17",
+        "US-23"
       ],
       "type": "shared"
     },
@@ -6724,8 +6724,8 @@
         ]
       ],
       "provinces": [
-        17,
-        42
+        "US-17",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -6749,8 +6749,8 @@
         ]
       ],
       "provinces": [
-        17,
-        42
+        "US-17",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -6770,8 +6770,8 @@
         ]
       ],
       "provinces": [
-        17,
-        42
+        "US-17",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -6787,8 +6787,8 @@
         ]
       ],
       "provinces": [
-        17,
-        42
+        "US-17",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -6804,8 +6804,8 @@
         ]
       ],
       "provinces": [
-        18,
-        28
+        "US-18",
+        "US-28"
       ],
       "type": "shared"
     },
@@ -6825,8 +6825,8 @@
         ]
       ],
       "provinces": [
-        19,
-        37
+        "US-19",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -6842,8 +6842,8 @@
         ]
       ],
       "provinces": [
-        19,
-        37
+        "US-19",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -6859,8 +6859,8 @@
         ]
       ],
       "provinces": [
-        19,
-        45
+        "US-19",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -6880,8 +6880,8 @@
         ]
       ],
       "provinces": [
-        19,
-        45
+        "US-19",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -6897,8 +6897,8 @@
         ]
       ],
       "provinces": [
-        19,
-        45
+        "US-19",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -6946,8 +6946,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -6991,8 +6991,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7032,8 +7032,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7069,8 +7069,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7102,8 +7102,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7131,8 +7131,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7156,8 +7156,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7177,8 +7177,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7194,8 +7194,8 @@
         ]
       ],
       "provinces": [
-        19,
-        47
+        "US-19",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -7219,8 +7219,8 @@
         ]
       ],
       "provinces": [
-        20,
-        28
+        "US-20",
+        "US-28"
       ],
       "type": "shared"
     },
@@ -7240,8 +7240,8 @@
         ]
       ],
       "provinces": [
-        20,
-        28
+        "US-20",
+        "US-28"
       ],
       "type": "shared"
     },
@@ -7257,8 +7257,8 @@
         ]
       ],
       "provinces": [
-        20,
-        28
+        "US-20",
+        "US-28"
       ],
       "type": "shared"
     },
@@ -7278,8 +7278,8 @@
         ]
       ],
       "provinces": [
-        20,
-        31
+        "US-20",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -7295,8 +7295,8 @@
         ]
       ],
       "provinces": [
-        20,
-        31
+        "US-20",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -7320,8 +7320,8 @@
         ]
       ],
       "provinces": [
-        20,
-        38
+        "US-20",
+        "US-38"
       ],
       "type": "shared"
     },
@@ -7341,8 +7341,8 @@
         ]
       ],
       "provinces": [
-        20,
-        38
+        "US-20",
+        "US-38"
       ],
       "type": "shared"
     },
@@ -7358,8 +7358,8 @@
         ]
       ],
       "provinces": [
-        20,
-        38
+        "US-20",
+        "US-38"
       ],
       "type": "shared"
     },
@@ -7379,8 +7379,8 @@
         ]
       ],
       "provinces": [
-        20,
-        44
+        "US-20",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -7396,8 +7396,8 @@
         ]
       ],
       "provinces": [
-        20,
-        44
+        "US-20",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -7417,8 +7417,8 @@
         ]
       ],
       "provinces": [
-        21,
-        34
+        "US-21",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -7434,8 +7434,8 @@
         ]
       ],
       "provinces": [
-        21,
-        34
+        "US-21",
+        "US-34"
       ],
       "type": "shared"
     },
@@ -7471,8 +7471,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7504,8 +7504,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7533,8 +7533,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7558,8 +7558,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7579,8 +7579,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7596,8 +7596,8 @@
         ]
       ],
       "provinces": [
-        21,
-        48
+        "US-21",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7629,8 +7629,8 @@
         ]
       ],
       "provinces": [
-        22,
-        33
+        "US-22",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -7658,8 +7658,8 @@
         ]
       ],
       "provinces": [
-        22,
-        33
+        "US-22",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -7683,8 +7683,8 @@
         ]
       ],
       "provinces": [
-        22,
-        33
+        "US-22",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -7704,8 +7704,8 @@
         ]
       ],
       "provinces": [
-        22,
-        33
+        "US-22",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -7721,8 +7721,8 @@
         ]
       ],
       "provinces": [
-        22,
-        33
+        "US-22",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -7750,8 +7750,8 @@
         ]
       ],
       "provinces": [
-        22,
-        40
+        "US-22",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -7775,8 +7775,8 @@
         ]
       ],
       "provinces": [
-        22,
-        40
+        "US-22",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -7796,8 +7796,8 @@
         ]
       ],
       "provinces": [
-        22,
-        40
+        "US-22",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -7813,8 +7813,8 @@
         ]
       ],
       "provinces": [
-        22,
-        40
+        "US-22",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -7854,8 +7854,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7891,8 +7891,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7924,8 +7924,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7953,8 +7953,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7978,8 +7978,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -7999,8 +7999,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -8016,8 +8016,8 @@
         ]
       ],
       "provinces": [
-        22,
-        48
+        "US-22",
+        "US-48"
       ],
       "type": "shared"
     },
@@ -8037,8 +8037,8 @@
         ]
       ],
       "provinces": [
-        23,
-        41
+        "US-23",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -8054,8 +8054,8 @@
         ]
       ],
       "provinces": [
-        23,
-        41
+        "US-23",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -8075,8 +8075,8 @@
         ]
       ],
       "provinces": [
-        24,
-        26
+        "US-24",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -8092,8 +8092,8 @@
         ]
       ],
       "provinces": [
-        24,
-        26
+        "US-24",
+        "US-26"
       ],
       "type": "shared"
     },
@@ -8109,8 +8109,8 @@
         ]
       ],
       "provinces": [
-        24,
-        35
+        "US-24",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -8134,8 +8134,8 @@
         ]
       ],
       "provinces": [
-        24,
-        41
+        "US-24",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -8155,8 +8155,8 @@
         ]
       ],
       "provinces": [
-        24,
-        41
+        "US-24",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -8172,8 +8172,8 @@
         ]
       ],
       "provinces": [
-        24,
-        41
+        "US-24",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -8193,8 +8193,8 @@
         ]
       ],
       "provinces": [
-        25,
-        33
+        "US-25",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -8210,8 +8210,8 @@
         ]
       ],
       "provinces": [
-        25,
-        33
+        "US-25",
+        "US-33"
       ],
       "type": "shared"
     },
@@ -8231,8 +8231,8 @@
         ]
       ],
       "provinces": [
-        25,
-        40
+        "US-25",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8248,8 +8248,8 @@
         ]
       ],
       "provinces": [
-        25,
-        40
+        "US-25",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8269,8 +8269,8 @@
         ]
       ],
       "provinces": [
-        25,
-        49
+        "US-25",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -8286,8 +8286,8 @@
         ]
       ],
       "provinces": [
-        25,
-        49
+        "US-25",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -8319,8 +8319,8 @@
         ]
       ],
       "provinces": [
-        26,
-        40
+        "US-26",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8348,8 +8348,8 @@
         ]
       ],
       "provinces": [
-        26,
-        40
+        "US-26",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8373,8 +8373,8 @@
         ]
       ],
       "provinces": [
-        26,
-        40
+        "US-26",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8394,8 +8394,8 @@
         ]
       ],
       "provinces": [
-        26,
-        40
+        "US-26",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8411,8 +8411,8 @@
         ]
       ],
       "provinces": [
-        26,
-        40
+        "US-26",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -8428,8 +8428,8 @@
         ]
       ],
       "provinces": [
-        26,
-        49
+        "US-26",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -8445,8 +8445,8 @@
         ]
       ],
       "provinces": [
-        27,
-        36
+        "US-27",
+        "US-36"
       ],
       "type": "shared"
     },
@@ -8466,8 +8466,8 @@
         ]
       ],
       "provinces": [
-        27,
-        43
+        "US-27",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -8483,8 +8483,8 @@
         ]
       ],
       "provinces": [
-        27,
-        43
+        "US-27",
+        "US-43"
       ],
       "type": "shared"
     },
@@ -8524,8 +8524,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8561,8 +8561,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8594,8 +8594,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8623,8 +8623,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8648,8 +8648,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8669,8 +8669,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8686,8 +8686,8 @@
         ]
       ],
       "provinces": [
-        28,
-        44
+        "US-28",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -8703,8 +8703,8 @@
         ]
       ],
       "provinces": [
-        29,
-        31
+        "US-29",
+        "US-31"
       ],
       "type": "shared"
     },
@@ -8740,8 +8740,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8773,8 +8773,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8802,8 +8802,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8827,8 +8827,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8848,8 +8848,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8865,8 +8865,8 @@
         ]
       ],
       "provinces": [
-        29,
-        37
+        "US-29",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -8882,8 +8882,8 @@
         ]
       ],
       "provinces": [
-        30,
-        35
+        "US-30",
+        "US-35"
       ],
       "type": "shared"
     },
@@ -8915,8 +8915,8 @@
         ]
       ],
       "provinces": [
-        30,
-        42
+        "US-30",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -8944,8 +8944,8 @@
         ]
       ],
       "provinces": [
-        30,
-        42
+        "US-30",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -8969,8 +8969,8 @@
         ]
       ],
       "provinces": [
-        30,
-        42
+        "US-30",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -8990,8 +8990,8 @@
         ]
       ],
       "provinces": [
-        30,
-        42
+        "US-30",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -9007,8 +9007,8 @@
         ]
       ],
       "provinces": [
-        30,
-        42
+        "US-30",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -9048,8 +9048,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9085,8 +9085,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9118,8 +9118,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9147,8 +9147,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9172,8 +9172,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9193,8 +9193,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9210,8 +9210,8 @@
         ]
       ],
       "provinces": [
-        31,
-        37
+        "US-31",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9235,8 +9235,8 @@
         ]
       ],
       "provinces": [
-        31,
-        44
+        "US-31",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -9256,8 +9256,8 @@
         ]
       ],
       "provinces": [
-        31,
-        44
+        "US-31",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -9273,8 +9273,8 @@
         ]
       ],
       "provinces": [
-        31,
-        44
+        "US-31",
+        "US-44"
       ],
       "type": "shared"
     },
@@ -9314,8 +9314,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9351,8 +9351,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9384,8 +9384,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9413,8 +9413,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9438,8 +9438,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9459,8 +9459,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9476,8 +9476,8 @@
         ]
       ],
       "provinces": [
-        32,
-        39
+        "US-32",
+        "US-39"
       ],
       "type": "shared"
     },
@@ -9521,8 +9521,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9562,8 +9562,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9599,8 +9599,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9632,8 +9632,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9661,8 +9661,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9686,8 +9686,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9707,8 +9707,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9724,8 +9724,8 @@
         ]
       ],
       "provinces": [
-        32,
-        41
+        "US-32",
+        "US-41"
       ],
       "type": "shared"
     },
@@ -9741,8 +9741,8 @@
         ]
       ],
       "provinces": [
-        32,
-        45
+        "US-32",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -9762,8 +9762,8 @@
         ]
       ],
       "provinces": [
-        33,
-        40
+        "US-33",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -9779,8 +9779,8 @@
         ]
       ],
       "provinces": [
-        33,
-        40
+        "US-33",
+        "US-40"
       ],
       "type": "shared"
     },
@@ -9800,8 +9800,8 @@
         ]
       ],
       "provinces": [
-        34,
-        37
+        "US-34",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9817,8 +9817,8 @@
         ]
       ],
       "provinces": [
-        34,
-        37
+        "US-34",
+        "US-37"
       ],
       "type": "shared"
     },
@@ -9870,8 +9870,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -9919,8 +9919,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -9964,8 +9964,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10005,8 +10005,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10042,8 +10042,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10075,8 +10075,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10104,8 +10104,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10129,8 +10129,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10150,8 +10150,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10167,8 +10167,8 @@
         ]
       ],
       "provinces": [
-        34,
-        47
+        "US-34",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -10256,8 +10256,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10341,8 +10341,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10422,8 +10422,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10499,8 +10499,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10572,8 +10572,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10641,8 +10641,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10706,8 +10706,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10767,8 +10767,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10824,8 +10824,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10877,8 +10877,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10926,8 +10926,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -10971,8 +10971,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11012,8 +11012,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11049,8 +11049,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11082,8 +11082,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11111,8 +11111,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11136,8 +11136,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11157,8 +11157,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11174,8 +11174,8 @@
         ]
       ],
       "provinces": [
-        35,
-        42
+        "US-35",
+        "US-42"
       ],
       "type": "shared"
     },
@@ -11223,8 +11223,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11268,8 +11268,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11309,8 +11309,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11346,8 +11346,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11379,8 +11379,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11408,8 +11408,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11433,8 +11433,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11454,8 +11454,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11471,8 +11471,8 @@
         ]
       ],
       "provinces": [
-        36,
-        46
+        "US-36",
+        "US-46"
       ],
       "type": "shared"
     },
@@ -11492,8 +11492,8 @@
         ]
       ],
       "provinces": [
-        37,
-        47
+        "US-37",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11509,8 +11509,8 @@
         ]
       ],
       "provinces": [
-        37,
-        47
+        "US-37",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11530,8 +11530,8 @@
         ]
       ],
       "provinces": [
-        40,
-        49
+        "US-40",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -11547,8 +11547,8 @@
         ]
       ],
       "provinces": [
-        40,
-        49
+        "US-40",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -11564,8 +11564,8 @@
         ]
       ],
       "provinces": [
-        41,
-        45
+        "US-41",
+        "US-45"
       ],
       "type": "shared"
     },
@@ -11585,8 +11585,8 @@
         ]
       ],
       "provinces": [
-        43,
-        49
+        "US-43",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -11602,8 +11602,8 @@
         ]
       ],
       "provinces": [
-        43,
-        49
+        "US-43",
+        "US-49"
       ],
       "type": "shared"
     },
@@ -11663,8 +11663,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11720,8 +11720,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11773,8 +11773,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11822,8 +11822,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11867,8 +11867,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11908,8 +11908,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11945,8 +11945,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -11978,8 +11978,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -12007,8 +12007,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -12032,8 +12032,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -12053,8 +12053,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     },
@@ -12070,8 +12070,8 @@
         ]
       ],
       "provinces": [
-        45,
-        47
+        "US-45",
+        "US-47"
       ],
       "type": "shared"
     }

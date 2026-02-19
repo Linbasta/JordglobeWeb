@@ -370,7 +370,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 onPinPlaced((country, latLon) => {
                     console.log(`Pin placed at ${latLon.lat.toFixed(2)}, ${latLon.lon.toFixed(2)}`);
                     if (country) {
-                        console.log(`Country: ${country.name} (${country.iso2})`);
+                        console.log(`Country: ${country.name} (${country.id})`);
                     }
                     // Get recorded positions
                     const positions = getRecordedPositions();

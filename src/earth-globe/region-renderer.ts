@@ -111,7 +111,7 @@ export class RegionRenderer {
      * Get region by ISO2 code (or province id string like "US-0")
      */
     getRegionByISO2(iso2: string): RegionData | undefined {
-        return this.regionsData.find(c => c.iso2 === iso2);
+        return this.regionsData.find(c => c.id === iso2);
     }
 
     /**
@@ -571,7 +571,7 @@ export class RegionRenderer {
                         polygonIndices.push(polygonIndex);
 
                         picker.addPolygon({
-                            iso2: `${countryISO2}-${item.id}`,
+                            id: `${countryISO2}-${item.id}`,
                             name: item.name,
                             regionIndex: this.regionsData.length,
                             polygonIndex: polyIdx,
@@ -584,7 +584,7 @@ export class RegionRenderer {
                 if (polygonIndices.length > 0) {
                     const regionData: RegionData = {
                         name: item.name,
-                        iso2: `${countryISO2}-${item.id}`,
+                        id: `${countryISO2}-${item.id}`,
                         index: this.regionsData.length,
                         polygonIndices,
                         neighbourCountries: [],
@@ -715,7 +715,7 @@ export class RegionRenderer {
 
                         // Add to picker
                         picker.addPolygon({
-                            iso2: country.iso2,
+                            id: country.iso2,
                             name: country.name_en,
                             regionIndex: this.regionsData.length,
                             polygonIndex: polyIdx,
@@ -733,7 +733,7 @@ export class RegionRenderer {
 
                     const regionData: RegionData = {
                         name: country.name_en,
-                        iso2: country.iso2,
+                        id: country.iso2,
                         index: this.regionsData.length,
                         polygonIndices,
                         neighbourCountries: [],

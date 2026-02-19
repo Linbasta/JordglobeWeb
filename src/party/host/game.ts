@@ -20,7 +20,7 @@ export class Game {
             return;
         }
 
-        if (this.clearedCountries.has(country.iso2)) {
+        if (this.clearedCountries.has(country.id)) {
             console.log(`Country ${country.name} already cleared!`);
             return;
         }
@@ -45,7 +45,7 @@ export class Game {
     }
 
     private clearCountry(country: RegionPolygon): void {
-        this.clearedCountries.add(country.iso2);
+        this.clearedCountries.add(country.id);
         this.score += 100;
 
         console.log(`Cleared ${country.name}! Score: ${this.score}, Total cleared: ${this.clearedCountries.size}`);

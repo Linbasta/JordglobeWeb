@@ -46,28 +46,16 @@ export interface BoundingBox {
 export type RegionType = 'country' | 'province';
 
 /**
- * Generic region polygon for spatial lookup
- */
-export interface RegionPolygon {
-    name: string;
-    regionIndex: number;
-    polygonIndex: number;
-    points: LatLon[];
-    bbox: BoundingBox;
-}
-
-/**
  * Generic region metadata
  */
 export interface RegionData {
-    type: RegionType;
+    type?: RegionType;  // Currently unused, reserved for future use
     name: string;
+    id: string;  // For countries: "US", "SE"; for provinces: "US-0", "US-1"
     index: number;                   // 0-based within this controller
     polygonIndices: number[];
     parentRegionIndex?: number;      // if set: hide parent region when this is active
     centroid: import('@babylonjs/core/Maths/math').Vector3 | null;
-    // country-only fields:
-    iso2?: string;
     neighbourCountries?: NeighborInfo[];
 }
 
@@ -84,17 +72,18 @@ export interface RegionJSON {
 }
 
 // ============================================================================
-// Country Data Types
+// Polygon and Neighbor Types
 // ============================================================================
 
 /**
- * Country polygon for spatial lookup
+ * Region polygon for spatial lookup (used by RegionPicker)
+ * Works for both countries and provinces.
  */
 export interface RegionPolygon {
-    iso2: string;
+    id: string;  // For countries: "US"; for provinces: "US-0"
     name: string;
     regionIndex: number;
-    polygonIndex: number;  // Index within the country's polygons
+    polygonIndex: number;  // Index within the region's polygons
     points: LatLon[];
     bbox: BoundingBox;
 }
@@ -117,19 +106,6 @@ export interface NeighborInfo {
     countryIndex: number;           // Which country is the neighbor
     polygonIndex: number;           // Which of OUR polygons touches them
     neighbourPolygonIndex: number;  // Which of THEIR polygons we touch
-}
-
-/**
- * Country metadata
- */
-export interface RegionData {
-    name: string;
-    iso2: string;
-    index: number;
-    polygonIndices: number[];    // Indices into polygonsData array
-    neighbourCountries: NeighborInfo[];
-    centroid: import('@babylonjs/core/Maths/math').Vector3 | null;  // Sphere-surface centroid (small countries only)
-    parentRegionIndex?: number;  // For provinces: index of the parent country in countryController
 }
 
 /**

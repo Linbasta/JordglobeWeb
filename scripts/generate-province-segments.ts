@@ -46,7 +46,7 @@ interface Province2D {
 
 interface Segment2D {
     points: Point2D[];
-    provinces: number[];
+    provinces: string[];  // Composite IDs like "US-0", "US-1"
     type: 'shared' | 'multipoint';
 }
 
@@ -171,7 +171,7 @@ function extractSegments(provinces: Province2D[]): Segment2D[] {
                         if (match.points.length >= MIN_SEGMENT_LENGTH) {
                             segments.push({
                                 points: match.points,
-                                provinces: [a.id, b.id],
+                                provinces: [`${COUNTRY}-${a.id}`, `${COUNTRY}-${b.id}`],
                                 type: 'shared',
                             });
                         }

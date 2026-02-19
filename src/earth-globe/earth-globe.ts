@@ -969,7 +969,7 @@ export class EarthGlobe {
      */
     isSmallCountry(countryIndex: number): boolean {
         const country = this.countryRenderer.getRegionByIndex(countryIndex);
-        return country ? checkSmallCountry(country.iso2) : false;
+        return country ? checkSmallCountry(country.id) : false;
     }
 
     /**
