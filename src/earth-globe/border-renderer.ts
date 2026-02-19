@@ -39,11 +39,17 @@ export class BorderRenderer {
     /** Merged mesh for small country extruded borders */
     private mergedExtrudedBordersSmall: Mesh | null = null;
 
-    /** Merged mesh for segment borders */
+    /** Merged mesh for country segment borders */
     private mergedSegmentBorders: Mesh | null = null;
 
-    /** Map from segment animation index to country indices */
+    /** Merged mesh for province segment borders */
+    private mergedProvinceSegmentBorders: Mesh | null = null;
+
+    /** Map from country segment animation index to country indices */
     private segmentAnimationIndices: Map<number, number[]> = new Map();
+
+    /** Map from province segment animation index to province indices */
+    private provinceSegmentAnimationIndices: Map<number, number[]> = new Map();
 
     constructor(scene: Scene) {
         this.scene = scene;
@@ -65,10 +71,24 @@ export class BorderRenderer {
     }
 
     /**
-     * Get merged segment borders mesh
+     * Get merged country segment borders mesh
      */
     getMergedSegmentBorders(): Mesh | null {
         return this.mergedSegmentBorders;
+    }
+
+    /**
+     * Get merged province segment borders mesh
+     */
+    getMergedProvinceSegmentBorders(): Mesh | null {
+        return this.mergedProvinceSegmentBorders;
+    }
+
+    /**
+     * Get province segment animation index map
+     */
+    getProvinceSegmentAnimationIndices(): Map<number, number[]> {
+        return this.provinceSegmentAnimationIndices;
     }
 
     /**
@@ -427,31 +447,33 @@ export class BorderRenderer {
     }
 
     /**
-     * Render segment borders (international borders)
+     * Internal shared implementation for rendering segment borders
+     * @param targetType 'country' or 'province' - determines which mesh/map to use
      */
-    renderSegmentBorders(
-        segmentData: SegmentData,
+    private _renderSegmentBordersInternal(
+        segments: Segment3D[],
         regionsData: CountryData[],
-        shaderMaterial: ShaderMaterial
-    ): void {
-        console.log('Rendering segment borders...');
-        const startTime = performance.now();
+        shaderMaterial: ShaderMaterial,
+        animationIndexOffset: number,
+        targetType: 'country' | 'province',
+        meshName: string
+    ): Mesh | null {
+        const animationIndicesMap = targetType === 'country'
+            ? this.segmentAnimationIndices
+            : this.provinceSegmentAnimationIndices;
 
-        const sharedSegments = getSharedSegments(segmentData);
-        console.log(`Rendering ${sharedSegments.length} shared border segments`);
-
-        this.segmentAnimationIndices.clear();
+        animationIndicesMap.clear();
 
         const segmentQuads: Mesh[] = [];
         const vertexCounts: number[] = [];
         const segmentIndicesPerQuad: number[] = [];
 
-        for (let segmentIdx = 0; segmentIdx < sharedSegments.length; segmentIdx++) {
-            const segment = sharedSegments[segmentIdx];
+        for (let segmentIdx = 0; segmentIdx < segments.length; segmentIdx++) {
+            const segment = segments[segmentIdx];
             if (segment.points.length < 2) continue;
 
             try {
-                const segmentAnimationIndex = MAX_ANIMATION_COUNTRIES + segmentIdx;
+                const segmentAnimationIndex = animationIndexOffset + segmentIdx;
                 const quad = this.createQuadStripBorder(segment.points, segmentAnimationIndex);
 
                 if (quad) {
@@ -467,7 +489,7 @@ export class BorderRenderer {
                             regionIndices.push(regionData.index);
                         }
                     }
-                    this.segmentAnimationIndices.set(segmentAnimationIndex, regionIndices);
+                    animationIndicesMap.set(segmentAnimationIndex, regionIndices);
                 }
             } catch (error) {
                 console.error('Error creating segment quad strip:', error);
@@ -475,24 +497,24 @@ export class BorderRenderer {
         }
 
         if (segmentQuads.length === 0) {
-            console.log('No segment quads created');
-            return;
+            console.log(`No ${targetType} segment quads created`);
+            return null;
         }
 
-        this.mergedSegmentBorders = Mesh.MergeMeshes(
+        const mergedMesh = Mesh.MergeMeshes(
             segmentQuads,
             true, true, undefined, false, false
         );
 
-        if (!this.mergedSegmentBorders) {
-            console.error('Failed to merge segment borders');
-            return;
+        if (!mergedMesh) {
+            console.error(`Failed to merge ${targetType} segment borders`);
+            return null;
         }
 
-        this.mergedSegmentBorders.name = "mergedSegmentBorders";
+        mergedMesh.name = meshName;
 
         // Rebuild animation index attribute (should already be correct, but ensure consistency)
-        const totalVertices = this.mergedSegmentBorders.getTotalVertices();
+        const totalVertices = mergedMesh.getTotalVertices();
         const segmentIndices = new Float32Array(totalVertices);
 
         let vertexOffset = 0;
@@ -511,13 +533,67 @@ export class BorderRenderer {
             "countryIndex",
             false, false, 1, false
         );
-        this.mergedSegmentBorders.setVerticesBuffer(buffer);
+        mergedMesh.setVerticesBuffer(buffer);
 
         // Apply shader
-        this.mergedSegmentBorders.material = shaderMaterial;
+        mergedMesh.material = shaderMaterial;
+
+        return mergedMesh;
+    }
+
+    /**
+     * Render country segment borders (international borders)
+     */
+    renderSegmentBorders(
+        segmentData: SegmentData,
+        regionsData: CountryData[],
+        shaderMaterial: ShaderMaterial
+    ): void {
+        console.log('Rendering country segment borders...');
+        const startTime = performance.now();
+
+        const sharedSegments = getSharedSegments(segmentData);
+        console.log(`Rendering ${sharedSegments.length} shared country border segments`);
+
+        this.mergedSegmentBorders = this._renderSegmentBordersInternal(
+            sharedSegments,
+            regionsData,
+            shaderMaterial,
+            MAX_ANIMATION_COUNTRIES,
+            'country',
+            'mergedSegmentBorders'
+        );
 
         const endTime = performance.now();
-        console.log(`Rendered ${sharedSegments.length} segment quad strip borders in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`Rendered ${sharedSegments.length} country segment quad strip borders in ${(endTime - startTime).toFixed(2)}ms`);
+    }
+
+    /**
+     * Render province segment borders
+     */
+    renderProvinceSegmentBorders(
+        segmentData: SegmentData,
+        regionsData: CountryData[],
+        shaderMaterial: ShaderMaterial,
+        animationIndexOffset: number
+    ): void {
+        console.log('Rendering province segment borders...');
+        const startTime = performance.now();
+
+        const sharedSegments = getSharedSegments(segmentData);
+        console.log(`Rendering ${sharedSegments.length} shared province border segments`);
+
+        this.mergedProvinceSegmentBorders = this._renderSegmentBordersInternal(
+            sharedSegments,
+            regionsData,
+            shaderMaterial,
+            animationIndexOffset,
+            'province',
+            'mergedProvinceSegmentBorders'
+        );
+
+        const endTime = performance.now();
+        console.log(`Rendered ${sharedSegments.length} province segment quad strip borders in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     /**
@@ -536,6 +612,11 @@ export class BorderRenderer {
             this.mergedSegmentBorders.dispose();
             this.mergedSegmentBorders = null;
         }
+        if (this.mergedProvinceSegmentBorders) {
+            this.mergedProvinceSegmentBorders.dispose();
+            this.mergedProvinceSegmentBorders = null;
+        }
         this.segmentAnimationIndices.clear();
+        this.provinceSegmentAnimationIndices.clear();
     }
 }

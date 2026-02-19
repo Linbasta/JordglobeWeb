@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Province Selection Test</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+        #renderCanvas { width: 100%; height: 100vh; touch-action: none; }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #eee;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            min-width: 250px;
+        }
+        #controls h3 {
+            margin: 0 0 12px;
+            color: #fff;
+            font-size: 16px;
+        }
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin: 4px 4px 4px 0;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        button:active {
+            background: #2d6aa3;
+        }
+        button.selected {
+            background: #27ae60;
+        }
+        .info {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #444;
+        }
+        .status {
+            color: #fa0;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <div id="controls">
+        <h3>US States Test</h3>
+        <div id="status" class="status">Loading globe...</div>
+        <div id="mode-controls" style="display:none;">
+            <button id="enterMode">Enter US Mode</button>
+            <button id="exitMode" style="display:none;">Exit US Mode</button>
+        </div>
+        <div id="state-controls" style="display:none; margin-top: 12px;">
+            <strong>Select a State:</strong><br>
+            <button data-state="4">California</button>
+            <button data-state="42">Texas</button>
+            <button data-state="8">Florida</button>
+            <button data-state="31">New York</button>
+            <button data-state="1">Alaska</button>
+            <button data-state="11">Hawaii</button>
+        </div>
+        <div class="info">
+            <strong>Instructions:</strong><br>
+            1. Click "Enter US Mode"<br>
+            2. Click a state button to animate it<br>
+            3. Verify segment borders show between states
+        </div>
+    </div>
+
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+
+    <script type="module">
+        import { EarthGlobe } from '/src/earth-globe/index.ts';
+
+        const statusEl = document.getElementById('status');
+        const modeControlsEl = document.getElementById('mode-controls');
+        const stateControlsEl = document.getElementById('state-controls');
+        const enterModeBtn = document.getElementById('enterMode');
+        const exitModeBtn = document.getElementById('exitMode');
+
+        let globe = null;
+        let currentStateId = null;
+
+        function setStatus(msg) {
+            statusEl.textContent = msg;
+        }
+
+        const earthGlobe = new EarthGlobe({
+            canvasId: 'renderCanvas',
+            onReady: async (g) => {
+                globe = g;
+                setStatus('Globe ready!');
+                modeControlsEl.style.display = 'block';
+
+                // Expose for DevTools debugging
+                window.globe = g;
+
+                console.log('[Test] Globe initialized, provinces should be loaded');
+            }
+        });
+
+        // Enter US mode
+        enterModeBtn.addEventListener('click', () => {
+            if (!globe) return;
+
+            console.log('[Test] Entering US region mode');
+            globe.enterRegionMode('US');
+
+            enterModeBtn.style.display = 'none';
+            exitModeBtn.style.display = 'inline-block';
+            stateControlsEl.style.display = 'block';
+            setStatus('US mode active - select a state');
+        });
+
+        // Exit US mode
+        exitModeBtn.addEventListener('click', () => {
+            if (!globe) return;
+
+            console.log('[Test] Exiting region mode');
+            globe.exitRegionMode();
+
+            // Reset altitude of previously selected state
+            if (currentStateId !== null) {
+                const allRegions = globe.getAllActiveRegions();
+                const state = allRegions.find(r => r.index === currentStateId);
+                if (state) {
+                    globe.animateActiveRegionAltitude(currentStateId, 0.0, 300);
+                }
+                currentStateId = null;
+            }
+
+            enterModeBtn.style.display = 'inline-block';
+            exitModeBtn.style.display = 'none';
+            stateControlsEl.style.display = 'none';
+            setStatus('Globe ready!');
+
+            // Clear selection styling
+            document.querySelectorAll('[data-state]').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        });
+
+        // State selection buttons
+        stateControlsEl.addEventListener('click', (e) => {
+            if (!e.target.dataset.state) return;
+            if (!globe) return;
+
+            const stateId = parseInt(e.target.dataset.state, 10);
+            console.log(`[Test] Selecting state ID ${stateId}`);
+
+            // Get all regions in region mode
+            const allRegions = globe.getAllActiveRegions();
+            console.log(`[Test] Total active regions: ${allRegions.length}`);
+
+            // Find the state by index
+            const state = allRegions.find(r => r.index === stateId);
+            if (!state) {
+                console.warn(`[Test] State with index ${stateId} not found`);
+                setStatus(`State ${stateId} not found!`);
+                return;
+            }
+
+            console.log(`[Test] Found state: ${state.name}, index=${state.index}`);
+
+            // Reset previous selection
+            if (currentStateId !== null && currentStateId !== stateId) {
+                globe.animateActiveRegionAltitude(currentStateId, 0.0, 300);
+                console.log(`[Test] Reset previous state ${currentStateId} to altitude 0`);
+            }
+
+            // Animate new selection
+            globe.animateActiveRegionAltitude(stateId, 0.8, 300);
+            currentStateId = stateId;
+            setStatus(`Selected: ${state.name}`);
+
+            // Update button styling
+            document.querySelectorAll('[data-state]').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            e.target.classList.add('selected');
+
+            console.log(`[Test] Animating state ${state.name} (${stateId}) to altitude 0.8`);
+        });
+    </script>
+</body>
+</html>

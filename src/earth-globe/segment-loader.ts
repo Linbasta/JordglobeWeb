@@ -142,3 +142,55 @@ export function getSegmentStats(data: SegmentData) {
         regionsWithSegments: data.segmentsByRegion.size
     };
 }
+
+/**
+ * Load province segments from JSON file
+ * Province segment files have structure: { country: "US", segments: [...] }
+ * Segments use numeric province indices instead of ISO2 codes
+ * @param url Path to province segments file (e.g., /province-segments/US.json)
+ * @returns Promise with segment data
+ */
+export async function loadProvinceSegments(url: string): Promise<SegmentData> {
+    console.log(`Loading province segments from ${url}...`);
+    const startTime = performance.now();
+
+    // Fetch the JSON file
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+    }
+
+    const rawData = await response.json() as { country: string; segments: any[] };
+    const rawSegments = rawData.segments;
+
+    // Convert to standard Segment2D format, converting numeric province IDs to strings
+    const segments2D: Segment2D[] = rawSegments.map(seg => ({
+        points: seg.points.map((p: number[]) => ({ lat: p[0], lon: p[1] })),
+        regions: seg.provinces.map((id: number) => id.toString()),
+        type: seg.type
+    }));
+    console.log(`  Loaded ${segments2D.length} province segments for ${rawData.country}`);
+
+    // Convert to 3D at altitude 0 (same as province surface base)
+    const segments3D = segments2D.map(segment => segment2DTo3D(segment, 0));
+
+    // Build region index
+    const segmentsByRegion = new Map<string, Segment3D[]>();
+    for (const segment of segments3D) {
+        for (const regionId of segment.regions) {
+            if (!segmentsByRegion.has(regionId)) {
+                segmentsByRegion.set(regionId, []);
+            }
+            segmentsByRegion.get(regionId)!.push(segment);
+        }
+    }
+
+    const endTime = performance.now();
+    console.log(`  Conversion took ${(endTime - startTime).toFixed(2)}ms`);
+    console.log(`  Indexed ${segmentsByRegion.size} provinces`);
+
+    return {
+        segments: segments3D,
+        segmentsByRegion
+    };
+}

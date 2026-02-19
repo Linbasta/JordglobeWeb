@@ -44,7 +44,7 @@ import {
 import { latLonToSphere, positionToLatLon } from './geo-math';
 import { RegionPicker } from './region-picker';
 import { RegionController } from './region-controller';
-import { loadSegments } from './segment-loader';
+import { loadSegments, loadProvinceSegments } from './segment-loader';
 import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';
@@ -128,6 +128,7 @@ export class EarthGlobe {
     // Data
     private countryPicker: RegionPicker;
     private segmentData: SegmentData | null = null;
+    private provinceSegmentData: SegmentData | null = null;
 
     // Options and callbacks
     private options: EarthGlobeOptions;
@@ -466,6 +467,32 @@ export class EarthGlobe {
         this.provinceBorderMesh = this.borderRenderer.getMergedExtrudedBorders();
         console.log(`[Province] Border mesh after merge: ${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}, enabled=${this.provinceBorderMesh?.isEnabled()}`);
 
+        // Load and render province segment borders
+        try {
+            this.provinceSegmentData = await loadProvinceSegments(`/province-segments/US.json`);
+            console.log(`[Province] Loaded ${this.provinceSegmentData.segments.length} segments`);
+
+            // Calculate animation index offset: country segments use MAX_ANIMATION_COUNTRIES + segmentIdx
+            // Province segments need a separate range to avoid collisions
+            const provinceSegmentOffset = MAX_ANIMATION_COUNTRIES + (this.segmentData?.segments.length ?? 0) + 1000;
+
+            const provinceSegmentMaterial = this.provinceShaderFactory!.createSegmentBorderMaterial();
+            this.borderRenderer.renderProvinceSegmentBorders(
+                this.provinceSegmentData,
+                allProvinces,
+                provinceSegmentMaterial,
+                provinceSegmentOffset
+            );
+
+            const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
+            console.log(`[Province] Segment borders: ${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}, enabled=${provinceSegmentMesh?.isEnabled()}`);
+
+            // Hide segment mesh initially - activated in enterRegionMode
+            if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(false);
+        } catch (error) {
+            console.warn('[Province] Failed to load segment borders:', error);
+        }
+
         // Hide both meshes initially — activated in enterRegionMode()
         if (provinceFaceMesh) provinceFaceMesh.setEnabled(false);
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
@@ -713,9 +740,10 @@ export class EarthGlobe {
             return;
         }
 
-        // Enable province face mesh and border mesh
+        // Enable province face mesh, border mesh, and segment mesh
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
-        console.log(`[enterRegionMode] provinceMesh=${provinceMesh ? provinceMesh.name : 'NULL'}, provinceBorderMesh=${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}`);
+        const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
+        console.log(`[enterRegionMode] provinceMesh=${provinceMesh ? provinceMesh.name : 'NULL'}, provinceBorderMesh=${this.provinceBorderMesh ? this.provinceBorderMesh.name : 'NULL'}, provinceSegmentMesh=${provinceSegmentMesh ? provinceSegmentMesh.name : 'NULL'}`);
         if (provinceMesh) {
             provinceMesh.setEnabled(true);
             console.log(`[enterRegionMode] Face mesh enabled, isEnabled=${provinceMesh.isEnabled()}, vertices=${provinceMesh.getTotalVertices()}`);
@@ -723,6 +751,7 @@ export class EarthGlobe {
             console.warn(`[enterRegionMode] Province face mesh is NULL - provinces not loaded yet!`);
         }
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(true);
+        if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(true);
 
         // Set all provinces belonging to this country to normal altitude, hide others
         const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
@@ -779,8 +808,10 @@ export class EarthGlobe {
         this.provinceAnimationTexture!.update();
 
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
+        const provinceSegmentMesh = this.borderRenderer.getMergedProvinceSegmentBorders();
         if (provinceMesh) provinceMesh.setEnabled(false);
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
+        if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(false);
 
         // Restore active controller
         this.activeController = this.countryController;
