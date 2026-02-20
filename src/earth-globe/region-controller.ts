@@ -27,8 +27,8 @@ import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types
 export type { RegionType };
 
 /**
- * Region Controller — owns one Renderer, one Animator, one Picker.
- * The AnimationTexture is shared with EarthGlobe (passed in).
+ * Region Controller — owns one Renderer, one Animator, one Picker, and one AnimationTexture.
+ * Phase 1: Now owns its AnimationTexture (was previously passed in).
  */
 export class RegionController {
     readonly type: RegionType;
@@ -40,6 +40,7 @@ export class RegionController {
     private borderRenderer: BorderRenderer;
     private outlineRenderer: OutlineRenderer;
     private shaderFactory: ShaderFactory;
+    private animationTexture: AnimationTexture;  // NOW OWNED BY CONTROLLER
 
     // Segment data and materials
     private segmentData: SegmentData | null = null;
@@ -50,14 +51,18 @@ export class RegionController {
     constructor(
         type: RegionType,
         scene: Scene,
-        shaderFactory: ShaderFactory,
-        animationTexture: AnimationTexture
+        shaderFactory: ShaderFactory
     ) {
         this.type = type;
         this.scene = scene;
         this.shaderFactory = shaderFactory;
+
+        // Create and own AnimationTexture
+        this.animationTexture = new AnimationTexture(scene);
+        this.shaderFactory.setAnimationTexture(this.animationTexture.getTexture());
+
         this.renderer = new RegionRenderer(scene, shaderFactory);
-        this.animator = new RegionAnimator(animationTexture);
+        this.animator = new RegionAnimator(this.animationTexture);
         this.picker = new RegionPicker(PICKER_CELL_SIZE);
 
         // Use type as name prefix (e.g. "province_" for provinces, "" for countries)
@@ -80,6 +85,22 @@ export class RegionController {
 
     getPicker(): RegionPicker {
         return this.picker;
+    }
+
+    /**
+     * Get the animation texture (for init-time setup like setEntriesUsed)
+     */
+    getAnimationTexture(): AnimationTexture {
+        return this.animationTexture;
+    }
+
+    /**
+     * Set the number of entries used in the animation texture
+     * Typically called during initialization: regionCount + segmentCount
+     */
+    setEntriesUsed(count: number): void {
+        this.animationTexture.setEntriesUsed(count);
+        this.animationTexture.update();
     }
 
     // =========================================================================
@@ -132,6 +153,7 @@ export class RegionController {
 
     setAltitude(index: number, value: number): void {
         this.animator.setAltitude(index, value);
+        this.animationTexture.update();
     }
 
     getAltitude(index: number): number {
@@ -148,6 +170,7 @@ export class RegionController {
 
     setState(index: number, state: number): void {
         this.animator.setState(index, state);
+        this.animationTexture.update();
     }
 
     getState(index: number): number {
@@ -160,6 +183,7 @@ export class RegionController {
 
     setBlend(index: number, value: number): void {
         this.animator.setBlend(index, value);
+        this.animationTexture.update();
     }
 
     getBlend(index: number): number {
@@ -176,6 +200,7 @@ export class RegionController {
 
     setExpansion(index: number, value: number): void {
         this.animator.setExpansion(index, value);
+        this.animationTexture.update();
     }
 
     getExpansion(index: number): number {
@@ -331,6 +356,7 @@ export class RegionController {
     // =========================================================================
 
     dispose(): void {
+        this.animationTexture.dispose();
         this.renderer.dispose();
         this.borderRenderer.dispose();
         this.outlineRenderer.dispose();

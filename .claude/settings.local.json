@@ -71,7 +71,17 @@
       "Bash(npm run generate-province-segments:*)",
       "Bash(npm run generate-province-index:*)",
       "Bash(npm run test:regions:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(git diff:*)",
+      "Bash(npm run convert-province-medals:*)",
+      "Bash(git log:*)",
+      "Bash(for country in BR CA CN DE ES FR GB IN IT MX PL SE)",
+      "Bash(do echo \"=== Generating segments for $country ===\" npm run generate-province-segments -- --country=$country)",
+      "Bash(npm run test:province-segments:*)",
+      "Bash(npm run test:medal-integration:*)",
+      "Bash(npm run test:country-province-parity:*)",
+      "Bash(npm run test:province-quiz-behavior:*)",
+      "Bash(npm run test:phase0:*)"
     ],
     "deny": [],
     "ask": []

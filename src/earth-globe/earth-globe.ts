@@ -109,9 +109,7 @@ export class EarthGlobe {
     private provinceShaderFactory: ShaderFactory | null = null;
     private worldTexture: Texture | null = null;
 
-    // Animation
-    private animationTexture: AnimationTexture;
-    private provinceAnimationTexture: AnimationTexture | null = null;
+    // Animation (Phase 1: Animation textures now owned by controllers)
     private countryAnimator: RegionAnimator;
 
     // Location markers
@@ -180,12 +178,10 @@ export class EarthGlobe {
 
         // Create components
         this.shaderFactory = new ShaderFactory(this.scene);
-        this.animationTexture = new AnimationTexture(this.scene);
-        this.shaderFactory.setAnimationTexture(this.animationTexture.getTexture());
 
-        // Create the country controller (wraps renderer, animator, picker)
+        // Create the country controller (now owns its animation texture)
         this.countryController = new RegionController(
-            'country', this.scene, this.shaderFactory, this.animationTexture
+            'country', this.scene, this.shaderFactory
         );
         this.activeController = this.countryController;
 
@@ -194,12 +190,10 @@ export class EarthGlobe {
         this.countryAnimator = this.countryController.getAnimator();
         this.countryPicker = this.countryController.getPicker();
 
-        // Create province controller (provinces loaded lazily in init())
-        this.provinceAnimationTexture = new AnimationTexture(this.scene);
+        // Create province controller (now owns its animation texture)
         this.provinceShaderFactory = new ShaderFactory(this.scene, 'province_');
-        this.provinceShaderFactory.setAnimationTexture(this.provinceAnimationTexture.getTexture());
         this.provinceController = new RegionController(
-            'province', this.scene, this.provinceShaderFactory, this.provinceAnimationTexture
+            'province', this.scene, this.provinceShaderFactory
         );
 
         this.globeSphere = new GlobeSphere(this.scene, this.assets);
@@ -232,7 +226,7 @@ export class EarthGlobe {
                 (region) => {
                     // Initialize animation data for each country
                     const defaultAnimValue = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
-                    this.animationTexture.setAltitude(region.index, defaultAnimValue);
+                    this.countryController.getAnimationTexture().setAltitude(region.index, defaultAnimValue);
                 }
             );
 
@@ -287,8 +281,7 @@ export class EarthGlobe {
             const countryCount = this.countryRenderer.getRegionCount();
             const segmentCount = this.countryController.getSegmentAnimationIndices().size;
             const totalEntries = MAX_ANIMATION_COUNTRIES + segmentCount;
-            this.animationTexture.setEntriesUsed(totalEntries);
-            this.animationTexture.update();
+            this.countryController.setEntriesUsed(totalEntries);
             console.log(`[Animation] Texture sized for ${countryCount} countries + ${segmentCount} segments = ${totalEntries} total entries`);
 
             // Set up segment animation mapping
@@ -416,7 +409,7 @@ export class EarthGlobe {
         // Set animation texture entries to 0 (all hidden initially) - but DON'T size yet (segments not loaded)
         const allProvinces = this.provinceController.getAllRegions();
         for (const region of allProvinces) {
-            this.provinceAnimationTexture!.setAltitude(region.index, 0);
+            this.provinceController.getAnimationTexture().setAltitude(region.index, 0);
         }
 
         // Create extruded borders for all province polygons (same as country pipeline)
@@ -718,8 +711,7 @@ export class EarthGlobe {
                 // NOW resize province animation texture to include provinces + province segments
                 const provinceSegmentCount = this.provinceController.getSegmentAnimationIndices().size;
                 const totalProvinceEntries = provinceCount + provinceSegmentCount;
-                this.provinceAnimationTexture!.setEntriesUsed(totalProvinceEntries);
-                this.provinceAnimationTexture!.update();
+                this.provinceController.setEntriesUsed(totalProvinceEntries);
 
                 // Set up segment animation mapping (so segments follow province altitudes)
                 this.provinceController.getAnimator().setSegmentCountryMap(
@@ -753,21 +745,19 @@ export class EarthGlobe {
         const allProvinces = this.provinceController.getAllRegions();
         for (const province of allProvinces) {
             // All provinces get normal altitude (visible)
-            this.provinceAnimationTexture!.setAltitude(province.index, defaultAltitude);
+            this.provinceController.getAnimationTexture().setAltitude(province.index, defaultAltitude);
 
             if (province.parentRegionIndex === parentIndex) {
                 // Active provinces: normal state
-                this.provinceAnimationTexture!.setState(province.index, STATE_NORMAL);
+                this.provinceController.setState(province.index, STATE_NORMAL);
             } else {
                 // Inactive provinces: disabled state (greyed out, like countries)
-                this.provinceAnimationTexture!.setState(province.index, STATE_DISABLED);
+                this.provinceController.setState(province.index, STATE_DISABLED);
             }
         }
-        this.provinceAnimationTexture!.update();
 
         // Hide the parent country: push altitude to 0 (recedes into globe) and grey it out
-        this.animationTexture.setAltitude(parentIndex, 0);
-        this.animationTexture.update();
+        this.countryController.setAltitude(parentIndex, 0);
         this.setCountryState(parentIndex, STATE_DISABLED);
 
         // Switch active controller so hit-testing goes through provinces
@@ -785,18 +775,16 @@ export class EarthGlobe {
         // Restore parent country altitude and state
         if (this.regionModeParentIndex >= 0) {
             const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
-            this.animationTexture.setAltitude(this.regionModeParentIndex, defaultAltitude);
-            this.animationTexture.update();
+            this.countryController.setAltitude(this.regionModeParentIndex, defaultAltitude);
             this.setCountryState(this.regionModeParentIndex, STATE_NORMAL);
         }
 
         // Hide all province meshes and reset state
         const allProvinces = this.provinceController.getAllRegions();
         for (const province of allProvinces) {
-            this.provinceAnimationTexture!.setAltitude(province.index, 0);
-            this.provinceAnimationTexture!.setState(province.index, STATE_NORMAL);
+            this.provinceController.setAltitude(province.index, 0);
+            this.provinceController.setState(province.index, STATE_NORMAL);
         }
-        this.provinceAnimationTexture!.update();
 
         const provinceMesh = this.provinceController.getRenderer().getMergedMesh();
         const provinceSegmentMesh = this.provinceController.getSegmentBordersMesh();
@@ -868,15 +856,14 @@ export class EarthGlobe {
      * @param altitude Value between 0 and 1
      */
     setCountryAltitude(countryIndex: number, altitude: number): void {
-        this.countryAnimator.setAltitude(countryIndex, altitude);
-        this.animationTexture.update();
+        this.countryController.setAltitude(countryIndex, altitude);
     }
 
     /**
      * Get the current altitude value for a country
      */
     getCountryAltitude(countryIndex: number): number {
-        return this.countryAnimator.getAltitude(countryIndex);
+        return this.countryController.getAltitude(countryIndex);
     }
 
     /**
@@ -885,8 +872,7 @@ export class EarthGlobe {
      * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
      */
     setCountryState(countryIndex: number, state: number): void {
-        this.countryAnimator.setState(countryIndex, state);
-        this.animationTexture.update();
+        this.countryController.setState(countryIndex, state);
 
         // Hide/show small country marker based on state
         if (this.smallCountryMarkers.has(countryIndex)) {
@@ -902,7 +888,7 @@ export class EarthGlobe {
      * Get the current state value for a country
      */
     getCountryState(countryIndex: number): number {
-        return this.countryAnimator.getState(countryIndex);
+        return this.countryController.getState(countryIndex);
     }
 
     /**
@@ -911,15 +897,14 @@ export class EarthGlobe {
      * @param blend Value between 0 (full state effect) and 1 (normal appearance)
      */
     setCountryBlend(countryIndex: number, blend: number): void {
-        this.countryAnimator.setBlend(countryIndex, blend);
-        this.animationTexture.update();
+        this.countryController.setBlend(countryIndex, blend);
     }
 
     /**
      * Get the current blend factor for a country
      */
     getCountryBlend(countryIndex: number): number {
-        return this.countryAnimator.getBlend(countryIndex);
+        return this.countryController.getBlend(countryIndex);
     }
 
     /**
@@ -929,7 +914,7 @@ export class EarthGlobe {
      * @param durationMs Animation duration in milliseconds
      */
     animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.countryAnimator.animateAltitude(countryIndex, targetAltitude, durationMs, easing);
+        return this.countryController.animateAltitude(countryIndex, targetAltitude, durationMs, easing);
     }
 
     /**
@@ -939,7 +924,7 @@ export class EarthGlobe {
      * @param durationMs Animation duration in milliseconds
      */
     animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.countryAnimator.animateBlend(countryIndex, targetBlend, durationMs, easing);
+        return this.countryController.animateBlend(countryIndex, targetBlend, durationMs, easing);
     }
 
     // =========================================================================
@@ -952,15 +937,14 @@ export class EarthGlobe {
      * @param expansion Expansion factor (1.0 = normal, >1 = magnified)
      */
     setCountryExpansion(countryIndex: number, expansion: number): void {
-        this.countryAnimator.setExpansion(countryIndex, expansion);
-        this.animationTexture.update();
+        this.countryController.setExpansion(countryIndex, expansion);
     }
 
     /**
      * Get the current expansion factor for a country
      */
     getCountryExpansion(countryIndex: number): number {
-        return this.countryAnimator.getExpansion(countryIndex);
+        return this.countryController.getExpansion(countryIndex);
     }
 
     /**
@@ -1032,23 +1016,14 @@ export class EarthGlobe {
      * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
      */
     setProvinceState(provinceIndex: number, state: number): void {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[setProvinceState] No province animation texture loaded');
-            return;
-        }
-        this.provinceAnimationTexture.setState(provinceIndex, state);
-        this.provinceAnimationTexture.update();
+        this.provinceController.setState(provinceIndex, state);
     }
 
     /**
      * Get the current state value for a province
      */
     getProvinceState(provinceIndex: number): number {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[getProvinceState] No province animation texture loaded');
-            return STATE_NORMAL;
-        }
-        return this.provinceAnimationTexture.getState(provinceIndex);
+        return this.provinceController.getState(provinceIndex);
     }
 
     /**
@@ -1057,23 +1032,14 @@ export class EarthGlobe {
      * @param altitude Value between 0 and 1
      */
     setProvinceAltitude(provinceIndex: number, altitude: number): void {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[setProvinceAltitude] No province animation texture loaded');
-            return;
-        }
-        this.provinceAnimationTexture.setAltitude(provinceIndex, altitude);
-        this.provinceAnimationTexture.update();
+        this.provinceController.setAltitude(provinceIndex, altitude);
     }
 
     /**
      * Get the current altitude value for a province
      */
     getProvinceAltitude(provinceIndex: number): number {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[getProvinceAltitude] No province animation texture loaded');
-            return 0;
-        }
-        return this.provinceAnimationTexture.getAltitude(provinceIndex);
+        return this.provinceController.getAltitude(provinceIndex);
     }
 
     /**
@@ -1082,23 +1048,14 @@ export class EarthGlobe {
      * @param blend Value between 0 (full state effect) and 1 (normal appearance)
      */
     setProvinceBlend(provinceIndex: number, blend: number): void {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[setProvinceBlend] No province animation texture loaded');
-            return;
-        }
-        this.provinceAnimationTexture.setBlend(provinceIndex, blend);
-        this.provinceAnimationTexture.update();
+        this.provinceController.setBlend(provinceIndex, blend);
     }
 
     /**
      * Get the current blend factor for a province
      */
     getProvinceBlend(provinceIndex: number): number {
-        if (!this.provinceAnimationTexture) {
-            console.warn('[getProvinceBlend] No province animation texture loaded');
-            return 1.0;
-        }
-        return this.provinceAnimationTexture.getBlend(provinceIndex);
+        return this.provinceController.getBlend(provinceIndex);
     }
 
     /**
@@ -1108,7 +1065,7 @@ export class EarthGlobe {
      * @param durationMs Animation duration in milliseconds
      */
     animateProvinceBlend(provinceIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.provinceController.getAnimator().animateBlend(provinceIndex, targetBlend, durationMs, easing);
+        return this.provinceController.animateBlend(provinceIndex, targetBlend, durationMs, easing);
     }
 
     // =========================================================================
@@ -1454,10 +1411,10 @@ export class EarthGlobe {
 
         this.globeSphere.dispose();
         this.countryRenderer.dispose();
-        // BorderRenderer and OutlineRenderer are now owned by controllers
-        // (disposed via controller.dispose())
+        // Phase 1: Controllers now own and dispose their animation textures
+        this.countryController.dispose();
+        this.provinceController.dispose();
         this.skybox.dispose();
-        this.animationTexture.dispose();
 
         if (this.markerPool) {
             this.markerPool.dispose();
