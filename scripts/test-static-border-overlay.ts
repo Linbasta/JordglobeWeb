@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Test script for province border renderer
+ * Test script for Static Border Overlay
  *
  * Verifies the module can be imported and data structures are correct.
  */
@@ -12,20 +12,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('=== Testing Province Border Renderer ===\n');
+console.log('=== Testing Static Border Overlay ===\n');
 
 // Test 1: Check shader files exist
 console.log('Test 1: Checking shader files...');
-const vertexShaderPath = path.join(__dirname, '..', 'src', 'earth-globe', 'shaders', 'province-border.vertex.glsl');
-const fragmentShaderPath = path.join(__dirname, '..', 'src', 'earth-globe', 'shaders', 'province-border.fragment.glsl');
+const vertexShaderPath = path.join(__dirname, '..', 'src', 'earth-globe', 'shaders', 'static-border-overlay.vertex.glsl');
+const fragmentShaderPath = path.join(__dirname, '..', 'src', 'earth-globe', 'shaders', 'static-border-overlay.fragment.glsl');
 
 if (!fs.existsSync(vertexShaderPath)) {
-    console.error('  ✗ Fail: province-border.vertex.glsl not found');
+    console.error('  ✗ Fail: static-border-overlay.vertex.glsl not found');
     process.exit(1);
 }
 
 if (!fs.existsSync(fragmentShaderPath)) {
-    console.error('  ✗ Fail: province-border.fragment.glsl not found');
+    console.error('  ✗ Fail: static-border-overlay.fragment.glsl not found');
     process.exit(1);
 }
 
@@ -80,10 +80,10 @@ console.log('  ✓ Pass: Fragment shader has required uniforms');
 
 // Test 4: Check module file exists
 console.log('\nTest 4: Checking module file...');
-const modulePath = path.join(__dirname, '..', 'src', 'earth-globe', 'province-border-renderer.ts');
+const modulePath = path.join(__dirname, '..', 'src', 'earth-globe', 'static-border-overlay.ts');
 
 if (!fs.existsSync(modulePath)) {
-    console.error('  ✗ Fail: province-border-renderer.ts not found');
+    console.error('  ✗ Fail: static-border-overlay.ts not found');
     process.exit(1);
 }
 
@@ -94,12 +94,14 @@ console.log('\nTest 5: Validating module exports...');
 const moduleCode = fs.readFileSync(modulePath, 'utf-8');
 
 const requiredExports = [
-    'loadProvinceBorders',
-    'showProvinceBorders',
-    'hideProvinceBorders',
-    'updateProvinceBorderUniforms',
-    'disposeProvinceBorders',
-    'ProvinceBorderState'
+    'loadStaticBorderOverlay',
+    'loadProvinceBorders',  // Legacy API
+    'showStaticBorderOverlay',
+    'hideStaticBorderOverlay',
+    'updateStaticBorderOverlayUniforms',
+    'disposeStaticBorderOverlay',
+    'StaticBorderOverlayState',
+    'StaticBorderOverlayConfig'
 ];
 
 for (const exportName of requiredExports) {
@@ -120,26 +122,12 @@ console.log('\nTest 6: Checking constants...');
 const constantsPath = path.join(__dirname, '..', 'src', 'earth-globe', 'constants.ts');
 const constantsCode = fs.readFileSync(constantsPath, 'utf-8');
 
-const requiredConstants = [
-    'PROVINCE_BORDER_THICKNESS_CLOSE',
-    'PROVINCE_BORDER_THICKNESS_FAR',
-    'PROVINCE_BORDER_ALPHA_CLOSE',
-    'PROVINCE_BORDER_ALPHA_FAR'
-];
-
-for (const constant of requiredConstants) {
-    if (!constantsCode.includes(constant)) {
-        console.error(`  ✗ Fail: Missing constant: ${constant}`);
-        hasErrors = true;
-    }
-}
-
 // Check they're in the zoom object
 if (!constantsCode.includes('provinceBorderThicknessClose:') ||
     !constantsCode.includes('provinceBorderThicknessFar:') ||
     !constantsCode.includes('provinceBorderAlphaClose:') ||
     !constantsCode.includes('provinceBorderAlphaFar:')) {
-    console.error('  ✗ Fail: Province constants not added to zoom object');
+    console.error('  ✗ Fail: Province border constants not found in zoom object');
     hasErrors = true;
 }
 
@@ -149,22 +137,49 @@ if (hasErrors) {
 
 console.log('  ✓ Pass: All constants defined and added to zoom object');
 
-// Test 7: Verify data format compatibility
-console.log('\nTest 7: Verifying data format compatibility...');
-const segmentsPath = path.join(__dirname, '..', 'public', 'province-segments', 'US.json');
-const segmentsData = JSON.parse(fs.readFileSync(segmentsPath, 'utf-8'));
+// Test 7: Verify province segment format compatibility
+console.log('\nTest 7: Verifying province segment format...');
+const provinceSegmentsPath = path.join(__dirname, '..', 'public', 'province-segments', 'US.json');
+const provinceSegmentsData = JSON.parse(fs.readFileSync(provinceSegmentsPath, 'utf-8'));
 
-// Check the module expects the right format
-if (!moduleCode.includes('ProvinceSegmentData') ||
-    !moduleCode.includes('points: number[][]') ||
-    !moduleCode.includes('provinces: number[]')) {
-    console.error('  ✗ Fail: Module data types don\'t match segment JSON format');
+if (!moduleCode.includes('ProvinceSegmentsJSON')) {
+    console.error('  ✗ Fail: Module doesn\'t support province segment format');
     process.exit(1);
 }
 
-console.log(`  ✓ Pass: Module expects correct data format (${segmentsData.segments.length} segments available)`);
+console.log(`  ✓ Pass: Province format supported (${provinceSegmentsData.segments.length} segments available)`);
+
+// Test 8: Verify country segment format compatibility
+console.log('\nTest 8: Verifying country segment format...');
+const countrySegmentsPath = path.join(__dirname, '..', 'public', 'segments.json');
+const countrySegmentsData = JSON.parse(fs.readFileSync(countrySegmentsPath, 'utf-8'));
+
+if (!moduleCode.includes('CountrySegmentsJSON') ||
+    !moduleCode.includes('segmentFormat:')) {
+    console.error('  ✗ Fail: Module doesn\'t support country segment format');
+    process.exit(1);
+}
+
+console.log(`  ✓ Pass: Country format supported (${countrySegmentsData.length} segments available)`);
+
+// Test 9: Verify new API
+console.log('\nTest 9: Verifying generalized API...');
+
+if (!moduleCode.includes('StaticBorderOverlayConfig')) {
+    console.error('  ✗ Fail: StaticBorderOverlayConfig interface not found');
+    process.exit(1);
+}
+
+if (!moduleCode.includes('segmentFormat: \'country\' | \'province\'')) {
+    console.error('  ✗ Fail: segmentFormat discriminator not found');
+    process.exit(1);
+}
+
+console.log('  ✓ Pass: Generalized API supports both country and province formats');
 
 console.log('\n=== All tests passed ===');
-console.log('\nNote: Full integration test requires browser (Phase 4)');
-console.log('Next: Integrate into EarthGlobe to test rendering');
+console.log('\nUse cases:');
+console.log('  • Province quizzes: Show province borders for location questions');
+console.log('  • Capital medals: Show country borders when zoomed into cities');
+console.log('\nTest page: http://localhost:4817/test-static-border-overlay.html');
 process.exit(0);

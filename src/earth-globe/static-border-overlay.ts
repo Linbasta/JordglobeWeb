@@ -1,8 +1,18 @@
 /**
- * Earth Globe Module - Province Border Renderer
+ * Earth Globe Module - Static Border Overlay
  *
- * Renders static province borders as a visual overlay (Mode A).
- * Used for location questions to show province boundaries.
+ * Creates non-animated border overlays that sit above the globe surface.
+ * Used for providing visual context when zoomed into a region.
+ *
+ * Use cases:
+ * - Capital medals: Show country borders when zoomed into a city
+ * - Province quizzes: Show province borders for location questions
+ *
+ * Unlike segment borders (which animate with regions), these are:
+ * - Static (no animation)
+ * - Zoom-responsive (thickness and alpha change with camera)
+ * - Rendered as simple quad strips
+ * - Always visible once enabled
  */
 
 import { Scene } from '@babylonjs/core/scene';
@@ -20,62 +30,120 @@ import type { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getZoomValue } from '../shared/animation/camera-utils';
 
 // Import shaders
-import provinceBorderVertexShader from './shaders/province-border.vertex.glsl?raw';
-import provinceBorderFragmentShader from './shaders/province-border.fragment.glsl?raw';
+import staticBorderOverlayVertexShader from './shaders/static-border-overlay.vertex.glsl?raw';
+import staticBorderOverlayFragmentShader from './shaders/static-border-overlay.fragment.glsl?raw';
 
-interface ProvinceSegmentData {
-    points: number[][]; // [lat, lon][]
-    provinces: number[]; // Province IDs
+/**
+ * Segment data format - works with both country and province segments
+ */
+interface SegmentData {
+    points: Array<[number, number] | {lat: number, lon: number}>; // Province: [lat, lon][], Country: {lat, lon}[]
+    regions?: string[]; // Region IDs (for country format: ["US", "CA"])
+    countries?: string[]; // Alternative name in country format
+    provinces?: string[]; // Province IDs (for province format: ["US-0", "US-1"])
     type: string;
 }
 
+/**
+ * Province segments JSON format
+ */
 interface ProvinceSegmentsJSON {
     country: string;
-    segments: ProvinceSegmentData[];
+    segments: SegmentData[];
 }
 
 /**
- * State for a loaded province border overlay
+ * Country segments JSON format
  */
-export interface ProvinceBorderState {
-    countryISO2: string;
+type CountrySegmentsJSON = SegmentData[];
+
+/**
+ * State for a loaded static border overlay
+ */
+export interface StaticBorderOverlayState {
+    name: string;
     borderMesh: Mesh | null;
     material: ShaderMaterial | null;
     isVisible: boolean;
 }
 
 /**
- * Load province border data from JSON
+ * Configuration for loading static border overlay
  */
-export async function loadProvinceBorders(
+export interface StaticBorderOverlayConfig {
+    segmentUrl: string;           // e.g., "/segments.json" or "/province-segments/US.json"
+    name: string;                  // Mesh identifier (e.g., "US-provinces" or "countries")
+    segmentFormat: 'country' | 'province'; // Which JSON format to expect
+}
+
+/**
+ * Load static border overlay from segment data
+ *
+ * Example usage for capital medals:
+ * ```typescript
+ * const overlay = await loadStaticBorderOverlay(scene, {
+ *     segmentUrl: "/segments.json",
+ *     name: "russia-overlay",
+ *     segmentFormat: 'country'
+ * });
+ * showStaticBorderOverlay(overlay);
+ * ```
+ *
+ * Example usage for province quizzes:
+ * ```typescript
+ * const overlay = await loadStaticBorderOverlay(scene, {
+ *     segmentUrl: "/province-segments/US.json",
+ *     name: "US-provinces",
+ *     segmentFormat: 'province'
+ * });
+ * showStaticBorderOverlay(overlay);
+ * ```
+ */
+export async function loadStaticBorderOverlay(
     scene: Scene,
-    iso2: string
-): Promise<ProvinceBorderState> {
-    const url = `/province-segments/${iso2}.json`;
+    config: StaticBorderOverlayConfig
+): Promise<StaticBorderOverlayState> {
+    const { segmentUrl, name, segmentFormat } = config;
 
-    console.log(`Loading province borders for ${iso2}...`);
+    console.log(`Loading static border overlay: ${name} from ${segmentUrl}...`);
 
-    const response = await fetch(url);
+    const response = await fetch(segmentUrl);
     if (!response.ok) {
-        throw new Error(`Failed to load province segments: ${response.statusText}`);
+        throw new Error(`Failed to load segments: ${response.statusText}`);
     }
 
-    const data: ProvinceSegmentsJSON = await response.json();
+    const rawData = await response.json();
+
+    // Parse based on format
+    let segments: SegmentData[];
+    if (segmentFormat === 'province') {
+        const data = rawData as ProvinceSegmentsJSON;
+        segments = data.segments;
+    } else {
+        segments = rawData as CountrySegmentsJSON;
+    }
 
     // Generate quad strip meshes for all segments
     const meshes: Mesh[] = [];
 
-    for (const segment of data.segments) {
+    for (const segment of segments) {
         if (segment.points.length < 2) continue;
 
         // Regions at rest sit at exactly REGION_ALTITUDE above the sphere surface.
         // Place borders just above that with a small clearance to prevent z-fighting.
-        const PROVINCE_BORDER_ALTITUDE = REGION_ALTITUDE + 0.002;
+        const BORDER_ALTITUDE = REGION_ALTITUDE + 0.002;
 
         // Convert lat/lon to 3D sphere points
-        const points3D: Vector3[] = segment.points.map(([lat, lon]) =>
-            latLonToSphere(lat, lon, PROVINCE_BORDER_ALTITUDE)
-        );
+        // Handle both province format [lat, lon][] and country format {lat, lon}[]
+        const points3D: Vector3[] = segment.points.map(point => {
+            if (Array.isArray(point)) {
+                // Province format: [lat, lon]
+                return latLonToSphere(point[0], point[1], BORDER_ALTITUDE);
+            } else {
+                // Country format: {lat, lon}
+                return latLonToSphere(point.lat, point.lon, BORDER_ALTITUDE);
+            }
+        });
 
         const mesh = createQuadStripBorder(scene, points3D);
         if (mesh) {
@@ -88,24 +156,38 @@ export async function loadProvinceBorders(
     if (meshes.length > 0) {
         borderMesh = Mesh.MergeMeshes(meshes, true, true, undefined, false, false);
         if (borderMesh) {
-            borderMesh.name = `provinceBorders_${iso2}`;
+            borderMesh.name = `staticBorderOverlay_${name}`;
         }
     }
 
     // Create shader material
-    const material = createProvinceBorderMaterial(scene);
+    const material = createStaticBorderOverlayMaterial(scene);
     if (borderMesh && material) {
         borderMesh.material = material;
     }
 
-    console.log(`Loaded ${data.segments.length} province border segments for ${iso2}`);
+    console.log(`Loaded ${segments.length} border segments for ${name}`);
 
     return {
-        countryISO2: iso2,
+        name,
         borderMesh,
         material,
         isVisible: false
     };
+}
+
+/**
+ * Convenience function for loading province borders (legacy API)
+ */
+export async function loadProvinceBorders(
+    scene: Scene,
+    iso2: string
+): Promise<StaticBorderOverlayState> {
+    return loadStaticBorderOverlay(scene, {
+        segmentUrl: `/province-segments/${iso2}.json`,
+        name: `${iso2}-provinces`,
+        segmentFormat: 'province'
+    });
 }
 
 /**
@@ -165,7 +247,7 @@ function createQuadStripBorder(scene: Scene, points: Vector3[]): Mesh | null {
     }
 
     // Create mesh
-    const mesh = new Mesh("provinceQuadStrip", scene);
+    const mesh = new Mesh("staticBorderQuadStrip", scene);
     const vertexData = new VertexData();
     vertexData.positions = new Float32Array(positions);
     vertexData.indices = new Uint32Array(indices);
@@ -180,13 +262,13 @@ function createQuadStripBorder(scene: Scene, points: Vector3[]): Mesh | null {
 }
 
 /**
- * Create province border shader material
+ * Create static border overlay shader material
  */
-function createProvinceBorderMaterial(scene: Scene): ShaderMaterial {
-    const name = "provinceBorderShader";
+function createStaticBorderOverlayMaterial(scene: Scene): ShaderMaterial {
+    const name = "staticBorderOverlayShader";
 
-    Effect.ShadersStore[`${name}VertexShader`] = provinceBorderVertexShader;
-    Effect.ShadersStore[`${name}FragmentShader`] = provinceBorderFragmentShader;
+    Effect.ShadersStore[`${name}VertexShader`] = staticBorderOverlayVertexShader;
+    Effect.ShadersStore[`${name}FragmentShader`] = staticBorderOverlayFragmentShader;
 
     const shaderMaterial = new ShaderMaterial(name, scene, {
         vertex: name,
@@ -214,9 +296,9 @@ function createProvinceBorderMaterial(scene: Scene): ShaderMaterial {
 }
 
 /**
- * Show province borders
+ * Show static border overlay
  */
-export function showProvinceBorders(state: ProvinceBorderState): void {
+export function showStaticBorderOverlay(state: StaticBorderOverlayState): void {
     if (state.borderMesh) {
         state.borderMesh.setEnabled(true);
         state.isVisible = true;
@@ -224,9 +306,9 @@ export function showProvinceBorders(state: ProvinceBorderState): void {
 }
 
 /**
- * Hide province borders
+ * Hide static border overlay
  */
-export function hideProvinceBorders(state: ProvinceBorderState): void {
+export function hideStaticBorderOverlay(state: StaticBorderOverlayState): void {
     if (state.borderMesh) {
         state.borderMesh.setEnabled(false);
         state.isVisible = false;
@@ -234,11 +316,25 @@ export function hideProvinceBorders(state: ProvinceBorderState): void {
 }
 
 /**
- * Update province border uniforms based on camera zoom.
+ * Convenience function (legacy API)
+ */
+export function showProvinceBorders(state: StaticBorderOverlayState): void {
+    showStaticBorderOverlay(state);
+}
+
+/**
+ * Convenience function (legacy API)
+ */
+export function hideProvinceBorders(state: StaticBorderOverlayState): void {
+    hideStaticBorderOverlay(state);
+}
+
+/**
+ * Update static border overlay uniforms based on camera zoom.
  * Uses the same getZoomValue interpolation as the rest of the codebase.
  */
-export function updateProvinceBorderUniforms(
-    state: ProvinceBorderState,
+export function updateStaticBorderOverlayUniforms(
+    state: StaticBorderOverlayState,
     camera: ArcRotateCamera
 ): void {
     if (!state.material || !state.isVisible) return;
@@ -251,9 +347,19 @@ export function updateProvinceBorderUniforms(
 }
 
 /**
- * Dispose province border state
+ * Convenience function (legacy API)
  */
-export function disposeProvinceBorders(state: ProvinceBorderState): void {
+export function updateProvinceBorderUniforms(
+    state: StaticBorderOverlayState,
+    camera: ArcRotateCamera
+): void {
+    updateStaticBorderOverlayUniforms(state, camera);
+}
+
+/**
+ * Dispose static border overlay state
+ */
+export function disposeStaticBorderOverlay(state: StaticBorderOverlayState): void {
     if (state.borderMesh) {
         state.borderMesh.dispose();
         state.borderMesh = null;
@@ -262,4 +368,11 @@ export function disposeProvinceBorders(state: ProvinceBorderState): void {
         state.material.dispose();
         state.material = null;
     }
+}
+
+/**
+ * Convenience function (legacy API)
+ */
+export function disposeProvinceBorders(state: StaticBorderOverlayState): void {
+    disposeStaticBorderOverlay(state);
 }
