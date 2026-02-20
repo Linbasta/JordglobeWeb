@@ -124,19 +124,23 @@ async function runTests() {
         assert(!validProvinceId.test('0'), 'Numeric only should not be valid province ID');
     });
 
-    console.log('\nTest Group 5: Altitude Constants (Deselection Fix)\n');
+    console.log('\nTest Group 5: Altitude Save/Restore (Deselection Fix)\n');
 
-    await test('Province and country default altitudes differ', async () => {
-        // This captures the fix from commit c709d33
-        // Countries default to 0.4, provinces default to 0.2
-        // The region-selection.ts file has getDefaultAltitude() that returns different values
+    await test('Region selection saves and restores altitude', async () => {
+        // This captures the fix from commit c709d33 using an improved approach
+        // Instead of using separate constants for countries (0.4) and provinces (0.2),
+        // we now save the actual altitude before elevating and restore it afterward.
+        // This works for both countries and provinces automatically.
 
         const regionSelectionSource = await readFile('src/shared/behaviors/region-selection.ts', 'utf-8');
 
-        assert(regionSelectionSource.includes('ALT_DEFAULT_COUNTRY'), 'Should define ALT_DEFAULT_COUNTRY');
-        assert(regionSelectionSource.includes('ALT_DEFAULT_PROVINCE'), 'Should define ALT_DEFAULT_PROVINCE');
-        assert(regionSelectionSource.includes('getDefaultAltitude'), 'Should have getDefaultAltitude function');
-        assert(regionSelectionSource.includes('isInRegionMode()'), 'getDefaultAltitude should check isInRegionMode');
+        assert(regionSelectionSource.includes('savedAltitude'), 'Should have savedAltitude variable');
+        assert(regionSelectionSource.includes('controller.getAltitude(country.regionIndex)'),
+            'Should save altitude before elevating');
+        assert(regionSelectionSource.includes('controller.setAltitude('),
+            'Should restore altitude using controller');
+        assert(regionSelectionSource.includes('savedAltitude = -1'),
+            'Should reset savedAltitude after use');
     });
 
     // Summary

@@ -117,8 +117,8 @@ export class SoloGameController extends BaseGameController {
             // For country/province questions, we need a valid region and check if disabled
             if (country) {
                 // Don't submit answer if region is disabled
-                // Use active region state (works for both countries and provinces)
-                const state = this.globe.getActiveRegionState(country.regionIndex);
+                const controller = this.globe.getActiveController();
+                const state = controller.getState(country.regionIndex);
                 if (state === STATE_DISABLED) {
                     return;  // Ignore disabled regions
                 }

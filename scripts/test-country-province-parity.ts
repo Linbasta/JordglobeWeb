@@ -79,11 +79,12 @@ async function runTests() {
 
     console.log('\nTest Group 2: Animation Function Signatures\n');
 
-    await test('Animation functions use active region API', async () => {
-        // Verify that animation functions use the active region API (not separate country/province methods)
-        assert(animSource.includes('globe.setActiveRegionState'), 'Should use setActiveRegionState');
-        assert(animSource.includes('globe.setActiveRegionAltitude'), 'Should use setActiveRegionAltitude');
-        assert(animSource.includes('globe.animateActiveRegionAltitude'), 'Should use animateActiveRegionAltitude');
+    await test('Animation functions use controller-based API (Phase 5)', async () => {
+        // Verify that animation functions use the new controller-based API
+        assert(animSource.includes('globe.getActiveController()'), 'Should get active controller');
+        assert(animSource.includes('controller.setState'), 'Should use controller.setState()');
+        assert(animSource.includes('controller.setAltitude'), 'Should use controller.setAltitude()');
+        assert(animSource.includes('controller.animateAltitude'), 'Should use controller.animateAltitude()');
     });
 
     console.log('\nTest Group 3: Animation Constants Parity\n');

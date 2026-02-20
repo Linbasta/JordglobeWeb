@@ -252,6 +252,11 @@ export interface EarthGlobeAPI {
     getCountryPicker(): import('./region-picker').RegionPicker;
     getActivePicker(): import('./region-picker').RegionPicker;
 
+    // Region controllers (NEW API - preferred over routing methods)
+    getCountryController(): import('./region-controller').RegionController;
+    getProvinceController(): import('./region-controller').RegionController;
+    getActiveController(): import('./region-controller').RegionController;
+
     // Material creation
     createUnlitMaterial(originalMaterial: import('@babylonjs/core/Materials/material').Material | null): import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial;
 
@@ -271,22 +276,33 @@ export interface EarthGlobeAPI {
     getAltitudeAtLatLon(lat: number, lon: number): number;
 
     // Animation control - Altitude
+    /** @deprecated Use getCountryController().setAltitude() instead */
     setCountryAltitude(countryIndex: number, altitude: number): void;
+    /** @deprecated Use getCountryController().getAltitude() instead */
     getCountryAltitude(countryIndex: number): number;
+    /** @deprecated Use getCountryController().animateAltitude() instead */
     animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Animation control - State (STATE_NORMAL, STATE_DISABLED, STATE_CLEARED)
+    /** @deprecated Use getCountryController().setState() instead */
     setCountryState(countryIndex: number, state: number): void;
+    /** @deprecated Use getCountryController().getState() instead */
     getCountryState(countryIndex: number): number;
 
     // Animation control - Blend (0 = full state effect, 1 = normal appearance)
+    /** @deprecated Use getCountryController().setBlend() instead */
     setCountryBlend(countryIndex: number, blend: number): void;
+    /** @deprecated Use getCountryController().getBlend() instead */
     getCountryBlend(countryIndex: number): number;
+    /** @deprecated Use getCountryController().animateBlend() instead */
     animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Animation control - Expansion (small countries)
+    /** @deprecated Use getCountryController().setExpansion() instead */
     setCountryExpansion(countryIndex: number, expansion: number): void;
+    /** @deprecated Use getCountryController().getExpansion() instead */
     getCountryExpansion(countryIndex: number): number;
+    /** @deprecated Use getCountryController().animateExpansion() instead */
     animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
     isSmallCountry(countryIndex: number): boolean;
     hideSmallCountryMarker(countryIndex: number): void;
@@ -328,21 +344,35 @@ export interface EarthGlobeAPI {
     animateActiveRegionAltitude(regionIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Province animation (when in region mode)
+    /** @deprecated Use getProvinceController().setState() instead */
     setProvinceState(provinceIndex: number, state: number): void;
+    /** @deprecated Use getProvinceController().getState() instead */
     getProvinceState(provinceIndex: number): number;
+    /** @deprecated Use getProvinceController().setAltitude() instead */
     setProvinceAltitude(provinceIndex: number, altitude: number): void;
+    /** @deprecated Use getProvinceController().getAltitude() instead */
     getProvinceAltitude(provinceIndex: number): number;
+    /** @deprecated Use getProvinceController().setBlend() instead */
     setProvinceBlend(provinceIndex: number, blend: number): void;
+    /** @deprecated Use getProvinceController().getBlend() instead */
     getProvinceBlend(provinceIndex: number): number;
+    /** @deprecated Use getProvinceController().animateBlend() instead */
     animateProvinceBlend(provinceIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Active region (generic - works for both countries and provinces)
+    /** @deprecated Use getActiveController().setState() instead */
     setActiveRegionState(regionIndex: number, state: number): void;
+    /** @deprecated Use getActiveController().getState() instead */
     getActiveRegionState(regionIndex: number): number;
+    /** @deprecated Use getActiveController().setBlend() instead */
     setActiveRegionBlend(regionIndex: number, blend: number): void;
+    /** @deprecated Use getActiveController().getBlend() instead */
     getActiveRegionBlend(regionIndex: number): number;
+    /** @deprecated Use getActiveController().setAltitude() instead */
     setActiveRegionAltitude(regionIndex: number, altitude: number): void;
+    /** @deprecated Use getActiveController().getAltitude() instead */
     getActiveRegionAltitude(regionIndex: number): number;
+    /** @deprecated Use getActiveController().animateBlend() instead */
     animateActiveRegionBlend(regionIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void>;
 
     // Lifecycle

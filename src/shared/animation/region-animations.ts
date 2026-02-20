@@ -29,7 +29,8 @@ function lookupEasing(table: number[], t: number): number {
  * Works for both countries and provinces (uses active region API)
  */
 export function animateCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
-    globe.setActiveRegionState(regionIndex, STATE_CLEARED);
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_CLEARED);
     return new Promise((resolve) => {
         const startTime = performance.now();
         function tick() {
@@ -37,11 +38,11 @@ export function animateCorrectRegion(globe: EarthGlobeAPI, regionIndex: number):
             const t = Math.min(1, elapsed / CORRECT_DURATION);
             const eased = lookupEasing(CORRECT_EASING, t);
             const altitude = NORMAL_ALTITUDE + (CLEARED_ALTITUDE - NORMAL_ALTITUDE) * eased;
-            globe.setActiveRegionAltitude(regionIndex, altitude);
+            controller.setAltitude(regionIndex, altitude);
             const blend = Math.max(0, Math.min(1,
                 (altitude - CLEARED_ALTITUDE) / (NORMAL_ALTITUDE - CLEARED_ALTITUDE)
             ));
-            globe.setActiveRegionBlend(regionIndex, blend);
+            controller.setBlend(regionIndex, blend);
             if (t >= 1) { resolve(); return; }
             requestAnimationFrame(tick);
         }
@@ -62,10 +63,11 @@ export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Prom
  * Works for both countries and provinces (uses active region API)
  */
 export async function animateToClearedAfterRevealRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
-    globe.setActiveRegionState(regionIndex, STATE_CLEARED);
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_CLEARED);
     await Promise.all([
-        globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION * 2),
-        globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION * 2),
+        controller.animateAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION * 2),
+        controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION * 2),
     ]);
 }
 
@@ -82,10 +84,11 @@ export async function animateToClearedAfterReveal(globe: EarthGlobeAPI, countryI
  * Works for both countries and provinces (uses active region API)
  */
 export async function animateToDisabledRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
-    globe.setActiveRegionState(regionIndex, STATE_DISABLED);
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_DISABLED);
     await Promise.all([
-        globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
-        globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION)
+        controller.animateAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
+        controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION)
     ]);
 }
 
@@ -102,9 +105,10 @@ export async function animateToDisabled(globe: EarthGlobeAPI, countryIndex: numb
  * Works for both countries and provinces (uses active region API)
  */
 export function setRegionDisabledImmediate(globe: EarthGlobeAPI, regionIndex: number): void {
-    globe.setActiveRegionState(regionIndex, STATE_DISABLED);
-    globe.setActiveRegionBlend(regionIndex, 0.0);
-    globe.setActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE);
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_DISABLED);
+    controller.setBlend(regionIndex, 0.0);
+    controller.setAltitude(regionIndex, CLEARED_ALTITUDE);
 }
 
 /**
@@ -120,19 +124,20 @@ export function setDisabledImmediate(globe: EarthGlobeAPI, countryIndex: number)
  * Works for both countries and provinces (uses active region API)
  */
 export async function animateWrongRegion(globe: EarthGlobeAPI, regionIndex: number, markAsCleared: boolean = false): Promise<void> {
+    const controller = globe.getActiveController();
     // Brief pop up
-    await globe.animateActiveRegionAltitude(regionIndex, WRONG_ALTITUDE, ANIMATION_DURATION);
+    await controller.animateAltitude(regionIndex, WRONG_ALTITUDE, ANIMATION_DURATION);
 
     if (markAsCleared) {
         // Transition to cleared state
-        globe.setActiveRegionState(regionIndex, STATE_CLEARED);
+        controller.setState(regionIndex, STATE_CLEARED);
         await Promise.all([
-            globe.animateActiveRegionAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
-            globe.animateActiveRegionBlend(regionIndex, 0.0, ANIMATION_DURATION)
+            controller.animateAltitude(regionIndex, CLEARED_ALTITUDE, ANIMATION_DURATION),
+            controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION)
         ]);
     } else {
         // Return to normal
-        await globe.animateActiveRegionAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION);
+        await controller.animateAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION);
     }
 }
 
@@ -149,7 +154,8 @@ export async function animateWrong(globe: EarthGlobeAPI, countryIndex: number, m
  * Works for both countries and provinces (uses active region API)
  */
 export async function animateShowCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
-    await globe.animateActiveRegionAltitude(regionIndex, SHOW_CORRECT_ALTITUDE, 300);
+    const controller = globe.getActiveController();
+    await controller.animateAltitude(regionIndex, SHOW_CORRECT_ALTITUDE, 300);
 }
 
 /**
@@ -164,10 +170,11 @@ export async function animateShowCorrect(globe: EarthGlobeAPI, countryIndex: num
  * Works for both countries and provinces (uses active region API)
  */
 export async function animateToNormalRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
-    globe.setActiveRegionState(regionIndex, STATE_NORMAL);
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_NORMAL);
     await Promise.all([
-        globe.animateActiveRegionAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION),
-        globe.animateActiveRegionBlend(regionIndex, 1.0, ANIMATION_DURATION)
+        controller.animateAltitude(regionIndex, NORMAL_ALTITUDE, ANIMATION_DURATION),
+        controller.animateBlend(regionIndex, 1.0, ANIMATION_DURATION)
     ]);
 }
 

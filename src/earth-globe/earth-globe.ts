@@ -553,6 +553,27 @@ export class EarthGlobe {
     }
 
     /**
+     * Get the country controller (for direct access to country animations/state)
+     */
+    getCountryController(): RegionController {
+        return this.countryController;
+    }
+
+    /**
+     * Get the province controller (for direct access to province animations/state)
+     */
+    getProvinceController(): RegionController {
+        return this.provinceController;
+    }
+
+    /**
+     * Get the active controller (routes based on region mode - country or province)
+     */
+    getActiveController(): RegionController {
+        return this.activeController;
+    }
+
+    /**
      * Get the shader factory (for creating unlit materials)
      */
     getShaderFactory(): ShaderFactory {

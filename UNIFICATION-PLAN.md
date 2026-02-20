@@ -465,7 +465,9 @@ async loadSegments(url: string, animationIndexOffset: number): Promise<void> {
 
 ---
 
-### Phase 4: Small Regions (Expansion + Markers)
+### Phase 4: Small Regions (Expansion + Markers) — DEFERRED to Phase 7
+
+**Status**: ⏸️ **DEFERRED** - Attempted and reverted. See Phase 7 for detailed analysis.
 
 **Goal**: Small region expansion works for both countries and provinces.
 
@@ -628,6 +630,114 @@ export class EarthGlobe {
 **Test Verification**: All Phase 0 tests pass.
 
 **Estimated Time**: 4-5 hours
+
+---
+
+### Phase 7: Small Province Expansion (DEFERRED - Needs Full Analysis)
+
+**Status**: ❌ **NOT READY** - Incomplete understanding of requirements
+
+**History**: This phase was attempted after Phase 3 but failed due to multiple architectural issues. Reverted via git reset to commit 218943d.
+
+#### What Works for Countries
+
+Small country expansion (e.g., Vatican, Singapore, Monaco) uses a sophisticated pipeline:
+
+1. **Shader System**: Two vertex shaders
+   - `animated.vertex.glsl`: Regular countries (reads altitude from R channel)
+   - `animated-small.vertex.glsl`: Small countries (reads altitude + expansion from RGBA)
+
+2. **Polygon Classification**: During region loading
+   - `polygon.isSmall` flag set based on area calculation
+   - Flags must be set **before** `mergeRegions()` call
+   - Material pipeline: `mergeRegions(regularMaterial, smallMaterial)` buckets polygons
+
+3. **Centroid Computation**
+   - Small countries compute `regionData.centroid` for expansion pivot point
+   - Centroid becomes `countryPivot` vertex attribute in shader
+   - Regular countries have `centroid = null`
+
+4. **Animation Texture Encoding**
+   - RGBA texture stores: altitude (R), state (G), blend (B), expansion (A)
+   - Expansion stored as `expansion / 4.0` in alpha channel
+   - Small shader reads all 4 channels, regular shader reads only R
+
+5. **Segment Border Synchronization**
+   - Border segments use `border-quad.vertex.glsl` shader
+   - Segments animate with **altitude only**, not expansion
+   - This is correct behavior - borders don't magnify, only raise/lower
+
+6. **Marker System**
+   - Small countries show/hide marker icons above centroid
+   - Marker visibility controlled by `hideSmallCountryMarker()` / `showSmallCountryMarker()`
+   - Markers expand/contract with expansion animation
+
+#### What's Broken for Provinces
+
+Attempted quick fix for Rhode Island expansion failed. Multiple issues discovered:
+
+1. **Wrong Shader**: Provinces use regular shader only
+   - Current: `mergeRegions(provinceMaterial, provinceMaterial)` (both same)
+   - Required: `mergeRegions(provinceMaterial, provinceSmallMaterial)` (two buckets)
+
+2. **Polygon Classification Timing**: `polygon.isSmall` flag not set before merge
+   - Must identify small provinces during loading
+   - Must set flags before `mergeRegions()` call
+   - Current code only marks countries as small
+
+3. **Missing Centroids**: Small provinces don't compute centroids
+   - `countryPivot` vertex attribute undefined for provinces
+   - Expansion uses (0,0,0) as pivot instead of region center
+   - Results in wrong expansion origin
+
+4. **Animation Texture Encoding**: Province texture might not encode expansion correctly
+   - Need to verify alpha channel is written for provinces
+   - Check if small province shader reads expansion value
+
+5. **Segment Border Shader**: Province segments need altitude animation support
+   - Check if province segments use correct shader
+   - Verify they animate with altitude (not expansion)
+
+6. **Marker System**: Province markers don't exist yet
+   - No equivalent to `hideSmallCountryMarker()` for provinces
+   - Marker pool needs province support
+
+#### Root Cause Analysis
+
+The small region expansion system is deeply integrated into the rendering pipeline:
+- Shader compilation (2 separate shaders)
+- Vertex attribute generation (`countryPivot`)
+- Material bucketing during merge
+- Animation texture format (RGBA vs R)
+- Marker system integration
+
+**This is not a surface-level feature** - it affects 6+ subsystems. A proper implementation requires:
+1. Deep understanding of the shader pipeline
+2. Vertex attribute generation system
+3. Material merging and bucketing logic
+4. Animation texture encoding scheme
+5. Segment border rendering architecture
+6. Marker pool and visibility system
+
+#### Why Deferring
+
+**User feedback**: "I think we should revert and try again later, because this is far from a working solution... Border segments are not following along with the expansion. Which they should and do, which make me suspect you are duplicating a lot of code otherwise it should work as countries do. Also the expansion is to extreme and doesn't even look like the county equivalents. The extruded region wall doesn't seem to behave in the correct way either."
+
+**Analysis**: The user is correct. The quick fix approach was shallow:
+- Attempted to add province detection without understanding the full shader pipeline
+- Created duplicate materials without proper bucketization
+- Didn't verify vertex attributes, centroid computation, segment shaders
+- Multiple rendering issues indicate missing architectural understanding
+
+**Proper approach**: After completing Phases 5-6 (controller exposure + routing removal), return to this with:
+1. Full shader pipeline audit (both countries and provinces)
+2. Vertex attribute comparison (what provinces lack vs countries)
+3. Material system deep dive (bucketing, merging, compilation)
+4. Animation texture format verification
+5. Test all 6 subsystems independently
+6. Implement in correct sequence with proper validation
+
+**Estimated Time**: 10-12 hours (after other phases complete)
 
 ---
 
