@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 globeInstance.getCountryPicker(),
                 globeInstance.getEarthSphere(),
                 (material) => globeInstance.createUnlitMaterial(material),
-                (countryIndex) => globeInstance.getCountryAltitude(countryIndex)
+                (countryIndex) => globeInstance.getCountryController().getAltitude(countryIndex)
             );
 
             // Create and start game (host-specific logic)

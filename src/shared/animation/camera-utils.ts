@@ -347,7 +347,7 @@ export async function frameCountry(
     // Get altitude to use for framing
     const altitudeNormalized = gridConfig?.overrideAltitude !== undefined
         ? gridConfig.overrideAltitude
-        : (globe?.getCountryAltitude(countryIndex) ?? 0.5);
+        : (globe?.getCountryController().getAltitude(countryIndex) ?? 0.5);
     const actualAltitude = altitudeNormalized * ANIMATION_AMPLITUDE;
 
     const altitudeSource = gridConfig?.overrideAltitude !== undefined ? 'override' : 'current';

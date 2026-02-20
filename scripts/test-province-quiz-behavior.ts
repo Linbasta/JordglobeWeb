@@ -70,26 +70,26 @@ async function runTests() {
         assert(earthGlobeSource.includes('exitRegionMode()'), 'Should have exitRegionMode method');
     });
 
-    console.log('\nTest Group 2: Province Animation API\n');
+    console.log('\nTest Group 2: Controller-Based Animation API (Phase 6)\n');
 
-    await test('Active region API exists for state', async () => {
-        assert(earthGlobeSource.includes('setActiveRegionState('), 'setActiveRegionState should exist');
-        assert(earthGlobeSource.includes('getActiveRegionState('), 'getActiveRegionState should exist');
+    await test('Controller getter methods exist', async () => {
+        assert(earthGlobeSource.includes('getCountryController()'), 'Should have getCountryController()');
+        assert(earthGlobeSource.includes('getProvinceController()'), 'Should have getProvinceController()');
+        assert(earthGlobeSource.includes('getActiveController()'), 'Should have getActiveController()');
     });
 
-    await test('Active region API exists for altitude', async () => {
-        assert(earthGlobeSource.includes('setActiveRegionAltitude('), 'setActiveRegionAltitude should exist');
-        assert(earthGlobeSource.includes('getActiveRegionAltitude('), 'getActiveRegionAltitude should exist');
-    });
+    await test('Controllers provide state/altitude/blend methods', async () => {
+        // Controllers should have setState, setAltitude, setBlend methods
+        // We verify this by checking the controller type definition
+        const { readFile } = await import('fs/promises');
+        const controllerSource = await readFile('src/earth-globe/region-controller.ts', 'utf-8');
 
-    await test('Active region API exists for blend', async () => {
-        assert(earthGlobeSource.includes('setActiveRegionBlend('), 'setActiveRegionBlend should exist');
-        assert(earthGlobeSource.includes('getActiveRegionBlend('), 'getActiveRegionBlend should exist');
-    });
-
-    await test('Active region API has animate methods', async () => {
-        assert(earthGlobeSource.includes('animateActiveRegionAltitude('), 'animateActiveRegionAltitude should exist');
-        assert(earthGlobeSource.includes('animateActiveRegionBlend('), 'animateActiveRegionBlend should exist');
+        assert(controllerSource.includes('setState('), 'RegionController should have setState()');
+        assert(controllerSource.includes('setAltitude('), 'RegionController should have setAltitude()');
+        assert(controllerSource.includes('setBlend('), 'RegionController should have setBlend()');
+        assert(controllerSource.includes('getState('), 'RegionController should have getState()');
+        assert(controllerSource.includes('getAltitude('), 'RegionController should have getAltitude()');
+        assert(controllerSource.includes('getBlend('), 'RegionController should have getBlend()');
     });
 
     console.log('\nTest Group 3: Province vs Country Constants\n');

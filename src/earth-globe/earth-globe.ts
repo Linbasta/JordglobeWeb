@@ -780,7 +780,7 @@ export class EarthGlobe {
 
         // Hide the parent country: push altitude to 0 (recedes into globe) and grey it out
         this.countryController.setAltitude(parentIndex, 0);
-        this.setCountryState(parentIndex, STATE_DISABLED);
+        this.countryController.setState(parentIndex, STATE_DISABLED);
 
         // Switch active controller so hit-testing goes through provinces
         this.activeController = this.provinceController;
@@ -798,7 +798,7 @@ export class EarthGlobe {
         if (this.regionModeParentIndex >= 0) {
             const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
             this.countryController.setAltitude(this.regionModeParentIndex, defaultAltitude);
-            this.setCountryState(this.regionModeParentIndex, STATE_NORMAL);
+            this.countryController.setState(this.regionModeParentIndex, STATE_NORMAL);
         }
 
         // Hide all province meshes and reset state
@@ -872,112 +872,9 @@ export class EarthGlobe {
     // Public API - Country Animation
     // =========================================================================
 
-    /**
-     * Set the altitude value for a country (instant)
-     * @param countryIndex Country index
-     * @param altitude Value between 0 and 1
-     */
-    setCountryAltitude(countryIndex: number, altitude: number): void {
-        this.countryController.setAltitude(countryIndex, altitude);
-    }
-
-    /**
-     * Get the current altitude value for a country
-     */
-    getCountryAltitude(countryIndex: number): number {
-        return this.countryController.getAltitude(countryIndex);
-    }
-
-    /**
-     * Set the state value for a country (instant)
-     * @param countryIndex Country index
-     * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
-     */
-    setCountryState(countryIndex: number, state: number): void {
-        this.countryController.setState(countryIndex, state);
-
-        // Hide/show small country marker based on state
-        if (this.smallCountryMarkers.has(countryIndex)) {
-            if (state === STATE_NORMAL) {
-                this.showSmallCountryMarker(countryIndex);
-            } else {
-                this.hideSmallCountryMarker(countryIndex);
-            }
-        }
-    }
-
-    /**
-     * Get the current state value for a country
-     */
-    getCountryState(countryIndex: number): number {
-        return this.countryController.getState(countryIndex);
-    }
-
-    /**
-     * Set the blend factor for a country (instant)
-     * @param countryIndex Country index
-     * @param blend Value between 0 (full state effect) and 1 (normal appearance)
-     */
-    setCountryBlend(countryIndex: number, blend: number): void {
-        this.countryController.setBlend(countryIndex, blend);
-    }
-
-    /**
-     * Get the current blend factor for a country
-     */
-    getCountryBlend(countryIndex: number): number {
-        return this.countryController.getBlend(countryIndex);
-    }
-
-    /**
-     * Animate a country's altitude over time
-     * @param countryIndex Country index
-     * @param targetAltitude Target altitude (0-1)
-     * @param durationMs Animation duration in milliseconds
-     */
-    animateCountryAltitude(countryIndex: number, targetAltitude: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.countryController.animateAltitude(countryIndex, targetAltitude, durationMs, easing);
-    }
-
-    /**
-     * Animate a country's blend factor over time
-     * @param countryIndex Country index
-     * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
-     * @param durationMs Animation duration in milliseconds
-     */
-    animateCountryBlend(countryIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.countryController.animateBlend(countryIndex, targetBlend, durationMs, easing);
-    }
-
     // =========================================================================
     // Public API - Country Expansion (small countries)
     // =========================================================================
-
-    /**
-     * Set the expansion factor for a country (instant)
-     * @param countryIndex Country index
-     * @param expansion Expansion factor (1.0 = normal, >1 = magnified)
-     */
-    setCountryExpansion(countryIndex: number, expansion: number): void {
-        this.countryController.setExpansion(countryIndex, expansion);
-    }
-
-    /**
-     * Get the current expansion factor for a country
-     */
-    getCountryExpansion(countryIndex: number): number {
-        return this.countryController.getExpansion(countryIndex);
-    }
-
-    /**
-     * Animate a country's expansion factor over time
-     * @param countryIndex Country index
-     * @param targetExpansion Target expansion (1.0 = normal, >1 = magnified)
-     * @param durationMs Animation duration in milliseconds
-     */
-    animateCountryExpansion(countryIndex: number, targetExpansion: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.countryAnimator.animateExpansion(countryIndex, targetExpansion, durationMs, easing);
-    }
 
     /**
      * Check if a country is classified as small (needs magnification)
@@ -1024,159 +921,6 @@ export class EarthGlobe {
         if (!this.smallMarkerPool) return;
         for (const markerId of this.smallCountryMarkers.values()) {
             this.smallMarkerPool.showMarker(markerId);
-        }
-    }
-
-    // =========================================================================
-    // Public API - Province Animation (when in region mode)
-    // =========================================================================
-
-    /**
-     * Set the state value for a province (instant)
-     * Only works when in region mode.
-     * @param provinceIndex Province index
-     * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
-     */
-    setProvinceState(provinceIndex: number, state: number): void {
-        this.provinceController.setState(provinceIndex, state);
-    }
-
-    /**
-     * Get the current state value for a province
-     */
-    getProvinceState(provinceIndex: number): number {
-        return this.provinceController.getState(provinceIndex);
-    }
-
-    /**
-     * Set the altitude value for a province (instant)
-     * @param provinceIndex Province index
-     * @param altitude Value between 0 and 1
-     */
-    setProvinceAltitude(provinceIndex: number, altitude: number): void {
-        this.provinceController.setAltitude(provinceIndex, altitude);
-    }
-
-    /**
-     * Get the current altitude value for a province
-     */
-    getProvinceAltitude(provinceIndex: number): number {
-        return this.provinceController.getAltitude(provinceIndex);
-    }
-
-    /**
-     * Set the blend factor for a province (instant)
-     * @param provinceIndex Province index
-     * @param blend Value between 0 (full state effect) and 1 (normal appearance)
-     */
-    setProvinceBlend(provinceIndex: number, blend: number): void {
-        this.provinceController.setBlend(provinceIndex, blend);
-    }
-
-    /**
-     * Get the current blend factor for a province
-     */
-    getProvinceBlend(provinceIndex: number): number {
-        return this.provinceController.getBlend(provinceIndex);
-    }
-
-    /**
-     * Animate a province's blend factor over time
-     * @param provinceIndex Province index
-     * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
-     * @param durationMs Animation duration in milliseconds
-     */
-    animateProvinceBlend(provinceIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        return this.provinceController.animateBlend(provinceIndex, targetBlend, durationMs, easing);
-    }
-
-    // =========================================================================
-    // Public API - Active Region (Generic Country/Province Methods)
-    // =========================================================================
-
-    /**
-     * Set the state value for the active region (country or province based on mode)
-     * @param regionIndex Region index
-     * @param state One of STATE_NORMAL (0.0), STATE_DISABLED (0.25), STATE_CLEARED (0.50)
-     */
-    setActiveRegionState(regionIndex: number, state: number): void {
-        if (this.isInRegionMode()) {
-            this.setProvinceState(regionIndex, state);
-        } else {
-            this.setCountryState(regionIndex, state);
-        }
-    }
-
-    /**
-     * Get the current state value for the active region
-     */
-    getActiveRegionState(regionIndex: number): number {
-        if (this.isInRegionMode()) {
-            return this.getProvinceState(regionIndex);
-        } else {
-            return this.getCountryState(regionIndex);
-        }
-    }
-
-    /**
-     * Set the blend factor for the active region
-     * @param regionIndex Region index
-     * @param blend Value between 0 (full state effect) and 1 (normal appearance)
-     */
-    setActiveRegionBlend(regionIndex: number, blend: number): void {
-        if (this.isInRegionMode()) {
-            this.setProvinceBlend(regionIndex, blend);
-        } else {
-            this.setCountryBlend(regionIndex, blend);
-        }
-    }
-
-    /**
-     * Get the current blend factor for the active region
-     */
-    getActiveRegionBlend(regionIndex: number): number {
-        if (this.isInRegionMode()) {
-            return this.getProvinceBlend(regionIndex);
-        } else {
-            return this.getCountryBlend(regionIndex);
-        }
-    }
-
-    /**
-     * Set the altitude value for the active region
-     * @param regionIndex Region index
-     * @param altitude Value between 0 and 1
-     */
-    setActiveRegionAltitude(regionIndex: number, altitude: number): void {
-        if (this.isInRegionMode()) {
-            this.setProvinceAltitude(regionIndex, altitude);
-        } else {
-            this.setCountryAltitude(regionIndex, altitude);
-        }
-    }
-
-    /**
-     * Get the current altitude value for the active region
-     */
-    getActiveRegionAltitude(regionIndex: number): number {
-        if (this.isInRegionMode()) {
-            return this.getProvinceAltitude(regionIndex);
-        } else {
-            return this.getCountryAltitude(regionIndex);
-        }
-    }
-
-    /**
-     * Animate the active region's blend factor over time
-     * @param regionIndex Region index
-     * @param targetBlend Target blend (0 = full state effect, 1 = normal appearance)
-     * @param durationMs Animation duration in milliseconds
-     */
-    animateActiveRegionBlend(regionIndex: number, targetBlend: number, durationMs: number, easing?: (t: number) => number): Promise<void> {
-        if (this.isInRegionMode()) {
-            return this.animateProvinceBlend(regionIndex, targetBlend, durationMs, easing);
-        } else {
-            return this.animateCountryBlend(regionIndex, targetBlend, durationMs, easing);
         }
     }
 

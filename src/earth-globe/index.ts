@@ -15,7 +15,7 @@
  *     const country = g.getCountryAtLatLon(-6.0, 35.0);
  *
  *     // Animate countries
- *     g.animateCountryAltitude(country.countryIndex, 0.8, 300);
+ *     g.getCountryController().animateAltitude(country.countryIndex, 0.8, 300);
  *
  *     // Listen to events
  *     g.onCountryHover((event) => { ... });

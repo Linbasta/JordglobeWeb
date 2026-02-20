@@ -29,7 +29,7 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
         }
         // Small country expansion only applies in country mode, not province mode
         if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
-            globe.animateCountryExpansion(selectedIndex, 1.0, 300);
+            globe.getCountryController().animateExpansion(selectedIndex, 1.0, 300);
             if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
                 globe.showSmallCountryMarker(selectedIndex);
             }
@@ -57,7 +57,7 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
     controller.setAltitude(country.regionIndex, ALT_SELECTED);
     // Small country expansion only applies in country mode, not province mode
     if (!globe.isInRegionMode() && globe.isSmallCountry(country.regionIndex)) {
-        globe.animateCountryExpansion(country.regionIndex, 5.0, 300);
+        globe.getCountryController().animateExpansion(country.regionIndex, 5.0, 300);
         globe.hideSmallCountryMarker(country.regionIndex);
     }
 }
@@ -75,7 +75,7 @@ export function clearSelection(globe: EarthGlobeAPI): void {
         }
         // Small country expansion only applies in country mode, not province mode
         if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
-            globe.animateCountryExpansion(selectedIndex, 1.0, 300);
+            globe.getCountryController().animateExpansion(selectedIndex, 1.0, 300);
             if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
                 globe.showSmallCountryMarker(selectedIndex);
             }

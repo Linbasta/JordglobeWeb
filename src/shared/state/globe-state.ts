@@ -561,7 +561,7 @@ export class GlobeState {
                 anim.currentValue = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
                 // Apply to globe
-                globe.setCountryAltitude(countryIndex, anim.currentValue);
+                globe.getCountryController().setAltitude(countryIndex, anim.currentValue);
 
                 // Mark as completed
                 if (progress >= 1) {
@@ -581,7 +581,7 @@ export class GlobeState {
                 anim.currentValue = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
                 // Apply to globe
-                globe.setCountryBlend(countryIndex, anim.currentValue);
+                globe.getCountryController().setBlend(countryIndex, anim.currentValue);
 
                 // Mark as completed
                 if (progress >= 1) {

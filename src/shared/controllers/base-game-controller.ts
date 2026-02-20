@@ -86,7 +86,7 @@ export abstract class BaseGameController {
                     () => globe.getActivePicker(),
                     globe.getEarthSphere(),
                     (material) => globe.createUnlitMaterial(material),
-                    (countryIndex) => globe.getCountryAltitude(countryIndex)
+                    (countryIndex) => globe.getCountryController().getAltitude(countryIndex)
                 );
 
                 // Let subclass set up game-specific modules

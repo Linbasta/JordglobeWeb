@@ -99,66 +99,41 @@ async function runTests() {
         assert(animSource.includes('ANIMATION_DURATION'), 'Should define ANIMATION_DURATION');
     });
 
-    console.log('\nTest Group 4: Active Region API (Routing)\n');
+    console.log('\nTest Group 4: Phase 6 Complete - Routing Methods Removed\n');
 
-    await test('Active region methods use isInRegionMode() to route', async () => {
-        // Verify that EarthGlobe has routing methods that delegate based on mode
+    await test('Deprecated routing methods have been removed', async () => {
+        // Verify that Phase 6 is complete - all routing methods should be gone
         const { readFile } = await import('fs/promises');
         const source = await readFile('src/earth-globe/earth-globe.ts', 'utf-8');
 
-        assert(source.includes('setActiveRegionState'), 'Should have setActiveRegionState method');
-        assert(source.includes('setActiveRegionAltitude'), 'Should have setActiveRegionAltitude method');
-        assert(source.includes('setActiveRegionBlend'), 'Should have setActiveRegionBlend method');
-        assert(source.includes('isInRegionMode()'), 'Routing should check isInRegionMode()');
+        assert(!source.includes('setActiveRegionState('), 'setActiveRegionState should be removed');
+        assert(!source.includes('setActiveRegionAltitude('), 'setActiveRegionAltitude should be removed');
+        assert(!source.includes('setActiveRegionBlend('), 'setActiveRegionBlend should be removed');
     });
 
-    await test('Routing methods delegate to province methods when in region mode', async () => {
+    await test('Controller API is now the only way to access regions', async () => {
         const { readFile } = await import('fs/promises');
         const source = await readFile('src/earth-globe/earth-globe.ts', 'utf-8');
 
-        // Check that setActiveRegionState calls setProvinceState when in region mode
-        const setActiveRegionStateIndex = source.indexOf('setActiveRegionState(');
-        if (setActiveRegionStateIndex === -1) {
-            throw new Error('setActiveRegionState not found');
-        }
-
-        // Find the method body (next 500 chars should contain the routing logic)
-        const methodBody = source.substring(setActiveRegionStateIndex, setActiveRegionStateIndex + 500);
-
-        assert(methodBody.includes('isInRegionMode()'), 'Should check isInRegionMode()');
-        assert(methodBody.includes('setProvinceState'), 'Should call setProvinceState when in region mode');
-        assert(methodBody.includes('setCountryState'), 'Should call setCountryState when not in region mode');
+        // Verify controller getters exist
+        assert(source.includes('getCountryController()'), 'Should have getCountryController()');
+        assert(source.includes('getProvinceController()'), 'Should have getProvinceController()');
+        assert(source.includes('getActiveController()'), 'Should have getActiveController()');
     });
 
-    console.log('\nTest Group 5: Duplication Detection (Current State)\n');
+    console.log('\nTest Group 5: Duplication Eliminated (Phase 6 Complete)\n');
 
-    await test('setCountryState and setProvinceState both exist (DUPLICATION)', async () => {
-        // This test DOCUMENTS the current duplication
-        // After Phase 1 refactor, this test will FAIL (which is good!)
+    await test('Duplicate country/province methods removed', async () => {
+        // Phase 6 complete - all duplicate methods should be gone
         const { readFile } = await import('fs/promises');
         const source = await readFile('src/earth-globe/earth-globe.ts', 'utf-8');
 
-        assert(source.includes('setCountryState('), 'setCountryState should exist');
-        assert(source.includes('setProvinceState('), 'setProvinceState should exist');
-        console.log('    (This duplication will be removed in Phase 1)');
-    });
-
-    await test('setCountryAltitude and setProvinceAltitude both exist (DUPLICATION)', async () => {
-        const { readFile } = await import('fs/promises');
-        const source = await readFile('src/earth-globe/earth-globe.ts', 'utf-8');
-
-        assert(source.includes('setCountryAltitude('), 'setCountryAltitude should exist');
-        assert(source.includes('setProvinceAltitude('), 'setProvinceAltitude should exist');
-        console.log('    (This duplication will be removed in Phase 1)');
-    });
-
-    await test('animateCountryBlend and animateProvinceBlend both exist (DUPLICATION)', async () => {
-        const { readFile } = await import('fs/promises');
-        const source = await readFile('src/earth-globe/earth-globe.ts', 'utf-8');
-
-        assert(source.includes('animateCountryBlend('), 'animateCountryBlend should exist');
-        assert(source.includes('animateProvinceBlend('), 'animateProvinceBlend should exist');
-        console.log('    (This duplication will be removed in Phase 1)');
+        assert(!source.includes('setCountryState('), 'setCountryState should be removed');
+        assert(!source.includes('setProvinceState('), 'setProvinceState should be removed');
+        assert(!source.includes('setCountryAltitude('), 'setCountryAltitude should be removed');
+        assert(!source.includes('setProvinceAltitude('), 'setProvinceAltitude should be removed');
+        assert(!source.includes('animateCountryBlend('), 'animateCountryBlend should be removed');
+        assert(!source.includes('animateProvinceBlend('), 'animateProvinceBlend should be removed');
     });
 
     console.log('\nTest Group 6: State Constants Parity\n');
