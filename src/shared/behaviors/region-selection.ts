@@ -7,10 +7,7 @@
 
 import type { EarthGlobeAPI, RegionPolygon, LatLon } from '../../earth-globe';
 import { STATE_CLEARED, STATE_DISABLED } from '../../earth-globe';
-import { REGION_ALTITUDE, ANIMATION_AMPLITUDE } from '../../earth-globe/constants';
-
-const ALT_DEFAULT = REGION_ALTITUDE / ANIMATION_AMPLITUDE;  // ~0.2 - same as initialization
-const ALT_SELECTED = 0.5;   // Elevated altitude when hovering
+import { ALTITUDE_NORMAL, ALTITUDE_HOVER } from '../../earth-globe/constants';
 
 let selectedIndex = -1;
 let savedAltitude = -1;     // Save the original altitude before elevating
@@ -24,7 +21,7 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
         const state = controller.getState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
             // Restore the original saved altitude, or use default if we don't have one
-            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALT_DEFAULT;
+            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALTITUDE_NORMAL;
             controller.setAltitude(selectedIndex, restoreAlt);
         }
         // Small country expansion only applies in country mode, not province mode
@@ -54,7 +51,7 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
     savedAltitude = controller.getAltitude(country.regionIndex);
     selectedIndex = country.regionIndex;
     globe.showCountryOutline(country.regionIndex);
-    controller.setAltitude(country.regionIndex, ALT_SELECTED);
+    controller.setAltitude(country.regionIndex, ALTITUDE_HOVER);
     // Small country expansion only applies in country mode, not province mode
     if (!globe.isInRegionMode() && globe.isSmallCountry(country.regionIndex)) {
         globe.getCountryController().animateExpansion(country.regionIndex, 5.0, 300);
@@ -70,7 +67,7 @@ export function clearSelection(globe: EarthGlobeAPI): void {
         const state = controller.getState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
             // Restore the original saved altitude, or use default if we don't have one
-            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALT_DEFAULT;
+            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALTITUDE_NORMAL;
             controller.setAltitude(selectedIndex, restoreAlt);
         }
         // Small country expansion only applies in country mode, not province mode

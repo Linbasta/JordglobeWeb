@@ -295,6 +295,7 @@ export class RegionAnimator {
                 }
             }
             const finalAltitude = anyExpanding ? 0 : maxAltitude;
+
             this.animationTexture.setAltitude(segmentIndex, finalAltitude);
 
             // Log first time we set non-zero altitude for debugging

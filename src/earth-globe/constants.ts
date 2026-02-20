@@ -53,6 +53,20 @@ const ANIMATION_AMPLITUDE_MULTIPLIER = 5;
 /** Maximum amplitude for region altitude animation — derived from REGION_ALTITUDE */
 export const ANIMATION_AMPLITUDE = REGION_ALTITUDE * ANIMATION_AMPLITUDE_MULTIPLIER;
 
+// ============================================================================
+// Altitude Values (Normalized 0-1 for animation texture)
+// ============================================================================
+
+/**
+ * Normalized altitude values for region animations.
+ * All values are expressed as multiples of ALTITUDE_NORMAL to maintain proportional relationships.
+ */
+export const ALTITUDE_NORMAL = REGION_ALTITUDE / ANIMATION_AMPLITUDE;         // 0.2 - base resting altitude
+export const ALTITUDE_CLEARED = ALTITUDE_NORMAL * 0.5;                        // 0.1 - sunk/grayed out state
+export const ALTITUDE_WRONG_POP = ALTITUDE_NORMAL * 2.5;                      // 0.5 - brief pop for wrong answer
+export const ALTITUDE_SHOW_CORRECT = ALTITUDE_NORMAL * 2.75;                  // 0.55 - elevated correct answer reveal
+export const ALTITUDE_HOVER = ALTITUDE_NORMAL * 2.5;                          // 0.5 - hover selection elevation
+
 /** Width of the animation texture (must be power of 2) */
 export const ANIMATION_TEXTURE_WIDTH = 1024;
 

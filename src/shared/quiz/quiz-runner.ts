@@ -27,7 +27,8 @@ import {
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
-import { zoom, STATE_DISABLED } from '../../earth-globe'
+import { zoom, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe'
+import { ALTITUDE_NORMAL, ALTITUDE_CLEARED, ALTITUDE_WRONG_POP, ALTITUDE_SHOW_CORRECT } from '../../earth-globe/constants'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
@@ -817,9 +818,14 @@ async function handleLocationGuessReveal(
 async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex: number): Promise<void> {
     if (!globe || !arcDrawer) return
 
-    // 1. Clear outline and sink wrong country
+    // 1. Clear outline and pop wrong region UP (but don't drop it yet)
     globe.clearCountryOutline()
-    await animateWrong(globe, wrongCountryIndex, removeOnWrong)
+    const controller = globe.getActiveController()
+
+    // Save altitude before popping so we can return to it
+    const altitudeBeforePop = controller.getAltitude(wrongCountryIndex)
+
+    await controller.animateAltitude(wrongCountryIndex, ALTITUDE_WRONG_POP, 200)
 
     // 2. Draw arc from wrong to correct
     const wrongCenter = getActiveRegionCenter(wrongCountryIndex)
@@ -835,7 +841,7 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
         0
     )
 
-    // 3. Animate arc and camera in parallel
+    // 3. Animate arc and camera in parallel (keep wrong region elevated)
     const arcAnimationPromise = arcDrawer.animateArc(arcId, 500)
 
     const allPolygons = globe.getActiveRegionPolygons()
@@ -850,10 +856,22 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
         0.8,
         undefined,
         undefined,
-        { overrideAltitude: 0.5 }
+        { overrideAltitude: ALTITUDE_SHOW_CORRECT }
     )
 
     await Promise.all([arcAnimationPromise, cameraFlyPromise])
+
+    // 3b. Drop wrong region back after arc completes
+    if (removeOnWrong) {
+        controller.setState(wrongCountryIndex, STATE_CLEARED)
+        await Promise.all([
+            controller.animateAltitude(wrongCountryIndex, ALTITUDE_CLEARED, 200),
+            controller.animateBlend(wrongCountryIndex, 0.0, 200)
+        ])
+    } else {
+        // Return to original altitude
+        await controller.animateAltitude(wrongCountryIndex, altitudeBeforePop, 200)
+    }
 
     // 4. Remove arc
     arcDrawer.removeArc(arcId)

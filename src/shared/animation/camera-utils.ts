@@ -8,6 +8,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import { easedValue, getEasingFunction } from '../utils/easing';
 import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE, zoom } from '../../earth-globe';
+import { ALTITUDE_NORMAL } from '../../earth-globe/constants';
 import type { RegionPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';
 
@@ -347,7 +348,7 @@ export async function frameCountry(
     // Get altitude to use for framing
     const altitudeNormalized = gridConfig?.overrideAltitude !== undefined
         ? gridConfig.overrideAltitude
-        : (globe?.getCountryController().getAltitude(countryIndex) ?? 0.5);
+        : (globe?.getCountryController().getAltitude(countryIndex) ?? ALTITUDE_NORMAL);
     const actualAltitude = altitudeNormalized * ANIMATION_AMPLITUDE;
 
     const altitudeSource = gridConfig?.overrideAltitude !== undefined ? 'override' : 'current';

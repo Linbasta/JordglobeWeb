@@ -4,16 +4,14 @@
  * Keyframe editor lets you hand-author custom curves by dragging points.
  *
  * Y axis = actual altitude: 0 (globe surface) to 1.0 (max engine altitude).
- * Default OutQuad curve: 0.4 (normal) → 0.1 (cleared).
- * Drag keyframes above 0.4 toward 1.0 for dramatic pop-up effects.
+ * Default OutQuad curve: 0.2 (normal) → 0.1 (cleared).
+ * Drag keyframes above 0.2 toward 1.0 for dramatic pop-up effects.
  */
 
 import { EarthGlobe, STATE_NORMAL, STATE_CLEARED } from '../earth-globe';
+import { ALTITUDE_NORMAL, ALTITUDE_CLEARED } from '../earth-globe/constants';
 import { getEasingFunction } from '../shared/utils/easing';
 import { CORRECT_EASING } from '../shared/animation/region-animations';
-
-const NORMAL_ALTITUDE = 0.4;
-const CLEARED_ALTITUDE = 0.1;
 
 // DOM elements
 const easingSelect = document.getElementById('easing') as HTMLSelectElement;
@@ -48,14 +46,14 @@ function frameCount(): number {
     return Math.max(2, Math.round(parseInt(durationSlider.value, 10) / 16.67));
 }
 
-/** Sample a preset easing into altitude keyframes: NORMAL_ALTITUDE → CLEARED_ALTITUDE */
+/** Sample a preset easing into altitude keyframes: ALTITUDE_NORMAL → ALTITUDE_CLEARED */
 function sampleEasingIntoKeyframes(easingName: string) {
     const n = frameCount();
     const fn = getEasingFunction(easingName);
     keyframes = new Array(n);
     for (let i = 0; i < n; i++) {
         const t = i / (n - 1);
-        keyframes[i] = NORMAL_ALTITUDE + (CLEARED_ALTITUDE - NORMAL_ALTITUDE) * fn(t);
+        keyframes[i] = ALTITUDE_NORMAL + (ALTITUDE_CLEARED - ALTITUDE_NORMAL) * fn(t);
     }
 }
 
@@ -84,9 +82,9 @@ function animateFromKeyframes(
             const t = Math.min(1, elapsed / duration);
             const altitude = interpolateKeyframes(kf, t);
             api.setCountryAltitude(idx, altitude);
-            // Derive blend from altitude: NORMAL_ALTITUDE → 1.0, CLEARED_ALTITUDE → 0.0
+            // Derive blend from altitude: ALTITUDE_NORMAL → 1.0, ALTITUDE_CLEARED → 0.0
             const blend = Math.max(0, Math.min(1,
-                (altitude - CLEARED_ALTITUDE) / (NORMAL_ALTITUDE - CLEARED_ALTITUDE)
+                (altitude - ALTITUDE_CLEARED) / (ALTITUDE_NORMAL - ALTITUDE_CLEARED)
             ));
             api.setCountryBlend(idx, blend);
             if (t >= 1) { resolve(); return; }
@@ -145,7 +143,7 @@ function drawEditor() {
     ctx.beginPath();
     for (let i = 0; i < CORRECT_EASING.length; i++) {
         const t = i / (CORRECT_EASING.length - 1);
-        const altitude = NORMAL_ALTITUDE + (CLEARED_ALTITUDE - NORMAL_ALTITUDE) * CORRECT_EASING[i];
+        const altitude = ALTITUDE_NORMAL + (ALTITUDE_CLEARED - ALTITUDE_NORMAL) * CORRECT_EASING[i];
         const x = PAD_X + t * PLOT_W;
         const y = PAD_Y + ((Y_MAX - altitude) / Y_RANGE) * PLOT_H;
         if (i === 0) ctx.moveTo(x, y);
@@ -263,9 +261,9 @@ function updateStatus(text: string) {
 
 // "Copy Easing" — normalize keyframes to 0→1 easing space and copy to clipboard
 copyEasingButton.addEventListener('click', () => {
-    const range = NORMAL_ALTITUDE - CLEARED_ALTITUDE; // 0.3
+    const range = ALTITUDE_NORMAL - ALTITUDE_CLEARED; // 0.3
     const normalized = keyframes.map(alt =>
-        Math.round(((NORMAL_ALTITUDE - alt) / range) * 1000) / 1000
+        Math.round(((ALTITUDE_NORMAL - alt) / range) * 1000) / 1000
     );
     const text = `[${normalized.join(', ')}]`;
     navigator.clipboard.writeText(text);
@@ -296,7 +294,7 @@ const globe = new EarthGlobe({
 
             // Reset UK first: normal state, altitude 0.4, blend 1.0
             api.setCountryState(uk.index, STATE_NORMAL);
-            api.setCountryAltitude(uk.index, NORMAL_ALTITUDE);
+            api.setCountryAltitude(uk.index, ALTITUDE_NORMAL);
             api.setCountryBlend(uk.index, 1.0);
 
             updateStatus(`GB — ${easingName} ${duration}ms`);
@@ -330,7 +328,7 @@ const globe = new EarthGlobe({
         resetButton.addEventListener('click', () => {
             for (const country of api.getAllCountries()) {
                 api.setCountryState(country.index, STATE_NORMAL);
-                api.setCountryAltitude(country.index, NORMAL_ALTITUDE);
+                api.setCountryAltitude(country.index, ALTITUDE_NORMAL);
                 api.setCountryBlend(country.index, 1.0);
             }
             updateStatus('Reset all countries');
