@@ -40,11 +40,16 @@ function segment2DTo3D(segment2D: Segment2D, altitude: number): Segment3D {
 
 /**
  * Load and convert segments from JSON file
- * @param url Path to segments.json file
+ * Supports both country and province segment formats
+ * @param url Path to segments file
+ * @param format Format of the segments file: 'country' (default) or 'province'
  * @returns Promise with segment data
  */
-export async function loadSegments(url: string = DEFAULT_ASSETS.segmentsJson): Promise<SegmentData> {
-    console.log(`Loading segments from ${url}...`);
+export async function loadSegments(
+    url: string = DEFAULT_ASSETS.segmentsJson,
+    format: 'country' | 'province' = 'country'
+): Promise<SegmentData> {
+    console.log(`Loading ${format} segments from ${url}...`);
     const startTime = performance.now();
 
     // Fetch the JSON file
@@ -53,16 +58,34 @@ export async function loadSegments(url: string = DEFAULT_ASSETS.segmentsJson): P
         throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
     }
 
-    const rawSegments = await response.json() as any[];
-    // Convert legacy "countries" field to "regions" if needed
-    const segments2D: Segment2D[] = rawSegments.map(seg => ({
-        points: seg.points,
-        regions: seg.regions || seg.countries,  // Support both field names
-        type: seg.type
-    }));
-    console.log(`  Loaded ${segments2D.length} segments`);
+    const rawData = await response.json();
+    let segments2D: Segment2D[];
 
-    // Convert to 3D at altitude 0 (same as country surface base, so they animate together)
+    if (format === 'province') {
+        // Province format: { country: "US", segments: [...] }
+        // Points are arrays: [lat, lon]
+        // Region IDs are in "provinces" field as numbers
+        const provinceData = rawData as { country: string; segments: any[] };
+        segments2D = provinceData.segments.map(seg => ({
+            points: seg.points.map((p: number[]) => ({ lat: p[0], lon: p[1] })),
+            regions: seg.provinces.map((id: number) => id.toString()),
+            type: seg.type
+        }));
+        console.log(`  Loaded ${segments2D.length} province segments for ${provinceData.country}`);
+    } else {
+        // Country format: [...segments...]
+        // Points are already objects: { lat, lon }
+        // Region IDs are in "regions" or legacy "countries" field as strings
+        const countrySegments = rawData as any[];
+        segments2D = countrySegments.map(seg => ({
+            points: seg.points,
+            regions: seg.regions || seg.countries,  // Support both field names
+            type: seg.type
+        }));
+        console.log(`  Loaded ${segments2D.length} segments`);
+    }
+
+    // Convert to 3D at altitude 0 (same as region surface base, so they animate together)
     const segments3D = segments2D.map(segment => segment2DTo3D(segment, 0));
 
     // Build region index
@@ -143,54 +166,3 @@ export function getSegmentStats(data: SegmentData) {
     };
 }
 
-/**
- * Load province segments from JSON file
- * Province segment files have structure: { country: "US", segments: [...] }
- * Segments use numeric province indices instead of ISO2 codes
- * @param url Path to province segments file (e.g., /province-segments/US.json)
- * @returns Promise with segment data
- */
-export async function loadProvinceSegments(url: string): Promise<SegmentData> {
-    console.log(`Loading province segments from ${url}...`);
-    const startTime = performance.now();
-
-    // Fetch the JSON file
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-    }
-
-    const rawData = await response.json() as { country: string; segments: any[] };
-    const rawSegments = rawData.segments;
-
-    // Convert to standard Segment2D format, converting numeric province IDs to strings
-    const segments2D: Segment2D[] = rawSegments.map(seg => ({
-        points: seg.points.map((p: number[]) => ({ lat: p[0], lon: p[1] })),
-        regions: seg.provinces.map((id: number) => id.toString()),
-        type: seg.type
-    }));
-    console.log(`  Loaded ${segments2D.length} province segments for ${rawData.country}`);
-
-    // Convert to 3D at altitude 0 (same as province surface base)
-    const segments3D = segments2D.map(segment => segment2DTo3D(segment, 0));
-
-    // Build region index
-    const segmentsByRegion = new Map<string, Segment3D[]>();
-    for (const segment of segments3D) {
-        for (const regionId of segment.regions) {
-            if (!segmentsByRegion.has(regionId)) {
-                segmentsByRegion.set(regionId, []);
-            }
-            segmentsByRegion.get(regionId)!.push(segment);
-        }
-    }
-
-    const endTime = performance.now();
-    console.log(`  Conversion took ${(endTime - startTime).toFixed(2)}ms`);
-    console.log(`  Indexed ${segmentsByRegion.size} provinces`);
-
-    return {
-        segments: segments3D,
-        segmentsByRegion
-    };
-}

@@ -81,7 +81,8 @@
       "Bash(npm run test:medal-integration:*)",
       "Bash(npm run test:country-province-parity:*)",
       "Bash(npm run test:province-quiz-behavior:*)",
-      "Bash(npm run test:phase0:*)"
+      "Bash(npm run test:phase0:*)",
+      "Bash(npm run test:static-border-overlay:*)"
     ],
     "deny": [],
     "ask": []

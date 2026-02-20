@@ -44,7 +44,7 @@ import {
 import { latLonToSphere, positionToLatLon } from './geo-math';
 import { RegionPicker } from './region-picker';
 import { RegionController } from './region-controller';
-import { loadSegments, loadProvinceSegments } from './segment-loader';
+import { loadSegments } from './segment-loader';
 import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';

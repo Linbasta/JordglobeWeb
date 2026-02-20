@@ -19,7 +19,7 @@ import { RegionPicker } from './region-picker';
 import { BorderRenderer } from './border-renderer';
 import { OutlineRenderer } from './outline-renderer';
 import { ShaderFactory } from './shader-factory';
-import { loadSegments, loadProvinceSegments } from './segment-loader';
+import { loadSegments } from './segment-loader';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
 import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
@@ -223,12 +223,9 @@ export class RegionController {
     async loadSegments(url: string, animationIndexOffset: number): Promise<void> {
         console.log(`[RegionController.loadSegments] type=${this.type}, url=${url}, offset=${animationIndexOffset}`);
 
-        // Load segment data (works for both country and province formats)
-        if (this.type === 'country') {
-            this.segmentData = await loadSegments(url);
-        } else {
-            this.segmentData = await loadProvinceSegments(url);
-        }
+        // Load segment data using unified loader
+        const format = this.type === 'province' ? 'province' : 'country';
+        this.segmentData = await loadSegments(url, format);
 
         console.log(`[${this.type}] Loaded ${this.segmentData.segments.length} segments from controller`);
 
