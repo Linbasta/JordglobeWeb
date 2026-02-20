@@ -42,12 +42,12 @@ export class AnimationTexture {
     /** Number of entries used in the texture */
     private entriesUsed: number = 0;
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene, name: string = "animationTexture") {
         this.scene = scene;
 
         // Create 1D texture (width x 1) to store animation values
         this.texture = new DynamicTexture(
-            "animationTexture",
+            name,
             { width: ANIMATION_TEXTURE_WIDTH, height: 1 },
             scene,
             false
@@ -218,7 +218,7 @@ export class AnimationTexture {
         const imageData = context.createImageData(ANIMATION_TEXTURE_WIDTH, 1);
         imageData.data.set(this.buffer);
         context.putImageData(imageData, 0, 0);
-        this.texture.update();
+        this.texture.update(true); // Pass true to force immediate update
     }
 
     /**

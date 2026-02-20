@@ -7,29 +7,23 @@
 
 import type { EarthGlobeAPI, RegionPolygon, LatLon } from '../../earth-globe';
 import { STATE_CLEARED, STATE_DISABLED } from '../../earth-globe';
+import { REGION_ALTITUDE, ANIMATION_AMPLITUDE } from '../../earth-globe/constants';
 
-const ALT_DEFAULT_COUNTRY = 0.4;   // Default altitude for countries
-const ALT_DEFAULT_PROVINCE = 0.2;  // Default altitude for provinces
-const ALT_SELECTED = 0.5;
+const ALT_DEFAULT = REGION_ALTITUDE / ANIMATION_AMPLITUDE;  // ~0.2 - same as initialization
+const ALT_SELECTED = 0.5;   // Elevated altitude when hovering
 
 let selectedIndex = -1;
-
-/**
- * Get the correct default altitude based on current mode (country vs province)
- */
-function getDefaultAltitude(globe: EarthGlobeAPI): number {
-    return globe.isInRegionMode() ? ALT_DEFAULT_PROVINCE : ALT_DEFAULT_COUNTRY;
-}
+let savedAltitude = -1;     // Save the original altitude before elevating
 
 export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null, _latLon: LatLon): void {
-    const defaultAlt = getDefaultAltitude(globe);
-
     // Deselect previous if different
     if (selectedIndex >= 0 && (!country || country.regionIndex !== selectedIndex)) {
         globe.clearCountryOutline();
         const state = globe.getActiveRegionState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
-            globe.setActiveRegionAltitude(selectedIndex, defaultAlt);
+            // Restore the original saved altitude, or use default if we don't have one
+            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALT_DEFAULT;
+            globe.setActiveRegionAltitude(selectedIndex, restoreAlt);
         }
         // Small country expansion only applies in country mode, not province mode
         if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
@@ -39,13 +33,23 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
             }
         }
         selectedIndex = -1;
+        savedAltitude = -1;
     }
 
     if (!country) return;
 
-    const state = globe.getActiveRegionState(country.regionIndex);
-    if (state === STATE_DISABLED || state === STATE_CLEARED) return;
+    // If we're already on this region, do nothing (don't re-save altitude!)
+    if (selectedIndex === country.regionIndex) {
+        return;
+    }
 
+    const state = globe.getActiveRegionState(country.regionIndex);
+    if (state === STATE_DISABLED || state === STATE_CLEARED) {
+        return;
+    }
+
+    // Save the current altitude BEFORE elevating
+    savedAltitude = globe.getActiveRegionAltitude(country.regionIndex);
     selectedIndex = country.regionIndex;
     globe.showCountryOutline(country.regionIndex);
     globe.setActiveRegionAltitude(country.regionIndex, ALT_SELECTED);
@@ -57,12 +61,13 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
 }
 
 export function clearSelection(globe: EarthGlobeAPI): void {
-    const defaultAlt = getDefaultAltitude(globe);
     if (selectedIndex >= 0) {
         globe.clearCountryOutline();
         const state = globe.getActiveRegionState(selectedIndex);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
-            globe.setActiveRegionAltitude(selectedIndex, defaultAlt);
+            // Restore the original saved altitude, or use default if we don't have one
+            const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALT_DEFAULT;
+            globe.setActiveRegionAltitude(selectedIndex, restoreAlt);
         }
         // Small country expansion only applies in country mode, not province mode
         if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
@@ -73,4 +78,5 @@ export function clearSelection(globe: EarthGlobeAPI): void {
         }
     }
     selectedIndex = -1;
+    savedAltitude = -1;
 }

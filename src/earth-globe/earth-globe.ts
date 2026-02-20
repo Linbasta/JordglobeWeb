@@ -89,6 +89,7 @@ import type {
  * });
  * ```
  */
+
 export class EarthGlobe {
     // Core Babylon.js
     private canvas: HTMLCanvasElement;

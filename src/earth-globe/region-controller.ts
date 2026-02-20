@@ -58,7 +58,7 @@ export class RegionController {
         this.shaderFactory = shaderFactory;
 
         // Create and own AnimationTexture
-        this.animationTexture = new AnimationTexture(scene);
+        this.animationTexture = new AnimationTexture(scene, `${type}_animationTexture`);
         this.shaderFactory.setAnimationTexture(this.animationTexture.getTexture());
 
         this.renderer = new RegionRenderer(scene, shaderFactory);
