@@ -148,6 +148,38 @@ export function startQuiz(
             })
         }
     }
+
+    // Frame camera for province quizzes - show the parent country
+    const provinceQuestions = questions.filter(q => q.answer === 'province')
+    if (provinceQuestions.length > 0 && gameCountries.length === 0) {
+        // Get parent country from first province question
+        const parentISO2 = provinceQuestions[0].countryISO2
+        if (parentISO2) {
+            const parentCountry = globe.getCountryByISO2(parentISO2)
+            if (parentCountry) {
+                // Get all polygons for the parent country
+                const allPolygons = globe.getCountryPicker().getAllPolygons()
+                const parentPolygons = allPolygons.filter(p => p.regionIndex === parentCountry.index)
+
+                // Collect all perimeter points, sampled
+                const allPoints: { lat: number; lon: number }[] = []
+                for (const polygon of parentPolygons) {
+                    allPoints.push(...polygon.points)
+                }
+                const MAX_POINTS = 500
+                const points = allPoints.length > MAX_POINTS
+                    ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
+                    : allPoints
+
+                const insertIndex = steps.findIndex(s => s.op === StepOp.DisableNonGameCountries)
+                if (insertIndex !== -1) {
+                    steps.splice(insertIndex + 1, 0, {
+                        op: StepOp.FrameLocations, points, duration: 800
+                    })
+                }
+            }
+        }
+    }
 }
 
 /**
