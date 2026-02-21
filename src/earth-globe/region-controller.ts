@@ -395,6 +395,21 @@ export class RegionController {
         }
     }
 
+    /**
+     * Show markers only for enabled (non-disabled) small regions
+     * Useful in quizzes where some regions are marked as disabled
+     */
+    showEnabledSmallRegionMarkers(): void {
+        if (!this.markerPool) return;
+        for (const [regionIndex, markerId] of this.smallRegionMarkers) {
+            const state = this.animator.getState(regionIndex);
+            // Only show markers for regions that are NOT disabled (STATE_DISABLED = 0.25)
+            if (state !== 0.25) {  // STATE_DISABLED
+                this.markerPool.showMarker(markerId);
+            }
+        }
+    }
+
     // =========================================================================
     // Update loop
     // =========================================================================

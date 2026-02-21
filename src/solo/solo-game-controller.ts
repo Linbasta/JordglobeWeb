@@ -92,7 +92,8 @@ export class SoloGameController extends BaseGameController {
                     globe.getCountryController().hideAllSmallRegionMarkers();
                 } else if (wantSmallMarkers && this.smallMarkersHidden) {
                     this.smallMarkersHidden = false;
-                    globe.getCountryController().showAllSmallRegionMarkers();
+                    // Only show markers for enabled (active) countries, not disabled ones
+                    globe.getCountryController().showEnabledSmallRegionMarkers();
                 }
 
                 // Update debug panel if visible

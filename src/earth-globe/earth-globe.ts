@@ -301,6 +301,8 @@ export class EarthGlobe {
             this.countryController.initMarkerPool(this.smallMarkerPool);
 
             // Place markers at small country centroids
+            // Markers start visible by default - we'll hide them all initially
+            // and let the quiz/game logic show only the ones it needs
             for (const country of this.countryController.getAllRegions()) {
                 if (country.centroid) {
                     const normal = country.centroid.normalizeToNew();
@@ -308,6 +310,8 @@ export class EarthGlobe {
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
                     if (markerId >= 0) {
                         this.countryController.registerSmallRegionMarker(country.index, markerId);
+                        // Hide marker initially - quiz/game will show them as needed
+                        this.smallMarkerPool.hideMarker(markerId);
                     }
                 }
             }

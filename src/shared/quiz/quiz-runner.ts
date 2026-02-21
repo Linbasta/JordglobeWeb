@@ -222,6 +222,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.DisableNonGameCountries: {
             // Works for both countries and provinces via active region API
             const allRegions = globe.getAllActiveRegions()
+            const controller = globe.getActiveController()
 
             // Extract game region IDs/indices from questions
             if (globe.isInRegionMode()) {
@@ -234,17 +235,32 @@ export function tickQuiz(now: number): boolean {
                 for (const region of allRegions) {
                     if (!gameProvinceIds.has(region.id)) {
                         setRegionDisabledImmediate(globe, region.index)
+                        // Hide marker for disabled small regions
+                        if (controller.isSmallRegion(region.index)) {
+                            controller.hideSmallRegionMarker(region.index)
+                        }
                     }
                 }
+
+                // After disabling non-game provinces, show markers for enabled small provinces
+                controller.showEnabledSmallRegionMarkers()
             } else {
                 // Country mode: use country indices from gameCountries
                 const gameIndices = new Set(gameCountries.map(c => c.index))
                 for (const region of allRegions) {
                     if (!gameIndices.has(region.index)) {
                         setRegionDisabledImmediate(globe, region.index)
+                        // Hide marker for disabled small regions
+                        if (controller.isSmallRegion(region.index)) {
+                            controller.hideSmallRegionMarker(region.index)
+                        }
                     }
                 }
             }
+
+            // After disabling non-game countries, show markers for enabled small countries
+            // This ensures small game countries (Malta, Vatican, etc.) show their markers
+            controller.showEnabledSmallRegionMarkers()
 
             advance(now)
             break

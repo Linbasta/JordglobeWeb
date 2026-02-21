@@ -318,7 +318,8 @@ class HostLobby {
         // Show/hide small country markers based on question type
         if (this.globe) {
             if (question.answer === 'country') {
-                this.globe.getCountryController().showAllSmallRegionMarkers();
+                // Only show markers for enabled (active) countries
+                this.globe.getCountryController().showEnabledSmallRegionMarkers();
             } else {
                 this.globe.getCountryController().hideAllSmallRegionMarkers();
             }
