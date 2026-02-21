@@ -24,11 +24,11 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
             const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALTITUDE_NORMAL;
             controller.setAltitude(selectedIndex, restoreAlt);
         }
-        // Small country expansion only applies in country mode, not province mode
-        if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
-            globe.getCountryController().animateExpansion(selectedIndex, 1.0, 300);
+        // Small region expansion (works for both countries and provinces)
+        if (controller.isSmallRegion(selectedIndex)) {
+            controller.animateExpansion(selectedIndex, 1.0, 300);
             if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
-                globe.showSmallCountryMarker(selectedIndex);
+                controller.showSmallRegionMarker(selectedIndex);
             }
         }
         selectedIndex = -1;
@@ -52,10 +52,10 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
     selectedIndex = country.regionIndex;
     globe.showCountryOutline(country.regionIndex);
     controller.setAltitude(country.regionIndex, ALTITUDE_HOVER);
-    // Small country expansion only applies in country mode, not province mode
-    if (!globe.isInRegionMode() && globe.isSmallCountry(country.regionIndex)) {
-        globe.getCountryController().animateExpansion(country.regionIndex, 5.0, 300);
-        globe.hideSmallCountryMarker(country.regionIndex);
+    // Small region expansion (works for both countries and provinces)
+    if (controller.isSmallRegion(country.regionIndex)) {
+        controller.animateExpansion(country.regionIndex, 5.0, 300);
+        controller.hideSmallRegionMarker(country.regionIndex);
     }
 }
 
@@ -70,11 +70,11 @@ export function clearSelection(globe: EarthGlobeAPI): void {
             const restoreAlt = savedAltitude >= 0 ? savedAltitude : ALTITUDE_NORMAL;
             controller.setAltitude(selectedIndex, restoreAlt);
         }
-        // Small country expansion only applies in country mode, not province mode
-        if (!globe.isInRegionMode() && globe.isSmallCountry(selectedIndex)) {
-            globe.getCountryController().animateExpansion(selectedIndex, 1.0, 300);
+        // Small region expansion (works for both countries and provinces)
+        if (controller.isSmallRegion(selectedIndex)) {
+            controller.animateExpansion(selectedIndex, 1.0, 300);
             if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
-                globe.showSmallCountryMarker(selectedIndex);
+                controller.showSmallRegionMarker(selectedIndex);
             }
         }
     }

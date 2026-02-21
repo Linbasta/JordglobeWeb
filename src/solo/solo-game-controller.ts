@@ -89,10 +89,10 @@ export class SoloGameController extends BaseGameController {
                 const wantSmallMarkers = q?.answer === 'country';
                 if (!wantSmallMarkers && !this.smallMarkersHidden) {
                     this.smallMarkersHidden = true;
-                    globe.hideAllSmallCountryMarkers();
+                    globe.getCountryController().hideAllSmallRegionMarkers();
                 } else if (wantSmallMarkers && this.smallMarkersHidden) {
                     this.smallMarkersHidden = false;
-                    globe.showAllSmallCountryMarkers();
+                    globe.getCountryController().showAllSmallRegionMarkers();
                 }
 
                 // Update debug panel if visible

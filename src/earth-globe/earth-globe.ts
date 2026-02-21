@@ -126,9 +126,6 @@ export class EarthGlobe {
     private onCountryHoverCallback: ((event: CountryHoverEvent) => void) | null = null;
     private onCountryClickCallback: ((event: CountryClickEvent) => void) | null = null;
 
-    // Small country markers (countryIndex -> markerId)
-    private smallCountryMarkers: Map<number, number> = new Map();
-
     // State
     private isInitialized: boolean = false;
     private isMobile: boolean = false;
@@ -300,6 +297,9 @@ export class EarthGlobe {
                 strokeWidth: 0.35,
             });
 
+            // Initialize controller with the marker pool
+            this.countryController.initMarkerPool(this.smallMarkerPool);
+
             // Place markers at small country centroids
             for (const country of this.countryController.getAllRegions()) {
                 if (country.centroid) {
@@ -307,7 +307,7 @@ export class EarthGlobe {
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
                     if (markerId >= 0) {
-                        this.smallCountryMarkers.set(country.index, markerId);
+                        this.countryController.registerSmallRegionMarker(country.index, markerId);
                     }
                 }
             }
@@ -878,45 +878,6 @@ export class EarthGlobe {
         return country ? checkSmallCountry(country.id) : false;
     }
 
-    /**
-     * Hide the small country marker for a given country index
-     */
-    hideSmallCountryMarker(countryIndex: number): void {
-        const markerId = this.smallCountryMarkers.get(countryIndex);
-        if (markerId !== undefined && this.smallMarkerPool) {
-            this.smallMarkerPool.hideMarker(markerId);
-        }
-    }
-
-    /**
-     * Show the small country marker for a given country index
-     */
-    showSmallCountryMarker(countryIndex: number): void {
-        const markerId = this.smallCountryMarkers.get(countryIndex);
-        if (markerId !== undefined && this.smallMarkerPool) {
-            this.smallMarkerPool.showMarker(markerId);
-        }
-    }
-
-    /**
-     * Hide all small country markers
-     */
-    hideAllSmallCountryMarkers(): void {
-        if (!this.smallMarkerPool) return;
-        for (const markerId of this.smallCountryMarkers.values()) {
-            this.smallMarkerPool.hideMarker(markerId);
-        }
-    }
-
-    /**
-     * Show all small country markers
-     */
-    showAllSmallCountryMarkers(): void {
-        if (!this.smallMarkerPool) return;
-        for (const markerId of this.smallCountryMarkers.values()) {
-            this.smallMarkerPool.showMarker(markerId);
-        }
-    }
 
     // =========================================================================
     // Public API - Country Outline

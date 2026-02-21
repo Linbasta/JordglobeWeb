@@ -285,7 +285,7 @@ export function tickQuiz(now: number): boolean {
             }
 
             // Hide small country markers so they don't clutter the location quiz
-            globe.hideAllSmallCountryMarkers()
+            globe.getCountryController().hideAllSmallRegionMarkers()
 
             advance(now)
             break

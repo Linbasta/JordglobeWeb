@@ -35,7 +35,7 @@ export class PartyGameController extends BaseGameController {
         // Base class has already created PinManager at this point
 
         // Hide small country markers - party game only uses location-guess questions
-        globe.hideAllSmallCountryMarkers();
+        globe.getCountryController().hideAllSmallRegionMarkers();
     }
 
     protected onPinPlaced(country: RegionPolygon | null, latLon: LatLon): void {

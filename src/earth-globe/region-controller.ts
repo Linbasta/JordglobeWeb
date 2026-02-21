@@ -23,6 +23,7 @@ import { loadSegments } from './segment-loader';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
 import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
+import type { LocationMarkerPool } from './location-marker-pool';
 
 export type { RegionType };
 
@@ -47,6 +48,10 @@ export class RegionController {
     private segmentBorderMaterial: import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial | null = null;
     private outlineMaterial: import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial | null = null;
     private smallOutlineMaterial: import('@babylonjs/core/Materials/shaderMaterial').ShaderMaterial | null = null;
+
+    // Small region markers (regionIndex -> markerId)
+    private smallRegionMarkers: Map<number, number> = new Map();
+    private markerPool: LocationMarkerPool | null = null;
 
     constructor(
         type: RegionType,
@@ -323,6 +328,71 @@ export class RegionController {
      */
     clearOutline(): void {
         this.outlineRenderer.clearOutline();
+    }
+
+    // =========================================================================
+    // Small region markers
+    // =========================================================================
+
+    /**
+     * Initialize the marker pool (shared resource)
+     */
+    initMarkerPool(pool: LocationMarkerPool): void {
+        this.markerPool = pool;
+    }
+
+    /**
+     * Register a small region marker
+     */
+    registerSmallRegionMarker(regionIndex: number, markerId: number): void {
+        this.smallRegionMarkers.set(regionIndex, markerId);
+    }
+
+    /**
+     * Check if a region is small (has a marker)
+     */
+    isSmallRegion(regionIndex: number): boolean {
+        return this.smallRegionMarkers.has(regionIndex);
+    }
+
+    /**
+     * Hide the small region marker for a given region index
+     */
+    hideSmallRegionMarker(regionIndex: number): void {
+        const markerId = this.smallRegionMarkers.get(regionIndex);
+        if (markerId !== undefined && this.markerPool) {
+            this.markerPool.hideMarker(markerId);
+        }
+    }
+
+    /**
+     * Show the small region marker for a given region index
+     */
+    showSmallRegionMarker(regionIndex: number): void {
+        const markerId = this.smallRegionMarkers.get(regionIndex);
+        if (markerId !== undefined && this.markerPool) {
+            this.markerPool.showMarker(markerId);
+        }
+    }
+
+    /**
+     * Hide all small region markers
+     */
+    hideAllSmallRegionMarkers(): void {
+        if (!this.markerPool) return;
+        for (const markerId of this.smallRegionMarkers.values()) {
+            this.markerPool.hideMarker(markerId);
+        }
+    }
+
+    /**
+     * Show all small region markers
+     */
+    showAllSmallRegionMarkers(): void {
+        if (!this.markerPool) return;
+        for (const markerId of this.smallRegionMarkers.values()) {
+            this.markerPool.showMarker(markerId);
+        }
     }
 
     // =========================================================================
