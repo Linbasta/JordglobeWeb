@@ -104,13 +104,12 @@ export class EarthGlobe {
 
     // Rendering components
     private globeSphere: GlobeSphere;
-    private countryRenderer: RegionRenderer;  // TODO: Remove after migration complete
     private skybox: Skybox;
     private shaderFactory: ShaderFactory;
     private provinceShaderFactory: ShaderFactory | null = null;
     private worldTexture: Texture | null = null;
 
-    // Animation (Phase 1: Animation textures now owned by controllers)
+    // Animation (kept for backward compat in getDisplacedPositionAtLatLon)
     private countryAnimator: RegionAnimator;
 
     // Location markers
@@ -120,9 +119,6 @@ export class EarthGlobe {
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
     private smallOutlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
-
-    // Data
-    private countryPicker: RegionPicker;  // TODO: Remove after migration complete
 
     // Options and callbacks
     private options: EarthGlobeOptions;
@@ -186,10 +182,8 @@ export class EarthGlobe {
         );
         this.activeController = this.countryController;
 
-        // Expose inner components via shorthand fields for backward compat
-        this.countryRenderer = this.countryController.getRenderer();
+        // Expose animator via shorthand field for backward compat (used in getDisplacedPositionAtLatLon)
         this.countryAnimator = this.countryController.getAnimator();
-        this.countryPicker = this.countryController.getPicker();
 
         // Create province controller (now owns its animation texture)
         this.provinceShaderFactory = new ShaderFactory(this.scene, 'province_');
@@ -240,7 +234,7 @@ export class EarthGlobe {
                 if (entry.colliders.length === 0) continue;
                 const country = this.getCountryByISO2(entry.id);
                 if (!country) continue;
-                this.countryPicker.registerColliders(
+                this.countryController.getPicker().registerColliders(
                     country.index,
                     entry.colliders,
                     isSurroundedCountry(entry.id)
@@ -249,7 +243,7 @@ export class EarthGlobe {
 
             // Create extruded borders for all country polygons
             const borderRenderer = this.countryController.getBorderRenderer();
-            const polygonsData = this.countryRenderer.getPolygonsData();
+            const polygonsData = this.countryController.getRenderer().getPolygonsData();
             for (const polygon of polygonsData) {
                 const border = borderRenderer.createPolygonBorders(
                     polygon.borderPoints,
@@ -266,12 +260,12 @@ export class EarthGlobe {
             // Merge meshes for performance
             const countryMaterial = this.shaderFactory.createCountryShaderMaterial(this.worldTexture);
             const smallCountryMaterial = this.shaderFactory.createSmallCountryShaderMaterial(this.worldTexture);
-            this.countryRenderer.mergeRegions(countryMaterial, smallCountryMaterial);
+            this.countryController.getRenderer().mergeRegions(countryMaterial, smallCountryMaterial);
             borderRenderer.mergeExtrudedBorders(
-                this.countryRenderer.getPolygonsData(),
+                this.countryController.getRenderer().getPolygonsData(),
                 this.shaderFactory.createExtrudedBorderMaterial(),
                 this.shaderFactory.createSmallExtrudedBorderMaterial(),
-                this.countryRenderer.getRegionsData()
+                this.countryController.getAllRegions()
             );
 
             // Load and render segment borders via controller
@@ -279,7 +273,7 @@ export class EarthGlobe {
             await this.countryController.loadSegments(segmentsUrl, MAX_ANIMATION_COUNTRIES);
 
             // NOW resize animation texture to include countries + segments
-            const countryCount = this.countryRenderer.getRegionCount();
+            const countryCount = this.countryController.getRegionCount();
             const segmentCount = this.countryController.getSegmentAnimationIndices().size;
             const totalEntries = MAX_ANIMATION_COUNTRIES + segmentCount;
             this.countryController.setEntriesUsed(totalEntries);
@@ -307,7 +301,7 @@ export class EarthGlobe {
             });
 
             // Place markers at small country centroids
-            for (const country of this.countryRenderer.getRegionsData()) {
+            for (const country of this.countryController.getAllRegions()) {
                 if (country.centroid) {
                     const normal = country.centroid.normalizeToNew();
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
@@ -319,9 +313,9 @@ export class EarthGlobe {
             }
 
             // Log statistics
-            const pickerStats = this.countryPicker.getStats();
+            const pickerStats = this.countryController.getPicker().getStats();
             console.log(`Country picker: ${pickerStats.polygonCount} polygons in ${pickerStats.cellCount} grid cells`);
-            console.log(`Countries: ${countryCount}, Polygons: ${this.countryRenderer.getPolygonCount()}, Triangles: ${this.countryRenderer.getTriangleCount()}`);
+            console.log(`Countries: ${countryCount}, Polygons: ${this.countryController.getRenderer().getPolygonCount()}, Triangles: ${this.countryController.getRenderer().getTriangleCount()}`);
 
             this.isInitialized = true;
 
@@ -457,7 +451,7 @@ export class EarthGlobe {
 
     private update(): void {
         // Update animations
-        this.countryAnimator.update();
+        this.countryController.tick();
         this.provinceController.tick();
 
         // Update border thickness for both controllers
@@ -478,7 +472,7 @@ export class EarthGlobe {
 
         // Update collider radius scale based on camera zoom
         const colliderMul = getZoomValue(this.camera, zoom.colliderScaleClose, zoom.colliderScaleFar);
-        this.countryPicker.setColliderMultiplier(colliderMul);
+        this.countryController.getPicker().setColliderMultiplier(colliderMul);
 
         // Update orbit sensitivity based on camera zoom (and mobile)
         let angular = getZoomValue(this.camera, zoom.orbitSensibilityClose, zoom.orbitSensibilityFar);
@@ -540,7 +534,7 @@ export class EarthGlobe {
      * Get the country picker
      */
     getCountryPicker(): RegionPicker {
-        return this.countryPicker;
+        return this.countryController.getPicker();
     }
 
     /**
@@ -631,7 +625,7 @@ export class EarthGlobe {
      */
     getDisplacedPositionAtLatLon(lat: number, lon: number, offsetAbove: number = 0.01): { position: Vector3; normal: Vector3 } {
         // Get the country at this location
-        const country = this.countryPicker.getCountryAt({ lat, lon });
+        const country = this.countryController.getRegionAt({ lat, lon });
 
         // Base position at water level (country vertices start at altitude 0)
         const basePosition = latLonToSphere(lat, lon, 0);
@@ -667,28 +661,28 @@ export class EarthGlobe {
      * Get country data by ISO2 code
      */
     getCountryByISO2(iso2: string): RegionData | undefined {
-        return this.countryRenderer.getRegionByISO2(iso2);
+        return this.countryController.getRegionByISO2(iso2);
     }
 
     /**
      * Get country data by index
      */
     getCountryByIndex(index: number): RegionData | undefined {
-        return this.countryRenderer.getRegionByIndex(index);
+        return this.countryController.getRegionByIndex(index);
     }
 
     /**
      * Get all countries
      */
     getAllCountries(): RegionData[] {
-        return this.countryRenderer.getRegionsData();
+        return this.countryController.getAllRegions();
     }
 
     /**
      * Get the altitude at the given coordinates (land vs ocean)
      */
     getAltitudeAtLatLon(lat: number, lon: number): number {
-        const country = this.countryPicker.getCountryAt({ lat, lon });
+        const country = this.countryController.getRegionAt({ lat, lon });
         return country ? REGION_ALTITUDE : 0;
     }
 
@@ -880,7 +874,7 @@ export class EarthGlobe {
      * Check if a country is classified as small (needs magnification)
      */
     isSmallCountry(countryIndex: number): boolean {
-        const country = this.countryRenderer.getRegionByIndex(countryIndex);
+        const country = this.countryController.getRegionByIndex(countryIndex);
         return country ? checkSmallCountry(country.id) : false;
     }
 
@@ -1131,7 +1125,7 @@ export class EarthGlobe {
             if (mesh) surfaceMeshes.push(mesh);
         }
 
-        toggleColliderDebug(this.scene, this.countryPicker, surfaceMeshes);
+        toggleColliderDebug(this.scene, this.countryController.getPicker(), surfaceMeshes);
     }
 
     /**
@@ -1176,8 +1170,7 @@ export class EarthGlobe {
         this.engine.stopRenderLoop();
 
         this.globeSphere.dispose();
-        this.countryRenderer.dispose();
-        // Phase 1: Controllers now own and dispose their animation textures
+        // Controllers now own and dispose their renderers and animation textures
         this.countryController.dispose();
         this.provinceController.dispose();
         this.skybox.dispose();
