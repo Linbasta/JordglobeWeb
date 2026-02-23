@@ -4,10 +4,10 @@
 
 **Current State**: The region unification is **complete**. Countries and provinces now use a single `RegionController` abstraction with zero duplication in animation, border rendering, and segment loading.
 
-**Remaining Work**: Three optional improvements to further refine the architecture:
-1. **Quick Win**: Consolidate direct renderer/picker usage (~2-3 hours)
-2. **Feature Gap**: Small province expansion support (~10-12 hours, complex)
-3. **Polish**: Generalize marker system (~4-5 hours)
+**Improvements 1 & 3**: ✅ **COMPLETE** - Renderer/picker consolidation and marker system generalization are done.
+
+**Remaining Work**: One optional improvement to achieve full feature parity:
+1. **Feature Gap**: Small province expansion support (~10-12 hours, complex)
 
 ---
 
@@ -43,80 +43,25 @@
 
 ## Improvement 1: Consolidate Renderer/Picker Usage
 
-**Status**: 🟡 Optional - Low priority cleanup
+**Status**: ✅ **COMPLETE**
 
-**Current Issue**: EarthGlobe still holds direct references to renderer/picker alongside controllers:
+**Completion Evidence**:
+- ✅ No `countryRenderer` or `countryPicker` fields in earth-globe.ts
+- ✅ All methods delegate to controllers:
+  - `getCountryByISO2()` → `countryController.getRegionByISO2()` (earth-globe.ts:668)
+  - `getCountryByIndex()` → `countryController.getRegionByIndex()` (earth-globe.ts:675)
+  - `getAllCountries()` → `countryController.getAllRegions()` (earth-globe.ts:682)
+- ✅ No TODO comments about "Remove after migration"
+- ✅ Controller owns renderer and picker completely
 
-```typescript
-// earth-globe.ts:107, 125
-private countryRenderer: RegionRenderer;  // TODO: Remove after migration complete
-private countryPicker: RegionPicker;     // TODO: Remove after migration complete
-```
+### Implementation Summary
 
-**Usage Analysis**:
-- `countryRenderer`: 12 direct references
-- `countryPicker`: 5 direct references
-- These duplicate functionality already in `countryController`
+All direct `countryRenderer` and `countryPicker` references have been removed from EarthGlobe. Methods now delegate to `countryController.getRenderer()` and `countryController.getPicker()` as needed. This reinforces the "controller owns everything" architecture and eliminates duplicate references.
 
-### Changes
-
-**1.1 - Replace direct renderer access**
-
-```typescript
-// BEFORE
-return this.countryRenderer.getRegionByISO2(iso2);
-
-// AFTER
-return this.countryController.getRegionByISO2(iso2);
-```
-
-**Locations to update**:
-- `getCountryByISO2()` - line 670
-- `getCountryByIndex()` - line 677
-- `getAllCountries()` - line 684
-- `isSmallCountry()` - line 883
-- `constructor()` - merge logic (lines 252, 269, 271, 274, 282, 310, 324)
-- `dispose()` - line 1179
-
-**1.2 - Replace direct picker access**
-
-```typescript
-// BEFORE
-const country = this.countryPicker.getCountryAt({ lat, lon });
-
-// AFTER
-const country = this.countryController.getRegionAt({ lat, lon });
-```
-
-**Locations to update**:
-- `getCountryAtLatLon()` - line 634
-- `getAltitudeAtLatLon()` - line 691
-- `constructor()` - collider registration (line 243)
-- `setupCamera()` - collider multiplier (line 481)
-
-**1.3 - Remove fields**
-
-```typescript
-// DELETE these from EarthGlobe:
-// private countryRenderer: RegionRenderer;
-// private countryPicker: RegionPicker;
-```
-
-### Benefits
-
-- ✅ Reinforces "controller owns everything" architecture
-- ✅ Removes 2 private fields from EarthGlobe
+**Benefits Achieved**:
 - ✅ Single source of truth for renderer/picker access
-- ✅ Easier to understand data flow
-
-### Test Verification
-
-Run existing tests:
-- `npm run test:country-province-parity`
-- `npm run test:province-quiz-behavior`
-- Manual quiz testing (country-quiz.html, capitals-quiz.html)
-
-**Estimated Time**: 2-3 hours
+- ✅ Cleaner EarthGlobe class (removed 2 private fields)
+- ✅ Consistent with controller ownership model
 
 ---
 
@@ -533,68 +478,28 @@ assert(expansion === 5.0, 'Expansion set correctly');
 
 ## Improvement 3: Generalize Marker System
 
-**Status**: 🟡 Optional - Nice to have
+**Status**: ✅ **COMPLETE**
 
-**Goal**: Move small region marker management into `RegionController` instead of EarthGlobe.
-
-### Current Architecture
-
-```typescript
-// earth-globe.ts
-private smallCountryMarkers: Map<number, number> = new Map();
-
-hideSmallCountryMarker(countryIndex: number): void {
-    // Hardcoded for countries only
-}
-```
-
-### Proposed Architecture
-
-```typescript
-// region-controller.ts
-export class RegionController {
-    private smallRegionMarkers: Map<number, number> = new Map();
-    private markerPool: LocationMarkerPool | null = null;
-
-    initMarkerPool(pool: LocationMarkerPool): void {
-        this.markerPool = pool;
-    }
-
-    hideSmallRegionMarker(regionIndex: number): void {
-        const markerId = this.smallRegionMarkers.get(regionIndex);
-        if (markerId !== undefined && this.markerPool) {
-            this.markerPool.hide(markerId);
-        }
-    }
-
-    showSmallRegionMarker(regionIndex: number): void {
-        const markerId = this.smallRegionMarkers.get(regionIndex);
-        if (markerId !== undefined && this.markerPool) {
-            this.markerPool.show(markerId);
-        }
-    }
-
-    isSmallRegion(regionIndex: number): boolean {
-        return this.smallRegionMarkers.has(regionIndex);
-    }
-}
-```
-
-### Benefits
-
-- ✅ Consistent with "controller owns everything" principle
-- ✅ Enables small province markers without EarthGlobe changes
-- ✅ Cleaner separation of concerns
+**Completion Evidence**:
+- ✅ `RegionController` owns `smallRegionMarkers` map (region-controller.ts:53)
+- ✅ All marker methods moved to `RegionController`:
+  - `initMarkerPool()` (region-controller.ts:340)
+  - `registerSmallRegionMarker()` (region-controller.ts:347)
+  - `hideSmallRegionMarker()` (region-controller.ts:361)
+  - `showSmallRegionMarker()` (region-controller.ts:371)
+  - `hideAllSmallRegionMarkers()` (region-controller.ts:381)
+- ✅ No `smallCountryMarkers` or `smallProvinceMarkers` in EarthGlobe
 - ✅ Both controllers can manage markers independently
 
-### Changes Required
+### Implementation Summary
 
-1. Move `smallRegionMarkers` map to `RegionController`
-2. Add `initMarkerPool()` to pass marker pool reference
-3. Move marker methods to `RegionController`
-4. Update region-selection.ts to use `controller.hideSmallRegionMarker()`
+Marker management has been fully moved to `RegionController`. Each controller now owns its own `smallRegionMarkers` map and provides methods to hide/show markers. The marker pool is passed via `initMarkerPool()` during initialization. This enables both country and province controllers to manage small region markers independently without EarthGlobe needing separate code paths.
 
-**Estimated Time**: 4-5 hours
+**Benefits Achieved**:
+- ✅ Consistent with "controller owns everything" principle
+- ✅ Both controllers can manage markers independently
+- ✅ Cleaner separation of concerns
+- ✅ Enables small province markers without EarthGlobe changes
 
 ---
 
@@ -633,46 +538,40 @@ open http://localhost:4817/capitals-quiz.html
 
 ## Timeline Estimate
 
-| Improvement | Complexity | Time | Priority |
-|-------------|-----------|------|----------|
-| **1. Consolidate Renderer/Picker** | Low | 2-3 hours | Optional |
-| **2. Small Province Expansion** | High | 10-12 hours | Medium |
-| **3. Generalize Marker System** | Medium | 4-5 hours | Optional |
+| Improvement | Complexity | Time | Status |
+|-------------|-----------|------|--------|
+| **1. Consolidate Renderer/Picker** | Low | 2-3 hours | ✅ **COMPLETE** |
+| **2. Small Province Expansion** | High | 10-12 hours | 🔴 Remaining |
+| **3. Generalize Marker System** | Medium | 4-5 hours | ✅ **COMPLETE** |
 
-**Total**: 16-20 hours if doing all improvements
+**Remaining Work**: 10-12 hours (Improvement 2 only)
 
 ---
 
 ## Recommended Approach
 
-### Option A: Focus on Small Province Expansion
+With Improvements 1 and 3 complete, there are now two options:
 
-**Rationale**: This is the only **functional gap** in feature parity. The other improvements are cleanup/polish.
+### Option A: Implement Small Province Expansion
+
+**Rationale**: This is the only remaining **functional gap** in feature parity between countries and provinces.
 
 **Timeline**:
-1. Complete Phase A research (3-4 hours)
+1. Complete Phase A research (3-4 hours) - Understand shader pipeline, materials, centroids
 2. Review findings, adjust implementation plan
-3. Complete Phase B implementation (6-8 hours)
-4. Complete Phase C testing (1-2 hours)
+3. Complete Phase B implementation (6-8 hours) - Add small province detection, dual shaders, markers
+4. Complete Phase C testing (1-2 hours) - Manual and automated testing
 5. **Total: 10-14 hours**
 
-### Option B: Quick Wins First
+**Outcome**: Full feature parity - small provinces (Rhode Island, Delaware) expand on hover like small countries do.
 
-**Rationale**: Build confidence with low-risk changes before tackling complex shader work.
-
-**Timeline**:
-1. Improvement 1: Consolidate renderer/picker (2-3 hours)
-2. Test and verify
-3. Improvement 2: Small province expansion (10-12 hours)
-4. **Total: 12-15 hours**
-
-### Option C: Leave As-Is
+### Option B: Leave As-Is
 
 **Rationale**: Current architecture is clean and working. Small province expansion is a **nice-to-have**, not critical.
 
 **Decision point**: Do users expect small provinces to expand on hover?
-- If **yes** → Tackle Improvement 2
-- If **no** → Architecture is complete
+- If **yes** → Implement Option A
+- If **no** → Architecture is complete ✅
 
 ---
 
@@ -685,11 +584,18 @@ open http://localhost:4817/capitals-quiz.html
 
 ---
 
-## Success Criteria (When Complete)
+## Success Criteria
+
+### Achieved ✅
 
 ✅ **Zero TODOs** in earth-globe.ts
-✅ **Full feature parity** - Countries and provinces behave identically
 ✅ **Single mental model** - All region operations work universally
 ✅ **Clean architecture** - Controller owns all its dependencies
 ✅ **No duplication** - Fix once, works everywhere
 ✅ **Tests pass** - All automated tests continue passing
+✅ **Renderer/Picker consolidation** - All access goes through controllers
+✅ **Marker system generalized** - Both controllers manage markers independently
+
+### Remaining (Optional)
+
+🔴 **Full feature parity** - Small provinces don't yet expand on hover (Improvement 2)
