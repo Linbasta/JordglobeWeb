@@ -83,7 +83,9 @@
       "Bash(npm run test:province-quiz-behavior:*)",
       "Bash(npm run test:phase0:*)",
       "Bash(npm run test:static-border-overlay:*)",
-      "Bash(xargs basename:*)"
+      "Bash(xargs basename:*)",
+      "Bash(awk:*)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []
