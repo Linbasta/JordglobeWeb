@@ -27,7 +27,7 @@ import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
 import { RegionPicker, calculateBoundingBox } from './region-picker';
 import type { LatLonPoint, PolygonData, RegionData, CountryJSON, TriangulationResult } from './types';
-import { isSmallCountry, isSurroundedCountry } from './small-countries';
+import { isSmallCountry, isSurroundedCountry, isSmallProvince } from './small-countries';
 
 /**
  * Region Renderer - Creates and manages region meshes
@@ -565,8 +565,10 @@ export class RegionRenderer {
 
                     if (flatCoords.length < 6) continue;
 
-                    // Provinces are never "small countries" — always full-size
-                    const polygonIndex = this.addPolygon(flatCoords, this.regionsData.length, [], false);
+                    // Check if this province should be treated as "small"
+                    const provinceId = `${countryISO2}-${item.id}`;
+                    const small = isSmallProvince(provinceId);
+                    const polygonIndex = this.addPolygon(flatCoords, this.regionsData.length, [], small);
                     if (polygonIndex !== null) {
                         polygonIndices.push(polygonIndex);
 
@@ -582,13 +584,17 @@ export class RegionRenderer {
                 }
 
                 if (polygonIndices.length > 0) {
+                    const provinceId = `${countryISO2}-${item.id}`;
+                    const small = isSmallProvince(provinceId);
+                    const centroid = small ? this.computeCentroid(polygonIndices) : null;
+
                     const regionData: RegionData = {
                         name: item.name,
-                        id: `${countryISO2}-${item.id}`,
+                        id: provinceId,
                         index: this.regionsData.length,
                         polygonIndices,
                         neighbourCountries: [],
-                        centroid: null,
+                        centroid,
                         parentRegionIndex,
                     };
                     this.regionsData.push(regionData);

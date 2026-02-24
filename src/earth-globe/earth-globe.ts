@@ -426,7 +426,8 @@ export class EarthGlobe {
 
         // Merge province face meshes (reuse cached world texture)
         const provinceMaterial = this.provinceShaderFactory!.createCountryShaderMaterial(this.worldTexture!);
-        provinceRenderer.mergeRegions(provinceMaterial, provinceMaterial);
+        const provinceSmallMaterial = this.provinceShaderFactory!.createSmallCountryShaderMaterial(this.worldTexture!);
+        provinceRenderer.mergeRegions(provinceMaterial, provinceSmallMaterial);
         const provinceFaceMesh = provinceRenderer.getMergedMesh();
 
         // Merge province extruded borders (same pipeline as countries)
@@ -447,6 +448,25 @@ export class EarthGlobe {
         const provinceOutlineMaterial = this.provinceShaderFactory!.createOutlineMaterial();
         const provinceSmallOutlineMaterial = this.provinceShaderFactory!.createSmallOutlineMaterial();
         this.provinceController.initOutlineMaterials(provinceOutlineMaterial, provinceSmallOutlineMaterial);
+
+        // Initialize province controller with marker pool (shared with countries)
+        if (this.smallMarkerPool) {
+            this.provinceController.initMarkerPool(this.smallMarkerPool);
+
+            // Create markers for small provinces
+            for (const province of allProvinces) {
+                if (province.centroid) {
+                    const normal = province.centroid.normalizeToNew();
+                    const position = province.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
+                    const markerId = this.smallMarkerPool.acquireMarker(position, normal);
+                    if (markerId >= 0) {
+                        this.provinceController.registerSmallRegionMarker(province.index, markerId);
+                        // Hide marker initially - will be shown in enterRegionMode
+                        this.smallMarkerPool.hideMarker(markerId);
+                    }
+                }
+            }
+        }
 
         // Hide both meshes initially — activated in enterRegionMode()
         if (provinceFaceMesh) provinceFaceMesh.setEnabled(false);
@@ -780,6 +800,16 @@ export class EarthGlobe {
         this.countryController.setAltitude(parentIndex, 0);
         this.countryController.setState(parentIndex, STATE_DISABLED);
 
+        // Hide all country markers (including the parent country marker if it's small)
+        this.countryController.hideAllSmallRegionMarkers();
+
+        // Show markers for active small provinces (those belonging to this country)
+        for (const province of allProvinces) {
+            if (province.parentRegionIndex === parentIndex && province.centroid) {
+                this.provinceController.showSmallRegionMarker(province.index);
+            }
+        }
+
         // Switch active controller so hit-testing goes through provinces
         this.activeController = this.provinceController;
         this.regionModeISO2 = iso2;
@@ -811,6 +841,12 @@ export class EarthGlobe {
         if (provinceMesh) provinceMesh.setEnabled(false);
         if (this.provinceBorderMesh) this.provinceBorderMesh.setEnabled(false);
         if (provinceSegmentMesh) provinceSegmentMesh.setEnabled(false);
+
+        // Hide all province markers
+        this.provinceController.hideAllSmallRegionMarkers();
+
+        // Restore country markers (show all enabled small countries)
+        this.countryController.showEnabledSmallRegionMarkers();
 
         // Restore active controller
         this.activeController = this.countryController;

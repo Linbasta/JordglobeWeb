@@ -109,3 +109,24 @@ const SURROUNDED_COUNTRY_CODES = new Set([
 export function isSurroundedCountry(iso2: string): boolean {
     return SURROUNDED_COUNTRY_CODES.has(iso2);
 }
+
+/**
+ * Small provinces that need magnification.
+ * Format: "COUNTRY-ID" where ID is the province number.
+ */
+const SMALL_PROVINCE_IDS = new Set([
+    'US-39',  // Rhode Island
+    'US-7',   // Delaware
+    'US-20',  // Maryland (small relative to neighbors)
+    'US-6',   // Connecticut
+    'US-30',  // New Jersey
+    'US-19',  // Massachusetts
+]);
+
+/**
+ * Check if a province ID represents a small province
+ * @param provinceId Format: "COUNTRY-ID" (e.g., "US-39")
+ */
+export function isSmallProvince(provinceId: string): boolean {
+    return SMALL_PROVINCE_IDS.has(provinceId);
+}
