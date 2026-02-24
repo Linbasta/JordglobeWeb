@@ -29,6 +29,63 @@ import { RegionPicker, calculateBoundingBox } from './region-picker';
 import type { LatLonPoint, PolygonData, RegionData, CountryJSON, TriangulationResult } from './types';
 import { isSmallCountry, isSurroundedCountry, isSmallProvince } from './small-countries';
 
+// ============================================================================
+// Polygon Cleaning
+// ============================================================================
+
+const CLEAN_EPS = 1e-10;
+
+function samePoint(a: LatLonPoint, b: LatLonPoint): boolean {
+    return Math.abs(a.lat - b.lat) < CLEAN_EPS && Math.abs(a.lon - b.lon) < CLEAN_EPS;
+}
+
+/**
+ * Clean a polygon by removing consecutive duplicate vertices and
+ * degenerate spikes (A->B->A patterns where the path doubles back).
+ *
+ * Source data from GeoJSON simplification can produce zero-width peninsulas
+ * where vertices collapse to the same coordinate. These cause the CDT to
+ * create overlapping constraint edges and miss triangles.
+ */
+function cleanPolygon(points: LatLonPoint[]): LatLonPoint[] {
+    let arr = points.slice();
+
+    let changed = true;
+    while (changed) {
+        changed = false;
+
+        // Remove consecutive duplicates
+        const deduped: LatLonPoint[] = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (deduped.length === 0 || !samePoint(arr[i], deduped[deduped.length - 1])) {
+                deduped.push(arr[i]);
+            }
+        }
+        // Wrap: last == first
+        while (deduped.length > 1 && samePoint(deduped[deduped.length - 1], deduped[0])) {
+            deduped.pop();
+        }
+        if (deduped.length !== arr.length) changed = true;
+        arr = deduped;
+
+        if (arr.length < 3) break;
+
+        // Remove first A->B->A spike found
+        for (let i = 0; i < arr.length; i++) {
+            const next1 = (i + 1) % arr.length;
+            const next2 = (i + 2) % arr.length;
+            if (samePoint(arr[i], arr[next2])) {
+                const remove = new Set([next1, next2]);
+                arr = arr.filter((_, idx) => !remove.has(idx));
+                changed = true;
+                break;
+            }
+        }
+    }
+
+    return arr;
+}
+
 /**
  * Region Renderer - Creates and manages region meshes
  */
@@ -204,8 +261,9 @@ export class RegionRenderer {
         altitude: number = 0,
         holes?: LatLonPoint[][]
     ): Mesh | null {
+        latLonPoints = cleanPolygon(latLonPoints);
+
         if (latLonPoints.length < 3) {
-            console.error("Not enough points to create mesh");
             return null;
         }
 
