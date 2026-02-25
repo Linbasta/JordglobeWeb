@@ -529,6 +529,48 @@ export class RegionRenderer {
     }
 
     /**
+     * Merge a subset of polygons [start, end) into regular/small buckets.
+     * Returns the meshes instead of storing on instance — used for per-country province loading.
+     */
+    mergePolygonSubset(
+        start: number,
+        end: number,
+        regularMaterial: ShaderMaterial,
+        smallMaterial: ShaderMaterial
+    ): { regular: Mesh | null; small: Mesh | null } {
+        const regularPolygons: PolygonData[] = [];
+        const smallPolygons: PolygonData[] = [];
+
+        for (let i = start; i < end; i++) {
+            const polygon = this.polygonsData[i];
+            if (polygon.isSmall) {
+                smallPolygons.push(polygon);
+            } else {
+                regularPolygons.push(polygon);
+            }
+        }
+
+        const regular = this.mergeMeshBucket(
+            regularPolygons, regularMaterial, `mergedRegionsSubset_${start}`
+        );
+
+        let small: Mesh | null = null;
+        if (smallPolygons.length > 0) {
+            const centroids = new Map<number, Vector3>();
+            for (const region of this.regionsData) {
+                if (region.centroid) {
+                    centroids.set(region.index, region.centroid);
+                }
+            }
+            small = this.mergeMeshBucket(
+                smallPolygons, smallMaterial, `mergedRegionsSmallSubset_${start}`, centroids
+            );
+        }
+
+        return { regular, small };
+    }
+
+    /**
      * Merge all region meshes into merged meshes with animation support.
      * Partitions into regular and small region buckets.
      */

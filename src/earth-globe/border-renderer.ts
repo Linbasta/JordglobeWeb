@@ -292,6 +292,54 @@ export class BorderRenderer {
     }
 
     /**
+     * Merge a subset of extruded borders, partitioned by regular/small.
+     * Returns the meshes instead of storing on instance — used for per-country province loading.
+     */
+    mergeExtrudedBorderSubset(
+        polygons: PolygonData[],
+        regularMaterial: ShaderMaterial,
+        smallMaterial: ShaderMaterial,
+        regionsData: RegionData[]
+    ): { regular: Mesh | null; small: Mesh | null } {
+        const regularPolygons: PolygonData[] = [];
+        const smallPolygons: PolygonData[] = [];
+
+        for (const polygon of polygons) {
+            if (polygon.extrudedBorder) {
+                if (polygon.isSmall) {
+                    smallPolygons.push(polygon);
+                } else {
+                    regularPolygons.push(polygon);
+                }
+            }
+        }
+
+        const regular = this.mergeBorderBucket(
+            regularPolygons, regularMaterial, `mergedExtrudedBordersSubset`
+        );
+
+        let small: Mesh | null = null;
+        if (smallPolygons.length > 0) {
+            const centroids = new Map<number, Vector3>();
+            for (const region of regionsData) {
+                if (region.centroid) {
+                    centroids.set(region.index, region.centroid);
+                }
+            }
+            small = this.mergeBorderBucket(
+                smallPolygons, smallMaterial, `mergedExtrudedBordersSmallSubset`, centroids
+            );
+        }
+
+        // Clear references
+        for (const polygon of polygons) {
+            polygon.extrudedBorder = null;
+        }
+
+        return { regular, small };
+    }
+
+    /**
      * Merge all extruded borders into merged meshes, partitioned by regular/small.
      */
     mergeExtrudedBorders(
