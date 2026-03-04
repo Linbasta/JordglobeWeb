@@ -8,6 +8,7 @@
 
 import type { Question } from '../shared/quiz/quiz-types'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
+import { preloadQuizImages } from '../shared/ui/image-preloader'
 import { SoloGameController } from './solo-game-controller'
 
 export interface QuizGameConfig {
@@ -41,10 +42,13 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         }
     }
 
-    // 4. Derive showCountryLabel: show if any question uses text presentation
+    // 4. Preload images (warms browser cache before questions are shown)
+    preloadQuizImages(questions)
+
+    // 5. Derive showCountryLabel: show if any question uses text presentation
     const showCountryLabel = questions.some(q => q.present === 'text')
 
-    // 5. Debug hint (dev only)
+    // 6. Debug hint (dev only)
     if (import.meta.env.DEV) {
         const hint = document.createElement('div')
         hint.style.cssText =
@@ -54,7 +58,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         document.body.appendChild(hint)
     }
 
-    // 6. Create controller and start quiz
+    // 7. Create controller and start quiz
     return new Promise<void>((resolve) => {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,
