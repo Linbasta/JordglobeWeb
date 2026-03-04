@@ -37,6 +37,7 @@ export function generateQuizSteps(questions: Question[]): Step[] {
         // Province quiz: enter region mode and disable non-game regions
         const firstProvinceQuestion = questions.find(q => q.answer === "province")
         const countryISO2 = firstProvinceQuestion?.countryISO2 || 'US'  // Default to US
+        steps.push({ op: StepOp.DisableNonParentCountries, countryISO2 })  // Disable all countries except parent
         steps.push({ op: StepOp.EnterRegionMode, countryISO2 })
         steps.push({ op: StepOp.DisableNonGameCountries })  // Works for provinces too!
     } else if (hasCountryQuestions) {

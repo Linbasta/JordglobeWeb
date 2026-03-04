@@ -266,6 +266,38 @@ export function tickQuiz(now: number): boolean {
             break
         }
 
+        case StepOp.DisableNonParentCountries: {
+            // Disable all countries except the parent country (for province quizzes)
+            if (!globe) {
+                advance(now)
+                break
+            }
+
+            const parentCountry = globe.getCountryByISO2(step.countryISO2)
+            if (!parentCountry) {
+                console.warn(`DisableNonParentCountries: country not found: ${step.countryISO2}`)
+                advance(now)
+                break
+            }
+
+            // Get all countries and disable those that aren't the parent
+            const allCountries = globe.getCountryController().getAllRegions()
+            const controller = globe.getCountryController()
+
+            for (const country of allCountries) {
+                if (country.index !== parentCountry.index) {
+                    setRegionDisabledImmediate(globe, country.index)
+                    // Hide marker for disabled small countries
+                    if (controller.isSmallRegion(country.index)) {
+                        controller.hideSmallRegionMarker(country.index)
+                    }
+                }
+            }
+
+            advance(now)
+            break
+        }
+
         case StepOp.EnterRegionMode: {
             // Wait for provinces to load, then enter region mode
             if (!activeAnimation) {

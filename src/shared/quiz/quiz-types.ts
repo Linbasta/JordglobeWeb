@@ -65,6 +65,7 @@ export type Question = {
  */
 export enum StepOp {
     DisableNonGameCountries = "disable_non_game_countries",  // Works for both countries and provinces
+    DisableNonParentCountries = "disable_non_parent_countries",  // For province mode: disable all countries except parent
     EnterRegionMode = "enter_region_mode",
     ExitRegionMode = "exit_region_mode",
     HighlightCountry = "highlight_country",
@@ -95,6 +96,7 @@ export enum StepOp {
 export type Step =
     // Setup
     | { op: StepOp.DisableNonGameCountries }  // Works for both countries and provinces
+    | { op: StepOp.DisableNonParentCountries; countryISO2: string }  // For province mode: disable all countries except parent
     | { op: StepOp.EnterRegionMode; countryISO2: string }
     | { op: StepOp.ExitRegionMode }
 
