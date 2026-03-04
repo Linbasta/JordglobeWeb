@@ -85,7 +85,10 @@
       "Bash(npm run test:static-border-overlay:*)",
       "Bash(xargs basename:*)",
       "Bash(awk:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(for country in BR CA CN DE ES FR GB IN IT MX PL SE US)",
+      "Bash(for country in AR AU BE CH CZ DK FI GE GR JP KE NL PT SK TR UA ZA ZM ZW)",
+      "Bash(bash:*)"
     ],
     "deny": [],
     "ask": []
