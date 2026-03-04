@@ -17,6 +17,27 @@ let rootEl: HTMLElement
 let searchInput: HTMLInputElement
 let menuContainer: HTMLElement
 
+// --- Slug utilities ---
+
+/**
+ * Generate URL-safe slug from medal: "0-africa-countries"
+ */
+function generateMedalSlug(medal: Medal): string {
+    const nameSlug = medal.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with hyphens
+        .replace(/^-+|-+$/g, '')       // Remove leading/trailing hyphens
+    return `${medal.id}-${nameSlug}`
+}
+
+/**
+ * Extract medal ID from hash: "#0-africa-countries" → 0
+ */
+function parseMedalSlug(hash: string): number | null {
+    const match = hash.match(/^#(\d+)/)
+    return match ? parseInt(match[1], 10) : null
+}
+
 // --- Init ---
 
 async function init() {
@@ -55,7 +76,28 @@ async function init() {
     menuContainer.className = 'menu-container'
     rootEl.appendChild(menuContainer)
 
+    // Check for hash-based medal link
+    const medalId = parseMedalSlug(window.location.hash)
+    if (medalId !== null && medalsById.has(medalId)) {
+        // Auto-start medal from hash
+        await startMedal(medalId)
+        return
+    }
+
     renderMenu()
+
+    // Listen for hash changes (browser back/forward)
+    window.addEventListener('hashchange', onHashChange)
+}
+
+async function onHashChange() {
+    const medalId = parseMedalSlug(window.location.hash)
+    if (medalId !== null && medalsById.has(medalId)) {
+        await startMedal(medalId)
+    } else {
+        // No valid hash - return to menu
+        location.reload()
+    }
 }
 
 // --- Search ---
@@ -166,6 +208,12 @@ async function startMedal(medalId: number) {
     const medal = medalsById.get(medalId)
     if (!medal) return
 
+    // Update URL hash for shareable link (without triggering hashchange)
+    const slug = generateMedalSlug(medal)
+    if (window.location.hash !== `#${slug}`) {
+        window.location.hash = slug
+    }
+
     const questions: Question[] = []
 
     if (medal.type === 'countries') {
@@ -234,7 +282,8 @@ async function startMedal(medalId: number) {
         title: medal.name,
         questions,
         onGameComplete: (_score, _total) => {
-            // Reload to return to menu (simplest, avoids teardown complexity)
+            // Clear hash and reload to return to menu
+            window.location.hash = ''
             window.location.reload()
         },
     })
