@@ -10,6 +10,7 @@ import type { Question } from '../shared/quiz/quiz-types'
 let medalsData: MedalsData
 let locationsData: LocationsData
 let medalsById: Map<number, Medal>
+let countryNames: Map<string, string>  // ISO2 → country name
 let searchQuery = ''
 
 // DOM refs
@@ -45,17 +46,24 @@ async function init() {
     const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement
 
     // Fetch data
-    const [medalsRes, locationsRes] = await Promise.all([
+    const [medalsRes, locationsRes, countriesRes] = await Promise.all([
         fetch('/medals.json'),
         fetch('/locations.json'),
+        fetch('/countries-enriched.json'),
     ])
     medalsData = await medalsRes.json()
     locationsData = await locationsRes.json()
+    const countriesData: { iso2: string; name: string }[] = await countriesRes.json()
 
-    // Build lookup
+    // Build lookups
     medalsById = new Map()
     for (const m of medalsData.medals) {
         medalsById.set(m.id, m)
+    }
+
+    countryNames = new Map()
+    for (const c of countriesData) {
+        countryNames.set(c.iso2, c.name)
     }
 
     // Build UI
@@ -218,11 +226,16 @@ async function startMedal(medalId: number) {
 
     if (medal.type === 'countries') {
         for (const iso2 of medal.questionIds) {
+            const name = countryNames.get(iso2 as string)
+            if (!name) {
+                console.warn(`Country ISO2 ${iso2} not found in countries data`)
+                continue
+            }
             questions.push({
                 present: 'text',
                 answer: 'country',
                 countryISO2: iso2 as string,
-                prompt: '',
+                prompt: name,
             })
         }
     } else if (medal.type === 'provinces') {
