@@ -8,6 +8,7 @@ import { PartyGameController } from './party-game-controller';
 import { onPinPlaced, getRecordedPositions, onPlacingModeChange } from '../../shared/managers/pin-manager';
 import { Confetti } from '../../shared/effects/confetti';
 import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
+import { showImageOverlay, hideImageOverlay } from '../../shared/ui/image-overlay';
 
 
 // Expand icon (corners pointing outward)
@@ -453,21 +454,29 @@ window.addEventListener('DOMContentLoaded', async () => {
             if (status) status.style.display = 'none';
         }
 
-        // Only show presentation (video/text) if configured to show on client
+        // Only show presentation (video/text/image) if configured to show on client
         if (showOnClient) {
             if (q.present === 'video') {
                 // Show video overlay
+                hideImageOverlay();
                 showVideoOverlay(q.youtubeId || '', q.prompt || '', q.startTime, q.endTime);
                 // Hide text question overlay
+                if (questionOverlay) questionOverlay.style.display = 'none';
+            } else if (q.present === 'image') {
+                // Show image overlay
+                hideVideoOverlay();
+                showImageOverlay(q.imageUrl || '', q.prompt || '', q.imageFrame ?? 'default');
                 if (questionOverlay) questionOverlay.style.display = 'none';
             } else {
                 // Show text question
                 hideVideoOverlay();
+                hideImageOverlay();
                 showQuestion(q.prompt || q.locationName || 'Unknown');
             }
         } else {
             // Host-only mode: hide all presentation overlays, just show minimal instruction
             hideVideoOverlay();
+            hideImageOverlay();
             if (questionOverlay) {
                 questionOverlay.style.display = 'block';
                 const promptEl = questionOverlay.querySelector('#cityName');
@@ -479,8 +488,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Handle results reveal
     socket.on('reveal', (data) => {
         console.log('Results revealed:', data);
-        // Hide video overlay if it was showing
+        // Hide media overlays if they were showing
         hideVideoOverlay();
+        hideImageOverlay();
         showResults(data.correct, data.results);
     });
 

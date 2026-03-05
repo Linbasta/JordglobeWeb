@@ -12,7 +12,7 @@
 /**
  * How the question is presented to the user
  */
-export type PresentTag = "text" | "video"
+export type PresentTag = "text" | "video" | "image"
 
 /**
  * What kind of answer the question expects
@@ -56,6 +56,7 @@ export type Question = {
 
     // present: "image"
     imageUrl?: string
+    imageFrame?: "default" | "simple"
 }
 
 // ============================================================================
@@ -89,6 +90,8 @@ export enum StepOp {
     FrameLocations = "frame_locations",
     ShowVideo = "show_video",
     HideVideo = "hide_video",
+    ShowImage = "show_image",
+    HideImage = "hide_image",
     RevealLocationGuess = "reveal_location_guess",
 }
 
@@ -129,6 +132,10 @@ export type Step =
     // Video
     | { op: StepOp.ShowVideo; questionIndex: number }
     | { op: StepOp.HideVideo }
+
+    // Image
+    | { op: StepOp.ShowImage; questionIndex: number }
+    | { op: StepOp.HideImage }
 
     // Location guess reveal
     | { op: StepOp.RevealLocationGuess;

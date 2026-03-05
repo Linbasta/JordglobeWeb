@@ -203,7 +203,9 @@ function createMedalLeaf(medal: Medal): HTMLElement {
             ? `${count} capitals`
             : medal.type === 'provinces'
                 ? `${count} provinces`
-                : `${count} sights`
+                : medal.type === 'flags'
+                    ? `${count} flags`
+                    : `${count} sights`
 
     el.appendChild(name)
     el.appendChild(badge)
@@ -267,6 +269,17 @@ async function startMedal(medalId: number) {
                 provinceId: provinceId as number,
                 countryISO2: medal.countryISO2,
                 prompt: name,
+            })
+        }
+    } else if (medal.type === 'flags') {
+        for (const iso2 of medal.questionIds) {
+            questions.push({
+                present: 'image',
+                answer: 'country',
+                countryISO2: iso2 as string,
+                imageUrl: `/_flags/${iso2}.png`,
+                imageFrame: 'simple',
+                prompt: '',
             })
         }
     } else if (medal.type === 'locations' || medal.type === 'capitals') {

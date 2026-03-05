@@ -163,8 +163,8 @@ export class QuizUIAdapter {
 
                 console.log(`[Quiz UI] Showing question ${questionIndex}: ${question?.prompt}`)
 
-                // Video questions show the prompt inside the video overlay — skip the card
-                if (question && question.present !== 'video' && this.countryLabelUI) {
+                // Video/image questions show the prompt inside their overlay — skip the card
+                if (question && question.present === 'text' && this.countryLabelUI) {
                     this.countryLabelUI.show(question.prompt)
                 }
 

@@ -9,7 +9,7 @@ import { config } from '../../config';
 
 // Question types - matches server format
 type Question = {
-    present: 'text' | 'video';
+    present: 'text' | 'video' | 'image';
     answer: 'city' | 'country';
     lat: number;
     lng: number;
@@ -20,6 +20,9 @@ type Question = {
     youtubeId?: string;
     startTime?: number;
     endTime?: number;
+    // For image questions
+    imageUrl?: string;
+    imageFrame?: 'default' | 'simple';
 };
 
 type MessageHandler = {

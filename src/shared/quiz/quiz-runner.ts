@@ -31,6 +31,7 @@ import { zoom, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe'
 import { ALTITUDE_NORMAL, ALTITUDE_CLEARED, ALTITUDE_WRONG_POP, ALTITUDE_SHOW_CORRECT } from '../../earth-globe/constants'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
+import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
 
 // ============================================================================
@@ -368,6 +369,21 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.HideVideo: {
             hideVideoOverlay()
+            advance(now)
+            break
+        }
+
+        case StepOp.ShowImage: {
+            const q = questions[step.questionIndex]
+            if (q.present === 'image' && q.imageUrl) {
+                showImageOverlay(q.imageUrl, q.prompt, q.imageFrame ?? 'default')
+            }
+            advance(now)
+            break
+        }
+
+        case StepOp.HideImage: {
+            hideImageOverlay()
             advance(now)
             break
         }

@@ -8,6 +8,7 @@ import { RevealVisualizer } from '../../shared/visualizers/reveal-visualizer';
 import { Confetti } from '../../shared/effects/confetti';
 import { config } from '../../config';
 import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
+import { showImageOverlay, hideImageOverlay } from '../../shared/ui/image-overlay';
 
 interface Player {
     name: string;
@@ -193,11 +194,12 @@ class HostLobby {
     private async showResults(correct: { locationName: string; lat: number; lng: number }, results: { name: string; distance: number; points: number; lat: number; lng: number }[], players?: Player[]): Promise<void> {
         if (!this.resultsOverlay) return;
 
-        // Hide question overlay and video overlay
+        // Hide question overlay and media overlays
         if (this.questionOverlay) {
             this.questionOverlay.style.display = 'none';
         }
         hideVideoOverlay();
+        hideImageOverlay();
 
         // Update players and leaderboard if provided
         if (players) {
@@ -325,15 +327,18 @@ class HostLobby {
             }
         }
 
-        // Show video or text question based on presentation type
+        // Show video, image, or text question based on presentation type
         if (question.present === 'video') {
-            // Show video overlay
+            hideImageOverlay();
             showVideoOverlay(question.youtubeId, question.prompt, question.startTime, question.endTime);
-            // Hide text question overlay
+            this.questionOverlay.style.display = 'none';
+        } else if (question.present === 'image') {
+            hideVideoOverlay();
+            showImageOverlay(question.imageUrl || '', question.prompt || '', question.imageFrame ?? 'default');
             this.questionOverlay.style.display = 'none';
         } else {
-            // Show text question (existing behavior)
             hideVideoOverlay();
+            hideImageOverlay();
             const promptEl = this.questionOverlay.querySelector('#cityName');
             if (promptEl) promptEl.textContent = question.prompt;
             this.questionOverlay.style.display = 'block';

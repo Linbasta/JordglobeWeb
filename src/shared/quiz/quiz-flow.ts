@@ -55,6 +55,8 @@ export function generateQuizSteps(questions: Question[]): Step[] {
 
         if (q.present === "video") {
             steps.push({ op: StepOp.ShowVideo, questionIndex: i })
+        } else if (q.present === "image") {
+            steps.push({ op: StepOp.ShowImage, questionIndex: i })
         }
 
         // All current answer types click the globe
@@ -62,6 +64,8 @@ export function generateQuizSteps(questions: Question[]): Step[] {
 
         if (q.present === "video") {
             steps.push({ op: StepOp.HideVideo })
+        } else if (q.present === "image") {
+            steps.push({ op: StepOp.HideImage })
         }
 
         // Post-answer steps will be spliced in by the runner

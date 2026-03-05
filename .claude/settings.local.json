@@ -88,7 +88,11 @@
       "Bash(xargs:*)",
       "Bash(for country in BR CA CN DE ES FR GB IN IT MX PL SE US)",
       "Bash(for country in AR AU BE CH CZ DK FI GE GR JP KE NL PT SK TR UA ZA ZM ZW)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(identify /Users/oloflandin/Programming/BabylonTest/public/RoundFrame.png /Users/oloflandin/Programming/BabylonTest/public/FlagFrame1.png /Users/oloflandin/Programming/BabylonTest/public/Rounded.png)",
+      "Bash(identify /Users/oloflandin/Programming/BabylonTest/public/_flags/*.png | head -3)",
+      "Bash(sips -g pixelWidth -g pixelHeight public/frame-default.png public/frame-simple.png 2>/dev/null)",
+      "Bash(sips -g pixelWidth -g pixelHeight public/frame-simple.png 2>/dev/null)"
     ],
     "deny": [],
     "ask": []

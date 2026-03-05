@@ -1,7 +1,7 @@
 export type Medal = {
     id: number
     name: string
-    type: 'countries' | 'locations' | 'capitals' | 'provinces'
+    type: 'countries' | 'locations' | 'capitals' | 'provinces' | 'flags'
     questionIds: (string | number)[]
     countryISO2?: string  // For provinces - which country the provinces belong to
 }
