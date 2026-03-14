@@ -300,9 +300,10 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.EnterRegionMode: {
             // Wait for provinces to load, then enter region mode
-            if (!activeAnimation) {
+            if (!activeAnimation && globe) {
                 activeAnimation = globe.waitForProvincesToLoad()
                     .then(async () => {
+                        if (!globe) return
                         await globe.enterRegionMode(step.countryISO2)
                         activeAnimation = null
                         advance(performance.now())

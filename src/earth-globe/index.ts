@@ -44,8 +44,6 @@ export type {
     RegionJSON,
 
     // Country types (specific)
-    RegionPolygon,
-    RegionData,
     PolygonData,
     NeighborInfo,
     CountryJSON,

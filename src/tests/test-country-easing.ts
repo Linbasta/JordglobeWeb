@@ -70,23 +70,24 @@ function interpolateKeyframes(kf: number[], t: number): number {
 
 /** Frame-by-frame animation driven by keyframes. Sets altitude + derives blend each frame. */
 function animateFromKeyframes(
-    api: { setCountryAltitude(idx: number, alt: number): void; setCountryBlend(idx: number, b: number): void },
+    api: import('../earth-globe/types').EarthGlobeAPI,
     idx: number,
     kf: number[],
     duration: number,
 ): Promise<void> {
     return new Promise((resolve) => {
         const startTime = performance.now();
+        const controller = api.getCountryController();
         function tick() {
             const elapsed = performance.now() - startTime;
             const t = Math.min(1, elapsed / duration);
             const altitude = interpolateKeyframes(kf, t);
-            api.setCountryAltitude(idx, altitude);
+            controller.setAltitude(idx, altitude);
             // Derive blend from altitude: ALTITUDE_NORMAL → 1.0, ALTITUDE_CLEARED → 0.0
             const blend = Math.max(0, Math.min(1,
                 (altitude - ALTITUDE_CLEARED) / (ALTITUDE_NORMAL - ALTITUDE_CLEARED)
             ));
-            api.setCountryBlend(idx, blend);
+            controller.setBlend(idx, blend);
             if (t >= 1) { resolve(); return; }
             requestAnimationFrame(tick);
         }
@@ -293,14 +294,15 @@ const globe = new EarthGlobe({
             const easingName = easingSelect.value;
 
             // Reset UK first: normal state, altitude 0.4, blend 1.0
-            api.setCountryState(uk.index, STATE_NORMAL);
-            api.setCountryAltitude(uk.index, ALTITUDE_NORMAL);
-            api.setCountryBlend(uk.index, 1.0);
+            const controller = api.getCountryController();
+            controller.setState(uk.index, STATE_NORMAL);
+            controller.setAltitude(uk.index, ALTITUDE_NORMAL);
+            controller.setBlend(uk.index, 1.0);
 
             updateStatus(`GB — ${easingName} ${duration}ms`);
 
             // Set cleared state, then animate from keyframes
-            api.setCountryState(uk.index, STATE_CLEARED);
+            controller.setState(uk.index, STATE_CLEARED);
             await animateFromKeyframes(api, uk.index, keyframes, duration);
         });
 
@@ -320,16 +322,18 @@ const globe = new EarthGlobe({
                 sampleEasingIntoKeyframes(easingSelect.value);
             }
 
-            api.setCountryState(idx, STATE_CLEARED);
+            const controller = api.getCountryController();
+            controller.setState(idx, STATE_CLEARED);
             await animateFromKeyframes(api, idx, keyframes, duration);
         });
 
         // Reset button — restore all countries to normal
         resetButton.addEventListener('click', () => {
+            const controller = api.getCountryController();
             for (const country of api.getAllCountries()) {
-                api.setCountryState(country.index, STATE_NORMAL);
-                api.setCountryAltitude(country.index, ALTITUDE_NORMAL);
-                api.setCountryBlend(country.index, 1.0);
+                controller.setState(country.index, STATE_NORMAL);
+                controller.setAltitude(country.index, ALTITUDE_NORMAL);
+                controller.setBlend(country.index, 1.0);
             }
             updateStatus('Reset all countries');
         });

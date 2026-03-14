@@ -53,6 +53,9 @@ export type Question = {
     youtubeId?: string
     startTime?: number
     endTime?: number
+
+    // present: "image"
+    imageUrl?: string
 }
 
 // ============================================================================

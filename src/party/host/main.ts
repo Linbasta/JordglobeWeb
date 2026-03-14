@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 globeInstance.getScene(),
                 globeInstance.getCamera(),
                 globeInstance.getCanvas(),
-                globeInstance.getCountryPicker(),
+                () => globeInstance.getCountryPicker(),
                 globeInstance.getEarthSphere(),
                 (material) => globeInstance.createUnlitMaterial(material),
                 (countryIndex) => globeInstance.getCountryController().getAltitude(countryIndex)
