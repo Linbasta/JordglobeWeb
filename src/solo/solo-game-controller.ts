@@ -10,7 +10,7 @@
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
 import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../earth-globe';
-import { STATE_DISABLED } from '../earth-globe';
+import { STATE_DISABLED, STATE_CLEARED } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
 import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared/managers/pin-manager';
@@ -117,11 +117,11 @@ export class SoloGameController extends BaseGameController {
             // For location questions, we allow clicking anywhere (country can be null)
             // For country/province questions, we need a valid region and check if disabled
             if (country) {
-                // Don't submit answer if region is disabled
+                // Don't submit answer if region is disabled or already cleared
                 const controller = this.globe.getActiveController();
                 const state = controller.getState(country.regionIndex);
-                if (state === STATE_DISABLED) {
-                    return;  // Ignore disabled regions
+                if (state === STATE_DISABLED || state === STATE_CLEARED) {
+                    return;  // Ignore disabled/cleared regions
                 }
                 // Submit answer with region and location (convert .lon → .lng at boundary)
                 this.quizAdapter.submitAnswer(country.regionIndex, { lat: latLon.lat, lng: latLon.lon });
