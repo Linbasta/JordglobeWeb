@@ -5,6 +5,7 @@
  */
 
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
+import { ExpansionTexture } from './expansion-texture';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 
@@ -28,6 +29,7 @@ interface AnimationState {
  */
 export class RegionAnimator {
     private animationTexture: AnimationTexture;
+    private expansionTexture: ExpansionTexture;
 
     /** Active altitude animations by country index */
     private altitudeAnimations: Map<number, AnimationState> = new Map();
@@ -44,8 +46,9 @@ export class RegionAnimator {
     /** Debug flag - log segment altitudes only once */
     private hasLoggedSegmentAltitudes = false;
 
-    constructor(animationTexture: AnimationTexture) {
+    constructor(animationTexture: AnimationTexture, expansionTexture: ExpansionTexture) {
         this.animationTexture = animationTexture;
+        this.expansionTexture = expansionTexture;
     }
 
     /**
@@ -191,7 +194,7 @@ export class RegionAnimator {
                 existing.resolve();
             }
 
-            const startValue = this.animationTexture.getExpansion(countryIndex);
+            const startValue = this.expansionTexture.getExpansion(countryIndex);
             const animation: AnimationState = {
                 startValue,
                 endValue: targetExpansion,
@@ -215,7 +218,8 @@ export class RegionAnimator {
             this.expansionAnimations.delete(countryIndex);
         }
 
-        this.animationTexture.setExpansion(countryIndex, expansion);
+        this.expansionTexture.setExpansion(countryIndex, expansion);
+        this.expansionTexture.update();
     }
 
     /**
@@ -267,7 +271,8 @@ export class RegionAnimator {
             }
         }
 
-        // Process expansion animations
+        // Process expansion animations (separate texture)
+        let expansionNeedsUpdate = false;
         for (const [countryIndex, anim] of this.expansionAnimations) {
             const elapsed = now - anim.startTime;
             const progress = Math.min(1, elapsed / anim.duration);
@@ -275,13 +280,18 @@ export class RegionAnimator {
             const eased = (anim.easing || inOutQuad)(progress);
             const value = anim.startValue + (anim.endValue - anim.startValue) * eased;
 
-            this.animationTexture.setExpansion(countryIndex, value);
-            needsUpdate = true;
+            this.expansionTexture.setExpansion(countryIndex, value);
+            expansionNeedsUpdate = true;
 
             if (progress >= 1) {
                 anim.resolve();
                 this.expansionAnimations.delete(countryIndex);
             }
+        }
+
+        // Update expansion texture separately
+        if (expansionNeedsUpdate) {
+            this.expansionTexture.update();
         }
 
         // Update segment border animations (sync with countries)

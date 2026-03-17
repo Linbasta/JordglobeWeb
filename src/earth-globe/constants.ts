@@ -83,7 +83,7 @@ export const TUBE_TESSELLATION = 8;
 /** Radius of outline tubes (thicker than segment borders) */
 export const OUTLINE_TUBE_RADIUS = 0.004;
 
-export const SMALL_OUTLINE_TUBE_RADIUS = 0.0005;
+export const SMALL_OUTLINE_TUBE_RADIUS = 0.0005 / 4;
 
 /** Color for country selection outline */
 export const OUTLINE_COLOR = new Color3(0.0, 0.0, 0.0);

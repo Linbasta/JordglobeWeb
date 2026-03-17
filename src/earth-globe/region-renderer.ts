@@ -87,6 +87,45 @@ function cleanPolygon(points: LatLonPoint[]): LatLonPoint[] {
 }
 
 /**
+ * Calculate the surface area of a mesh by summing triangle areas.
+ * Uses the cross product formula: area = 0.5 * |AB × AC|
+ */
+function calculateMeshSurfaceArea(mesh: Mesh): number {
+    const positions = mesh.getVerticesData(VertexBuffer.PositionKind);
+    const indices = mesh.getIndices();
+
+    if (!positions || !indices) {
+        return 0;
+    }
+
+    let totalArea = 0;
+
+    // Process each triangle
+    for (let i = 0; i < indices.length; i += 3) {
+        const i0 = indices[i] * 3;
+        const i1 = indices[i + 1] * 3;
+        const i2 = indices[i + 2] * 3;
+
+        // Get triangle vertices
+        const v0 = new Vector3(positions[i0], positions[i0 + 1], positions[i0 + 2]);
+        const v1 = new Vector3(positions[i1], positions[i1 + 1], positions[i1 + 2]);
+        const v2 = new Vector3(positions[i2], positions[i2 + 1], positions[i2 + 2]);
+
+        // Calculate edge vectors
+        const edge1 = v1.subtract(v0);
+        const edge2 = v2.subtract(v0);
+
+        // Cross product gives vector with magnitude = 2 * triangle area
+        const cross = Vector3.Cross(edge1, edge2);
+        const triangleArea = cross.length() * 0.5;
+
+        totalArea += triangleArea;
+    }
+
+    return totalArea;
+}
+
+/**
  * Region Renderer - Creates and manages region meshes
  */
 export class RegionRenderer {
@@ -688,6 +727,18 @@ export class RegionRenderer {
                     const small = isSmallProvince(provinceId);
                     const centroid = small ? this.computeCentroid(polygonIndices) : null;
 
+                    // Calculate surface area for small provinces
+                    let surfaceArea: number | undefined;
+                    if (small) {
+                        surfaceArea = 0;
+                        for (const polyIdx of polygonIndices) {
+                            const polygon = this.polygonsData[polyIdx];
+                            if (polygon.mesh) {
+                                surfaceArea += calculateMeshSurfaceArea(polygon.mesh);
+                            }
+                        }
+                    }
+
                     const regionData: RegionData = {
                         name: item.name,
                         id: provinceId,
@@ -696,6 +747,7 @@ export class RegionRenderer {
                         neighbourCountries: [],
                         centroid,
                         parentRegionIndex,
+                        surfaceArea
                     };
                     this.regionsData.push(regionData);
 
@@ -776,6 +828,20 @@ export class RegionRenderer {
                     }
                     if (hasLargeJump) continue;
 
+                    // Special case: Scale Monaco outward to avoid degenerate triangles
+                    if (country.iso2 === 'MC') {
+                        const MONACO_SCALE = 3.0;
+                        // Calculate centroid
+                        const centroidLat = polygon.reduce((sum, p) => sum + p[0], 0) / polygon.length;
+                        const centroidLon = polygon.reduce((sum, p) => sum + p[1], 0) / polygon.length;
+
+                        // Scale each point outward from centroid
+                        polygon.forEach(p => {
+                            p[0] = centroidLat + (p[0] - centroidLat) * MONACO_SCALE;
+                            p[1] = centroidLon + (p[1] - centroidLon) * MONACO_SCALE;
+                        });
+                    }
+
                     // Flatten coordinates
                     const flatCoords: number[] = [];
                     const latLonPoints: { lat: number; lon: number }[] = [];
@@ -837,13 +903,27 @@ export class RegionRenderer {
                     const needsCentroid = small || surrounded;
                     const centroid = needsCentroid ? this.computeCentroid(polygonIndices) : null;
 
+                    // Calculate surface area for small countries
+                    let surfaceArea: number | undefined;
+                    if (small) {
+                        surfaceArea = 0;
+                        for (const polyIdx of polygonIndices) {
+                            const polygon = this.polygonsData[polyIdx];
+                            if (polygon.mesh) {
+                                const area = calculateMeshSurfaceArea(polygon.mesh);
+                                surfaceArea += area;
+                            }
+                        }
+                    }
+
                     const regionData: RegionData = {
                         name: country.name_en,
                         id: country.iso2,
                         index: this.regionsData.length,
                         polygonIndices,
                         neighbourCountries: [],
-                        centroid
+                        centroid,
+                        surfaceArea
                     };
                     this.regionsData.push(regionData);
 

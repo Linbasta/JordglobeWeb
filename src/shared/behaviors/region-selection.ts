@@ -54,7 +54,8 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
     controller.setAltitude(country.regionIndex, ALTITUDE_HOVER);
     // Small region expansion (works for both countries and provinces)
     if (controller.isSmallRegion(country.regionIndex)) {
-        controller.animateExpansion(country.regionIndex, 5.0, 300);
+        const expansion = controller.getExpansionFactor(country.regionIndex);
+        controller.animateExpansion(country.regionIndex, expansion, 300);
         controller.hideSmallRegionMarker(country.regionIndex);
     }
 }

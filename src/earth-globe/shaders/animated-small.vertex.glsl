@@ -12,6 +12,8 @@ uniform mat4 worldViewProjection;
 uniform mat4 world;
 uniform sampler2D animationTexture;
 uniform float animationTextureWidth;
+uniform sampler2D expansionTexture;
+uniform float expansionTextureWidth;
 uniform float animationAmplitude;
 uniform float thicknessOffset;
 
@@ -19,11 +21,14 @@ uniform float thicknessOffset;
 // VARYINGS_PLACEHOLDER
 
 void main(void) {
-    // Read animation data from 1D texture
+    // Read animation data from main animation texture
     float texCoord = (countryIndex + 0.5) / animationTextureWidth;
     vec4 animData = texture2D(animationTexture, vec2(texCoord, 0.5));
     float animValue = animData.r;
-    float expansion = animData.a * 4.0;  // decode: stored as expansion/4.0
+
+    // Read expansion from separate expansion texture
+    float expansionCoord = (countryIndex + 0.5) / expansionTextureWidth;
+    float expansion = texture2D(expansionTexture, vec2(expansionCoord, 0.5)).r * 512.0;
 
     // Expand vertices outward from country pivot
     vec3 toPivot = position - countryPivot;

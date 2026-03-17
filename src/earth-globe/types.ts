@@ -57,6 +57,7 @@ export interface RegionData {
     parentRegionIndex?: number;      // if set: hide parent region when this is active
     centroid: import('@babylonjs/core/Maths/math').Vector3 | null;
     neighbourCountries?: NeighborInfo[];
+    surfaceArea?: number;            // Total surface area of all polygons (world units²)
 }
 
 /**

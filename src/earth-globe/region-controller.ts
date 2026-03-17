@@ -13,6 +13,7 @@ import type { Scene } from '@babylonjs/core/scene';
 import type { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 
 import { AnimationTexture } from './animation-texture';
+import { ExpansionTexture } from './expansion-texture';
 import { RegionRenderer } from './region-renderer';
 import { RegionAnimator } from './region-animator';
 import { RegionPicker } from './region-picker';
@@ -24,6 +25,7 @@ import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
 import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
 import type { LocationMarkerPool } from './location-marker-pool';
+import { calculateExpansionFactor } from './expansion-formula';
 
 export type { RegionType };
 
@@ -42,6 +44,7 @@ export class RegionController {
     private outlineRenderer: OutlineRenderer;
     private shaderFactory: ShaderFactory;
     private animationTexture: AnimationTexture;  // NOW OWNED BY CONTROLLER
+    private expansionTexture: ExpansionTexture;  // Separate texture for small region expansion
 
     // Segment data and materials
     private segmentData: SegmentData | null = null;
@@ -66,8 +69,12 @@ export class RegionController {
         this.animationTexture = new AnimationTexture(scene, `${type}_animationTexture`);
         this.shaderFactory.setAnimationTexture(this.animationTexture.getTexture());
 
+        // Create and own ExpansionTexture (for small regions only)
+        this.expansionTexture = new ExpansionTexture(scene, `${type}_expansionTexture`);
+        this.shaderFactory.setExpansionTexture(this.expansionTexture.getTexture());
+
         this.renderer = new RegionRenderer(scene, shaderFactory);
-        this.animator = new RegionAnimator(this.animationTexture);
+        this.animator = new RegionAnimator(this.animationTexture, this.expansionTexture);
         this.picker = new RegionPicker(PICKER_CELL_SIZE);
 
         // Use type as name prefix (e.g. "province_" for provinces, "" for countries)
@@ -100,12 +107,22 @@ export class RegionController {
     }
 
     /**
-     * Set the number of entries used in the animation texture
+     * Get the expansion texture (for small region expansion)
+     */
+    getExpansionTexture(): ExpansionTexture {
+        return this.expansionTexture;
+    }
+
+    /**
+     * Set the number of entries used in the animation and expansion textures
      * Typically called during initialization: regionCount + segmentCount
      */
     setEntriesUsed(count: number): void {
         this.animationTexture.setEntriesUsed(count);
         this.animationTexture.update();
+
+        // Also size the expansion texture (for small regions)
+        this.expansionTexture.setEntriesUsed(count);
     }
 
     // =========================================================================
@@ -426,6 +443,25 @@ export class RegionController {
     }
 
     // =========================================================================
+    // Expansion (small regions)
+    // =========================================================================
+
+    /**
+     * Calculate expansion factor for a region based on its surface area
+     *
+     * @param regionIndex Region index
+     * @returns Expansion factor (1.0 = no expansion, >1 = magnified)
+     */
+    getExpansionFactor(regionIndex: number): number {
+        const region = this.renderer.getRegionByIndex(regionIndex);
+        if (!region?.surfaceArea) {
+            return 1.0;
+        }
+
+        return calculateExpansionFactor(region.surfaceArea);
+    }
+
+    // =========================================================================
     // Tick
     // =========================================================================
 
@@ -439,6 +475,7 @@ export class RegionController {
 
     dispose(): void {
         this.animationTexture.dispose();
+        this.expansionTexture.dispose();
         this.renderer.dispose();
         this.borderRenderer.dispose();
         this.outlineRenderer.dispose();

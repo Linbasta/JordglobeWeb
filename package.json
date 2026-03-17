@@ -18,6 +18,7 @@
     "test:segments": "tsx scripts/test-segment-loader.ts",
     "test:quiz-runner": "tsx scripts/test-quiz-runner.ts",
     "test:small-countries": "tsx scripts/test-small-countries.ts",
+    "test:expansion": "tsx scripts/test-expansion-formula.ts",
     "test:us-provinces": "tsx scripts/test-us-provinces.ts",
     "test:regions": "tsx scripts/test-regions.ts",
     "test:static-border-overlay": "tsx scripts/test-static-border-overlay.ts",

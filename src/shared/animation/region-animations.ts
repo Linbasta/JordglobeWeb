@@ -153,9 +153,18 @@ export async function animateWrong(globe: EarthGlobeAPI, countryIndex: number, m
  * Show Correct Animation (0.3s): Rise up to highlight
  * Used to reveal the correct answer after wrong guess
  * Works for both countries and provinces (uses active region API)
+ * Small regions also expand geometrically to become visible
  */
 export async function animateShowCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
     const controller = globe.getActiveController();
+
+    // Small region expansion (on-demand calculation using surface area)
+    if (controller.isSmallRegion(regionIndex)) {
+        const expansion = controller.getExpansionFactor(regionIndex);
+        await controller.animateExpansion(regionIndex, expansion, 300);
+        controller.hideSmallRegionMarker(regionIndex);
+    }
+
     await controller.animateAltitude(regionIndex, ALTITUDE_SHOW_CORRECT, 300);
 }
 

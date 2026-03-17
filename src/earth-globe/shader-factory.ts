@@ -39,6 +39,7 @@ export class ShaderFactory {
     private scene: Scene;
     private engine: AbstractEngine;
     private animationTexture: DynamicTexture | null = null;
+    private expansionTexture: DynamicTexture | null = null;
     private shaderCounter: number = 0;
     private namePrefix: string;
 
@@ -53,6 +54,13 @@ export class ShaderFactory {
      */
     setAnimationTexture(texture: DynamicTexture): void {
         this.animationTexture = texture;
+    }
+
+    /**
+     * Set the expansion texture used by small country shaders
+     */
+    setExpansionTexture(texture: DynamicTexture): void {
+        this.expansionTexture = texture;
     }
 
     /**
@@ -161,8 +169,8 @@ export class ShaderFactory {
             fragment: name,
         }, {
             attributes: ["position", "normal", "uv", "countryIndex", "countryPivot"],
-            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
-            samplers: ["animationTexture", ...extraSamplers]
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "expansionTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
+            samplers: ["animationTexture", "expansionTexture", ...extraSamplers]
         });
 
         shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
@@ -173,7 +181,11 @@ export class ShaderFactory {
         if (this.animationTexture) {
             shaderMaterial.setTexture("animationTexture", this.animationTexture);
         }
+        if (this.expansionTexture) {
+            shaderMaterial.setTexture("expansionTexture", this.expansionTexture);
+        }
         shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
+        shaderMaterial.setFloat("expansionTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
         shaderMaterial.setFloat("thicknessOffset", 0.0);
         shaderMaterial.backFaceCulling = false;
