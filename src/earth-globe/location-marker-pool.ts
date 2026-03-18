@@ -17,6 +17,9 @@ import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
  * Configuration for the marker pool
  */
 export interface LocationMarkerPoolOptions {
+    /** Name for the parent node in scene hierarchy (default: 'LocationMarkers') */
+    name?: string;
+
     /** Number of markers to create in the pool (default: 200) */
     poolSize?: number;
 
@@ -70,6 +73,7 @@ export class LocationMarkerPool {
     constructor(scene: Scene, options: LocationMarkerPoolOptions = {}) {
         this.scene = scene;
 
+        const name = options.name ?? 'LocationMarkers';
         const poolSize = options.poolSize ?? 200;
         this.radius = options.radius ?? 0.03;
         this.height = options.height ?? 0.01;
@@ -77,8 +81,8 @@ export class LocationMarkerPool {
         const strokeColor = options.strokeColor ?? new Color3(0, 0, 0);
         const strokeWidth = options.strokeWidth ?? 0.15;
 
-        // Create hierarchy: LocationMarkers > SourceMeshes, Instances
-        this.parentNode = new TransformNode('LocationMarkers', scene);
+        // Create hierarchy: <name> > SourceMeshes, Instances
+        this.parentNode = new TransformNode(name, scene);
         this.sourceMeshesNode = new TransformNode('SourceMeshes', scene);
         this.sourceMeshesNode.parent = this.parentNode;
         this.instancesNode = new TransformNode('Instances', scene);

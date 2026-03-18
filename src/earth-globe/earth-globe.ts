@@ -296,10 +296,14 @@ export class EarthGlobe {
             this.countryController.initOutlineMaterials(this.outlineMaterial, this.smallOutlineMaterial);
 
             // Create location marker pool (200 markers, batched rendering)
-            this.markerPool = new LocationMarkerPool(this.scene, { poolSize: 200 });
+            this.markerPool = new LocationMarkerPool(this.scene, {
+                name: 'LocationMarkers',
+                poolSize: 200
+            });
 
             // Create separate green marker pool for small country indicators
             this.smallMarkerPool = new LocationMarkerPool(this.scene, {
+                name: 'SmallCountryMarkers',
                 poolSize: 100,
                 fillColor: new Color3(0.2, 0.8, 0.2),
                 strokeColor: new Color3(0, 0.4, 0),
