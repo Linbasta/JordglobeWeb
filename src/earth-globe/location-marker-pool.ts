@@ -58,8 +58,10 @@ export class LocationMarkerPool {
     private sourceStrokeMesh: Mesh;
     private sourceDebugSphereMesh: Mesh | null = null;
 
-    // Parent node to organize marker instances in scene hierarchy
+    // Parent node to organize all marker-related nodes in scene hierarchy
     private parentNode: TransformNode;
+    private sourceMeshesNode: TransformNode;
+    private instancesNode: TransformNode;
 
     private radius: number;
     private height: number;
@@ -75,12 +77,20 @@ export class LocationMarkerPool {
         const strokeColor = options.strokeColor ?? new Color3(0, 0, 0);
         const strokeWidth = options.strokeWidth ?? 0.15;
 
-        // Create parent node to organize all marker instances
+        // Create hierarchy: LocationMarkers > SourceMeshes, Instances
         this.parentNode = new TransformNode('LocationMarkers', scene);
+        this.sourceMeshesNode = new TransformNode('SourceMeshes', scene);
+        this.sourceMeshesNode.parent = this.parentNode;
+        this.instancesNode = new TransformNode('Instances', scene);
+        this.instancesNode.parent = this.parentNode;
 
         // Create source meshes (these won't be rendered, only their instances)
         this.sourceFillMesh = this.createSourceFillMesh(this.radius, this.height, fillColor);
         this.sourceStrokeMesh = this.createSourceStrokeMesh(this.radius, this.height, strokeColor, strokeWidth);
+
+        // Parent source meshes to organize them in inspector
+        this.sourceFillMesh.parent = this.sourceMeshesNode;
+        this.sourceStrokeMesh.parent = this.sourceMeshesNode;
 
         // Hide source meshes (only instances will be visible)
         this.sourceFillMesh.setEnabled(false);
@@ -91,8 +101,8 @@ export class LocationMarkerPool {
             const strokeInstance = this.sourceStrokeMesh.createInstance(`markerStroke_${i}`);
             const fillInstance = this.sourceFillMesh.createInstance(`markerFill_${i}`);
 
-            // Parent stroke instances to organize them in scene hierarchy
-            strokeInstance.parent = this.parentNode;
+            // Parent stroke instances to Instances node
+            strokeInstance.parent = this.instancesNode;
 
             // Parent fill to stroke so they move together
             fillInstance.parent = strokeInstance;
@@ -445,7 +455,7 @@ export class LocationMarkerPool {
             this.sourceDebugSphereMesh.dispose();
         }
 
-        // Dispose parent node
+        // Dispose hierarchy (children are disposed automatically with parent)
         this.parentNode.dispose();
 
         this.markers = [];
