@@ -6,6 +6,7 @@
 
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
 import { ExpansionTexture } from './expansion-texture';
+import { ALTITUDE_NORMAL } from './constants';
 
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 
@@ -307,32 +308,27 @@ export class RegionAnimator {
         }
 
         // Update segment border animations (sync with countries)
-        // Special handling: borders connected to small countries should not follow their altitude
-        // (small countries use expansion, not altitude animation)
+        // Special handling: borders connected to small countries stay at normal altitude
+        // (small countries use expansion, not altitude, so their borders shouldn't follow altitude changes)
         for (const [segmentIndex, countryIndices] of this.segmentCountryMap) {
-            // Separate small and regular countries
-            const regularCountries = countryIndices.filter(idx => !this.smallRegionIndices.has(idx));
+            // Check if any connected country is a small country
+            const hasSmallCountry = countryIndices.some(idx => this.smallRegionIndices.has(idx));
 
-            let finalAltitude = 0;
+            let finalAltitude: number;
 
-            if (regularCountries.length === 0) {
-                // Border between two small countries → hide it (altitude = 0)
-                finalAltitude = 0;
+            if (hasSmallCountry) {
+                // Border connected to small country → always keep at normal altitude
+                // When the small country expands outward, the border will be naturally buried inside/under it
+                finalAltitude = ALTITUDE_NORMAL;
             } else {
-                // Has at least one regular country → use only regular countries' altitudes
-                for (const countryIndex of regularCountries) {
+                // Regular border → follow connected countries' altitudes
+                finalAltitude = ALTITUDE_NORMAL;
+                for (const countryIndex of countryIndices) {
                     finalAltitude = Math.max(finalAltitude, this.animationTexture.getAltitude(countryIndex));
                 }
             }
 
             this.animationTexture.setAltitude(segmentIndex, finalAltitude);
-
-            // Log first time we set non-zero altitude for debugging
-            if (!this.hasLoggedSegmentAltitudes && finalAltitude > 0) {
-                console.log(`[RegionAnimator] Setting segment ${segmentIndex} altitude=${finalAltitude.toFixed(3)} (from regular regions [${regularCountries.join(', ')}], ignoring small regions)`);
-                this.hasLoggedSegmentAltitudes = true;
-            }
-
             needsUpdate = true;
         }
 

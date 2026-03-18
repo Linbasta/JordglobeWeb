@@ -334,6 +334,11 @@ export class EarthGlobe {
                 }
             }
 
+            // NOW update small region indices (after markers are registered)
+            this.countryAnimator.setSmallRegionIndices(
+                this.countryController.getSmallRegionIndices()
+            );
+
             // Log statistics
             const pickerStats = this.countryController.getPicker().getStats();
             console.log(`Country picker: ${pickerStats.polygonCount} polygons in ${pickerStats.cellCount} grid cells`);
