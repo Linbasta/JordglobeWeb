@@ -11,6 +11,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { InstancedMesh } from '@babylonjs/core/Meshes/instancedMesh';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 
 /**
  * Configuration for the marker pool
@@ -57,6 +58,9 @@ export class LocationMarkerPool {
     private sourceStrokeMesh: Mesh;
     private sourceDebugSphereMesh: Mesh | null = null;
 
+    // Parent node to organize marker instances in scene hierarchy
+    private parentNode: TransformNode;
+
     private radius: number;
     private height: number;
     private debugEnabled = false;
@@ -71,6 +75,9 @@ export class LocationMarkerPool {
         const strokeColor = options.strokeColor ?? new Color3(0, 0, 0);
         const strokeWidth = options.strokeWidth ?? 0.15;
 
+        // Create parent node to organize all marker instances
+        this.parentNode = new TransformNode('LocationMarkers', scene);
+
         // Create source meshes (these won't be rendered, only their instances)
         this.sourceFillMesh = this.createSourceFillMesh(this.radius, this.height, fillColor);
         this.sourceStrokeMesh = this.createSourceStrokeMesh(this.radius, this.height, strokeColor, strokeWidth);
@@ -83,6 +90,9 @@ export class LocationMarkerPool {
         for (let i = 0; i < poolSize; i++) {
             const strokeInstance = this.sourceStrokeMesh.createInstance(`markerStroke_${i}`);
             const fillInstance = this.sourceFillMesh.createInstance(`markerFill_${i}`);
+
+            // Parent stroke instances to organize them in scene hierarchy
+            strokeInstance.parent = this.parentNode;
 
             // Parent fill to stroke so they move together
             fillInstance.parent = strokeInstance;
@@ -434,6 +444,9 @@ export class LocationMarkerPool {
         if (this.sourceDebugSphereMesh) {
             this.sourceDebugSphereMesh.dispose();
         }
+
+        // Dispose parent node
+        this.parentNode.dispose();
 
         this.markers = [];
     }
