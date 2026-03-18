@@ -373,6 +373,14 @@ export class RegionController {
     }
 
     /**
+     * Get indices of all small regions
+     * Used to configure animator for proper border handling
+     */
+    getSmallRegionIndices(): Set<number> {
+        return new Set(this.smallRegionMarkers.keys());
+    }
+
+    /**
      * Hide the small region marker for a given region index
      */
     hideSmallRegionMarker(regionIndex: number): void {

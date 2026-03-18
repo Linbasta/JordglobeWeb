@@ -290,6 +290,11 @@ export class EarthGlobe {
                 this.countryController.getSegmentAnimationIndices()
             );
 
+            // Set small region indices so borders animate correctly
+            this.countryAnimator.setSmallRegionIndices(
+                this.countryController.getSmallRegionIndices()
+            );
+
             // Create outline materials (shared between both controllers)
             this.outlineMaterial = this.shaderFactory.createOutlineMaterial();
             this.smallOutlineMaterial = this.shaderFactory.createSmallOutlineMaterial();
@@ -800,6 +805,11 @@ export class EarthGlobe {
                 // Set up segment animation mapping (so segments follow province altitudes)
                 this.provinceController.getAnimator().setSegmentCountryMap(
                     this.provinceController.getSegmentAnimationIndices()
+                );
+
+                // Set small province indices so borders animate correctly
+                this.provinceController.getAnimator().setSmallRegionIndices(
+                    this.provinceController.getSmallRegionIndices()
                 );
 
                 this.loadedSegmentCountry = iso2;
