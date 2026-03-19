@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Islands Frame Points</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; overflow: hidden; font-family: monospace; }
+        #renderCanvas { width: 100vw; height: 100vh; display: block; }
+
+        #ui {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+            max-width: 320px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-family: monospace;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #888;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+        }
+        button:hover { background: rgba(40, 40, 40, 0.9); }
+        button.active { background: rgba(0, 100, 0, 0.8); border-color: #0f0; }
+
+        #status {
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #ccc;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+
+        #pointsList {
+            padding: 8px;
+            font-size: 11px;
+            color: #ccc;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 4px;
+            border: 1px solid #444;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .point-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+        }
+        .point-item:last-child { border-bottom: none; }
+        .point-item.selected { background: rgba(0, 100, 0, 0.3); }
+        .point-coords { flex: 1; }
+        .point-btn {
+            padding: 2px 6px;
+            font-size: 10px;
+            background: rgba(100, 0, 0, 0.6);
+        }
+
+        #output {
+            padding: 8px;
+            font-size: 10px;
+            color: #0f0;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 4px;
+            border: 1px solid #0f0;
+            white-space: pre;
+            overflow-x: auto;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .info {
+            font-size: 11px;
+            color: #888;
+            line-height: 1.4;
+            padding: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+        }
+        .row button { flex: 1; }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <div id="ui">
+        <div id="status">Initializing...</div>
+
+        <div class="row">
+            <button id="btnAddMode">Add Points</button>
+            <button id="btnMoveMode">Move Points</button>
+        </div>
+
+        <div class="row">
+            <button id="btnUndo">Undo</button>
+            <button id="btnClear">Clear All</button>
+        </div>
+
+        <div id="pointsList"></div>
+
+        <button id="btnCopyCode">Copy Code to Clipboard</button>
+
+        <div id="output"></div>
+
+        <div class="info">
+            <strong>Add mode:</strong> Click globe to add points<br>
+            <strong>Move mode:</strong> Drag points to reposition<br>
+            Points form a closed polygon (auto-connects last to first)
+        </div>
+    </div>
+
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module">
+        import { EarthGlobe, EARTH_RADIUS } from '/src/earth-globe/index.ts';
+        import { MeshBuilder, StandardMaterial, Color3, Vector3 } from '/src/shared/babylon-exports.ts';
+
+        const statusEl = document.getElementById('status');
+        const pointsListEl = document.getElementById('pointsList');
+        const outputEl = document.getElementById('output');
+        const btnAddMode = document.getElementById('btnAddMode');
+        const btnMoveMode = document.getElementById('btnMoveMode');
+        const btnUndo = document.getElementById('btnUndo');
+        const btnClear = document.getElementById('btnClear');
+        const btnCopyCode = document.getElementById('btnCopyCode');
+
+        // State
+        let points = [];  // Array of { lat, lon }
+        let mode = 'add'; // 'add' or 'move'
+        let selectedPointIndex = -1;
+        let isDragging = false;
+        let globe = null;
+        let scene = null;
+
+        // Visual elements
+        let pointMeshes = [];  // Spheres at each point
+        let lineMesh = null;   // Lines connecting points
+
+        const POINT_SIZE = 0.08;  // Size of point markers (boxes)
+        const GLOBE_RADIUS = EARTH_RADIUS;
+
+        function setStatus(text) {
+            statusEl.textContent = text;
+        }
+
+        function updateModeButtons() {
+            btnAddMode.classList.toggle('active', mode === 'add');
+            btnMoveMode.classList.toggle('active', mode === 'move');
+        }
+
+        function latLonToPosition(lat, lon) {
+            const latRad = lat * Math.PI / 180;
+            const lonRad = lon * Math.PI / 180;
+            const r = GLOBE_RADIUS + 0.05;  // Slightly above surface
+            return new Vector3(
+                r * Math.cos(latRad) * Math.cos(lonRad),
+                r * Math.sin(latRad),
+                r * Math.cos(latRad) * Math.sin(lonRad)
+            );
+        }
+
+        function updatePointMeshes() {
+            // Remove old meshes
+            for (const mesh of pointMeshes) {
+                mesh.dispose();
+            }
+            pointMeshes = [];
+
+            // Create new meshes - boxes for better visibility
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+                const pos = latLonToPosition(p.lat, p.lon);
+
+                const box = MeshBuilder.CreateBox(`point_${i}`, { size: POINT_SIZE }, scene);
+                box.position = pos;
+
+                // Orient box to face outward from globe center
+                box.lookAt(Vector3.Zero());
+
+                const mat = new StandardMaterial(`pointMat_${i}`, scene);
+                mat.emissiveColor = i === selectedPointIndex ? new Color3(0, 1, 0) : new Color3(1, 0.5, 0);
+                mat.disableLighting = true;
+                box.material = mat;
+
+                // Store index for picking
+                box.metadata = { pointIndex: i };
+
+                pointMeshes.push(box);
+            }
+
+            updateLineMesh();
+        }
+
+        function updateLineMesh() {
+            if (lineMesh) {
+                lineMesh.dispose();
+                lineMesh = null;
+            }
+
+            if (points.length < 2) return;
+
+            // Create path including closing segment
+            const pathPoints = points.map(p => latLonToPosition(p.lat, p.lon));
+            pathPoints.push(pathPoints[0]);  // Close the loop
+
+            // Use tube for thicker, more visible lines
+            lineMesh = MeshBuilder.CreateTube('frameLine', {
+                path: pathPoints,
+                radius: 0.01,
+                tessellation: 8,
+                updatable: false
+            }, scene);
+
+            const mat = new StandardMaterial('lineMat', scene);
+            mat.emissiveColor = new Color3(1, 1, 0);
+            mat.disableLighting = true;
+            lineMesh.material = mat;
+        }
+
+        function updatePointsList() {
+            pointsListEl.innerHTML = points.map((p, i) => `
+                <div class="point-item ${i === selectedPointIndex ? 'selected' : ''}" data-index="${i}">
+                    <span class="point-coords">${i + 1}. lat: ${p.lat.toFixed(2)}, lon: ${p.lon.toFixed(2)}</span>
+                    <button class="point-btn" data-action="delete" data-index="${i}">×</button>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            pointsListEl.querySelectorAll('.point-item').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.dataset.action === 'delete') {
+                        const idx = parseInt(e.target.dataset.index);
+                        points.splice(idx, 1);
+                        if (selectedPointIndex >= points.length) {
+                            selectedPointIndex = points.length - 1;
+                        }
+                        updateAll();
+                    } else {
+                        selectedPointIndex = parseInt(el.dataset.index);
+                        updateAll();
+                    }
+                });
+            });
+        }
+
+        function updateOutput() {
+            if (points.length === 0) {
+                outputEl.textContent = '// No points defined';
+                return;
+            }
+
+            const code = `points: [\n${points.map(p =>
+                `    { lat: ${p.lat.toFixed(1)}, lon: ${p.lon.toFixed(1)} },`
+            ).join('\n')}\n]`;
+
+            outputEl.textContent = code;
+        }
+
+        function updateAll() {
+            updatePointMeshes();
+            updatePointsList();
+            updateOutput();
+        }
+
+        function addPoint(lat, lon) {
+            points.push({ lat, lon });
+            selectedPointIndex = points.length - 1;
+            updateAll();
+            setStatus(`Added point ${points.length}: (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
+        }
+
+        function moveSelectedPoint(lat, lon) {
+            if (selectedPointIndex >= 0 && selectedPointIndex < points.length) {
+                points[selectedPointIndex].lat = lat;
+                points[selectedPointIndex].lon = lon;
+                updateAll();
+            }
+        }
+
+        // Initialize
+        globe = new EarthGlobe({
+            canvasId: 'renderCanvas',
+            onReady: (g) => {
+                globe = g;
+                scene = g.getScene();
+                window.globe = g;
+
+                setStatus('Ready. Click to add points.');
+                updateModeButtons();
+
+                // Helper: ray-sphere intersection to get lat/lon from click
+                function getLatLonFromPointer() {
+                    const ray = scene.createPickingRay(
+                        scene.pointerX,
+                        scene.pointerY,
+                        null,
+                        scene.activeCamera
+                    );
+
+                    const origin = ray.origin;
+                    const dir = ray.direction;
+
+                    // Sphere intersection: |origin + t*dir|² = R²
+                    const a = dir.lengthSquared();
+                    const b = 2 * Vector3.Dot(origin, dir);
+                    const c = origin.lengthSquared() - GLOBE_RADIUS * GLOBE_RADIUS;
+                    const discriminant = b * b - 4 * a * c;
+
+                    if (discriminant >= 0) {
+                        const t = (-b - Math.sqrt(discriminant)) / (2 * a);
+                        if (t > 0) {
+                            const hitPoint = origin.add(dir.scale(t));
+                            return g.positionToLatLon(hitPoint);
+                        }
+                    }
+                    return null;
+                }
+
+                // Handle pointer down for both add and move modes
+                scene.onPointerDown = (evt, pickResult) => {
+                    if (mode === 'move') {
+                        // Check if clicking on a point mesh
+                        if (pickResult.hit && pickResult.pickedMesh?.metadata?.pointIndex !== undefined) {
+                            selectedPointIndex = pickResult.pickedMesh.metadata.pointIndex;
+                            isDragging = true;
+                            updateAll();
+                            setStatus(`Selected point ${selectedPointIndex + 1}. Drag to move.`);
+                        }
+                    } else if (mode === 'add') {
+                        // Add point at click location
+                        const latLon = getLatLonFromPointer();
+                        if (latLon) {
+                            addPoint(latLon.lat, latLon.lon);
+                        }
+                    }
+                };
+
+                scene.onPointerUp = () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        setStatus('Point moved.');
+                    }
+                };
+
+                scene.onPointerMove = (evt, pickResult) => {
+                    if (!isDragging || mode !== 'move') return;
+
+                    const latLon = getLatLonFromPointer();
+                    if (latLon) {
+                        moveSelectedPoint(latLon.lat, latLon.lon);
+                    }
+                };
+            }
+        });
+
+        // Button handlers
+        btnAddMode.addEventListener('click', () => {
+            mode = 'add';
+            updateModeButtons();
+            setStatus('Add mode: Click globe to add points');
+        });
+
+        btnMoveMode.addEventListener('click', () => {
+            mode = 'move';
+            updateModeButtons();
+            setStatus('Move mode: Click and drag points');
+        });
+
+        btnUndo.addEventListener('click', () => {
+            if (points.length > 0) {
+                points.pop();
+                if (selectedPointIndex >= points.length) {
+                    selectedPointIndex = points.length - 1;
+                }
+                updateAll();
+                setStatus(`Removed last point. ${points.length} points remaining.`);
+            }
+        });
+
+        btnClear.addEventListener('click', () => {
+            points = [];
+            selectedPointIndex = -1;
+            updateAll();
+            setStatus('Cleared all points.');
+        });
+
+        btnCopyCode.addEventListener('click', () => {
+            navigator.clipboard.writeText(outputEl.textContent).then(() => {
+                setStatus('Code copied to clipboard!');
+            }).catch(err => {
+                setStatus('Failed to copy: ' + err);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -76,16 +76,14 @@ export const KIRIBATI_DEFINITION: IslandsDefinition = {
         {
             name: 'Line Islands',
             points: [
-                { lat: 3.0, lon: -160.5 },
-                { lat: 3.0, lon: -156.0 },
-                { lat: 5.0, lon: -156.0 },
-                { lat: 5.0, lon: -150.5 },
-                { lat: -4.5, lon: -150.5 },
-                { lat: -4.5, lon: -153.5 },
-                { lat: -6.0, lon: -155.5 },
-                { lat: -12.5, lon: -155.5 },
-                { lat: -12.5, lon: -160.5 },
+                { lat: 5.3, lon: -160.2 },
+                { lat: -5.2, lon: -160.4 },
+                { lat: -7.6, lon: -156.5 },
+                { lat: -12.6, lon: -155.8 },
+                { lat: -13.1, lon: -149.8 },
+                { lat: 5.5, lon: -149.5 },
             ]
+
         }
     ]
 };
@@ -249,23 +247,15 @@ export const SEYCHELLES_DEFINITION: IslandsDefinition = {
     name: 'Seychelles',
     regions: [
         {
-            name: 'Inner Islands',
+            name: 'Islands',
             points: [
-                { lat: -4.0, lon: 55.0 },
-                { lat: -4.0, lon: 56.5 },
-                { lat: -5.0, lon: 56.5 },
-                { lat: -5.0, lon: 55.0 },
+                { lat: -5.5, lon: 45.7 },
+                { lat: -11.9, lon: 45.7 },
+                { lat: -7.5, lon: 59.3 },
+                { lat: -1.1, lon: 58.7 },
             ]
+
         },
-        {
-            name: 'Outer Islands',
-            points: [
-                { lat: -7.0, lon: 46.0 },
-                { lat: -7.0, lon: 47.0 },
-                { lat: -10.0, lon: 47.0 },
-                { lat: -10.0, lon: 46.0 },
-            ]
-        }
     ]
 };
 
@@ -294,11 +284,12 @@ export const MAURITIUS_DEFINITION: IslandsDefinition = {
         {
             name: 'Mauritius Islands',
             points: [
-                { lat: -19.5, lon: 56.5 },
-                { lat: -19.5, lon: 58.0 },
-                { lat: -20.7, lon: 58.0 },
-                { lat: -20.7, lon: 56.5 },
+                { lat: -10.2, lon: 54.2 },
+                { lat: -23.4, lon: 56.4 },
+                { lat: -22.2, lon: 66.7 },
+                { lat: -9.0, lon: 64.2 },
             ]
+
         }
     ]
 };

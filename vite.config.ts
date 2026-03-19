@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { writeFileSync } from 'fs';
+import { writeFileSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { routes } from './routes.config';
@@ -100,6 +100,22 @@ export default defineConfig({
         const indexPath = join(__dirname, 'index.html');
         writeFileSync(indexPath, html, 'utf-8');
         console.log('✓ Generated index.html for build');
+      }
+    },
+    // Remove dev-only folders from production build
+    {
+      name: 'remove-dev-folders',
+      closeBundle() {
+        const devFolders = ['edit', 'tests'];
+        for (const folder of devFolders) {
+          const folderPath = join(__dirname, 'dist', folder);
+          try {
+            rmSync(folderPath, { recursive: true, force: true });
+            console.log(`✓ Removed dev folder from build: ${folder}/`);
+          } catch {
+            // Folder doesn't exist, that's fine
+          }
+        }
       }
     }
   ]
