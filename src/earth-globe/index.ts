@@ -147,6 +147,8 @@ export { RegionRenderer } from './region-renderer';
 export { RegionRenderer as CountryRenderer } from './region-renderer';  // backward-compat
 export { BorderRenderer } from './border-renderer';
 export { OutlineRenderer } from './outline-renderer';
+export { ArchipelagoOverlay, ARCHIPELAGO_DEFINITIONS, KIRIBATI_DEFINITION } from './archipelago-overlay';
+export type { ArchipelagoDefinition, ArchipelagoRegion } from './archipelago-overlay';
 export { Skybox } from './skybox';
 export { AnimationTexture } from './animation-texture';
 export { RegionAnimator } from './region-animator';

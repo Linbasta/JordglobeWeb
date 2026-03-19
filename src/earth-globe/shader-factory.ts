@@ -17,6 +17,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import {
     ANIMATION_AMPLITUDE,
     ANIMATION_TEXTURE_WIDTH,
+    ALTITUDE_TEXTURE_SCALE,
     BORDER_COLOR_WHITE,
     BORDER_COLOR_BLACK,
     BORDER_COLOR_GRAY,
@@ -31,6 +32,8 @@ import borderFragmentShader from './shaders/border.fragment.glsl?raw';
 import countryFragmentShader from './shaders/country.fragment.glsl?raw';
 import unlitVertexShader from './shaders/unlit.vertex.glsl?raw';
 import unlitFragmentShader from './shaders/unlit.fragment.glsl?raw';
+import dashedBorderFragmentShader from './shaders/dashed-border.fragment.glsl?raw';
+import dashedAnimatedVertexShader from './shaders/dashed-animated.vertex.glsl?raw';
 
 /**
  * Shader Factory - Creates shader materials for globe rendering
@@ -94,7 +97,7 @@ export class ShaderFactory {
             fragment: name,
         }, {
             attributes: ["position", "normal", "uv", "countryIndex"],
-            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "altitudeScale", "thicknessOffset", ...uniforms],
             samplers: ["animationTexture", ...extraSamplers]
         });
 
@@ -110,6 +113,7 @@ export class ShaderFactory {
         }
         shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("altitudeScale", ALTITUDE_TEXTURE_SCALE);
         shaderMaterial.setFloat("thicknessOffset", 0.0);
         shaderMaterial.backFaceCulling = false;
 
@@ -169,7 +173,7 @@ export class ShaderFactory {
             fragment: name,
         }, {
             attributes: ["position", "normal", "uv", "countryIndex", "countryPivot"],
-            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "expansionTextureWidth", "animationAmplitude", "thicknessOffset", ...uniforms],
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "expansionTextureWidth", "animationAmplitude", "altitudeScale", "thicknessOffset", ...uniforms],
             samplers: ["animationTexture", "expansionTexture", ...extraSamplers]
         });
 
@@ -187,6 +191,7 @@ export class ShaderFactory {
         shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("expansionTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("altitudeScale", ALTITUDE_TEXTURE_SCALE);
         shaderMaterial.setFloat("thicknessOffset", 0.0);
         shaderMaterial.backFaceCulling = false;
 
@@ -280,7 +285,7 @@ export class ShaderFactory {
             fragment: name,
         }, {
             attributes: ["position", "tangent", "countryIndex"],
-            uniforms: ["worldViewProjection", "animationTextureWidth", "animationAmplitude", "lineThickness", "baseColor"],
+            uniforms: ["worldViewProjection", "animationTextureWidth", "animationAmplitude", "altitudeScale", "lineThickness", "baseColor"],
             samplers: ["animationTexture"]
         });
 
@@ -294,6 +299,7 @@ export class ShaderFactory {
         }
         shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
         shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("altitudeScale", ALTITUDE_TEXTURE_SCALE);
         shaderMaterial.setFloat("lineThickness", lineThickness);
         shaderMaterial.setColor3("baseColor", BORDER_COLOR_BLACK);
         shaderMaterial.backFaceCulling = false;
@@ -319,6 +325,66 @@ export class ShaderFactory {
         );
         material.setColor3("baseColor", OUTLINE_COLOR);
         return material;
+    }
+
+    /**
+     * Create a dashed/dotted border shader material
+     * Uses a special vertex shader that always animates fully (ignores UV.y for animation)
+     * so UV.y can be used for the dash pattern along the path.
+     * @param baseColor Border color
+     * @param dashLength Length of each dash (in UV units, 0-1 scale)
+     * @param gapLength Length of each gap (in UV units, 0-1 scale)
+     * @returns Configured ShaderMaterial with dashed pattern
+     */
+    createDashedBorderMaterial(baseColor: Color3, dashLength: number = 0.02, gapLength: number = 0.02, alpha: number = 1.0): ShaderMaterial {
+        const name = `${this.namePrefix}dashedBorderShader_${this.shaderCounter++}`;
+
+        // Pass UV to fragment shader for dash pattern
+        const varyings = "varying vec2 vUV;";
+        const varyingAssignments = "vUV = uv;";
+
+        // Use the dashed vertex shader (always full animation, preserves UV for pattern)
+        const vertexShader = dashedAnimatedVertexShader
+            .replace('// VARYINGS_PLACEHOLDER', varyings)
+            .replace('// VARYING_ASSIGNMENTS_PLACEHOLDER', varyingAssignments);
+
+        Effect.ShadersStore[`${name}VertexShader`] = vertexShader;
+        Effect.ShadersStore[`${name}FragmentShader`] = dashedBorderFragmentShader;
+
+        const shaderMaterial = new ShaderMaterial(name, this.scene, {
+            vertex: name,
+            fragment: name,
+        }, {
+            attributes: ["position", "normal", "uv", "countryIndex"],
+            uniforms: ["worldViewProjection", "world", "animationTextureWidth", "animationAmplitude", "altitudeScale", "thicknessOffset", "baseColor", "dashLength", "gapLength", "alpha"],
+            samplers: ["animationTexture"]
+        });
+
+        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onError = (effect, errors) => {
+            console.error(`Shader compilation error in ${name}:`, errors);
+        };
+
+        if (this.animationTexture) {
+            shaderMaterial.setTexture("animationTexture", this.animationTexture);
+        }
+        shaderMaterial.setFloat("animationTextureWidth", ANIMATION_TEXTURE_WIDTH);
+        shaderMaterial.setFloat("animationAmplitude", ANIMATION_AMPLITUDE);
+        shaderMaterial.setFloat("altitudeScale", ALTITUDE_TEXTURE_SCALE);
+        shaderMaterial.setFloat("thicknessOffset", 0.0);
+        shaderMaterial.setColor3("baseColor", baseColor);
+        shaderMaterial.setFloat("dashLength", dashLength);
+        shaderMaterial.setFloat("gapLength", gapLength);
+        shaderMaterial.setFloat("alpha", alpha);
+        shaderMaterial.backFaceCulling = false;
+
+        // Enable alpha blending for transparency
+        if (alpha < 1.0) {
+            shaderMaterial.alpha = alpha;
+            shaderMaterial.needAlphaBlending = () => true;
+        }
+
+        return shaderMaterial;
     }
 
     /**

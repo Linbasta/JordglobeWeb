@@ -39,6 +39,11 @@ import {
     MAX_ANIMATION_COUNTRIES,
     TUBE_RADIUS,
     SMALL_OUTLINE_TUBE_RADIUS,
+    OUTLINE_COLOR,
+    ARCHIPELAGO_DASH_LENGTH,
+    ARCHIPELAGO_GAP_LENGTH,
+    ARCHIPELAGO_ALPHA_DEFAULT,
+    ARCHIPELAGO_ALPHA_HOVER,
     zoom,
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './geo-math';
@@ -49,6 +54,7 @@ import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';
 import { OutlineRenderer } from './outline-renderer';
+import { ArchipelagoOverlay, ARCHIPELAGO_DEFINITIONS } from './archipelago-overlay';
 import { Skybox } from './skybox';
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
 import { RegionAnimator } from './region-animator';
@@ -119,6 +125,11 @@ export class EarthGlobe {
     // Materials
     private outlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
     private smallOutlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
+
+    // Archipelago overlay (for scattered island nations like Kiribati)
+    private archipelagoOverlay: ArchipelagoOverlay | null = null;
+    private archipelagoMaterialDefault: ShaderMaterial | null = null;  // Transparent, always visible
+    private archipelagoMaterialHover: ShaderMaterial | null = null;    // Solid white, on hover
 
     // Options and callbacks
     private options: EarthGlobeOptions;
@@ -300,6 +311,32 @@ export class EarthGlobe {
             this.smallOutlineMaterial = this.shaderFactory.createSmallOutlineMaterial();
             this.countryController.initOutlineMaterials(this.outlineMaterial, this.smallOutlineMaterial);
 
+            // Create archipelago overlay renderer with dashed line materials
+            this.archipelagoOverlay = new ArchipelagoOverlay(this.scene);
+            // Default material: transparent white, always visible
+            this.archipelagoMaterialDefault = this.shaderFactory.createDashedBorderMaterial(
+                new Color3(1, 1, 1),
+                ARCHIPELAGO_DASH_LENGTH,
+                ARCHIPELAGO_GAP_LENGTH,
+                ARCHIPELAGO_ALPHA_DEFAULT
+            );
+            // Hover material: solid white
+            this.archipelagoMaterialHover = this.shaderFactory.createDashedBorderMaterial(
+                new Color3(1, 1, 1),
+                ARCHIPELAGO_DASH_LENGTH,
+                ARCHIPELAGO_GAP_LENGTH,
+                ARCHIPELAGO_ALPHA_HOVER
+            );
+
+            // Pre-create all archipelago overlays with default (transparent) material
+            this.archipelagoOverlay.createAllOverlays(
+                (iso2) => this.countryController.getRegionByISO2(iso2)?.index,
+                this.archipelagoMaterialDefault
+            );
+
+            // Show all overlays by default (with transparency)
+            this.archipelagoOverlay.showAllOverlays();
+
             // Create location marker pool (200 markers, batched rendering)
             this.markerPool = new LocationMarkerPool(this.scene, {
                 name: 'LocationMarkers',
@@ -321,8 +358,9 @@ export class EarthGlobe {
             // Place markers at small country centroids
             // Markers start visible by default - we'll hide them all initially
             // and let the quiz/game logic show only the ones it needs
+            // Skip archipelago countries - they use overlay instead of markers
             for (const country of this.countryController.getAllRegions()) {
-                if (country.centroid) {
+                if (country.centroid && !ARCHIPELAGO_DEFINITIONS.has(country.id)) {
                     const normal = country.centroid.normalizeToNew();
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
@@ -1003,6 +1041,142 @@ export class EarthGlobe {
     }
 
     // =========================================================================
+    // Public API - Archipelago Overlay
+    // =========================================================================
+
+    /**
+     * Show archipelago overlay for a country (e.g., Kiribati)
+     * @param iso2 Country ISO2 code
+     */
+    showArchipelagoOverlay(iso2: string): void {
+        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+
+        // Get country index for animation
+        const country = this.countryController.getRegionByISO2(iso2);
+        if (!country) {
+            console.warn(`Country ${iso2} not found`);
+            return;
+        }
+
+        this.archipelagoOverlay.showOverlay(iso2, country.index, this.archipelagoMaterialHover);
+    }
+
+    /**
+     * Clear the archipelago overlay
+     */
+    clearArchipelagoOverlay(): void {
+        this.archipelagoOverlay?.clearOverlay();
+    }
+
+    /**
+     * Check if a country has an archipelago overlay definition
+     * @param iso2 Country ISO2 code
+     */
+    hasArchipelagoOverlay(iso2: string): boolean {
+        return this.archipelagoOverlay?.hasDefinition(iso2) ?? false;
+    }
+
+    /**
+     * Show archipelago overlays for all defined island nations
+     */
+    showAllArchipelagoOverlays(): void {
+        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+
+        this.archipelagoOverlay.clearOverlay();
+
+        const codes = this.archipelagoOverlay.getAllArchipelagoCodes();
+        for (const iso2 of codes) {
+            const country = this.countryController.getRegionByISO2(iso2);
+            if (country) {
+                this.archipelagoOverlay.showOverlay(
+                    iso2,
+                    country.index,
+                    this.archipelagoMaterialHover,
+                    undefined,
+                    false  // don't clear existing
+                );
+            }
+        }
+
+        console.log(`Showing archipelago overlays for ${codes.length} island nations`);
+    }
+
+    /**
+     * Get list of all archipelago country codes
+     */
+    getArchipelagoCodes(): string[] {
+        return this.archipelagoOverlay?.getAllArchipelagoCodes() ?? [];
+    }
+
+    /**
+     * Show archipelago overlays for a specific list of countries
+     * @param iso2List List of ISO2 country codes to show
+     */
+    showArchipelagoOverlayList(iso2List: string[]): void {
+        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+
+        this.archipelagoOverlay.clearOverlay();
+
+        for (const iso2 of iso2List) {
+            const country = this.countryController.getRegionByISO2(iso2);
+            if (country) {
+                this.archipelagoOverlay.showOverlay(
+                    iso2,
+                    country.index,
+                    this.archipelagoMaterialHover,
+                    undefined,
+                    false  // don't clear existing
+                );
+            }
+        }
+    }
+
+    /**
+     * Highlight archipelago overlay for a country (switch to solid white)
+     * @param iso2 Country ISO2 code
+     */
+    showArchipelagoOverlayForCountry(iso2: string): void {
+        if (this.archipelagoOverlay && this.archipelagoMaterialHover) {
+            this.archipelagoOverlay.setMaterialByCode(iso2, this.archipelagoMaterialHover);
+        }
+    }
+
+    /**
+     * Unhighlight archipelago overlay for a country (switch back to transparent)
+     * @param iso2 Country ISO2 code
+     */
+    hideArchipelagoOverlayForCountry(iso2: string): void {
+        if (this.archipelagoOverlay && this.archipelagoMaterialDefault) {
+            this.archipelagoOverlay.setMaterialByCode(iso2, this.archipelagoMaterialDefault);
+        }
+    }
+
+    /**
+     * Reset all archipelago overlays to default (transparent) material
+     */
+    hideAllArchipelagoOverlays(): void {
+        if (this.archipelagoOverlay && this.archipelagoMaterialDefault) {
+            this.archipelagoOverlay.setMaterialForAll(this.archipelagoMaterialDefault);
+        }
+    }
+
+    /**
+     * Check if a country has a pre-created archipelago overlay
+     */
+    countryHasArchipelagoOverlay(iso2: string): boolean {
+        return this.archipelagoOverlay?.hasOverlay(iso2) ?? false;
+    }
+
+    /**
+     * Show archipelago overlays only for the specified country codes.
+     * Hides overlays for all other archipelago countries.
+     * Use this when disabling non-game countries in quizzes.
+     */
+    showArchipelagoOverlaysForCountries(enabledCodes: Set<string>): void {
+        this.archipelagoOverlay?.showOverlaysForCountries(enabledCodes);
+    }
+
+    // =========================================================================
     // Public API - Event Callbacks
     // =========================================================================
 
@@ -1244,6 +1418,9 @@ export class EarthGlobe {
         }
         if (this.smallMarkerPool) {
             this.smallMarkerPool.dispose();
+        }
+        if (this.archipelagoOverlay) {
+            this.archipelagoOverlay.dispose();
         }
 
         this.scene.dispose();

@@ -25,7 +25,7 @@ import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
 import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
 import type { LocationMarkerPool } from './location-marker-pool';
-import { calculateExpansionFactor } from './expansion-formula';
+import { getExpansionFactorForCountry } from './expansion-formula';
 
 export type { RegionType };
 
@@ -466,7 +466,7 @@ export class RegionController {
             return 1.0;
         }
 
-        return calculateExpansionFactor(region.surfaceArea);
+        return getExpansionFactorForCountry(region.id, region.surfaceArea);
     }
 
     // =========================================================================

@@ -15,6 +15,7 @@ uniform float animationTextureWidth;
 uniform sampler2D expansionTexture;
 uniform float expansionTextureWidth;
 uniform float animationAmplitude;
+uniform float altitudeScale;
 uniform float thicknessOffset;
 
 // Varyings (will be injected)
@@ -22,14 +23,16 @@ uniform float thicknessOffset;
 
 void main(void) {
     // Read animation data from main animation texture
+    // Texture stores scaled-down value, multiply by altitudeScale to get actual altitude
     float texCoord = (countryIndex + 0.5) / animationTextureWidth;
     vec4 animData = texture2D(animationTexture, vec2(texCoord, 0.5));
-    float animValue = animData.r;
+    float animValue = animData.r * altitudeScale;
 
     // Read expansion from separate expansion texture
-    // Texture stores expansion/255, so multiply by 255 to decode
+    // Texture stores expansion/EXPANSION_TEXTURE_SCALE, multiply to decode
+    // EXPANSION_TEXTURE_SCALE = 10.0 (see constants.ts)
     float expansionCoord = (countryIndex + 0.5) / expansionTextureWidth;
-    float expansion = texture2D(expansionTexture, vec2(expansionCoord, 0.5)).r * 255.0;
+    float expansion = texture2D(expansionTexture, vec2(expansionCoord, 0.5)).r * 10.0;
 
     // Only expand when elevated above normal altitude (0.2)
     // This ensures small countries render identically to regular countries at rest

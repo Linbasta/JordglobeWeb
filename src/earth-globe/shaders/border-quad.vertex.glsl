@@ -10,6 +10,7 @@ uniform mat4 worldViewProjection;
 uniform sampler2D animationTexture;
 uniform float animationTextureWidth;
 uniform float animationAmplitude;
+uniform float altitudeScale;
 uniform float lineThickness;
 
 // Varyings (will be injected)
@@ -17,8 +18,9 @@ uniform float lineThickness;
 
 void main(void) {
     // Read animation value from 1D texture (single row)
+    // Texture stores scaled-down value, multiply by altitudeScale to get actual altitude
     float texCoord = (countryIndex + 0.5) / animationTextureWidth;
-    float animValue = texture2D(animationTexture, vec2(texCoord, 0.5)).r;
+    float animValue = texture2D(animationTexture, vec2(texCoord, 0.5)).r * altitudeScale;
 
     // Start with base position
     vec3 pos = position;

@@ -12,13 +12,7 @@
 
 import { Scene } from '@babylonjs/core/scene';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
-import { ANIMATION_TEXTURE_WIDTH } from './constants';
-
-// Expansion encoding: store as value/255, shader multiplies by 255
-// This allows expansion range of 1.0 to 255.0
-// At byte storage: 1.0 → 1/255 * 255 = 1 (minimum non-zero value)
-// Monaco needs ~100x expansion, which fits: 100/255 * 255 = 100
-const EXPANSION_DIVISOR = 255.0;
+import { ANIMATION_TEXTURE_WIDTH, EXPANSION_TEXTURE_SCALE } from './constants';
 
 /**
  * Expansion Texture Manager
@@ -53,8 +47,8 @@ export class ExpansionTexture {
         // Initialize data array
         this.expansionData = new Float32Array(ANIMATION_TEXTURE_WIDTH);
         // Default: expansion = 1.0 (no expansion)
-        // Stored as 1.0 / EXPANSION_DIVISOR for texture encoding
-        this.expansionData.fill(1.0 / EXPANSION_DIVISOR);
+        // Stored as 1.0 / EXPANSION_TEXTURE_SCALE for texture encoding
+        this.expansionData.fill(1.0 / EXPANSION_TEXTURE_SCALE);
     }
 
     /**
@@ -75,23 +69,23 @@ export class ExpansionTexture {
     /**
      * Set expansion value for an index
      * @param index Country index
-     * @param expansion Expansion factor (1.0 = normal, >1 = magnified, max 255x)
+     * @param expansion Expansion factor (1.0 = normal, >1 = magnified, max EXPANSION_TEXTURE_SCALE)
      */
     setExpansion(index: number, expansion: number): void {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            // Encode: divide by EXPANSION_DIVISOR to fit in 0-1 range
-            this.expansionData[index] = Math.max(0, Math.min(1, expansion / EXPANSION_DIVISOR));
+            // Encode: divide by scale to fit in 0-1 range
+            this.expansionData[index] = Math.max(0, Math.min(1, expansion / EXPANSION_TEXTURE_SCALE));
         }
     }
 
     /**
      * Get expansion value for an index
-     * @returns Expansion factor (1.0 = normal, max 255x)
+     * @returns Expansion factor (1.0 = normal, max EXPANSION_TEXTURE_SCALE)
      */
     getExpansion(index: number): number {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            // Decode: multiply by EXPANSION_DIVISOR
-            return this.expansionData[index] * EXPANSION_DIVISOR;
+            // Decode: multiply by scale
+            return this.expansionData[index] * EXPANSION_TEXTURE_SCALE;
         }
         return 1.0;
     }
@@ -130,7 +124,7 @@ export class ExpansionTexture {
      * Reset all values to defaults (expansion = 1.0)
      */
     reset(): void {
-        this.expansionData.fill(1.0 / EXPANSION_DIVISOR);
+        this.expansionData.fill(1.0 / EXPANSION_TEXTURE_SCALE);
         this.update();
     }
 

@@ -66,6 +66,13 @@ export const ALTITUDE_CLEARED = ALTITUDE_NORMAL * 0.5;                        //
 export const ALTITUDE_WRONG_POP = ALTITUDE_NORMAL * 2.5;                      // 0.5 - brief pop for wrong answer
 export const ALTITUDE_SHOW_CORRECT = ALTITUDE_NORMAL * 2.75;                  // 0.55 - elevated correct answer reveal
 export const ALTITUDE_HOVER = ALTITUDE_NORMAL * 2.5;                          // 0.5 - hover selection elevation
+export const ALTITUDE_HOVER_ARCHIPELAGO = ALTITUDE_NORMAL * 10;             // 8.0 - higher elevation for archipelago countries
+
+/** Scale factor for storing altitude in texture (allows values > 1.0) */
+export const ALTITUDE_TEXTURE_SCALE = 6.0;
+
+/** Scale factor for storing expansion in texture (must match shader decode multiplier) */
+export const EXPANSION_TEXTURE_SCALE = 10.0;
 
 /** Width of the animation texture (must be power of 2) */
 export const ANIMATION_TEXTURE_WIDTH = 1024;
@@ -87,6 +94,22 @@ export const SMALL_OUTLINE_TUBE_RADIUS = 0.0005 / 4;
 
 /** Color for country selection outline */
 export const OUTLINE_COLOR = new Color3(0.0, 0.0, 0.0);
+
+// ============================================================================
+// Archipelago Overlay
+// ============================================================================
+
+/** Dash length for archipelago dashed border (UV units) */
+export const ARCHIPELAGO_DASH_LENGTH = 0.015;
+
+/** Gap length for archipelago dashed border (UV units) */
+export const ARCHIPELAGO_GAP_LENGTH = 0.015;
+
+/** Alpha (transparency) for default archipelago overlay */
+export const ARCHIPELAGO_ALPHA_DEFAULT = 0.3;
+
+/** Alpha (transparency) for hovered archipelago overlay */
+export const ARCHIPELAGO_ALPHA_HOVER = 1.0;
 
 // ============================================================================
 // Colors

@@ -16,7 +16,9 @@
     <canvas id="renderCanvas"></canvas>
 
 
-            <script type="module">
+                <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module">
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
 
         // US States quiz - using province IDs from public/provinces/US.json

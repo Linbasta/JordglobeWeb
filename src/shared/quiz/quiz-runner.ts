@@ -262,6 +262,11 @@ export function tickQuiz(now: number): boolean {
             // This ensures small game countries (Malta, Vatican, etc.) show their markers
             controller.showEnabledSmallRegionMarkers()
 
+            // Show archipelago overlays only for game countries
+            // Build set of game country ISO2 codes
+            const gameISO2Codes = new Set(gameCountries.map(c => c.id))
+            globe.showArchipelagoOverlaysForCountries(gameISO2Codes)
+
             advance(now)
             break
         }

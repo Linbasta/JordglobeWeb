@@ -16,7 +16,7 @@ export const STATE_CLEARED = 0.50;
 
 import { Scene } from '@babylonjs/core/scene';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
-import { ANIMATION_TEXTURE_WIDTH } from './constants';
+import { ANIMATION_TEXTURE_WIDTH, ALTITUDE_TEXTURE_SCALE } from './constants';
 
 /**
  * Animation Texture Manager
@@ -85,11 +85,13 @@ export class AnimationTexture {
     /**
      * Set altitude value for an index
      * @param index Country or segment index
-     * @param altitude Value between 0 and 1
+     * @param altitude Value (can exceed 1.0 for exaggerated elevation, up to ALTITUDE_TEXTURE_SCALE)
      */
     setAltitude(index: number, altitude: number): void {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            this.altitudeData[index] = Math.max(0, Math.min(1, altitude));
+            // Store scaled down to fit in 0-1 range for texture
+            // Shader will scale back up using altitudeScale uniform
+            this.altitudeData[index] = Math.max(0, Math.min(1, altitude / ALTITUDE_TEXTURE_SCALE));
         }
     }
 
@@ -98,7 +100,8 @@ export class AnimationTexture {
      */
     getAltitude(index: number): number {
         if (index >= 0 && index < ANIMATION_TEXTURE_WIDTH) {
-            return this.altitudeData[index];
+            // Return the actual altitude value (scaled back up)
+            return this.altitudeData[index] * ALTITUDE_TEXTURE_SCALE;
         }
         return 0;
     }
@@ -236,7 +239,8 @@ export class AnimationTexture {
      * Set all altitudes to a specific value
      */
     setAllAltitudes(value: number): void {
-        this.altitudeData.fill(Math.max(0, Math.min(1, value)));
+        // Store scaled down to fit in 0-1 range for texture
+        this.altitudeData.fill(Math.max(0, Math.min(1, value / ALTITUDE_TEXTURE_SCALE)));
     }
 
     /**

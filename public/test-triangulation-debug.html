@@ -193,7 +193,9 @@
 
     <div id="tooltip"></div>
 
-        <script type="module">
+            <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module">
         import cdt2d, { pointInPolygon, triangleCentroid, filterTriangles } from '/src/earth-globe/triangulation.ts';
         import { generateInteriorPoints, pointInPolygon2D } from '/src/earth-globe/geo-math.ts';
 
