@@ -283,11 +283,11 @@ export interface EarthGlobeAPI {
     showCountryOutline(countryIndex: number): void;
     clearCountryOutline(): void;
 
-    // Archipelago overlays (for scattered island nations)
-    countryHasArchipelagoOverlay(iso2: string): boolean;
-    showArchipelagoOverlayForCountry(iso2: string): void;
-    hideArchipelagoOverlayForCountry(iso2: string): void;
-    showArchipelagoOverlaysForCountries(enabledCodes: Set<string>): void;
+    // Islands frames (for scattered island nations)
+    countryHasIslandsFrame(iso2: string): boolean;
+    showIslandsFrameForCountry(iso2: string): void;
+    hideIslandsFrameForCountry(iso2: string): void;
+    showIslandsFramesForCountries(enabledCodes: Set<string>): void;
 
     // Location markers
     acquireMarker(lat: number, lon: number, offsetAbove?: number): number;

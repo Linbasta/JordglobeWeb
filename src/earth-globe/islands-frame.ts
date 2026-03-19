@@ -1,7 +1,7 @@
 /**
- * Earth Globe Module - Archipelago Overlay
+ * Earth Globe Module - Islands Frame
  *
- * Creates special bounding polygon visualizations for archipelago nations
+ * Creates special bounding polygon visualizations for island nations
  * like Kiribati whose islands are too spread out for standard visualization.
  */
 
@@ -18,9 +18,9 @@ import { latLonToSphere } from './geo-math';
 import type { LatLonPoint } from './types';
 
 /**
- * Archipelago bounding region definition
+ * Islands bounding region definition
  */
-export interface ArchipelagoRegion {
+export interface IslandsRegion {
     /** Name of the island group */
     name: string;
     /** Bounding polygon points (lat/lon) */
@@ -28,19 +28,19 @@ export interface ArchipelagoRegion {
 }
 
 /**
- * Archipelago definition with one or more bounding regions
+ * Islands definition with one or more bounding regions
  */
-export interface ArchipelagoDefinition {
+export interface IslandsDefinition {
     /** ISO2 country code */
     iso2: string;
     /** Display name */
     name: string;
-    /** Bounding regions (can be multiple for scattered archipelagos) */
-    regions: ArchipelagoRegion[];
+    /** Bounding regions (can be multiple for scattered island groups) */
+    regions: IslandsRegion[];
 }
 
 // ============================================================================
-// Archipelago Definitions
+// Islands Definitions
 // ============================================================================
 
 /**
@@ -49,7 +49,7 @@ export interface ArchipelagoDefinition {
  * 2. Phoenix Islands (central group, around -4° lat, -172° W)
  * 3. Line Islands (eastern group, 2° N to -11° S, -157° to -151° W)
  */
-export const KIRIBATI_DEFINITION: ArchipelagoDefinition = {
+export const KIRIBATI_DEFINITION: IslandsDefinition = {
     iso2: 'KI',
     name: 'Kiribati',
     regions: [
@@ -91,7 +91,7 @@ export const KIRIBATI_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Maldives - chain of atolls in Indian Ocean */
-export const MALDIVES_DEFINITION: ArchipelagoDefinition = {
+export const MALDIVES_DEFINITION: IslandsDefinition = {
     iso2: 'MV',
     name: 'Maldives',
     regions: [
@@ -108,7 +108,7 @@ export const MALDIVES_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Micronesia - scattered islands across western Pacific */
-export const MICRONESIA_DEFINITION: ArchipelagoDefinition = {
+export const MICRONESIA_DEFINITION: IslandsDefinition = {
     iso2: 'FM',
     name: 'Micronesia',
     regions: [
@@ -125,7 +125,7 @@ export const MICRONESIA_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Marshall Islands - two parallel chains of atolls */
-export const MARSHALL_ISLANDS_DEFINITION: ArchipelagoDefinition = {
+export const MARSHALL_ISLANDS_DEFINITION: IslandsDefinition = {
     iso2: 'MH',
     name: 'Marshall Islands',
     regions: [
@@ -142,7 +142,7 @@ export const MARSHALL_ISLANDS_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Palau - island group in western Pacific */
-export const PALAU_DEFINITION: ArchipelagoDefinition = {
+export const PALAU_DEFINITION: IslandsDefinition = {
     iso2: 'PW',
     name: 'Palau',
     regions: [
@@ -159,7 +159,7 @@ export const PALAU_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Tuvalu - nine islands in south Pacific */
-export const TUVALU_DEFINITION: ArchipelagoDefinition = {
+export const TUVALU_DEFINITION: IslandsDefinition = {
     iso2: 'TV',
     name: 'Tuvalu',
     regions: [
@@ -176,7 +176,7 @@ export const TUVALU_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Tonga - archipelago in south Pacific */
-export const TONGA_DEFINITION: ArchipelagoDefinition = {
+export const TONGA_DEFINITION: IslandsDefinition = {
     iso2: 'TO',
     name: 'Tonga',
     regions: [
@@ -193,7 +193,7 @@ export const TONGA_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Fiji - scattered islands, crosses antimeridian - use 180+ notation to avoid wrap */
-export const FIJI_DEFINITION: ArchipelagoDefinition = {
+export const FIJI_DEFINITION: IslandsDefinition = {
     iso2: 'FJ',
     name: 'Fiji',
     regions: [
@@ -210,7 +210,7 @@ export const FIJI_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** French Polynesia - vast archipelago spread across south Pacific */
-export const FRENCH_POLYNESIA_DEFINITION: ArchipelagoDefinition = {
+export const FRENCH_POLYNESIA_DEFINITION: IslandsDefinition = {
     iso2: 'PF',
     name: 'French Polynesia',
     regions: [
@@ -227,7 +227,7 @@ export const FRENCH_POLYNESIA_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Cook Islands - two groups in south Pacific */
-export const COOK_ISLANDS_DEFINITION: ArchipelagoDefinition = {
+export const COOK_ISLANDS_DEFINITION: IslandsDefinition = {
     iso2: 'CK',
     name: 'Cook Islands',
     regions: [
@@ -244,7 +244,7 @@ export const COOK_ISLANDS_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Seychelles - two island groups in Indian Ocean */
-export const SEYCHELLES_DEFINITION: ArchipelagoDefinition = {
+export const SEYCHELLES_DEFINITION: IslandsDefinition = {
     iso2: 'SC',
     name: 'Seychelles',
     regions: [
@@ -270,7 +270,7 @@ export const SEYCHELLES_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Cape Verde - island group off west Africa */
-export const CAPE_VERDE_DEFINITION: ArchipelagoDefinition = {
+export const CAPE_VERDE_DEFINITION: IslandsDefinition = {
     iso2: 'CV',
     name: 'Cape Verde',
     regions: [
@@ -287,7 +287,7 @@ export const CAPE_VERDE_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Mauritius - island nation east of Madagascar */
-export const MAURITIUS_DEFINITION: ArchipelagoDefinition = {
+export const MAURITIUS_DEFINITION: IslandsDefinition = {
     iso2: 'MU',
     name: 'Mauritius',
     regions: [
@@ -304,7 +304,7 @@ export const MAURITIUS_DEFINITION: ArchipelagoDefinition = {
 };
 
 /** Comoros - island nation between Madagascar and Africa */
-export const COMOROS_DEFINITION: ArchipelagoDefinition = {
+export const COMOROS_DEFINITION: IslandsDefinition = {
     iso2: 'KM',
     name: 'Comoros',
     regions: [
@@ -320,8 +320,8 @@ export const COMOROS_DEFINITION: ArchipelagoDefinition = {
     ]
 };
 
-// Registry of all archipelago definitions
-export const ARCHIPELAGO_DEFINITIONS: Map<string, ArchipelagoDefinition> = new Map([
+// Registry of all islands definitions
+export const ISLANDS_DEFINITIONS: Map<string, IslandsDefinition> = new Map([
     ['KI', KIRIBATI_DEFINITION],
     ['MV', MALDIVES_DEFINITION],
     ['FM', MICRONESIA_DEFINITION],
@@ -339,20 +339,20 @@ export const ARCHIPELAGO_DEFINITIONS: Map<string, ArchipelagoDefinition> = new M
 ]);
 
 /**
- * Archipelago Overlay Renderer
+ * Islands Frame Renderer
  *
- * Creates tube mesh outlines around archipelago bounding regions.
- * Supports pre-creating all overlays on load and showing/hiding on demand.
+ * Creates tube mesh outlines around island nation bounding regions.
+ * Supports pre-creating all frames on load and showing/hiding on demand.
  */
-export class ArchipelagoOverlay {
+export class IslandsFrame {
     private scene: Scene;
     private engine: AbstractEngine;
 
-    /** Pre-created overlay meshes by ISO2 code */
-    private overlayMeshMap: Map<string, Mesh[]> = new Map();
+    /** Pre-created frame meshes by ISO2 code */
+    private frameMeshMap: Map<string, Mesh[]> = new Map();
 
-    /** Legacy: dynamically created overlay meshes */
-    private overlayMeshes: Mesh[] = [];
+    /** Legacy: dynamically created frame meshes */
+    private frameMeshes: Mesh[] = [];
 
     constructor(scene: Scene) {
         this.scene = scene;
@@ -360,20 +360,20 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Pre-create all archipelago overlays (hidden by default)
+     * Pre-create all island frames (hidden by default)
      * Call this once during scene initialization
      */
-    createAllOverlays(
+    createAllFrames(
         getCountryIndex: (iso2: string) => number | undefined,
         material: ShaderMaterial,
         tubeRadius?: number
     ): void {
         const radius = tubeRadius ?? OUTLINE_TUBE_RADIUS;
 
-        for (const [iso2, definition] of ARCHIPELAGO_DEFINITIONS) {
+        for (const [iso2, definition] of ISLANDS_DEFINITIONS) {
             const countryIndex = getCountryIndex(iso2);
             if (countryIndex === undefined) {
-                console.warn(`Country ${iso2} not found, skipping overlay`);
+                console.warn(`Country ${iso2} not found, skipping frame`);
                 continue;
             }
 
@@ -387,18 +387,18 @@ export class ArchipelagoOverlay {
             }
 
             if (meshes.length > 0) {
-                this.overlayMeshMap.set(iso2, meshes);
+                this.frameMeshMap.set(iso2, meshes);
             }
         }
 
-        console.log(`Pre-created overlays for ${this.overlayMeshMap.size} archipelago nations`);
+        console.log(`Pre-created frames for ${this.frameMeshMap.size} island nations`);
     }
 
     /**
-     * Show the pre-created overlay for a country
+     * Show the pre-created frame for a country
      */
-    showOverlayByCode(iso2: string): void {
-        const meshes = this.overlayMeshMap.get(iso2);
+    showFrameByCode(iso2: string): void {
+        const meshes = this.frameMeshMap.get(iso2);
         if (meshes) {
             for (const mesh of meshes) {
                 mesh.setEnabled(true);
@@ -407,10 +407,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Hide the pre-created overlay for a country
+     * Hide the pre-created frame for a country
      */
-    hideOverlayByCode(iso2: string): void {
-        const meshes = this.overlayMeshMap.get(iso2);
+    hideFrameByCode(iso2: string): void {
+        const meshes = this.frameMeshMap.get(iso2);
         if (meshes) {
             for (const mesh of meshes) {
                 mesh.setEnabled(false);
@@ -419,10 +419,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Hide all pre-created overlays
+     * Hide all pre-created frames
      */
-    hideAllOverlays(): void {
-        for (const meshes of this.overlayMeshMap.values()) {
+    hideAllFrames(): void {
+        for (const meshes of this.frameMeshMap.values()) {
             for (const mesh of meshes) {
                 mesh.setEnabled(false);
             }
@@ -430,10 +430,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Show all pre-created overlays
+     * Show all pre-created frames
      */
-    showAllOverlays(): void {
-        for (const meshes of this.overlayMeshMap.values()) {
+    showAllFrames(): void {
+        for (const meshes of this.frameMeshMap.values()) {
             for (const mesh of meshes) {
                 mesh.setEnabled(true);
             }
@@ -441,11 +441,11 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Show overlays only for specified country codes
+     * Show frames only for specified country codes
      * Hides all others
      */
-    showOverlaysForCountries(enabledCodes: Set<string>): void {
-        for (const [iso2, meshes] of this.overlayMeshMap) {
+    showFramesForCountries(enabledCodes: Set<string>): void {
+        for (const [iso2, meshes] of this.frameMeshMap) {
             const enabled = enabledCodes.has(iso2);
             for (const mesh of meshes) {
                 mesh.setEnabled(enabled);
@@ -454,10 +454,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Set material for a specific country's overlay
+     * Set material for a specific country's frame
      */
     setMaterialByCode(iso2: string, material: ShaderMaterial): void {
-        const meshes = this.overlayMeshMap.get(iso2);
+        const meshes = this.frameMeshMap.get(iso2);
         if (meshes) {
             for (const mesh of meshes) {
                 mesh.material = material;
@@ -466,10 +466,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Set material for all overlays
+     * Set material for all frames
      */
     setMaterialForAll(material: ShaderMaterial): void {
-        for (const meshes of this.overlayMeshMap.values()) {
+        for (const meshes of this.frameMeshMap.values()) {
             for (const mesh of meshes) {
                 mesh.material = material;
             }
@@ -477,21 +477,21 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Check if a country has a pre-created overlay
+     * Check if a country has a pre-created frame
      */
-    hasOverlay(iso2: string): boolean {
-        return this.overlayMeshMap.has(iso2);
+    hasFrame(iso2: string): boolean {
+        return this.frameMeshMap.has(iso2);
     }
 
     /**
-     * Show archipelago overlay for a country (legacy dynamic creation)
+     * Show islands frame for a country (legacy dynamic creation)
      * @param iso2 Country ISO2 code
      * @param countryIndex Country animation index
      * @param material Shader material to apply
      * @param tubeRadius Optional custom tube radius
-     * @param clearExisting Whether to clear existing overlays first (default: true)
+     * @param clearExisting Whether to clear existing frames first (default: true)
      */
-    showOverlay(
+    showFrame(
         iso2: string,
         countryIndex: number,
         material: ShaderMaterial,
@@ -499,12 +499,12 @@ export class ArchipelagoOverlay {
         clearExisting: boolean = true
     ): void {
         if (clearExisting) {
-            this.clearOverlay();
+            this.clearFrame();
         }
 
-        const definition = ARCHIPELAGO_DEFINITIONS.get(iso2);
+        const definition = ISLANDS_DEFINITIONS.get(iso2);
         if (!definition) {
-            console.warn(`No archipelago definition for ${iso2}`);
+            console.warn(`No islands definition for ${iso2}`);
             return;
         }
 
@@ -518,16 +518,16 @@ export class ArchipelagoOverlay {
                 radius
             );
             if (mesh) {
-                this.overlayMeshes.push(mesh);
+                this.frameMeshes.push(mesh);
             }
         }
     }
 
     /**
-     * Get all archipelago ISO2 codes
+     * Get all island nation ISO2 codes
      */
-    getAllArchipelagoCodes(): string[] {
-        return Array.from(ARCHIPELAGO_DEFINITIONS.keys());
+    getAllIslandsCodes(): string[] {
+        return Array.from(ISLANDS_DEFINITIONS.keys());
     }
 
     /**
@@ -582,10 +582,10 @@ export class ArchipelagoOverlay {
     }
 
     /**
-     * Create a tube mesh for a single archipelago region
+     * Create a tube mesh for a single islands region
      */
     private createRegionMesh(
-        region: ArchipelagoRegion,
+        region: IslandsRegion,
         countryIndex: number,
         material: ShaderMaterial,
         tubeRadius: number
@@ -600,7 +600,7 @@ export class ArchipelagoOverlay {
 
         try {
             const tube = MeshBuilder.CreateTube(
-                `archipelago_${region.name}`,
+                `islands_${region.name}`,
                 {
                     path,
                     radius: tubeRadius,
@@ -631,47 +631,47 @@ export class ArchipelagoOverlay {
 
             return tube;
         } catch (error) {
-            console.error(`Error creating archipelago tube for ${region.name}:`, error);
+            console.error(`Error creating islands tube for ${region.name}:`, error);
             return null;
         }
     }
 
     /**
-     * Clear the current overlay
+     * Clear the current frame
      */
-    clearOverlay(): void {
-        for (const mesh of this.overlayMeshes) {
+    clearFrame(): void {
+        for (const mesh of this.frameMeshes) {
             mesh.dispose();
         }
-        this.overlayMeshes = [];
+        this.frameMeshes = [];
     }
 
     /**
-     * Check if a country has an archipelago definition
+     * Check if a country has an islands definition
      */
     hasDefinition(iso2: string): boolean {
-        return ARCHIPELAGO_DEFINITIONS.has(iso2);
+        return ISLANDS_DEFINITIONS.has(iso2);
     }
 
     /**
      * Get the definition for a country
      */
-    getDefinition(iso2: string): ArchipelagoDefinition | undefined {
-        return ARCHIPELAGO_DEFINITIONS.get(iso2);
+    getDefinition(iso2: string): IslandsDefinition | undefined {
+        return ISLANDS_DEFINITIONS.get(iso2);
     }
 
     /**
      * Dispose of all resources
      */
     dispose(): void {
-        this.clearOverlay();
+        this.clearFrame();
 
         // Dispose pre-created meshes
-        for (const meshes of this.overlayMeshMap.values()) {
+        for (const meshes of this.frameMeshMap.values()) {
             for (const mesh of meshes) {
                 mesh.dispose();
             }
         }
-        this.overlayMeshMap.clear();
+        this.frameMeshMap.clear();
     }
 }

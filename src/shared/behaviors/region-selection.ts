@@ -7,33 +7,33 @@
 
 import type { EarthGlobeAPI, RegionPolygon, LatLon } from '../../earth-globe';
 import { STATE_CLEARED, STATE_DISABLED } from '../../earth-globe';
-import { ALTITUDE_NORMAL, ALTITUDE_HOVER, ALTITUDE_HOVER_ARCHIPELAGO } from '../../earth-globe/constants';
+import { ALTITUDE_NORMAL, ALTITUDE_HOVER, ALTITUDE_HOVER_ISLANDS } from '../../earth-globe/constants';
 
 let selectedIndex = -1;
 let savedAltitude = -1;     // Save the original altitude before elevating
-let selectedIso2: string | null = null;  // Track ISO2 for archipelago overlay
+let selectedIso2: string | null = null;  // Track ISO2 for islands frame
 
 /**
- * Check if the currently selected country is an archipelago
+ * Check if the currently selected country has an islands frame
  */
-function isSelectedArchipelago(globe: EarthGlobeAPI): boolean {
-    return selectedIso2 !== null && globe.countryHasArchipelagoOverlay(selectedIso2);
+function isSelectedIslands(globe: EarthGlobeAPI): boolean {
+    return selectedIso2 !== null && globe.countryHasIslandsFrame(selectedIso2);
 }
 
 /**
- * Deselect the current selection (restore altitude, hide overlay, show marker)
+ * Deselect the current selection (restore altitude, hide frame, show marker)
  */
 function deselectCurrent(globe: EarthGlobeAPI): void {
     if (selectedIndex < 0) return;
 
     const controller = globe.getActiveController();
-    const wasArchipelago = isSelectedArchipelago(globe);
+    const wasIslands = isSelectedIslands(globe);
 
     globe.clearCountryOutline();
 
-    // Hide archipelago overlay
-    if (wasArchipelago && selectedIso2) {
-        globe.hideArchipelagoOverlayForCountry(selectedIso2);
+    // Hide islands frame
+    if (wasIslands && selectedIso2) {
+        globe.hideIslandsFrameForCountry(selectedIso2);
     }
 
     const state = controller.getState(selectedIndex);
@@ -43,8 +43,8 @@ function deselectCurrent(globe: EarthGlobeAPI): void {
         controller.setAltitude(selectedIndex, restoreAlt);
     }
 
-    // Small region expansion - but NOT for archipelago countries (they use overlay instead)
-    if (controller.isSmallRegion(selectedIndex) && !wasArchipelago) {
+    // Small region expansion - but NOT for island nations (they use frame instead)
+    if (controller.isSmallRegion(selectedIndex) && !wasIslands) {
         controller.animateExpansion(selectedIndex, 1.0, 300);
         if (state !== STATE_CLEARED && state !== STATE_DISABLED) {
             controller.showSmallRegionMarker(selectedIndex);
@@ -82,20 +82,20 @@ export function handleHover(globe: EarthGlobeAPI, country: RegionPolygon | null,
     selectedIso2 = country.id;  // For countries, id is the ISO2 code
     globe.showCountryOutline(country.regionIndex);
 
-    // Check if this is an archipelago country
-    const isArchipelago = globe.countryHasArchipelagoOverlay(country.id);
+    // Check if this is an island nation with a frame
+    const isIslands = globe.countryHasIslandsFrame(country.id);
 
-    // Use higher altitude for archipelago countries to make them more prominent
-    const hoverAltitude = isArchipelago ? ALTITUDE_HOVER_ARCHIPELAGO : ALTITUDE_HOVER;
+    // Use higher altitude for island nations to make them more prominent
+    const hoverAltitude = isIslands ? ALTITUDE_HOVER_ISLANDS : ALTITUDE_HOVER;
     controller.setAltitude(country.regionIndex, hoverAltitude);
 
-    // Show archipelago overlay for scattered island nations
-    if (isArchipelago) {
-        globe.showArchipelagoOverlayForCountry(country.id);
+    // Show islands frame for scattered island nations
+    if (isIslands) {
+        globe.showIslandsFrameForCountry(country.id);
     }
 
-    // Small region expansion - but NOT for archipelago countries (they use overlay instead)
-    if (controller.isSmallRegion(country.regionIndex) && !isArchipelago) {
+    // Small region expansion - but NOT for island nations (they use frame instead)
+    if (controller.isSmallRegion(country.regionIndex) && !isIslands) {
         const expansion = controller.getExpansionFactor(country.regionIndex);
         controller.animateExpansion(country.regionIndex, expansion, 300);
         controller.hideSmallRegionMarker(country.regionIndex);

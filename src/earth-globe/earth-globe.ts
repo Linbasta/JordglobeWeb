@@ -40,10 +40,10 @@ import {
     TUBE_RADIUS,
     SMALL_OUTLINE_TUBE_RADIUS,
     OUTLINE_COLOR,
-    ARCHIPELAGO_DASH_LENGTH,
-    ARCHIPELAGO_GAP_LENGTH,
-    ARCHIPELAGO_ALPHA_DEFAULT,
-    ARCHIPELAGO_ALPHA_HOVER,
+    ISLANDS_DASH_LENGTH,
+    ISLANDS_GAP_LENGTH,
+    ISLANDS_ALPHA_DEFAULT,
+    ISLANDS_ALPHA_HOVER,
     zoom,
 } from './constants';
 import { latLonToSphere, positionToLatLon } from './geo-math';
@@ -54,7 +54,7 @@ import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';
 import { OutlineRenderer } from './outline-renderer';
-import { ArchipelagoOverlay, ARCHIPELAGO_DEFINITIONS } from './archipelago-overlay';
+import { IslandsFrame, ISLANDS_DEFINITIONS } from './islands-frame';
 import { Skybox } from './skybox';
 import { AnimationTexture, STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from './animation-texture';
 import { RegionAnimator } from './region-animator';
@@ -126,10 +126,10 @@ export class EarthGlobe {
     private outlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
     private smallOutlineMaterial: ShaderMaterial | null = null;  // Shared with both controllers
 
-    // Archipelago overlay (for scattered island nations like Kiribati)
-    private archipelagoOverlay: ArchipelagoOverlay | null = null;
-    private archipelagoMaterialDefault: ShaderMaterial | null = null;  // Transparent, always visible
-    private archipelagoMaterialHover: ShaderMaterial | null = null;    // Solid white, on hover
+    // Islands frame (for scattered island nations like Kiribati)
+    private islandsFrame: IslandsFrame | null = null;
+    private islandsMaterialDefault: ShaderMaterial | null = null;  // Transparent, always visible
+    private islandsMaterialHover: ShaderMaterial | null = null;    // Solid white, on hover
 
     // Options and callbacks
     private options: EarthGlobeOptions;
@@ -311,31 +311,31 @@ export class EarthGlobe {
             this.smallOutlineMaterial = this.shaderFactory.createSmallOutlineMaterial();
             this.countryController.initOutlineMaterials(this.outlineMaterial, this.smallOutlineMaterial);
 
-            // Create archipelago overlay renderer with dashed line materials
-            this.archipelagoOverlay = new ArchipelagoOverlay(this.scene);
+            // Create islands frame renderer with dashed line materials
+            this.islandsFrame = new IslandsFrame(this.scene);
             // Default material: transparent white, always visible
-            this.archipelagoMaterialDefault = this.shaderFactory.createDashedBorderMaterial(
+            this.islandsMaterialDefault = this.shaderFactory.createDashedBorderMaterial(
                 new Color3(1, 1, 1),
-                ARCHIPELAGO_DASH_LENGTH,
-                ARCHIPELAGO_GAP_LENGTH,
-                ARCHIPELAGO_ALPHA_DEFAULT
+                ISLANDS_DASH_LENGTH,
+                ISLANDS_GAP_LENGTH,
+                ISLANDS_ALPHA_DEFAULT
             );
             // Hover material: solid white
-            this.archipelagoMaterialHover = this.shaderFactory.createDashedBorderMaterial(
+            this.islandsMaterialHover = this.shaderFactory.createDashedBorderMaterial(
                 new Color3(1, 1, 1),
-                ARCHIPELAGO_DASH_LENGTH,
-                ARCHIPELAGO_GAP_LENGTH,
-                ARCHIPELAGO_ALPHA_HOVER
+                ISLANDS_DASH_LENGTH,
+                ISLANDS_GAP_LENGTH,
+                ISLANDS_ALPHA_HOVER
             );
 
-            // Pre-create all archipelago overlays with default (transparent) material
-            this.archipelagoOverlay.createAllOverlays(
+            // Pre-create all island frames with default (transparent) material
+            this.islandsFrame.createAllFrames(
                 (iso2) => this.countryController.getRegionByISO2(iso2)?.index,
-                this.archipelagoMaterialDefault
+                this.islandsMaterialDefault
             );
 
-            // Show all overlays by default (with transparency)
-            this.archipelagoOverlay.showAllOverlays();
+            // Show all frames by default (with transparency)
+            this.islandsFrame.showAllFrames();
 
             // Create location marker pool (200 markers, batched rendering)
             this.markerPool = new LocationMarkerPool(this.scene, {
@@ -358,9 +358,9 @@ export class EarthGlobe {
             // Place markers at small country centroids
             // Markers start visible by default - we'll hide them all initially
             // and let the quiz/game logic show only the ones it needs
-            // Skip archipelago countries - they use overlay instead of markers
+            // Skip island nations - they use frame instead of markers
             for (const country of this.countryController.getAllRegions()) {
-                if (country.centroid && !ARCHIPELAGO_DEFINITIONS.has(country.id)) {
+                if (country.centroid && !ISLANDS_DEFINITIONS.has(country.id)) {
                     const normal = country.centroid.normalizeToNew();
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
@@ -1041,15 +1041,15 @@ export class EarthGlobe {
     }
 
     // =========================================================================
-    // Public API - Archipelago Overlay
+    // Public API - Islands Frame
     // =========================================================================
 
     /**
-     * Show archipelago overlay for a country (e.g., Kiribati)
+     * Show islands frame for a country (e.g., Kiribati)
      * @param iso2 Country ISO2 code
      */
-    showArchipelagoOverlay(iso2: string): void {
-        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+    showIslandsFrame(iso2: string): void {
+        if (!this.islandsFrame || !this.islandsMaterialHover) return;
 
         // Get country index for animation
         const country = this.countryController.getRegionByISO2(iso2);
@@ -1058,72 +1058,72 @@ export class EarthGlobe {
             return;
         }
 
-        this.archipelagoOverlay.showOverlay(iso2, country.index, this.archipelagoMaterialHover);
+        this.islandsFrame.showFrame(iso2, country.index, this.islandsMaterialHover);
     }
 
     /**
-     * Clear the archipelago overlay
+     * Clear the islands frame
      */
-    clearArchipelagoOverlay(): void {
-        this.archipelagoOverlay?.clearOverlay();
+    clearIslandsFrame(): void {
+        this.islandsFrame?.clearFrame();
     }
 
     /**
-     * Check if a country has an archipelago overlay definition
+     * Check if a country has an islands frame definition
      * @param iso2 Country ISO2 code
      */
-    hasArchipelagoOverlay(iso2: string): boolean {
-        return this.archipelagoOverlay?.hasDefinition(iso2) ?? false;
+    hasIslandsFrame(iso2: string): boolean {
+        return this.islandsFrame?.hasDefinition(iso2) ?? false;
     }
 
     /**
-     * Show archipelago overlays for all defined island nations
+     * Show islands frames for all defined island nations
      */
-    showAllArchipelagoOverlays(): void {
-        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+    showAllIslandsFrames(): void {
+        if (!this.islandsFrame || !this.islandsMaterialHover) return;
 
-        this.archipelagoOverlay.clearOverlay();
+        this.islandsFrame.clearFrame();
 
-        const codes = this.archipelagoOverlay.getAllArchipelagoCodes();
+        const codes = this.islandsFrame.getAllIslandsCodes();
         for (const iso2 of codes) {
             const country = this.countryController.getRegionByISO2(iso2);
             if (country) {
-                this.archipelagoOverlay.showOverlay(
+                this.islandsFrame.showFrame(
                     iso2,
                     country.index,
-                    this.archipelagoMaterialHover,
+                    this.islandsMaterialHover,
                     undefined,
                     false  // don't clear existing
                 );
             }
         }
 
-        console.log(`Showing archipelago overlays for ${codes.length} island nations`);
+        console.log(`Showing islands frames for ${codes.length} island nations`);
     }
 
     /**
-     * Get list of all archipelago country codes
+     * Get list of all island nation country codes
      */
-    getArchipelagoCodes(): string[] {
-        return this.archipelagoOverlay?.getAllArchipelagoCodes() ?? [];
+    getIslandsCodes(): string[] {
+        return this.islandsFrame?.getAllIslandsCodes() ?? [];
     }
 
     /**
-     * Show archipelago overlays for a specific list of countries
+     * Show islands frames for a specific list of countries
      * @param iso2List List of ISO2 country codes to show
      */
-    showArchipelagoOverlayList(iso2List: string[]): void {
-        if (!this.archipelagoOverlay || !this.archipelagoMaterialHover) return;
+    showIslandsFrameList(iso2List: string[]): void {
+        if (!this.islandsFrame || !this.islandsMaterialHover) return;
 
-        this.archipelagoOverlay.clearOverlay();
+        this.islandsFrame.clearFrame();
 
         for (const iso2 of iso2List) {
             const country = this.countryController.getRegionByISO2(iso2);
             if (country) {
-                this.archipelagoOverlay.showOverlay(
+                this.islandsFrame.showFrame(
                     iso2,
                     country.index,
-                    this.archipelagoMaterialHover,
+                    this.islandsMaterialHover,
                     undefined,
                     false  // don't clear existing
                 );
@@ -1132,48 +1132,48 @@ export class EarthGlobe {
     }
 
     /**
-     * Highlight archipelago overlay for a country (switch to solid white)
+     * Highlight islands frame for a country (switch to solid white)
      * @param iso2 Country ISO2 code
      */
-    showArchipelagoOverlayForCountry(iso2: string): void {
-        if (this.archipelagoOverlay && this.archipelagoMaterialHover) {
-            this.archipelagoOverlay.setMaterialByCode(iso2, this.archipelagoMaterialHover);
+    showIslandsFrameForCountry(iso2: string): void {
+        if (this.islandsFrame && this.islandsMaterialHover) {
+            this.islandsFrame.setMaterialByCode(iso2, this.islandsMaterialHover);
         }
     }
 
     /**
-     * Unhighlight archipelago overlay for a country (switch back to transparent)
+     * Unhighlight islands frame for a country (switch back to transparent)
      * @param iso2 Country ISO2 code
      */
-    hideArchipelagoOverlayForCountry(iso2: string): void {
-        if (this.archipelagoOverlay && this.archipelagoMaterialDefault) {
-            this.archipelagoOverlay.setMaterialByCode(iso2, this.archipelagoMaterialDefault);
+    hideIslandsFrameForCountry(iso2: string): void {
+        if (this.islandsFrame && this.islandsMaterialDefault) {
+            this.islandsFrame.setMaterialByCode(iso2, this.islandsMaterialDefault);
         }
     }
 
     /**
-     * Reset all archipelago overlays to default (transparent) material
+     * Reset all islands frames to default (transparent) material
      */
-    hideAllArchipelagoOverlays(): void {
-        if (this.archipelagoOverlay && this.archipelagoMaterialDefault) {
-            this.archipelagoOverlay.setMaterialForAll(this.archipelagoMaterialDefault);
+    hideAllIslandsFrames(): void {
+        if (this.islandsFrame && this.islandsMaterialDefault) {
+            this.islandsFrame.setMaterialForAll(this.islandsMaterialDefault);
         }
     }
 
     /**
-     * Check if a country has a pre-created archipelago overlay
+     * Check if a country has a pre-created islands frame
      */
-    countryHasArchipelagoOverlay(iso2: string): boolean {
-        return this.archipelagoOverlay?.hasOverlay(iso2) ?? false;
+    countryHasIslandsFrame(iso2: string): boolean {
+        return this.islandsFrame?.hasFrame(iso2) ?? false;
     }
 
     /**
-     * Show archipelago overlays only for the specified country codes.
-     * Hides overlays for all other archipelago countries.
+     * Show islands frames only for the specified country codes.
+     * Hides frames for all other island nations.
      * Use this when disabling non-game countries in quizzes.
      */
-    showArchipelagoOverlaysForCountries(enabledCodes: Set<string>): void {
-        this.archipelagoOverlay?.showOverlaysForCountries(enabledCodes);
+    showIslandsFramesForCountries(enabledCodes: Set<string>): void {
+        this.islandsFrame?.showFramesForCountries(enabledCodes);
     }
 
     // =========================================================================
@@ -1419,8 +1419,8 @@ export class EarthGlobe {
         if (this.smallMarkerPool) {
             this.smallMarkerPool.dispose();
         }
-        if (this.archipelagoOverlay) {
-            this.archipelagoOverlay.dispose();
+        if (this.islandsFrame) {
+            this.islandsFrame.dispose();
         }
 
         this.scene.dispose();
