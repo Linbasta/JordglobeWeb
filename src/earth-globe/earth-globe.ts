@@ -1152,6 +1152,13 @@ export class EarthGlobe {
     }
 
     /**
+     * Fully disable (hide mesh) an islands frame for a country
+     */
+    disableIslandsFrameForCountry(iso2: string): void {
+        this.islandsFrame?.hideFrameByCode(iso2);
+    }
+
+    /**
      * Reset all islands frames to default (transparent) material
      */
     hideAllIslandsFrames(): void {

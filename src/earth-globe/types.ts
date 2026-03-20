@@ -287,6 +287,7 @@ export interface EarthGlobeAPI {
     countryHasIslandsFrame(iso2: string): boolean;
     showIslandsFrameForCountry(iso2: string): void;
     hideIslandsFrameForCountry(iso2: string): void;
+    disableIslandsFrameForCountry(iso2: string): void;
     showIslandsFramesForCountries(enabledCodes: Set<string>): void;
 
     // Location markers

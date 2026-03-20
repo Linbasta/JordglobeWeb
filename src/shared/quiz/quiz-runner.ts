@@ -526,6 +526,14 @@ export function tickQuiz(now: number): boolean {
         case StepOp.AnimateCorrect: {
             if (!activeAnimation) {
                 globe.clearCountryOutline()
+                const country = globe.getCountryByIndex(step.countryIndex)
+                if (country && globe.countryHasIslandsFrame(country.id)) {
+                    globe.disableIslandsFrameForCountry(country.id)
+                }
+                const ctrl = globe.getActiveController()
+                if (ctrl.isSmallRegion(step.countryIndex)) {
+                    ctrl.hideSmallRegionMarker(step.countryIndex)
+                }
                 activeAnimation = animateCorrect(globe, step.countryIndex)
                 activeAnimation.then(() => {
                     activeAnimation = null
@@ -966,6 +974,13 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
     // 3b. Drop wrong region back after arc completes
     if (removeOnWrong) {
         controller.setState(wrongCountryIndex, STATE_CLEARED)
+        const wrongCountry = globe.getCountryByIndex(wrongCountryIndex)
+        if (wrongCountry && globe.countryHasIslandsFrame(wrongCountry.id)) {
+            globe.disableIslandsFrameForCountry(wrongCountry.id)
+        }
+        if (controller.isSmallRegion(wrongCountryIndex)) {
+            controller.hideSmallRegionMarker(wrongCountryIndex)
+        }
         await Promise.all([
             controller.animateAltitude(wrongCountryIndex, ALTITUDE_CLEARED, 200),
             controller.animateBlend(wrongCountryIndex, 0.0, 200)
@@ -987,6 +1002,13 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
 
     // 7. Clear and sink
     globe.clearCountryOutline()
+    const correctCountry = globe.getCountryByIndex(correctCountryIndex)
+    if (correctCountry && globe.countryHasIslandsFrame(correctCountry.id)) {
+        globe.disableIslandsFrameForCountry(correctCountry.id)
+    }
+    if (controller.isSmallRegion(correctCountryIndex)) {
+        controller.hideSmallRegionMarker(correctCountryIndex)
+    }
     await animateToClearedAfterReveal(globe, correctCountryIndex)
 }
 
