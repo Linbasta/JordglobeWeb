@@ -127,8 +127,8 @@ export const BORDER_COLOR_WHITE = new Color3(1, 1, 1);
 /** Black border color for segment borders */
 export const BORDER_COLOR_BLACK = new Color3(0, 0, 0);
 
-/** Gray border color for extruded borders */
-export const BORDER_COLOR_GRAY = new Color3(0.9, 0.9, 0.9);
+/** Warm brown/copper border color for extruded borders - rgb(201, 126, 76) */
+export const BORDER_COLOR_GRAY = new Color3(0.788, 0.494, 0.298);
 
 // ============================================================================
 // Camera Defaults
