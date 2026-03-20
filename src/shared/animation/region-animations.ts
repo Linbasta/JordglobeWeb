@@ -13,7 +13,7 @@ const CORRECT_DURATION = 400;
 
 // Easing lookup table for correct animation: pops up then settles down
 // Normalized 0→1 easing space, designed in the keyframe editor
-export const CORRECT_EASING = [0, -0.493, -1.104, -1.465, -1.66, -1.826, -2, -2, -1.965, -1.91, -1.271, -0.16, 0.035, 0.811, 0.847, 0.879, 0.907, 0.932, 0.953, 0.97, 0.983, 0.992, 0.998, 1];
+export const CORRECT_EASING = [0, -4.437, -9.936, -13.185, -14.94, -16.434, -18, -18, -17.685, -17.19, -11.439, -1.44, 0.035, 0.811, 0.847, 0.879, 0.907, 0.932, 0.953, 0.97, 0.983, 0.992, 0.998, 1];
 
 function lookupEasing(table: number[], t: number): number {
     const n = table.length - 1;
