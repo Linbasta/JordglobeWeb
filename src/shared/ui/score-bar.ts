@@ -26,6 +26,22 @@ let animFrameId = 0
 let percentRequirement = -1
 let winShown = false
 
+// ── Particles ──
+const PARTICLE_COUNT = 8
+const PARTICLE_LIFETIME_MS = 400
+const PARTICLE_SIZE = 5
+
+interface Particle {
+    el: HTMLDivElement
+    birthTime: number
+    startY: number    // initial Y position (spread across bar height)
+    driftY: number    // random vertical drift direction
+    offsetX: number   // random horizontal scatter
+}
+
+let particles: Particle[] = []
+let barContainer: HTMLDivElement | null = null
+
 // ── Audio ──
 let audioCtx: AudioContext | null = null
 
@@ -66,9 +82,9 @@ export function createScoreBar(turnsLeft: number, total: number): void {
         `display:flex;align-items:center;gap:3px;`
 
     // Bar container (middle, grows)
-    const barContainer = document.createElement('div')
+    barContainer = document.createElement('div')
     barContainer.style.cssText =
-        `flex:1;height:${BAR_HEIGHT}px;position:relative;`
+        `flex:1;height:${BAR_HEIGHT}px;position:relative;overflow:visible;`
 
     // Background — 9-slice BlueButton.png
     barBG = document.createElement('div')
@@ -188,7 +204,8 @@ export function disposeScoreBar(): void {
         root.remove()
         root = null
     }
-    barBG = barInner = barFill = turnsBadge = checkmarkEl = glowEl = null
+    barBG = barInner = barFill = turnsBadge = checkmarkEl = glowEl = barContainer = null
+    clearParticles()
     prevPercent = curPercent = 0
     animating = false
     percentRequirement = -1
@@ -203,6 +220,10 @@ function startFillAnimation(from: number, to: number): void {
     animEndPercent = to
     animStartTime = performance.now()
     animDuration = FILL_ANIM_MS
+
+    // Spawn particles when score increases
+    if (to > from) spawnParticles()
+
     if (!animating) {
         animating = true
         animFrameId = requestAnimationFrame(tickFillAnimation)
@@ -214,26 +235,31 @@ function tickFillAnimation(now: number): void {
     const t = Math.min(elapsed / animDuration, 1)
     const pct = animStartPercent + (animEndPercent - animStartPercent) * t
 
-    setFillWidth(pct)
+    const tipX = setFillWidth(pct)
+    tickParticles(now, tipX)
 
     // Check win threshold during animation
     if (percentRequirement > 0 && !winShown && pct >= percentRequirement) {
         triggerWin()
     }
 
-    if (t < 1) {
+    const fillDone = t >= 1
+    if (fillDone || particles.length > 0) {
         animFrameId = requestAnimationFrame(tickFillAnimation)
-    } else {
+    }
+    if (fillDone && particles.length === 0) {
         animating = false
         animFrameId = 0
     }
 }
 
-function setFillWidth(pct: number): void {
-    if (!barFill || !barBG) return
+function setFillWidth(pct: number): number {
+    if (!barFill || !barBG) return 0
     const totalInset = INNER_INSET_LR + FILL_INSET
     const maxWidth = barBG.clientWidth - totalInset * 2
-    barFill.style.width = `${Math.max(0, pct * maxWidth)}px`
+    const w = Math.max(0, pct * maxWidth)
+    barFill.style.width = `${w}px`
+    return totalInset + w  // tip X relative to barContainer
 }
 
 // ── Checkmark ──
@@ -328,6 +354,59 @@ function playWinTone(): void {
             osc.stop(t + 0.3)
         }
     } catch { /* audio not available */ }
+}
+
+// ── Particles ──
+
+function spawnParticles(): void {
+    if (!barContainer) return
+    const now = performance.now()
+    const topEdge = INNER_INSET_TOP + FILL_INSET
+    const bottomEdge = BAR_HEIGHT - INNER_INSET_BOTTOM - FILL_INSET
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        // Random Y spread across the full bar height
+        const startY = topEdge + Math.random() * (bottomEdge - topEdge)
+        const el = document.createElement('div')
+        el.style.cssText =
+            `position:absolute;width:${PARTICLE_SIZE}px;height:${PARTICLE_SIZE}px;` +
+            `border-radius:50%;background:#fff;pointer-events:none;` +
+            `left:0;top:${startY}px;opacity:1;z-index:110;`
+        barContainer.appendChild(el)
+        particles.push({
+            el,
+            birthTime: now,
+            startY,
+            driftY: (Math.random() - 0.5) * 30,  // drift up or down ±15px
+            offsetX: (Math.random() - 0.5) * 12,  // scatter ±6px
+        })
+    }
+}
+
+function tickParticles(now: number, tipX: number): void {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i]
+        const age = now - p.birthTime
+        const t = age / PARTICLE_LIFETIME_MS
+
+        if (t >= 1) {
+            p.el.remove()
+            particles.splice(i, 1)
+            continue
+        }
+
+        // Follow the tip X, drift outward from spawn position
+        p.el.style.left = `${tipX + p.offsetX * t}px`
+        p.el.style.top = `${p.startY + p.driftY * t}px`
+        p.el.style.opacity = `${1 - t}`
+        const scale = 1 - t * 0.5
+        p.el.style.transform = `translate(-50%, -50%) scale(${scale})`
+    }
+}
+
+function clearParticles(): void {
+    for (const p of particles) p.el.remove()
+    particles = []
 }
 
 // ── Keyframes ──
