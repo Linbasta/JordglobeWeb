@@ -16,14 +16,14 @@ import {
     tickQuiz,
     submitCountryAnswer,
     getScore,
-    getWrongCount,
     getTotal,
+    getWrongCount,
     isDone,
     isWaiting,
     getCurrentStep,
     getQuestion
 } from './quiz-runner'
-import { createScoreHUD, updateScoreHUD, disposeScoreHUD } from '../ui/score-hud'
+import { createScoreBar, updateScoreBar, disposeScoreBar } from '../ui/score-bar'
 
 /**
  * Quiz configuration
@@ -61,7 +61,7 @@ export class QuizUIAdapter {
         this.active = true
         this.lastShownQuestionIndex = -1
 
-        createScoreHUD()
+        createScoreBar(config.questions.length, config.questions.length)
 
         // Initialize the quiz runner
         startQuiz(
@@ -86,7 +86,10 @@ export class QuizUIAdapter {
 
         const stillActive = tickQuiz(now)
 
-        updateScoreHUD(getScore(), getWrongCount(), getTotal())
+        const total = getTotal()
+        const score = getScore()
+        const turnsLeft = total - score - getWrongCount()
+        updateScoreBar(score, turnsLeft, total)
 
         if (!stillActive) {
             // Quiz completed
@@ -139,7 +142,7 @@ export class QuizUIAdapter {
         this.active = false
         this.config = null
         this.lastShownQuestionIndex = -1
-        disposeScoreHUD()
+        disposeScoreBar()
     }
 
     // ========================================================================
