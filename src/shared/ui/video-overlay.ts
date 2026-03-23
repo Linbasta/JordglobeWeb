@@ -9,6 +9,8 @@
  * Constrained to max 25% of viewport height.
  */
 
+import { SCORE_BAR_BOTTOM } from './score-bar'
+
 let container: HTMLDivElement | null = null
 let visible = false
 
@@ -44,7 +46,7 @@ export function showVideoOverlay(
     // Container — centered horizontally, top-aligned
     container = document.createElement('div')
     container.style.cssText =
-        'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:500;' +
+        `position:fixed;top:${SCORE_BAR_BOTTOM}px;left:50%;transform:translateX(-50%);z-index:500;` +
         'display:flex;flex-direction:column;' +
         'border-radius:8px;overflow:hidden;' +
         'box-shadow:0 4px 24px rgba(0,0,0,0.5);' +
