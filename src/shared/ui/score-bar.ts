@@ -46,7 +46,8 @@ let barContainer: HTMLDivElement | null = null
 let audioCtx: AudioContext | null = null
 
 // ── Constants ──
-const BAR_WIDTH_VW = 60
+const BAR_WIDTH_PORTRAIT = 95  // vw — nearly full width in portrait
+const BAR_WIDTH_LANDSCAPE = 50 // vw — max half in landscape
 const BAR_HEIGHT = 36
 const BAR_TOP = 10
 const FILL_ANIM_MS = 200
@@ -78,7 +79,7 @@ export function createScoreBar(turnsLeft: number, total: number): void {
     root = document.createElement('div')
     root.style.cssText =
         `position:absolute;top:${BAR_TOP}px;left:50%;transform:translateX(-50%);` +
-        `width:${BAR_WIDTH_VW}vw;height:${BAR_HEIGHT}px;z-index:100;` +
+        `width:${window.innerHeight > window.innerWidth ? BAR_WIDTH_PORTRAIT : BAR_WIDTH_LANDSCAPE}vw;height:${BAR_HEIGHT}px;z-index:100;` +
         `display:flex;align-items:center;gap:3px;`
 
     // Bar container (middle, grows)
