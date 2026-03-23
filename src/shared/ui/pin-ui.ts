@@ -63,7 +63,7 @@ export class PinUI {
         pinButton.height = `${900 * pinScale}px`;
         pinButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         pinButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        pinButton.top = "170px";
+        pinButton.top = "300px";
         pinButton.left = "50px";
         pinButton.rotation = 0.14;
         pinButton.isPointerBlocker = true;
@@ -77,11 +77,11 @@ export class PinUI {
     private createBottomPanel(): Rectangle {
         const panel = new Rectangle("bottomPanel");
         panel.width = "600px";
-        panel.height = "150px";
+        panel.height = "50px";
         panel.thickness = 0;
         panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        panel.top = "30px";
+        panel.top = "5%";
         panel.background = "#6496DC";
         panel.alpha = 1.0;
         panel.cornerRadius = 60;
