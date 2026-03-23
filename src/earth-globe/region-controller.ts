@@ -330,7 +330,7 @@ export class RegionController {
             idx => polygonsData[idx].borderPoints
         );
 
-        if (regionData.centroid && this.smallOutlineMaterial) {
+        if (regionData.surfaceArea !== undefined && regionData.centroid && this.smallOutlineMaterial) {
             this.outlineRenderer.showOutline(
                 regionIndex, borderPointArrays, this.smallOutlineMaterial,
                 SMALL_OUTLINE_TUBE_RADIUS, regionData.centroid

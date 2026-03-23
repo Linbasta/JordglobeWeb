@@ -11,6 +11,9 @@ import * as path from 'path';
 const EPSILON = 0.002; // Tolerance for comparing lat/lon coordinates (roughly ~200 meters, needed for data inconsistencies)
 const MIN_SEGMENT_LENGTH = 2; // Minimum points for a valid segment (2 = line between two shared vertices)
 
+// Countries to skip during segment generation (too small for meaningful border rendering)
+const SKIP_COUNTRIES = new Set(['GI', 'SM', 'VA', 'SG']);
+
 interface Point2D {
     lat: number;
     lon: number;
@@ -54,6 +57,7 @@ function getPointWrapped(path: Point2D[], index: number): Point2D {
 function loadCountries2D(filePath: string): Country2D[] {
     const rawData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     const countries: Country2D[] = [];
+    const pathsByIso2 = new Map<string, Point2D[][]>();
 
     for (const country of rawData) {
         const pathsData = JSON.parse(country.paths);
@@ -67,11 +71,27 @@ function loadCountries2D(filePath: string): Country2D[] {
             paths.push(points);
         }
 
+        pathsByIso2.set(country.iso2, paths);
         countries.push({
             iso2: country.iso2,
             name: country.name_en || country.name,
             paths
         });
+    }
+
+    // Add hole/enclave paths to parent countries so shared borders are detected
+    for (const country of rawData) {
+        if (!country.holes) continue;
+        const parent = countries.find(c => c.iso2 === country.iso2);
+        if (!parent) continue;
+        for (const holeIsos of Object.values(country.holes as Record<string, string[]>)) {
+            for (const holeIso of holeIsos) {
+                const holePaths = pathsByIso2.get(holeIso);
+                if (holePaths) {
+                    parent.paths.push(...holePaths);
+                }
+            }
+        }
     }
 
     return countries;
@@ -95,8 +115,8 @@ function findMatchingSubsequences2D(
         // Try forward direction with wrap-around support
         for (let startB = 0; startB < pathB.length; startB++) {
             let length = 0;
-            // Allow matching up to full path length (with wrap-around)
-            const maxLength = Math.min(pathA.length, pathB.length);
+            // Allow +1 to include the closing edge back to start for closed polygons
+            const maxLength = Math.min(pathA.length + 1, pathB.length + 1);
             while (
                 length < maxLength &&
                 pointsEqual(
@@ -130,7 +150,7 @@ function findMatchingSubsequences2D(
         // Try reverse direction with wrap-around support
         for (let startB = 0; startB < pathB.length; startB++) {
             let length = 0;
-            const maxLength = Math.min(pathA.length, pathB.length);
+            const maxLength = Math.min(pathA.length + 1, pathB.length + 1);
             while (
                 length < maxLength &&
                 pointsEqual(
@@ -221,9 +241,11 @@ function findSharedSegments2D(countries: Country2D[]): Segment2D[] {
 
     for (let i = 0; i < countries.length; i++) {
         const countryA = countries[i];
+        if (SKIP_COUNTRIES.has(countryA.iso2)) continue;
 
         for (let j = i + 1; j < countries.length; j++) {
             const countryB = countries[j];
+            if (SKIP_COUNTRIES.has(countryB.iso2)) continue;
             pairsChecked++;
 
             for (let pathIdxA = 0; pathIdxA < countryA.paths.length; pathIdxA++) {

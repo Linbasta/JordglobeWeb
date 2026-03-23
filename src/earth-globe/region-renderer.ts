@@ -414,6 +414,7 @@ export class RegionRenderer {
                 mesh,
                 extrudedBorder: null,
                 borderPoints: latLonPoints,
+                holePoints: holeLatLonPoints.length > 0 ? holeLatLonPoints : undefined,
                 countryIndex,
                 isSmall: small
             };

@@ -96,6 +96,7 @@ export interface PolygonData {
     mesh: Mesh;
     extrudedBorder: Mesh | null;
     borderPoints: LatLonPoint[];
+    holePoints?: LatLonPoint[][]; // Hole boundaries (e.g. Lesotho in South Africa)
     countryIndex: number;  // Back-reference to parent country
     isSmall: boolean;      // Small country (needs magnification)
 }

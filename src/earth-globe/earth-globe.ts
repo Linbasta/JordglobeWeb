@@ -264,7 +264,7 @@ export class EarthGlobe {
             for (const polygon of polygonsData) {
                 const border = borderRenderer.createPolygonBorders(
                     polygon.borderPoints,
-                    undefined, // holes handled during loading
+                    polygon.holePoints,
                     polygon.countryIndex
                 );
                 polygon.extrudedBorder = border;
@@ -360,7 +360,7 @@ export class EarthGlobe {
             // and let the quiz/game logic show only the ones it needs
             // Skip island nations - they use frame instead of markers
             for (const country of this.countryController.getAllRegions()) {
-                if (country.centroid && !ISLANDS_DEFINITIONS.has(country.id)) {
+                if (country.centroid && checkSmallCountry(country.id) && !ISLANDS_DEFINITIONS.has(country.id)) {
                     const normal = country.centroid.normalizeToNew();
                     const position = country.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
