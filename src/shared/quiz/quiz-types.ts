@@ -57,6 +57,7 @@ export type Question = {
     // present: "image"
     imageUrl?: string
     imageFrame?: "default" | "simple"
+    imageCredit?: string
 }
 
 // ============================================================================

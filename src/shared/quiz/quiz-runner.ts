@@ -376,7 +376,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.ShowImage: {
             const q = questions[step.questionIndex]
             if (q.present === 'image' && q.imageUrl) {
-                showImageOverlay(q.imageUrl, q.prompt, q.imageFrame ?? 'default')
+                showImageOverlay(q.imageUrl, q.prompt, q.imageFrame ?? 'default', q.imageCredit)
             }
             advance(now)
             break
