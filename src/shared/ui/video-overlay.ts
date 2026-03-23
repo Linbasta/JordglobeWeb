@@ -55,7 +55,7 @@ export function showVideoOverlay(
     // Iframe wrapper — fixed height, aspect ratio determines width
     const iframeWrap = document.createElement('div')
     iframeWrap.style.cssText =
-        'height:25vh;aspect-ratio:16/9;overflow:hidden;'
+        'position:relative;height:25vh;aspect-ratio:16/9;overflow:hidden;'
 
     const iframe = document.createElement('iframe')
     iframe.src = embedUrl
@@ -63,6 +63,15 @@ export function showVideoOverlay(
     iframe.style.cssText = 'width:100%;height:100%;border:none;'
 
     iframeWrap.appendChild(iframe)
+
+    // Opaque gradient over the top of the iframe to hide the YouTube title
+    const titleCover = document.createElement('div')
+    titleCover.style.cssText =
+        'position:absolute;top:0;left:0;right:0;height:60px;' +
+        'background:linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);' +
+        'pointer-events:none;z-index:1;'
+    iframeWrap.appendChild(titleCover)
+
     container.appendChild(iframeWrap)
 
     // Prompt text

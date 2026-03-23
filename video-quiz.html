@@ -21,6 +21,21 @@
     <script type="module">
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
 
+        function showStartButton() {
+            return new Promise(resolve => {
+                const btn = document.createElement('button');
+                btn.textContent = 'Start Quiz';
+                btn.style.cssText =
+                    'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;' +
+                    'padding:16px 56px;font-size:24px;font-weight:700;font-family:Arial,sans-serif;' +
+                    'color:#fff;background:linear-gradient(90deg,#4CAF50,#8BC34A);' +
+                    'border:none;border-radius:8px;cursor:pointer;' +
+                    'box-shadow:0 4px 16px rgba(76,175,80,0.4);';
+                btn.onclick = () => { btn.remove(); resolve(); };
+                document.body.appendChild(btn);
+            });
+        }
+
         // [youtubeId, lat, lng, prompt, locationName, startTime, endTime]
         const VIDEO_QUESTIONS = [
             ['dQw4w9WgXcQ', 51.51, -0.13, 'Where was this music video filmed?', 'London', 0, 30],
@@ -41,6 +56,7 @@
                 startTime: start,
                 endTime: end,
             })),
+            onReady: () => showStartButton(),
             onGameComplete: (score, total) => {
                 alert(`Video Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
             }

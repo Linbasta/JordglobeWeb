@@ -19,6 +19,7 @@ export interface QuizGameConfig {
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
     onGameComplete?: (score: number, total: number) => void
+    onReady?: () => void | Promise<void>
 }
 
 export async function startQuizGame(config: QuizGameConfig): Promise<void> {
@@ -63,7 +64,9 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,
             showHoverLabel: false,
-            onReady: (controller) => {
+            onReady: async (controller) => {
+                if (config.onReady) await config.onReady()
+
                 controller.startQuizGame({
                     questions,
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
