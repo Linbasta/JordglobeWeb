@@ -62,7 +62,8 @@ const INNER_INSET_BOTTOM = 6
 const INNER_INSET_LR = 4
 const FILL_INSET = 1
 const FILL_RADIUS = 3
-export const SCORE_BAR_BOTTOM = BAR_TOP + BAR_HEIGHT + 8
+export const SCORE_BAR_GAP = 8  // Gap below score bar for other UI elements
+export const SCORE_BAR_BOTTOM = BAR_TOP + BAR_HEIGHT + SCORE_BAR_GAP
 
 const GLOW_KEYFRAMES = `
 @keyframes scoreBarGlow {

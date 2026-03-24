@@ -10,7 +10,7 @@
  *   "simple"  — blue rectangular frame (flags), no text
  */
 
-import { SCORE_BAR_BOTTOM } from './score-bar'
+import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
 
 let container: HTMLDivElement | null = null
 let visible = false
@@ -33,10 +33,10 @@ export function showImageOverlay(
     hideImageOverlay()
     visible = true
 
-    // Container — centered horizontally, top-aligned
+    // Container — centered horizontally, flush with score bar
     container = document.createElement('div')
     container.style.cssText =
-        `position:fixed;top:${SCORE_BAR_BOTTOM}px;left:50%;transform:translateX(-50%);z-index:500;` +
+        `position:fixed;top:${SCORE_BAR_BOTTOM - SCORE_BAR_GAP}px;left:50%;transform:translateX(-50%);z-index:500;` +
         'pointer-events:auto;'
 
     // Wrapper — position:relative so the frame can be absolutely positioned on top
