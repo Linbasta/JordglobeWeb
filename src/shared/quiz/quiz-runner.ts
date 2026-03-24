@@ -32,6 +32,7 @@ import { ALTITUDE_NORMAL, ALTITUDE_CLEARED, ALTITUDE_WRONG_POP, ALTITUDE_SHOW_CO
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
+import { showTextCardOverlay, hideTextCardOverlay } from '../ui/text-card-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
 
 // ============================================================================
@@ -384,6 +385,21 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.HideImage: {
             hideImageOverlay()
+            advance(now)
+            break
+        }
+
+        case StepOp.ShowTextCard: {
+            const q = questions[step.questionIndex]
+            if (q.present === 'textcard') {
+                showTextCardOverlay(q.prompt)
+            }
+            advance(now)
+            break
+        }
+
+        case StepOp.HideTextCard: {
+            hideTextCardOverlay()
             advance(now)
             break
         }
