@@ -12,8 +12,10 @@
 
 import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
 
+let clipWrapper: HTMLDivElement | null = null  // Clipping container
 let container: HTMLDivElement | null = null
 let visible = false
+let isHidden = false  // Track if card is slid up under score bar
 
 /**
  * Show an image panel centered at top of screen.
@@ -33,11 +35,20 @@ export function showImageOverlay(
     hideImageOverlay()
     visible = true
 
-    // Container — centered horizontally, flush with score bar
+    // Clipping wrapper — masks content above score bar
+    clipWrapper = document.createElement('div')
+    const clipTop = SCORE_BAR_BOTTOM - SCORE_BAR_GAP
+    clipWrapper.style.cssText =
+        `position:fixed;top:${clipTop}px;left:0;right:0;bottom:0;` +
+        'overflow:hidden;pointer-events:none;z-index:50;'
+
+    // Container — centered horizontally, positioned inside clip wrapper
     container = document.createElement('div')
     container.style.cssText =
-        `position:fixed;top:${SCORE_BAR_BOTTOM - SCORE_BAR_GAP}px;left:50%;transform:translateX(-50%);z-index:500;` +
-        'pointer-events:auto;'
+        'position:absolute;top:0;left:50%;transform:translateX(-50%);' +
+        'pointer-events:auto;transition:top 0.3s ease-in-out;cursor:pointer;'
+    container.dataset.baseTop = '0'
+    isHidden = false
 
     // Wrapper — position:relative so the frame can be absolutely positioned on top
     const wrapper = document.createElement('div')
@@ -50,7 +61,26 @@ export function showImageOverlay(
     }
 
     container.appendChild(wrapper)
-    document.body.appendChild(container)
+    clipWrapper.appendChild(container)
+    document.body.appendChild(clipWrapper)
+
+    // Click to toggle hide/show animation
+    container.addEventListener('click', () => {
+        if (!container) return
+        const baseTop = Number(container.dataset.baseTop)
+        const cardHeight = container.offsetHeight
+
+        if (isHidden) {
+            // Slide back down to original position
+            container.style.top = `${baseTop}px`
+            isHidden = false
+        } else {
+            // Slide up so only ~10% shows below score bar
+            const hiddenTop = baseTop - (cardHeight * 0.9)
+            container.style.top = `${hiddenTop}px`
+            isHidden = true
+        }
+    })
 }
 
 function buildDefaultFrame(
@@ -191,11 +221,13 @@ function showCreditTooltip(anchor: HTMLElement, credit: string, parent: HTMLElem
  * Remove the image panel from the DOM.
  */
 export function hideImageOverlay(): void {
-    if (container) {
-        container.remove()
+    if (clipWrapper) {
+        clipWrapper.remove()
+        clipWrapper = null
         container = null
     }
     visible = false
+    isHidden = false
 }
 
 /**
