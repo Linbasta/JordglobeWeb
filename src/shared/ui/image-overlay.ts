@@ -69,7 +69,7 @@ function buildDefaultFrame(
     // Image container with fixed aspect ratio
     const imgContainer = document.createElement('div')
     imgContainer.style.cssText =
-        `width:${w}px;height:${h}px;overflow:hidden;position:relative;border-radius:4px;`
+        `width:${w}px;height:${h}px;overflow:hidden;position:relative;border-radius:12px;`
 
     const img = document.createElement('img')
     img.src = imageUrl
@@ -77,53 +77,59 @@ function buildDefaultFrame(
         'width:100%;height:100%;object-fit:cover;display:block;'
     imgContainer.appendChild(img)
 
-    // Prompt text — semitransparent at the bottom of the card
+    // Prompt text with gradient background
     if (prompt) {
+        // Gradient layer — under the text
+        const gradient = document.createElement('div')
+        gradient.style.cssText =
+            'position:absolute;bottom:0;left:0;right:0;height:25%;z-index:1;' +
+            'background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.95));' +
+            'pointer-events:none;'
+        imgContainer.appendChild(gradient)
+
+        // Text layer — centered in bottom quarter
         const textOverlay = document.createElement('div')
         textOverlay.style.cssText =
-            'position:absolute;bottom:0;left:0;right:0;z-index:1;' +
-            'background:linear-gradient(transparent, rgba(0,0,0,0.7));' +
-            'padding:20px 16px 8px;' +
+            'position:absolute;bottom:0;left:0;right:0;height:25%;z-index:2;' +
+            'display:flex;align-items:center;justify-content:center;' +
+            'padding:8px 16px;box-sizing:border-box;' +
             'color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:600;' +
             'text-align:center;'
         textOverlay.textContent = prompt
         imgContainer.appendChild(textOverlay)
     }
 
-    // License badge — top-right corner
-    const badge = document.createElement('img')
-    badge.src = '/license-badge.png'
-    badge.style.cssText =
-        'position:absolute;top:6px;right:6px;z-index:2;' +
-        'width:28px;height:28px;cursor:pointer;opacity:0.85;' +
-        'filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));' +
-        'transition:opacity 0.15s;'
-    badge.onmouseenter = () => { badge.style.opacity = '1' }
-    badge.onmouseleave = () => { badge.style.opacity = '0.85' }
-
-    if (imageCredit) {
-        badge.title = imageCredit
-        badge.onclick = (e) => {
-            e.stopPropagation()
-            showCreditTooltip(badge, imageCredit, imgContainer)
-        }
-    }
-    imgContainer.appendChild(badge)
-
     wrapper.appendChild(imgContainer)
 
     // Frame overlay — 9-patch border-image
     const frameEl = document.createElement('div')
     const frameSrc = '/frame-default.png'
-    const overlap = 3
-    const offsetY = 3
+    const overlapTop = 18
+    const overlapSide = 17  // 1px less to extend frame beyond image
+    const overlapBottom = 26
     const bw = 18
+    const bwBottom = 26  // Bottom border is thicker in the frame image
     frameEl.style.cssText =
         'position:absolute;pointer-events:none;' +
-        `top:${-(bw - overlap) + offsetY}px;left:${-(bw - overlap)}px;right:${-(bw - overlap)}px;bottom:${-(bw - overlap) - offsetY}px;` +
+        `top:${-(bw - overlapTop)}px;left:${-(bw - overlapSide)}px;right:${-(bw - overlapSide)}px;bottom:${-(bwBottom - overlapBottom)}px;` +
         'border-style:solid;' +
-        `border-width:${bw}px ${bw}px ${bw + 8}px ${bw}px;border-image:url("${frameSrc}") 40 40 55 40 fill stretch;`
+        `border-width:${bw}px ${bw}px ${bwBottom}px ${bw}px;` +
+        `border-image-source:url("${frameSrc}");` +
+        'border-image-slice:40 40 55 40;' +
+        'border-image-repeat:stretch;z-index:10;'
     wrapper.appendChild(frameEl)
+
+    // Credit label — top-right corner, under the frame
+    const credit = (imageCredit || 'Image credit placeholder').replace(/^Photo:\s*/i, '')
+    const creditLabel = document.createElement('div')
+    creditLabel.style.cssText =
+        'position:absolute;top:4px;right:4px;z-index:5;' +
+        'background:rgba(0,0,0,0.15);color:rgba(255,255,255,0.8);' +
+        'font-family:Arial,sans-serif;font-size:6px;' +
+        'padding:1px 3px;border-radius:2px;max-width:150px;' +
+        'line-height:1.2;'
+    creditLabel.textContent = credit
+    wrapper.appendChild(creditLabel)
 }
 
 function buildSimpleFrame(wrapper: HTMLDivElement, imageUrl: string): void {
@@ -168,10 +174,10 @@ function showCreditTooltip(anchor: HTMLElement, credit: string, parent: HTMLElem
     const tooltip = document.createElement('div')
     tooltip.className = 'credit-tooltip'
     tooltip.style.cssText =
-        'position:absolute;top:38px;right:6px;z-index:3;' +
-        'background:rgba(0,0,0,0.85);color:#fff;' +
-        'font-family:Arial,sans-serif;font-size:12px;' +
-        'padding:6px 10px;border-radius:4px;max-width:220px;' +
+        'position:absolute;top:44px;right:10px;z-index:200;' +
+        'background:rgba(0,0,0,0.9);color:#fff;' +
+        'font-family:Arial,sans-serif;font-size:13px;' +
+        'padding:8px 12px;border-radius:6px;max-width:250px;' +
         'white-space:normal;line-height:1.4;' +
         'pointer-events:auto;'
     tooltip.textContent = credit
