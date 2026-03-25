@@ -223,8 +223,11 @@ function startFillAnimation(from: number, to: number): void {
     animStartTime = performance.now()
     animDuration = FILL_ANIM_MS
 
-    // Spawn particles when score increases
-    if (to > from) spawnParticles()
+    // Spawn particles when score increases, at the current fill tip position
+    if (to > from) {
+        const initialTipX = getTipX(from)
+        spawnParticles(initialTipX)
+    }
 
     if (!animating) {
         animating = true
@@ -255,13 +258,20 @@ function tickFillAnimation(now: number): void {
     }
 }
 
-function setFillWidth(pct: number): number {
-    if (!barFill || !barContainer) return 0
+function getTipX(pct: number): number {
+    if (!barContainer) return 0
     const totalInset = INNER_INSET_LR + FILL_INSET
     const maxWidth = barContainer.clientWidth - totalInset * 2
     const w = Math.max(0, pct * maxWidth)
-    barFill.style.width = `${w}px`
     return totalInset + w  // tip X relative to barContainer
+}
+
+function setFillWidth(pct: number): number {
+    if (!barFill || !barContainer) return 0
+    const tipX = getTipX(pct)
+    const totalInset = INNER_INSET_LR + FILL_INSET
+    barFill.style.width = `${tipX - totalInset}px`
+    return tipX
 }
 
 // ── Checkmark ──
@@ -360,7 +370,7 @@ function playWinTone(): void {
 
 // ── Particles ──
 
-function spawnParticles(): void {
+function spawnParticles(initialTipX: number): void {
     if (!barContainer) return
     const now = performance.now()
     const topEdge = INNER_INSET_TOP + FILL_INSET
@@ -373,7 +383,7 @@ function spawnParticles(): void {
         el.style.cssText =
             `position:absolute;width:${PARTICLE_SIZE}px;height:${PARTICLE_SIZE}px;` +
             `border-radius:50%;background:#fff;pointer-events:none;` +
-            `left:0;top:${startY}px;opacity:1;z-index:110;`
+            `left:${initialTipX}px;top:${startY}px;opacity:1;z-index:110;`
         barContainer.appendChild(el)
         particles.push({
             el,
