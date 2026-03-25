@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed Presentation Quiz Test</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        body.placing-mode { cursor: none; }
+        #renderCanvas { width: 100%; height: 100vh; touch-action: none; }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+
+    <script type="module">
+        import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+
+        const MIXED_QUESTIONS = [
+            // 1. Video question
+            {
+                present: 'video',
+                answer: 'country',
+                prompt: 'Which country is this?',
+                countryISO2: 'JP',
+                youtubeId: 'DJfg39WkMvE',
+                startTime: 0,
+                endTime: 10,
+            },
+            // 2. Image question
+            {
+                present: 'image',
+                answer: 'country',
+                prompt: 'Where is this famous landmark?',
+                countryISO2: 'FR',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg/3840px-La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg',
+                imageCredit: 'Wikimedia Commons',
+            },
+            // 3. Textcard question
+            {
+                present: 'textcard',
+                answer: 'country',
+                prompt: 'This Nordic country is known for its stunning fjords, the Northern Lights, and being one of the happiest countries in the world. Its capital hosted the 1952 Winter Olympics.',
+                countryISO2: 'NO',
+            },
+            // 4. Simple text question
+            {
+                present: 'text',
+                answer: 'country',
+                prompt: 'Find Brazil',
+                countryISO2: 'BR',
+            },
+        ];
+
+        startQuizGame({
+            title: 'Loading Mixed Quiz',
+            questions: MIXED_QUESTIONS,
+            onGameComplete: (score, total) => {
+                alert(`Mixed Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+            }
+        });
+    </script>
+</body>
+
+</html>
