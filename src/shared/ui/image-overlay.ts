@@ -12,6 +12,8 @@
 
 import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
 
+const SIMPLE_FRAME_TOP_MARGIN = 12  // Gap between score bar and simple frame (flags)
+
 let clipWrapper: HTMLDivElement | null = null  // Clipping container
 let container: HTMLDivElement | null = null
 let visible = false
@@ -35,7 +37,29 @@ export function showImageOverlay(
     hideImageOverlay()
     visible = true
 
-    // Clipping wrapper — masks content above score bar
+    // Simple frame (flags): positioned below score bar, no clipping, no hide behavior
+    if (frame === 'simple') {
+        clipWrapper = document.createElement('div')
+        const simpleTop = SCORE_BAR_BOTTOM + SIMPLE_FRAME_TOP_MARGIN
+        clipWrapper.style.cssText =
+            `position:fixed;top:${simpleTop}px;left:0;right:0;pointer-events:none;z-index:50;` +
+            'display:flex;justify-content:center;'
+
+        container = document.createElement('div')
+        container.style.cssText = 'pointer-events:auto;'
+        isHidden = false
+
+        const wrapper = document.createElement('div')
+        wrapper.style.cssText = 'position:relative;display:inline-block;'
+        buildSimpleFrame(wrapper, imageUrl)
+
+        container.appendChild(wrapper)
+        clipWrapper.appendChild(container)
+        document.body.appendChild(clipWrapper)
+        return
+    }
+
+    // Default frame: clipping wrapper masks content above score bar
     clipWrapper = document.createElement('div')
     const clipTop = SCORE_BAR_BOTTOM - SCORE_BAR_GAP
     clipWrapper.style.cssText =
@@ -54,17 +78,13 @@ export function showImageOverlay(
     const wrapper = document.createElement('div')
     wrapper.style.cssText = 'position:relative;display:inline-block;'
 
-    if (frame === 'simple') {
-        buildSimpleFrame(wrapper, imageUrl)
-    } else {
-        buildDefaultFrame(wrapper, imageUrl, prompt, imageCredit)
-    }
+    buildDefaultFrame(wrapper, imageUrl, prompt, imageCredit)
 
     container.appendChild(wrapper)
     clipWrapper.appendChild(container)
     document.body.appendChild(clipWrapper)
 
-    // Click to toggle hide/show animation
+    // Click to toggle hide/show animation (default frame only)
     container.addEventListener('click', () => {
         if (!container) return
         const baseTop = Number(container.dataset.baseTop)
@@ -169,8 +189,8 @@ function buildSimpleFrame(wrapper: HTMLDivElement, imageUrl: string): void {
     const pad = 8
     img.onload = () => {
         const ar = img.naturalWidth / img.naturalHeight
-        const maxH = window.innerHeight * 0.25
-        const maxW = window.innerWidth * 0.8
+        const maxH = window.innerHeight * 0.12  // Smaller for flags
+        const maxW = window.innerWidth * 0.4
         let h = maxH, w = h * ar
         if (w > maxW) { w = maxW; h = w / ar }
         img.style.width = (w + pad * 2) + 'px'
