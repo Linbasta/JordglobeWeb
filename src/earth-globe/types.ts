@@ -191,7 +191,6 @@ export interface AssetPaths {
     segmentsJson?: string;
     lofiCollidersJson?: string;
     oceanDepthMap?: string;
-    causticsTexture?: string;
     pinModel?: string;
     spaceTextureMid?: string;
     spaceTextureTop?: string;

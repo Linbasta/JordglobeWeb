@@ -86,18 +86,10 @@ function createWaterShader(scene: Scene): string {
         uniform float time;
         uniform vec3 cameraPosition;
         uniform sampler2D depthMap;
-        uniform sampler2D causticsMap;
 
         uniform vec3 shallowColor;
         uniform vec3 waterColor;
         uniform vec3 deepColor;
-        uniform vec3 causticColor;
-
-        uniform float causticScale;
-        uniform float causticStrength;
-        uniform float causticSpeed;
-        uniform float causticDeform;
-        uniform float causticDeformScale;
 
         uniform vec3 foamColor;
         uniform float foamWidth;
@@ -137,14 +129,6 @@ function createWaterShader(scene: Scene): string {
                 amplitude *= 0.5;
             }
             return value;
-        }
-
-        float caustics(vec2 uv, float t, float depthMask) {
-            float uvProduct = uv.x * uv.y;
-            float animatedOffset = sin(t * causticSpeed + causticDeformScale * uvProduct) * causticDeform;
-            vec2 causticUV = uv * causticScale + vec2(animatedOffset);
-            vec4 causticSample = texture2D(causticsMap, causticUV);
-            return causticSample.r * depthMask * causticStrength;
         }
 
         float RipplePass(float t, float depth, float nRipples, float rippleStrength, float rippleW) {
@@ -202,10 +186,6 @@ function createWaterShader(scene: Scene): string {
             vec3 baseColor = mix(deepColor, color1, depthA);
             vec3 finalColor = baseColor;
 
-            float depthMask = 1.0 - depthR;
-            float causticsValue = caustics(vUV, time, depthMask);
-            finalColor = mix(finalColor, causticColor, causticsValue);
-
             float foamValue = foam(vUV, time, depthR);
             finalColor = mix(finalColor, foamColor, foamValue);
 
@@ -233,13 +213,12 @@ function createWaterMaterial(
         attributes: ["position", "normal", "uv"],
         uniforms: [
             "worldViewProjection", "world", "time", "cameraPosition",
-            "shallowColor", "waterColor", "deepColor", "causticColor",
-            "causticScale", "causticStrength", "causticSpeed", "causticDeform", "causticDeformScale",
+            "shallowColor", "waterColor", "deepColor",
             "foamColor", "foamWidth", "foamStrength", "foamNoiseScale", "foamNoiseSpeed",
             "foamNoiseStrength", "foamRippleWidth", "foamCoast", "foamNRipples", "foamUvStrength",
             "waveHeight", "waveScale", "waveSpeed", "waveUVDistortion"
         ],
-        samplers: ["depthMap", "causticsMap"]
+        samplers: ["depthMap"]
     });
 
     // Load textures (WRAP so UV range 0.5..1.5 wraps correctly without fract seam)
@@ -248,23 +227,10 @@ function createWaterMaterial(
     depthTexture.wrapV = Texture.WRAP_ADDRESSMODE;
     material.setTexture("depthMap", depthTexture);
 
-    const causticsTexture = new Texture(assets.causticsTexture || DEFAULT_ASSETS.causticsTexture, scene);
-    causticsTexture.wrapU = Texture.WRAP_ADDRESSMODE;
-    causticsTexture.wrapV = Texture.WRAP_ADDRESSMODE;
-    material.setTexture("causticsMap", causticsTexture);
-
     // Water colors
     material.setVector3("shallowColor", new Vector3(0.4, 0.8, 0.95));
     material.setVector3("waterColor", new Vector3(0.15, 0.63, 0.95));
     material.setVector3("deepColor", new Vector3(0.02, 0.08, 0.25));
-    material.setVector3("causticColor", new Vector3(1.0, 1.0, 1.0));
-
-    // Caustics
-    material.setFloat("causticScale", 200.0);
-    material.setFloat("causticStrength", 0.6);
-    material.setFloat("causticSpeed", 0.38);
-    material.setFloat("causticDeform", 131.0);
-    material.setFloat("causticDeformScale", 0.08);
 
     // Foam
     material.setVector3("foamColor", new Vector3(0.7, 0.95, 1.0));

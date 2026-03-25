@@ -184,7 +184,6 @@ export const DEFAULT_ASSETS = {
     segmentsJson: '/segments.json',
     lofiCollidersJson: '/lofi-colliders.json',
     oceanDepthMap: '/OceanDepthMap.png',
-    causticsTexture: '/SwsCaustics.png',
     spaceTextureMid: '/SpaceMidTexture.png',
     spaceTextureTop: '/SpaceTop.png',
     spaceTextureBottom: '/SpaceBottom.png',
