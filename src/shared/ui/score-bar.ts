@@ -256,9 +256,9 @@ function tickFillAnimation(now: number): void {
 }
 
 function setFillWidth(pct: number): number {
-    if (!barFill || !barBG) return 0
+    if (!barFill || !barContainer) return 0
     const totalInset = INNER_INSET_LR + FILL_INSET
-    const maxWidth = barBG.clientWidth - totalInset * 2
+    const maxWidth = barContainer.clientWidth - totalInset * 2
     const w = Math.max(0, pct * maxWidth)
     barFill.style.width = `${w}px`
     return totalInset + w  // tip X relative to barContainer
