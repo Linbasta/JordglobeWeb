@@ -147,16 +147,15 @@ export class SoloGameController extends BaseGameController {
         if ((this.options as SoloGameOptions)?.showCountryLabel) {
             this.countryLabelUI = new CountryLabelUI(this.advancedTexture);
 
-            // If quiz is running, restore current question prompt; otherwise show placeholder
-            // Only show for 'text' presentation type (video/image/textcard have their own overlays)
+            // Only show label if quiz is already running with a text question
+            // (handles GUI recreation during resize)
+            // Otherwise leave hidden until quiz starts
             if (this.quizAdapter) {
                 const qi = getCurrentQuestionIndex();
                 const q = getQuestion(qi);
                 if (q && q.present === 'text') {
                     this.countryLabelUI.show(q.prompt);
                 }
-            } else {
-                this.countryLabelUI.show('Sweden');
             }
         }
 
