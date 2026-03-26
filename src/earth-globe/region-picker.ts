@@ -20,12 +20,19 @@ interface ColliderCircle {
     polygon: RegionPolygon; // first polygon, returned on proximity match
 }
 
+interface FrameCollider {
+    points: LatLon[];
+    bbox: BoundingBox;
+    polygon: RegionPolygon; // first polygon, returned on match
+}
+
 export class RegionPicker {
     private grid: Map<string, GridCell>;
     private cellSize: number;
     private polygons: RegionPolygon[];
     private overrideColliders: ColliderCircle[] = [];  // Tier 2: checked before PIP
-    private catchColliders: ColliderCircle[] = [];     // Tier 3: checked when PIP finds nothing
+    private frameColliders: FrameCollider[] = [];      // Tier 3: island frame polygons
+    private catchColliders: ColliderCircle[] = [];     // Tier 4: checked when PIP finds nothing
     private colliderMultiplierSq = 1.0;
 
     /**
@@ -94,7 +101,11 @@ export class RegionPicker {
         // If PIP found something, use it
         if (pipResult) return pipResult;
 
-        // Tier 3: catch — PIP found nothing, check all centroids with catchRadius
+        // Tier 3: island frame polygons — point inside a bounding frame
+        const frameResult = this.checkFramePolygons(point);
+        if (frameResult) return frameResult;
+
+        // Tier 4: catch — nothing else matched, check all centroids with catchRadius
         return this.checkCatch(point);
     }
 
@@ -141,7 +152,32 @@ export class RegionPicker {
     }
 
     /**
-     * Tier 3: catch — PIP found nothing, check all catch colliders.
+     * Tier 3: island frame polygon check.
+     */
+    private checkFramePolygons(point: LatLon): RegionPolygon | null {
+        for (const frame of this.frameColliders) {
+            if (!pointInBoundingBox(point, frame.bbox)) continue;
+            if (pointInPolygon(point, frame.points)) return frame.polygon;
+        }
+        return null;
+    }
+
+    /**
+     * Register a frame polygon as a collider for an island nation.
+     */
+    registerFramePolygon(countryIndex: number, points: LatLon[]): void {
+        const polygon = this.polygons.find(p => p.regionIndex === countryIndex);
+        if (!polygon) return;
+
+        this.frameColliders.push({
+            points,
+            bbox: calculateBoundingBox(points),
+            polygon
+        });
+    }
+
+    /**
+     * Tier 4: catch — PIP found nothing, check all catch colliders.
      * Returns the closest match within any circle's radius.
      */
     private checkCatch(point: LatLon): RegionPolygon | null {
@@ -233,6 +269,7 @@ export class RegionPicker {
         this.grid.clear();
         this.polygons = [];
         this.overrideColliders = [];
+        this.frameColliders = [];
         this.catchColliders = [];
     }
 }

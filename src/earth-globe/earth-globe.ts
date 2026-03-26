@@ -249,6 +249,7 @@ export class EarthGlobe {
 
             for (const entry of collidersEntries) {
                 if (entry.colliders.length === 0) continue;
+                if (ISLANDS_DEFINITIONS.has(entry.id)) continue; // island nations use frame polygons instead
                 const country = this.getCountryByISO2(entry.id);
                 if (!country) continue;
                 this.countryController.getPicker().registerColliders(
@@ -256,6 +257,16 @@ export class EarthGlobe {
                     entry.colliders,
                     isSurroundedCountry(entry.id)
                 );
+            }
+
+            // Register island frame polygons as colliders
+            const picker = this.countryController.getPicker();
+            for (const [iso2, definition] of ISLANDS_DEFINITIONS) {
+                const country = this.getCountryByISO2(iso2);
+                if (!country) continue;
+                for (const region of definition.regions) {
+                    picker.registerFramePolygon(country.index, region.points);
+                }
             }
 
             // Create extruded borders for all country polygons
