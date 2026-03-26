@@ -264,10 +264,10 @@ export async function animateToLocation(
     const startRadius = camera.radius;
 
     // Calculate deltas (handle alpha wrapping around 2*PI)
+    // camera.alpha can accumulate far beyond [0, 2π] from user spinning,
+    // so a single ±2π correction isn't enough — use full modular normalization
     let deltaAlpha = targetAlpha - startAlpha;
-    // Normalize to shortest rotation path
-    if (deltaAlpha > Math.PI) deltaAlpha -= 2 * Math.PI;
-    if (deltaAlpha < -Math.PI) deltaAlpha += 2 * Math.PI;
+    deltaAlpha -= Math.round(deltaAlpha / (2 * Math.PI)) * (2 * Math.PI);
 
     const deltaBeta = targetBeta - startBeta;
     const deltaRadius = targetRadius - startRadius;
