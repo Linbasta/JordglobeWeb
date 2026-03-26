@@ -316,16 +316,16 @@ export class RegionAnimator {
 
             let finalAltitude: number;
 
+            // Follow connected countries' altitudes
+            finalAltitude = 0;
+            for (const countryIndex of countryIndices) {
+                finalAltitude = Math.max(finalAltitude, this.animationTexture.getAltitude(countryIndex));
+            }
+
             if (hasSmallCountry) {
-                // Border connected to small country → always keep at normal altitude
-                // When the small country expands outward, the border will be naturally buried inside/under it
-                finalAltitude = ALTITUDE_NORMAL;
-            } else {
-                // Regular border → follow connected countries' altitudes
-                finalAltitude = ALTITUDE_NORMAL;
-                for (const countryIndex of countryIndices) {
-                    finalAltitude = Math.max(finalAltitude, this.animationTexture.getAltitude(countryIndex));
-                }
+                // Small countries use expansion, not altitude — cap at normal so borders
+                // don't pop above the surface, but allow sinking for disabled/cleared
+                finalAltitude = Math.min(finalAltitude, ALTITUDE_NORMAL);
             }
 
             this.animationTexture.setAltitude(segmentIndex, finalAltitude);
