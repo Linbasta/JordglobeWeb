@@ -4562,5 +4562,1166 @@
         "TF"
       ]
     }
+  ],
+  "menu": [
+    {
+      "name": "The World",
+      "children": [
+        {
+          "name": "Countries",
+          "medalId": 64
+        },
+        {
+          "name": "Capitals",
+          "medalId": 65
+        },
+        {
+          "name": "Sights",
+          "medalId": 66
+        },
+        {
+          "name": "Flags",
+          "medalId": 189
+        },
+        {
+          "name": "10 Flags",
+          "medalId": 190
+        }
+      ]
+    },
+    {
+      "name": "Africa",
+      "children": [
+        {
+          "name": "All Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 0
+            },
+            {
+              "name": "Capitals",
+              "medalId": 1
+            },
+            {
+              "name": "Countries",
+              "medalId": 12
+            },
+            {
+              "name": "Capitals",
+              "medalId": 13
+            },
+            {
+              "name": "Flags",
+              "medalId": 158
+            },
+            {
+              "name": "Flags",
+              "medalId": 164
+            }
+          ]
+        },
+        {
+          "name": "Northern Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 2
+            },
+            {
+              "name": "Capitals",
+              "medalId": 3
+            },
+            {
+              "name": "Flags",
+              "medalId": 159
+            }
+          ]
+        },
+        {
+          "name": "Eastern Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 4
+            },
+            {
+              "name": "Capitals",
+              "medalId": 5
+            },
+            {
+              "name": "Flags",
+              "medalId": 160
+            }
+          ]
+        },
+        {
+          "name": "Middle Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 6
+            },
+            {
+              "name": "Capitals",
+              "medalId": 7
+            },
+            {
+              "name": "Flags",
+              "medalId": 161
+            }
+          ]
+        },
+        {
+          "name": "Southern Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 8
+            },
+            {
+              "name": "Capitals",
+              "medalId": 9
+            },
+            {
+              "name": "Flags",
+              "medalId": 162
+            }
+          ]
+        },
+        {
+          "name": "Western Africa",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 10
+            },
+            {
+              "name": "Capitals",
+              "medalId": 11
+            },
+            {
+              "name": "Flags",
+              "medalId": 163
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Asia",
+      "children": [
+        {
+          "name": "All Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 14
+            },
+            {
+              "name": "Capitals",
+              "medalId": 15
+            },
+            {
+              "name": "Countries",
+              "medalId": 26
+            },
+            {
+              "name": "Capitals",
+              "medalId": 27
+            },
+            {
+              "name": "Flags",
+              "medalId": 165
+            },
+            {
+              "name": "Flags",
+              "medalId": 171
+            }
+          ]
+        },
+        {
+          "name": "Central Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 16
+            },
+            {
+              "name": "Capitals",
+              "medalId": 17
+            },
+            {
+              "name": "Flags",
+              "medalId": 166
+            }
+          ]
+        },
+        {
+          "name": "Eastern Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 18
+            },
+            {
+              "name": "Capitals",
+              "medalId": 19
+            },
+            {
+              "name": "Flags",
+              "medalId": 167
+            }
+          ]
+        },
+        {
+          "name": "Southeastern Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 20
+            },
+            {
+              "name": "Capitals",
+              "medalId": 21
+            },
+            {
+              "name": "Flags",
+              "medalId": 168
+            }
+          ]
+        },
+        {
+          "name": "Southern Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 22
+            },
+            {
+              "name": "Capitals",
+              "medalId": 23
+            },
+            {
+              "name": "Flags",
+              "medalId": 169
+            }
+          ]
+        },
+        {
+          "name": "Western Asia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 24
+            },
+            {
+              "name": "Capitals",
+              "medalId": 25
+            },
+            {
+              "name": "Flags",
+              "medalId": 170
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Europe",
+      "children": [
+        {
+          "name": "All Europe",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 28
+            },
+            {
+              "name": "Capitals",
+              "medalId": 29
+            },
+            {
+              "name": "Sights",
+              "medalId": 30
+            },
+            {
+              "name": "Countries",
+              "medalId": 39
+            },
+            {
+              "name": "Countries",
+              "medalId": 40
+            },
+            {
+              "name": "Capitals",
+              "medalId": 41
+            },
+            {
+              "name": "Flags",
+              "medalId": 172
+            },
+            {
+              "name": "Flags",
+              "medalId": 177
+            }
+          ]
+        },
+        {
+          "name": "Eastern Europe",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 31
+            },
+            {
+              "name": "Capitals",
+              "medalId": 32
+            },
+            {
+              "name": "Flags",
+              "medalId": 173
+            }
+          ]
+        },
+        {
+          "name": "Northern Europe",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 33
+            },
+            {
+              "name": "Capitals",
+              "medalId": 34
+            },
+            {
+              "name": "Flags",
+              "medalId": 174
+            }
+          ]
+        },
+        {
+          "name": "Southern Europe",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 35
+            },
+            {
+              "name": "Capitals",
+              "medalId": 36
+            },
+            {
+              "name": "Flags",
+              "medalId": 175
+            }
+          ]
+        },
+        {
+          "name": "Western Europe",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 37
+            },
+            {
+              "name": "Capitals",
+              "medalId": 38
+            },
+            {
+              "name": "Flags",
+              "medalId": 176
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Americas",
+      "children": [
+        {
+          "name": "North America",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 42
+            },
+            {
+              "name": "Capitals",
+              "medalId": 43
+            },
+            {
+              "name": "5 Countries",
+              "medalId": 48
+            },
+            {
+              "name": "5 Capitals",
+              "medalId": 49
+            },
+            {
+              "name": "Flags",
+              "medalId": 178
+            },
+            {
+              "name": "5 Flags",
+              "medalId": 181
+            }
+          ]
+        },
+        {
+          "name": "Central America",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 44
+            },
+            {
+              "name": "Capitals",
+              "medalId": 45
+            },
+            {
+              "name": "Flags",
+              "medalId": 179
+            }
+          ]
+        },
+        {
+          "name": "Caribbean",
+          "children": [
+            {
+              "name": "Carribean Countries",
+              "medalId": 46
+            },
+            {
+              "name": "Carribean Capitals",
+              "medalId": 47
+            },
+            {
+              "name": "Carribean dependent territories",
+              "medalId": 69
+            },
+            {
+              "name": "Carribean Flags",
+              "medalId": 180
+            },
+            {
+              "name": "Carribean dependent territories flags",
+              "medalId": 193
+            }
+          ]
+        },
+        {
+          "name": "South America",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 50
+            },
+            {
+              "name": "Capitals",
+              "medalId": 51
+            },
+            {
+              "name": "5 Countries",
+              "medalId": 52
+            },
+            {
+              "name": "5 Capitals",
+              "medalId": 53
+            },
+            {
+              "name": "Flags",
+              "medalId": 182
+            },
+            {
+              "name": "5 Flags",
+              "medalId": 183
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Oceania",
+      "children": [
+        {
+          "name": "All Oceania",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 54
+            },
+            {
+              "name": "Capitals",
+              "medalId": 55
+            },
+            {
+              "name": "Countries",
+              "medalId": 62
+            },
+            {
+              "name": "Capitals",
+              "medalId": 63
+            },
+            {
+              "name": "Flags",
+              "medalId": 184
+            },
+            {
+              "name": "Flags",
+              "medalId": 188
+            }
+          ]
+        },
+        {
+          "name": "Melanesia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 56
+            },
+            {
+              "name": "Capitals",
+              "medalId": 57
+            },
+            {
+              "name": "Flags",
+              "medalId": 185
+            }
+          ]
+        },
+        {
+          "name": "Micronesia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 58
+            },
+            {
+              "name": "Capitals",
+              "medalId": 59
+            },
+            {
+              "name": "Flags",
+              "medalId": 186
+            }
+          ]
+        },
+        {
+          "name": "Polynesia",
+          "children": [
+            {
+              "name": "Countries",
+              "medalId": 60
+            },
+            {
+              "name": "Capitals",
+              "medalId": 61
+            },
+            {
+              "name": "Flags",
+              "medalId": 187
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Provinces & States",
+      "children": [
+        {
+          "name": "Argentina",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 146
+            }
+          ]
+        },
+        {
+          "name": "Australia",
+          "children": [
+            {
+              "name": "States",
+              "medalId": 157
+            }
+          ]
+        },
+        {
+          "name": "Belgium",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 139
+            }
+          ]
+        },
+        {
+          "name": "Brazil",
+          "children": [
+            {
+              "name": "5 States",
+              "medalId": 119
+            },
+            {
+              "name": "Amazonia states",
+              "medalId": 120
+            },
+            {
+              "name": "Nordeste states",
+              "medalId": 121
+            },
+            {
+              "name": "Centro-Sul states",
+              "medalId": 122
+            },
+            {
+              "name": "States",
+              "medalId": 129
+            }
+          ]
+        },
+        {
+          "name": "Canada",
+          "children": [
+            {
+              "name": "5 Provinces",
+              "medalId": 109
+            },
+            {
+              "name": "Provinces",
+              "medalId": 134
+            }
+          ]
+        },
+        {
+          "name": "China",
+          "children": [
+            {
+              "name": "China 5 Provinces",
+              "medalId": 77
+            },
+            {
+              "name": "North China Provinces",
+              "medalId": 78
+            },
+            {
+              "name": "Northeast China Provinces",
+              "medalId": 79
+            },
+            {
+              "name": "East China Provinces",
+              "medalId": 80
+            },
+            {
+              "name": "South Central China Provinces",
+              "medalId": 81
+            },
+            {
+              "name": "Southwest China Provinces",
+              "medalId": 82
+            },
+            {
+              "name": "Northwestern China Provinces",
+              "medalId": 83
+            },
+            {
+              "name": "Provinces",
+              "medalId": 138
+            }
+          ]
+        },
+        {
+          "name": "Czech Republic",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 150
+            }
+          ]
+        },
+        {
+          "name": "Denmark",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 156
+            }
+          ]
+        },
+        {
+          "name": "East Germany",
+          "children": [
+            {
+              "name": "Bundesländer",
+              "medalId": 108
+            }
+          ]
+        },
+        {
+          "name": "East Poland",
+          "children": [
+            {
+              "name": "Voivoideships",
+              "medalId": 106
+            }
+          ]
+        },
+        {
+          "name": "England",
+          "children": [
+            {
+              "name": "Yorkshire & the Humber Counties",
+              "medalId": 94
+            },
+            {
+              "name": "East Midlands Counties",
+              "medalId": 95
+            },
+            {
+              "name": "West Midlands Counties",
+              "medalId": 96
+            }
+          ]
+        },
+        {
+          "name": "Finland",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 151
+            }
+          ]
+        },
+        {
+          "name": "France",
+          "children": [
+            {
+              "name": "5 Provinces",
+              "medalId": 103
+            },
+            {
+              "name": "Regions",
+              "medalId": 141
+            }
+          ]
+        },
+        {
+          "name": "Georgia",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 127
+            }
+          ]
+        },
+        {
+          "name": "Germany",
+          "children": [
+            {
+              "name": "States",
+              "medalId": 142
+            }
+          ]
+        },
+        {
+          "name": "Greece",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 140
+            }
+          ]
+        },
+        {
+          "name": "Götaland",
+          "children": [
+            {
+              "name": "counties",
+              "medalId": 124
+            }
+          ]
+        },
+        {
+          "name": "India",
+          "children": [
+            {
+              "name": "5 Provinces",
+              "medalId": 84
+            },
+            {
+              "name": "North India",
+              "medalId": 85
+            },
+            {
+              "name": "Northeast India",
+              "medalId": 86
+            },
+            {
+              "name": "East India",
+              "medalId": 87
+            },
+            {
+              "name": "South India",
+              "medalId": 88
+            },
+            {
+              "name": "Western India",
+              "medalId": 89
+            },
+            {
+              "name": "Central India",
+              "medalId": 90
+            },
+            {
+              "name": "States",
+              "medalId": 137
+            }
+          ]
+        },
+        {
+          "name": "Italy",
+          "children": [
+            {
+              "name": "5 Regions",
+              "medalId": 110
+            },
+            {
+              "name": "Northern Italy Regions",
+              "medalId": 111
+            },
+            {
+              "name": "Central Italy Regions",
+              "medalId": 112
+            },
+            {
+              "name": "South Italy Regions",
+              "medalId": 113
+            },
+            {
+              "name": "Regions",
+              "medalId": 128
+            }
+          ]
+        },
+        {
+          "name": "Japan",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 132
+            }
+          ]
+        },
+        {
+          "name": "Kenya",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 149
+            }
+          ]
+        },
+        {
+          "name": "Mexico",
+          "children": [
+            {
+              "name": "5 States",
+              "medalId": 114
+            },
+            {
+              "name": "Northern States Mexico",
+              "medalId": 115
+            },
+            {
+              "name": "Centerwest States Mexico",
+              "medalId": 116
+            },
+            {
+              "name": "Centersouth States Mexico",
+              "medalId": 117
+            },
+            {
+              "name": "South States Mexico",
+              "medalId": 118
+            },
+            {
+              "name": "States",
+              "medalId": 131
+            }
+          ]
+        },
+        {
+          "name": "Netherlands",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 153
+            }
+          ]
+        },
+        {
+          "name": "Norrland",
+          "children": [
+            {
+              "name": "counties",
+              "medalId": 126
+            }
+          ]
+        },
+        {
+          "name": "Northern Ireland",
+          "children": [
+            {
+              "name": "Counties",
+              "medalId": 102
+            }
+          ]
+        },
+        {
+          "name": "Poland",
+          "children": [
+            {
+              "name": "Voivodeships",
+              "medalId": 155
+            }
+          ]
+        },
+        {
+          "name": "Portugal",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 135
+            }
+          ]
+        },
+        {
+          "name": "Scotland",
+          "children": [
+            {
+              "name": "counties",
+              "medalId": 100
+            }
+          ]
+        },
+        {
+          "name": "Slovakia",
+          "children": [
+            {
+              "name": "Regions",
+              "medalId": 143
+            }
+          ]
+        },
+        {
+          "name": "South Africa",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 154
+            }
+          ]
+        },
+        {
+          "name": "Spain",
+          "children": [
+            {
+              "name": "5 Autonomous communities",
+              "medalId": 104
+            },
+            {
+              "name": "Autonomous communities",
+              "medalId": 136
+            }
+          ]
+        },
+        {
+          "name": "Svealand",
+          "children": [
+            {
+              "name": "counties",
+              "medalId": 125
+            }
+          ]
+        },
+        {
+          "name": "Sweden",
+          "children": [
+            {
+              "name": "Sweden 5 counties",
+              "medalId": 123
+            },
+            {
+              "name": "Counties",
+              "medalId": 145
+            }
+          ]
+        },
+        {
+          "name": "Turkey",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 130
+            }
+          ]
+        },
+        {
+          "name": "Ukraine",
+          "children": [
+            {
+              "name": "Oblasts",
+              "medalId": 152
+            }
+          ]
+        },
+        {
+          "name": "United Kingdom",
+          "children": [
+            {
+              "name": "5 Counties",
+              "medalId": 91
+            },
+            {
+              "name": "North East England Counties",
+              "medalId": 92
+            },
+            {
+              "name": "North West England Counties",
+              "medalId": 93
+            },
+            {
+              "name": "East of England Counties",
+              "medalId": 97
+            },
+            {
+              "name": "South East England Counties",
+              "medalId": 98
+            },
+            {
+              "name": "South West England Counties",
+              "medalId": 99
+            },
+            {
+              "name": "Counties",
+              "medalId": 144
+            }
+          ]
+        },
+        {
+          "name": "United States of America",
+          "children": [
+            {
+              "name": "5 states",
+              "medalId": 72
+            },
+            {
+              "name": "West",
+              "medalId": 73
+            },
+            {
+              "name": "Midwest",
+              "medalId": 74
+            },
+            {
+              "name": "Northeast",
+              "medalId": 75
+            },
+            {
+              "name": "The South",
+              "medalId": 76
+            },
+            {
+              "name": "States",
+              "medalId": 133
+            }
+          ]
+        },
+        {
+          "name": "Wales",
+          "children": [
+            {
+              "name": "Preserved Counties",
+              "medalId": 101
+            }
+          ]
+        },
+        {
+          "name": "West Germany",
+          "children": [
+            {
+              "name": "Bundesländer",
+              "medalId": 107
+            }
+          ]
+        },
+        {
+          "name": "West Poland",
+          "children": [
+            {
+              "name": "Voidvodeships",
+              "medalId": 105
+            }
+          ]
+        },
+        {
+          "name": "Zambia",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 148
+            }
+          ]
+        },
+        {
+          "name": "Zimbabwe",
+          "children": [
+            {
+              "name": "Provinces",
+              "medalId": 147
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dependent Territories",
+      "children": [
+        {
+          "name": "Dependent territories",
+          "medalId": 67
+        },
+        {
+          "name": "Atlantic dependent territories",
+          "medalId": 68
+        },
+        {
+          "name": "Pacific dependent territories",
+          "medalId": 70
+        },
+        {
+          "name": "Indian Ocean dependent territories",
+          "medalId": 71
+        },
+        {
+          "name": "Dependent territories flags",
+          "medalId": 191
+        },
+        {
+          "name": "Atlantic dependent territories flags",
+          "medalId": 192
+        },
+        {
+          "name": "Pacific dependent territories flags",
+          "medalId": 194
+        },
+        {
+          "name": "Indian Ocean dependent territories flags",
+          "medalId": 195
+        }
+      ]
+    }
   ]
 }

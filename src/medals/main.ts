@@ -161,48 +161,65 @@ function renderMenu() {
     menuContainer.innerHTML = ''
     visibleMedals = []
 
-    if (searchQuery) {
-        renderSearchResults()
-    } else if (medalsData.menu) {
-        renderTree(medalsData.menu, menuContainer, 0)
+    if (medalsData.menu) {
+        const matchingIds = searchQuery
+            ? new Set(medalsData.medals
+                .filter(m => m.name.toLowerCase().includes(searchQuery))
+                .map(m => m.id))
+            : null
+
+        const rendered = renderTree(medalsData.menu, menuContainer, 0, matchingIds)
+
+        if (searchQuery && !rendered) {
+            const empty = document.createElement('div')
+            empty.className = 'empty-message'
+            empty.textContent = 'No medals found'
+            menuContainer.appendChild(empty)
+        }
     } else {
         // No menu structure - show all medals as flat list
-        for (const medal of medalsData.medals) {
+        const matches = searchQuery
+            ? medalsData.medals.filter(m => m.name.toLowerCase().includes(searchQuery))
+            : medalsData.medals
+
+        for (const medal of matches) {
             visibleMedals.push(medal)
             menuContainer.appendChild(createMedalLeaf(medal))
+        }
+
+        if (searchQuery && matches.length === 0) {
+            const empty = document.createElement('div')
+            empty.className = 'empty-message'
+            empty.textContent = 'No medals found'
+            menuContainer.appendChild(empty)
         }
     }
 }
 
-function renderSearchResults() {
-    const matches = medalsData.medals.filter(m =>
-        m.name.toLowerCase().includes(searchQuery)
-    )
+/**
+ * Render tree, optionally filtering to only show matching medals.
+ * Returns true if any nodes were rendered.
+ */
+function renderTree(
+    nodes: MenuNode[],
+    parent: HTMLElement,
+    depth: number,
+    matchingIds: Set<number> | null
+): boolean {
+    let anyRendered = false
 
-    if (matches.length === 0) {
-        const empty = document.createElement('div')
-        empty.className = 'empty-message'
-        empty.textContent = 'No medals found'
-        menuContainer.appendChild(empty)
-        return
-    }
-
-    for (const medal of matches) {
-        visibleMedals.push(medal)
-        menuContainer.appendChild(createMedalLeaf(medal))
-    }
-}
-
-function renderTree(nodes: MenuNode[], parent: HTMLElement, depth: number) {
     for (const node of nodes) {
         if ('medalId' in node) {
-            // Leaf
+            // Leaf - check if it matches filter
+            if (matchingIds && !matchingIds.has(node.medalId)) continue
+
             const medal = medalsById.get(node.medalId)
             if (!medal) continue
             visibleMedals.push(medal)
             parent.appendChild(createMedalLeaf(medal))
+            anyRendered = true
         } else {
-            // Folder
+            // Folder - render children first to see if any match
             const folder = document.createElement('div')
             folder.className = 'menu-folder'
 
@@ -213,8 +230,15 @@ function renderTree(nodes: MenuNode[], parent: HTMLElement, depth: number) {
             const children = document.createElement('div')
             children.className = 'menu-children'
 
-            // Top-level folders start collapsed
-            if (depth === 0) {
+            const hasChildren = renderTree(node.children, children, depth + 1, matchingIds)
+
+            // Skip empty folders when filtering
+            if (!hasChildren) continue
+
+            // When searching, expand folders; otherwise collapse top-level
+            if (matchingIds) {
+                // Expanded when searching
+            } else if (depth === 0) {
                 children.style.display = 'none'
                 header.classList.add('collapsed')
             }
@@ -225,13 +249,14 @@ function renderTree(nodes: MenuNode[], parent: HTMLElement, depth: number) {
                 header.classList.toggle('collapsed', !isHidden)
             })
 
-            renderTree(node.children, children, depth + 1)
-
             folder.appendChild(header)
             folder.appendChild(children)
             parent.appendChild(folder)
+            anyRendered = true
         }
     }
+
+    return anyRendered
 }
 
 function createMedalLeaf(medal: Medal): HTMLElement {
