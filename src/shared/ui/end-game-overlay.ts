@@ -13,6 +13,10 @@ let container: HTMLDivElement | null = null
 const BACKDROP_COLOR = 'rgba(0, 0, 0, 0.6)'
 const CARD_WIDTH = 320
 const BUTTON_HEIGHT = 50
+const DOWNLOAD_URL = 'https://jordglobe.com/download/'
+const APP_STORE_BADGE = '/app-store-badge.svg'
+const GOOGLE_PLAY_BADGE = '/google-play-badge.png'
+const BADGE_HEIGHT = 40
 
 /**
  * Show the end game overlay with score and time
@@ -112,6 +116,10 @@ export function showEndGameOverlay(
     content.appendChild(timeEl)
     content.appendChild(buttons)
 
+    // Call to action section
+    const ctaSection = createCallToAction()
+    content.appendChild(ctaSection)
+
     container.appendChild(content)
     backdrop.appendChild(container)
     document.body.appendChild(backdrop)
@@ -162,4 +170,132 @@ function createButton(text: string, onClick: () => void): HTMLButtonElement {
     btn.addEventListener('click', onClick)
 
     return btn
+}
+
+/**
+ * Detect if user is on a mobile device
+ */
+function isMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+/**
+ * Create call to action section with app download links
+ */
+function createCallToAction(): HTMLDivElement {
+    const section = document.createElement('div')
+    section.style.cssText =
+        'margin-top:24px;padding-top:20px;border-top:1px solid #ddd;'
+
+    // CTA text
+    const ctaText = document.createElement('div')
+    ctaText.style.cssText =
+        'font-family:Arial,sans-serif;font-size:14px;color:#666;margin-bottom:12px;'
+    ctaText.textContent = 'Enjoying this? Get the app!'
+    section.appendChild(ctaText)
+
+    if (isMobile()) {
+        // Mobile: show download button with badges
+        const badgeContainer = document.createElement('a')
+        badgeContainer.href = DOWNLOAD_URL
+        badgeContainer.target = '_blank'
+        badgeContainer.rel = 'noopener noreferrer'
+        badgeContainer.style.cssText =
+            'display:flex;justify-content:center;gap:8px;text-decoration:none;'
+
+        const appStoreBadge = document.createElement('img')
+        appStoreBadge.src = APP_STORE_BADGE
+        appStoreBadge.alt = 'Download on the App Store'
+        appStoreBadge.style.cssText = `height:${BADGE_HEIGHT}px;`
+
+        const googlePlayBadge = document.createElement('img')
+        googlePlayBadge.src = GOOGLE_PLAY_BADGE
+        googlePlayBadge.alt = 'Get it on Google Play'
+        googlePlayBadge.style.cssText = `height:${BADGE_HEIGHT}px;`
+
+        badgeContainer.appendChild(appStoreBadge)
+        badgeContainer.appendChild(googlePlayBadge)
+        section.appendChild(badgeContainer)
+    } else {
+        // Desktop: show QR code with badges below
+        const qrContainer = document.createElement('div')
+        qrContainer.style.cssText =
+            'display:flex;flex-direction:column;align-items:center;gap:12px;'
+
+        // QR code placeholder (will be replaced by actual QR)
+        const qrCode = document.createElement('div')
+        qrCode.style.cssText =
+            'width:120px;height:120px;background:#fff;' +
+            'display:flex;align-items:center;justify-content:center;'
+
+        // Generate QR code
+        generateQRCode(DOWNLOAD_URL, qrCode)
+
+        // Badges row
+        const badgeRow = document.createElement('div')
+        badgeRow.style.cssText = 'display:flex;gap:8px;'
+
+        const appStoreBadge = document.createElement('img')
+        appStoreBadge.src = APP_STORE_BADGE
+        appStoreBadge.alt = 'Download on the App Store'
+        appStoreBadge.style.cssText = `height:${BADGE_HEIGHT}px;`
+
+        const googlePlayBadge = document.createElement('img')
+        googlePlayBadge.src = GOOGLE_PLAY_BADGE
+        googlePlayBadge.alt = 'Get it on Google Play'
+        googlePlayBadge.style.cssText = `height:${BADGE_HEIGHT}px;`
+
+        badgeRow.appendChild(appStoreBadge)
+        badgeRow.appendChild(googlePlayBadge)
+
+        qrContainer.appendChild(qrCode)
+        qrContainer.appendChild(badgeRow)
+        section.appendChild(qrContainer)
+    }
+
+    return section
+}
+
+/**
+ * Generate QR code using canvas
+ * Simple implementation - generates QR code for the given URL
+ */
+function generateQRCode(url: string, container: HTMLElement): void {
+    // Use the qrcode library if available, otherwise show a link
+    import('qrcode').then(QRCode => {
+        const canvas = document.createElement('canvas')
+        canvas.width = 120
+        canvas.height = 120
+        QRCode.toCanvas(canvas, url, {
+            width: 120,
+            margin: 1,
+            color: { dark: '#000000', light: '#ffffff' }
+        }, (error) => {
+            if (error) {
+                console.error('QR code generation failed:', error)
+                showFallbackLink(container, url)
+            } else {
+                container.innerHTML = ''
+                container.appendChild(canvas)
+            }
+        })
+    }).catch(() => {
+        // qrcode library not available, show fallback
+        showFallbackLink(container, url)
+    })
+}
+
+/**
+ * Show a simple link as fallback when QR code generation fails
+ */
+function showFallbackLink(container: HTMLElement, url: string): void {
+    container.innerHTML = ''
+    const link = document.createElement('a')
+    link.href = url
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.style.cssText =
+        'font-family:Arial,sans-serif;font-size:12px;color:#4a90d9;'
+    link.textContent = 'jordglobe.com/download'
+    container.appendChild(link)
 }
