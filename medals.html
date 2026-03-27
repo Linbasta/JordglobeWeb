@@ -112,8 +112,14 @@
             transition: background 0.15s;
         }
 
-        .medal-leaf:hover {
+        .medal-leaf:hover,
+        .medal-leaf.selected {
             background: rgba(74, 144, 217, 0.15);
+        }
+
+        .medal-leaf.selected {
+            outline: 2px solid #4a90d9;
+            outline-offset: -2px;
         }
 
         .medal-name {

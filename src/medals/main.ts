@@ -4,6 +4,7 @@
 
 import type { MedalsData, Medal, MenuNode, LocationsData } from './types'
 import type { Question } from '../shared/quiz/quiz-types'
+import { showEndGameOverlay } from '../shared/ui/end-game-overlay'
 
 // --- Module state ---
 
@@ -17,6 +18,10 @@ let searchQuery = ''
 let rootEl: HTMLElement
 let searchInput: HTMLInputElement
 let menuContainer: HTMLElement
+
+// Keyboard navigation
+let selectedIndex = -1
+let visibleMedals: Medal[] = []
 
 // --- Slug utilities ---
 
@@ -76,6 +81,7 @@ async function init() {
     searchInput.type = 'text'
     searchInput.placeholder = 'Search medals...'
     searchInput.addEventListener('input', onSearchInput)
+    searchInput.addEventListener('keydown', onSearchKeydown)
     searchBar.appendChild(searchInput)
     rootEl.appendChild(searchBar)
 
@@ -93,6 +99,9 @@ async function init() {
     }
 
     renderMenu()
+
+    // Focus search input (after layout completes)
+    requestAnimationFrame(() => searchInput.focus())
 
     // Listen for hash changes (browser back/forward)
     window.addEventListener('hashchange', onHashChange)
@@ -112,18 +121,56 @@ async function onHashChange() {
 
 function onSearchInput() {
     searchQuery = searchInput.value.trim().toLowerCase()
+    selectedIndex = -1
     renderMenu()
+}
+
+function onSearchKeydown(e: KeyboardEvent) {
+    if (visibleMedals.length === 0) return
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        selectedIndex = Math.min(selectedIndex + 1, visibleMedals.length - 1)
+        updateSelection()
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        selectedIndex = Math.max(selectedIndex - 1, -1)
+        updateSelection()
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+        e.preventDefault()
+        const medal = visibleMedals[selectedIndex]
+        if (medal) startMedal(medal.id)
+    }
+}
+
+function updateSelection() {
+    const items = menuContainer.querySelectorAll('.medal-leaf')
+    items.forEach((el, i) => {
+        el.classList.toggle('selected', i === selectedIndex)
+    })
+
+    // Scroll selected item into view
+    if (selectedIndex >= 0 && items[selectedIndex]) {
+        items[selectedIndex].scrollIntoView({ block: 'nearest' })
+    }
 }
 
 // --- Rendering ---
 
 function renderMenu() {
     menuContainer.innerHTML = ''
+    visibleMedals = []
 
     if (searchQuery) {
         renderSearchResults()
-    } else {
+    } else if (medalsData.menu) {
         renderTree(medalsData.menu, menuContainer, 0)
+    } else {
+        // No menu structure - show all medals as flat list
+        for (const medal of medalsData.medals) {
+            visibleMedals.push(medal)
+            menuContainer.appendChild(createMedalLeaf(medal))
+        }
     }
 }
 
@@ -141,6 +188,7 @@ function renderSearchResults() {
     }
 
     for (const medal of matches) {
+        visibleMedals.push(medal)
         menuContainer.appendChild(createMedalLeaf(medal))
     }
 }
@@ -151,6 +199,7 @@ function renderTree(nodes: MenuNode[], parent: HTMLElement, depth: number) {
             // Leaf
             const medal = medalsById.get(node.medalId)
             if (!medal) continue
+            visibleMedals.push(medal)
             parent.appendChild(createMedalLeaf(medal))
         } else {
             // Folder
@@ -307,10 +356,21 @@ async function startMedal(medalId: number) {
     await startQuizGame({
         title: medal.name,
         questions,
-        onGameComplete: (_score, _total) => {
-            // Clear hash and reload to return to menu
-            window.location.hash = ''
-            window.location.reload()
+        onGameComplete: (score, total, elapsedMs) => {
+            showEndGameOverlay(
+                score,
+                total,
+                elapsedMs,
+                // Retry: restart same medal
+                () => {
+                    startMedal(medalId)
+                },
+                // More medals: return to menu
+                () => {
+                    window.location.hash = ''
+                    window.location.reload()
+                }
+            )
         },
     })
 }

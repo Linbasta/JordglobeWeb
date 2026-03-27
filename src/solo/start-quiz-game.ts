@@ -18,7 +18,7 @@ export interface QuizGameConfig {
     shuffle?: boolean
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
-    onGameComplete?: (score: number, total: number) => void
+    onGameComplete?: (score: number, total: number, elapsedMs: number) => void
     onReady?: () => void | Promise<void>
 }
 

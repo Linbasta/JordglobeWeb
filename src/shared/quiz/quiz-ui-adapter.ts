@@ -35,7 +35,7 @@ export interface QuizConfig {
     onQuestionChanged?: (prompt: string, index: number, total: number) => void
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
-    onGameComplete?: (score: number, total: number) => void
+    onGameComplete?: (score: number, total: number, elapsedMs: number) => void
 }
 
 /**
@@ -47,6 +47,7 @@ export class QuizUIAdapter {
     private config: QuizConfig | null = null
     private active = false
     private lastShownQuestionIndex = -1
+    private startTime = 0
 
     constructor(globe: EarthGlobeAPI, countryLabelUI: CountryLabelUI | null) {
         this.globe = globe
@@ -60,6 +61,7 @@ export class QuizUIAdapter {
         this.config = config
         this.active = true
         this.lastShownQuestionIndex = -1
+        this.startTime = performance.now()
 
         createScoreBar(config.questions.length, config.questions.length)
 
@@ -94,8 +96,9 @@ export class QuizUIAdapter {
         if (!stillActive) {
             // Quiz completed
             this.active = false
+            const elapsedMs = performance.now() - this.startTime
             if (this.config?.onGameComplete) {
-                this.config.onGameComplete(getScore(), getTotal())
+                this.config.onGameComplete(getScore(), getTotal(), elapsedMs)
             }
             return false
         }
@@ -190,8 +193,9 @@ export class QuizUIAdapter {
         if (step.op === StepOp.GameComplete && !isDone()) {
             // This is the first frame of game_complete
             // (isDone() will be true on the next frame)
+            const elapsedMs = performance.now() - this.startTime
             if (this.config?.onGameComplete) {
-                this.config.onGameComplete(getScore(), getTotal())
+                this.config.onGameComplete(getScore(), getTotal(), elapsedMs)
             }
         }
     }
