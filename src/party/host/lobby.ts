@@ -330,7 +330,7 @@ class HostLobby {
         // Show video, image, or text question based on presentation type
         if (question.present === 'video') {
             hideImageOverlay();
-            showVideoOverlay(question.youtubeId, question.prompt, question.startTime, question.endTime);
+            showVideoOverlay(question.youtubeId, question.prompt, question.startTime, question.endTime, question.hideTitle);
             this.questionOverlay.style.display = 'none';
         } else if (question.present === 'image') {
             hideVideoOverlay();

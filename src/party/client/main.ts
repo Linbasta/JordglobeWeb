@@ -459,7 +459,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             if (q.present === 'video') {
                 // Show video overlay
                 hideImageOverlay();
-                showVideoOverlay(q.youtubeId || '', q.prompt || '', q.startTime, q.endTime);
+                showVideoOverlay(q.youtubeId || '', q.prompt || '', q.startTime, q.endTime, q.hideTitle);
                 // Hide text question overlay
                 if (questionOverlay) questionOverlay.style.display = 'none';
             } else if (q.present === 'image') {

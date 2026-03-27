@@ -53,6 +53,7 @@ export type Question = {
     youtubeId?: string
     startTime?: number
     endTime?: number
+    hideTitle?: boolean
 
     // present: "image"
     imageUrl?: string

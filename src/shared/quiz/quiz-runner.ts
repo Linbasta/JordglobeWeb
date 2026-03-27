@@ -362,7 +362,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.ShowVideo: {
             const q = questions[step.questionIndex]
             if (q.present === 'video') {
-                showVideoOverlay(q.youtubeId!, q.prompt, q.startTime, q.endTime)
+                showVideoOverlay(q.youtubeId!, q.prompt, q.startTime, q.endTime, q.hideTitle)
             }
             advance(now)
             break

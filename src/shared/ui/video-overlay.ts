@@ -30,7 +30,8 @@ export function showVideoOverlay(
     youtubeId: string,
     prompt: string,
     startTime?: number,
-    endTime?: number
+    endTime?: number,
+    hideTitle = false
 ): void {
     // Remove any existing overlay first
     hideVideoOverlay()
@@ -77,13 +78,14 @@ export function showVideoOverlay(
 
     iframeWrap.appendChild(iframe)
 
-    // Opaque gradient over the top of the iframe to hide the YouTube title
-    const titleCover = document.createElement('div')
-    titleCover.style.cssText =
-        'position:absolute;top:0;left:0;right:0;height:60px;' +
-        'background:linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);' +
-        'pointer-events:none;z-index:1;'
-    iframeWrap.appendChild(titleCover)
+    // Opaque bar over the top 15% of the iframe to hide the YouTube title
+    if (hideTitle) {
+        const titleCover = document.createElement('div')
+        titleCover.style.cssText =
+            'position:absolute;top:0;left:0;right:0;height:15%;' +
+            'background:#000;pointer-events:none;z-index:1;'
+        iframeWrap.appendChild(titleCover)
+    }
 
     container.appendChild(iframeWrap)
 

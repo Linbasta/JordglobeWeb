@@ -20,6 +20,7 @@ type Question = {
     youtubeId?: string;
     startTime?: number;
     endTime?: number;
+    hideTitle?: boolean;
     // For image questions
     imageUrl?: string;
     imageFrame?: 'default' | 'simple';
