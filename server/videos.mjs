@@ -1,5 +1,8 @@
 /**
- * Eurovision Video Quiz
+ * Eurovision 2025 Video Quiz
+ *
+ * Uses a single compilation video with timecodes to prevent
+ * country names being revealed in individual video titles.
  *
  * Each question follows the solo quiz Question type:
  * - present: 'video'
@@ -7,428 +10,76 @@
  * - youtubeId, lat, lng, prompt, locationName, startTime, endTime
  */
 
-export const videos = [
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'J3oGYo_mekw',
-        lat: 42.6977,
-        lng: 23.3219,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Bulgaria',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'yn0YmI0dPb8',
-        lat: 44.4268,
-        lng: 26.1025,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Romania',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'coh-lygCINY',
-        lat: 41.7151,
-        lng: 44.8271,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Georgia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'b9AdRrA554o',
-        lat: 41.3275,
-        lng: 19.8187,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Albania',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '6ea25aRGpLo',
-        lat: 50.0755,
-        lng: 14.4378,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Czech Republic',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'vl7Jqnw10sU',
-        lat: 45.8150,
-        lng: 15.9819,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Croatia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '5EXoK-lgocw',
-        lat: 40.1792,
-        lng: 44.4991,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Armenia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'V406FAGkhyQ',
-        lat: 41.9028,
-        lng: 12.4964,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Italy',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '0H-PXnbhG7A',
-        lat: 54.6872,
-        lng: 25.2797,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Lithuania',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'AzvRc3eH_rA',
-        lat: 52.5200,
-        lng: 13.4050,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Germany',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'PfpYGAzW5dM',
-        lat: 46.9480,
-        lng: 7.4474,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Switzerland',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'NGwNTd_DA9s',
-        lat: 37.9838,
-        lng: 23.7275,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Greece',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'CW6mQLBh6Js',
-        lat: 35.8989,
-        lng: 14.5146,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Malta',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'SViojHjNSzc',
-        lat: 47.0105,
-        lng: 28.8638,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Moldova',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'lOiWuol3t3o',
-        lat: 59.4370,
-        lng: 24.7536,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Estonia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'zPGP9ZphxiY',
-        lat: 48.2082,
-        lng: 16.3738,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Austria',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'iMDBPe25JhM',
-        lat: 40.4093,
-        lng: 49.8671,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Azerbaijan',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'SoEXezpblAc',
-        lat: 50.4501,
-        lng: 30.5234,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Ukraine',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'nuvy2d60HbI',
-        lat: 42.4304,
-        lng: 19.2594,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Montenegro',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'ujoCYrvvTYQ',
-        lat: 48.8566,
-        lng: 2.3522,
-        prompt: 'Which country does this song represent?',
-        locationName: 'France',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'niMKvJ-Itq8',
-        lat: 51.5074,
-        lng: -0.1278,
-        prompt: 'Which country does this song represent?',
-        locationName: 'United Kingdom',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'xWCnWSoG8nI',
-        lat: 31.7683,
-        lng: 35.2137,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Israel',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'FJTLKBOOE98',
-        lat: 44.7866,
-        lng: 20.4489,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Serbia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'EUMCr1pnaMY',
-        lat: -35.2809,
-        lng: 149.1300,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Australia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '9bfwNIYb96Q',
-        lat: 60.1699,
-        lng: 24.9384,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Finland',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'MasllzWk_bQ',
-        lat: 59.9139,
-        lng: 10.7522,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Norway',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '9sfI4g6DWTU',
-        lat: 50.8503,
-        lng: 4.3517,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Belgium',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'TzSs51BiQrE',
-        lat: 35.1856,
-        lng: 33.3823,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Cyprus',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'jyHaE6GqaaQ',
-        lat: 38.7223,
-        lng: -9.1393,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Portugal',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'q78cnYIoF9Y',
-        lat: 52.2297,
-        lng: 21.0122,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Poland',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'ibbfS8iG450',
-        lat: 59.3293,
-        lng: 18.0686,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Sweden',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'xKzEP9dwoss',
-        lat: 55.6761,
-        lng: 12.5683,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Denmark',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: '6C2ivaB5D00',
-        lat: 56.9496,
-        lng: 24.1052,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Latvia',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'DmVfJSRqgnI',
-        lat: 49.6117,
-        lng: 6.1300,
-        prompt: 'Which country does this song represent?',
-        locationName: 'Luxembourg',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    },
-    {
-        present: 'video',
-        answer: 'location-guess',
-        youtubeId: 'wOQe-fQSFxg',
-        lat: 43.9424,
-        lng: 12.4578,
-        prompt: 'Which country does this song represent?',
-        locationName: 'San Marino',
-        startTime: 0,
-        endTime: 30,
-        hideTitle: true
-    }
+// Single compilation video with all Eurovision 2025 entries
+const COMPILATION_VIDEO_ID = '1jnR-m5u5yQ';
+
+// Global offset: start this many seconds into each song (to skip intros)
+const SONG_OFFSET = 12;
+
+// Clip duration: how long each clip plays
+const CLIP_DURATION = 10;
+
+// Helper to parse "MM:SS" to seconds
+function parseTime(timeStr) {
+    const [min, sec] = timeStr.split(':').map(Number);
+    return min * 60 + sec;
+}
+
+// [songStartTime, lat, lng, locationName]
+// Timecodes from the Eurovision 2025 compilation video
+const EUROVISION_ENTRIES = [
+    ['00:00', 41.3275, 19.8187, 'Albania'],
+    ['00:31', 40.1792, 44.4991, 'Armenia'],
+    ['01:00', -35.2809, 149.1300, 'Australia'],
+    ['01:29', 48.2082, 16.3738, 'Austria'],
+    ['01:58', 40.4093, 49.8671, 'Azerbaijan'],
+    ['02:25', 50.8503, 4.3517, 'Belgium'],
+    ['02:53', 42.6977, 23.3219, 'Bulgaria'],
+    ['03:24', 45.8150, 15.9819, 'Croatia'],
+    ['03:55', 35.1856, 33.3823, 'Cyprus'],
+    ['04:24', 50.0755, 14.4378, 'Czech Republic'],
+    ['04:56', 55.6761, 12.5683, 'Denmark'],
+    ['05:26', 59.4370, 24.7536, 'Estonia'],
+    ['05:54', 60.1699, 24.9384, 'Finland'],
+    ['06:26', 48.8566, 2.3522, 'France'],
+    ['06:55', 41.7151, 44.8271, 'Georgia'],
+    ['07:24', 52.5200, 13.4050, 'Germany'],
+    ['07:56', 37.9838, 23.7275, 'Greece'],
+    ['08:28', 31.7683, 35.2137, 'Israel'],
+    ['08:59', 41.9028, 12.4964, 'Italy'],
+    ['09:28', 56.9496, 24.1052, 'Latvia'],
+    ['09:57', 54.6872, 25.2797, 'Lithuania'],
+    ['10:29', 49.6117, 6.1300, 'Luxembourg'],
+    ['11:03', 35.8989, 14.5146, 'Malta'],
+    ['11:32', 47.0105, 28.8638, 'Moldova'],
+    ['12:01', 42.4304, 19.2594, 'Montenegro'],
+    ['12:31', 59.9139, 10.7522, 'Norway'],
+    ['13:00', 52.2297, 21.0122, 'Poland'],
+    ['13:30', 38.7223, -9.1393, 'Portugal'],
+    ['13:58', 44.4268, 26.1025, 'Romania'],
+    ['14:29', 43.9424, 12.4578, 'San Marino'],
+    ['14:59', 44.7866, 20.4489, 'Serbia'],
+    ['15:29', 59.3293, 18.0686, 'Sweden'],
+    ['15:59', 46.9480, 7.4474, 'Switzerland'],
+    ['16:28', 50.4501, 30.5234, 'Ukraine'],
+    ['17:00', 51.5074, -0.1278, 'United Kingdom'],
 ];
+
+export const videos = EUROVISION_ENTRIES.map(([timeStr, lat, lng, locationName]) => {
+    const songStart = parseTime(timeStr);
+    return {
+        present: 'video',
+        answer: 'location-guess',
+        youtubeId: COMPILATION_VIDEO_ID,
+        lat,
+        lng,
+        prompt: 'Which country does this song represent?',
+        locationName,
+        startTime: songStart + SONG_OFFSET,
+        endTime: songStart + SONG_OFFSET + CLIP_DURATION,
+        hideBottom: true,  // Hide country name overlay in compilation
+    };
+});
 
 /**
  * Get a random video question

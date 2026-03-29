@@ -53,7 +53,12 @@ export type Question = {
     youtubeId?: string
     startTime?: number
     endTime?: number
+    /** @deprecated Use hideTop/hideBottom instead */
     hideTitle?: boolean
+    /** Hide top 15% of video (YouTube title overlay) */
+    hideTop?: boolean
+    /** Hide bottom center of video (country name in compilation) */
+    hideBottom?: boolean
 
     // present: "image"
     imageUrl?: string
