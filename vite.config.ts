@@ -33,7 +33,8 @@ export default defineConfig({
         'capitals-quiz': join(__dirname, 'capitals-quiz.html'),
         'country-game': join(__dirname, 'country-game.html'),
         'medals': join(__dirname, 'medals.html'),
-        'video-quiz': join(__dirname, 'video-quiz.html')
+        'video-quiz': join(__dirname, 'video-quiz.html'),
+        'eurovision': join(__dirname, 'eurovision.html')
       }
     }
   },
