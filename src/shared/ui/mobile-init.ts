@@ -6,7 +6,7 @@
  * - App store banners
  */
 
-import { initAppBanner } from './app-banner.ts'
+import { initAppBanner } from './app-banner'
 
 // Match the pin UI bottom panel color
 export const THEME_COLOR = '#6496DC'
@@ -33,8 +33,6 @@ function setThemeColor(color: string): void {
     } else {
         document.head.appendChild(meta)
     }
-
-    console.log('[mobile-init] Theme color set to:', color)
 }
 
 /**

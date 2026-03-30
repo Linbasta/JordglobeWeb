@@ -16,7 +16,7 @@ import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-
 import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared/managers/pin-manager';
 import { handleHover, clearSelection } from '../shared/behaviors/region-selection';
 import { CountryLabelUI } from '../shared/ui/country-label-ui';
-import { HoverCountryLabel } from '../shared/ui/hover-country-label';
+import { HoverCountryLabelHTML } from '../shared/ui/hover-country-label-html';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { zoom } from '../earth-globe';
 
@@ -45,7 +45,7 @@ export class SoloGameController extends BaseGameController {
     // Solo-specific modules
     private selectionEnabled = false;
     private countryLabelUI: CountryLabelUI | null = null;
-    private hoverCountryLabel: HoverCountryLabel | null = null;
+    private hoverCountryLabel: HoverCountryLabelHTML | null = null;
 
     // Quiz adapters
     private quizAdapter: QuizUIAdapter | null = null;
@@ -162,7 +162,9 @@ export class SoloGameController extends BaseGameController {
         // Create hover country label (shows at pin location) - optional
         const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
         if (showHoverLabel) {
-            this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
+            const scene = this.globe.getScene();
+            const camera = this.globe.getCamera();
+            this.hoverCountryLabel = new HoverCountryLabelHTML(scene, camera);
             const previewPin = getPreviewPin();
             if (previewPin) {
                 this.hoverCountryLabel.linkToNode(previewPin);
@@ -190,11 +192,13 @@ export class SoloGameController extends BaseGameController {
             }
         });
 
-        // Wire pin move → location marker hover detection
+        // Wire pin move → location marker hover detection + label position update
         onPinMove((latLon) => {
             if (this.quizAdapter) {
                 updateLocationHover(latLon.lat, latLon.lon);
             }
+            // Update HTML label position to follow the pin
+            this.hoverCountryLabel?.updatePosition();
         });
 
         // Reconnect quiz adapter to the new countryLabelUI after GUI recreation
@@ -213,9 +217,12 @@ export class SoloGameController extends BaseGameController {
         if (!this.advancedTexture) return;
 
         // Recreate hover country label - optional
+        // Note: HTML label doesn't need recreation, but we keep this for consistency
         const showHoverLabel = (this.options as SoloGameOptions)?.showHoverLabel !== false; // Default true
-        if (showHoverLabel) {
-            this.hoverCountryLabel = new HoverCountryLabel(this.advancedTexture);
+        if (showHoverLabel && !this.hoverCountryLabel) {
+            const scene = this.globe.getScene();
+            const camera = this.globe.getCamera();
+            this.hoverCountryLabel = new HoverCountryLabelHTML(scene, camera);
             const previewPin = getPreviewPin();
             if (previewPin) {
                 this.hoverCountryLabel.linkToNode(previewPin);
