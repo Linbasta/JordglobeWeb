@@ -8,6 +8,7 @@
 
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 const BANNER_DISMISSED_KEY = 'app-banner-dismissed'
+const BANNER_HEIGHT = '60px'
 
 /**
  * Detect if user is on Android
@@ -73,6 +74,7 @@ function createAndroidBanner(): HTMLElement {
     `
     closeBtn.onclick = () => {
         setDismissed()
+        document.body.style.paddingTop = ''
         banner.remove()
     }
 
@@ -150,9 +152,11 @@ export function initAppBanner(): void {
     // Wait for DOM to be ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
+            document.body.style.paddingTop = BANNER_HEIGHT
             document.body.appendChild(createAndroidBanner())
         })
     } else {
+        document.body.style.paddingTop = BANNER_HEIGHT
         document.body.appendChild(createAndroidBanner())
     }
 }
