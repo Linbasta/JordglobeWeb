@@ -5,10 +5,10 @@
 import type { MedalsData, Medal, MenuNode, LocationsData } from './types'
 import type { Question } from '../shared/quiz/quiz-types'
 import { showEndGameOverlay } from '../shared/ui/end-game-overlay'
-import { initAppBanner } from '../shared/ui/app-banner'
+import { initMobile } from '../shared/ui/mobile-init'
 
-// Initialize app banner for mobile users
-initAppBanner()
+// Initialize mobile features (theme color, app banner)
+initMobile()
 
 // --- Module state ---
 

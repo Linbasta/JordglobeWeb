@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-itunes-app" content="app-id=1599500931">
+    <meta name="theme-color" content="#6496DC">
     <title>Capitals Quiz Game</title>
     <style>
         html, body { height: 100%; }
-        body { margin: 0; overflow: hidden; }
+        body { margin: 0; overflow: hidden; background-color: #6496DC; }
         body.placing-mode { cursor: none; }
         #renderCanvas { width: 100%; height: 100%; touch-action: none; }
     </style>
@@ -17,10 +18,10 @@
 <body>
     <canvas id="renderCanvas"></canvas>
     <script type="module">
-        import { initAppBanner } from '/src/shared/ui/app-banner.ts';
+        import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
         import { EUROPEAN_CAPITALS } from '/src/capitals/capitals-data.ts';
-        initAppBanner();
+        initMobile();
 
         startQuizGame({
             title: 'Loading Capitals Quiz',
