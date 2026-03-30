@@ -13,6 +13,13 @@ let dismissCallback: (() => void) | null = null
 let pendingTimer: number | null = null
 
 /**
+ * Detect if user is on a mobile device
+ */
+function isMobile(): boolean {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+/**
  * Check if tutorial was already shown
  */
 function wasSeen(): boolean {
@@ -40,15 +47,15 @@ function markSeen(): void {
 function createTutorialElement(): HTMLDivElement {
     const container = document.createElement('div')
     container.id = 'pin-tutorial'
+    // Position to match pin button location
     container.style.cssText = `
         position: fixed;
-        bottom: -40px;
-        left: calc(50% + 50px);
+        bottom: -12vh;
+        left: calc(50% + 130px);
         transform: translateX(-50%);
         pointer-events: none;
         z-index: 200;
         opacity: 1;
-        transition: opacity 0.5s ease-out;
     `
 
     const hand = document.createElement('img')
@@ -77,6 +84,28 @@ function createTutorialElement(): HTMLDivElement {
     document.head.appendChild(style)
 
     container.appendChild(hand)
+
+    // Add instructional text on desktop
+    if (!isMobile()) {
+        const text = document.createElement('div')
+        text.style.cssText = `
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-shadow:
+                -1px -1px 0 #000,
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000;
+            text-align: center;
+            margin-top: 10px;
+            white-space: nowrap;
+        `
+        text.textContent = 'Pick up the pin or right-click to answer'
+        container.appendChild(text)
+    }
+
     return container
 }
 
@@ -175,4 +204,22 @@ export function resetPinTutorial(): void {
     } catch {
         // localStorage not available
     }
+}
+
+/**
+ * Adjust tutorial position (for debugging)
+ * Usage in console: setTutorialPos(50) or setTutorialPos(-20)
+ */
+export function setTutorialXOffset(xOffsetPx: number): void {
+    if (tutorialElement) {
+        tutorialElement.style.left = `calc(50% + ${xOffsetPx}px)`
+        console.log(`Tutorial X offset set to ${xOffsetPx}px`)
+    } else {
+        console.log('Tutorial not showing. Press T first.')
+    }
+}
+
+// Expose to window for console access
+if (typeof window !== 'undefined') {
+    (window as any).setTutorialPos = setTutorialXOffset
 }

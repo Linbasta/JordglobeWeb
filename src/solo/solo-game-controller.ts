@@ -25,7 +25,7 @@ import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
 import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
 import { togglePerfOverlay } from '../shared/dev/perf-overlay';
-import { showPinTutorial, resetPinTutorial } from '../shared/ui/pin-tutorial';
+import { showPinTutorial, resetPinTutorial, dismissPinTutorial } from '../shared/ui/pin-tutorial';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -374,6 +374,7 @@ export class SoloGameController extends BaseGameController {
             }
             // Show pin tutorial (T key) - dev only
             if ((e.key === 't' || e.key === 'T') && import.meta.env.DEV) {
+                dismissPinTutorial();  // Remove existing first
                 resetPinTutorial();
                 showPinTutorial(true);
             }
