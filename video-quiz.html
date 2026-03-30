@@ -113,6 +113,7 @@
         startQuizGame({
             title: 'Loading Video Quiz',
             questions: VIDEO_QUESTIONS,
+            showHoverLabel: true,
             onReady: () => showStartButton(),
             onGameComplete: (score, total) => {
                 alert(`Video Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);

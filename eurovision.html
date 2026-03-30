@@ -111,6 +111,7 @@
         startQuizGame({
             title: 'Loading Eurovision Quiz',
             questions: EUROVISION_QUESTIONS,
+            showHoverLabel: true,
             onReady: () => showStartButton(),
             onGameComplete: (score, total) => {
                 alert(`Eurovision Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);

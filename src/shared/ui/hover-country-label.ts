@@ -22,7 +22,7 @@ export class HoverCountryLabel {
     private createLabel(): void {
         this.labelText = new TextBlock("hoverCountryLabel", "");
         this.labelText.color = "white";
-        this.labelText.fontSize = 28;
+        this.labelText.fontSize = 16;
         this.labelText.fontWeight = "bold";
         this.labelText.outlineWidth = 4;
         this.labelText.outlineColor = "black";
