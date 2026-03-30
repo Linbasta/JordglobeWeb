@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=1599500931">
     <title>Capitals Quiz Game</title>
     <style>
         body { margin: 0; overflow: hidden; }
@@ -15,8 +16,10 @@
 <body>
     <canvas id="renderCanvas"></canvas>
     <script type="module">
+        import { initAppBanner } from '/src/shared/ui/app-banner.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
         import { EUROPEAN_CAPITALS } from '/src/capitals/capitals-data.ts';
+        initAppBanner();
 
         startQuizGame({
             title: 'Loading Capitals Quiz',

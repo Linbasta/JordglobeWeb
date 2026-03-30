@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=1599500931">
     <title>US States Quiz</title>
     <style>
         body { margin: 0; overflow: hidden; }
@@ -15,7 +16,9 @@
 <body>
     <canvas id="renderCanvas"></canvas>
     <script type="module">
+        import { initAppBanner } from '/src/shared/ui/app-banner.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        initAppBanner();
 
         const usStates = [
             { id: 0, name: 'Alabama' },
