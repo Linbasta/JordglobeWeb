@@ -5,7 +5,7 @@
  * No classes, no callbacks - just plain functions and explicit state.
  */
 
-import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Vector3, Matrix } from '@babylonjs/core/Maths/math.vector'
 
 import type { EarthGlobeAPI, RegionData } from '../../earth-globe/types'
 import type { Question, Step, DebugState } from './quiz-types'
@@ -34,6 +34,7 @@ import { showVideoOverlay, hideVideoOverlay } from '../ui/video-overlay'
 import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
 import { showTextCardOverlay, hideTextCardOverlay } from '../ui/text-card-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
+import { showCorrectFeedback, showWrongFeedback } from '../ui/answer-feedback-overlay'
 
 // ============================================================================
 // Module State
@@ -72,6 +73,25 @@ let removeOnWrong = false
 let globe: EarthGlobeAPI | null = null
 let arcDrawer: ArcDrawer | null = null
 
+// Last answer screen position for feedback overlay
+let lastAnswerLatLon: { lat: number; lng: number } | null = null
+
+function projectLatLonToScreen(lat: number, lng: number): { x: number; y: number } {
+    if (!globe) return { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+    const worldPos = latLonToSphere(lat, lng, 0)
+    const scene = globe.getScene()
+    const camera = globe.getCamera()
+    const engine = scene.getEngine()
+    const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight())
+    const screenPos = Vector3.Project(worldPos, Matrix.Identity(), scene.getTransformMatrix(), viewport)
+    return { x: screenPos.x, y: screenPos.y }
+}
+
+function getAnswerScreenPos(): { x: number; y: number } {
+    if (lastAnswerLatLon) return projectLatLonToScreen(lastAnswerLatLon.lat, lastAnswerLatLon.lng)
+    return { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+}
+
 // ============================================================================
 // Public API
 // ============================================================================
@@ -104,6 +124,7 @@ export function startQuiz(
     distances = []
     done = false
     pendingAnswer = null
+    lastAnswerLatLon = null
     hoveredMarkerId = -1
     activeAnimation = null
 
@@ -433,6 +454,7 @@ export function tickQuiz(now: number): boolean {
             if (pendingAnswer && 'countryIndex' in pendingAnswer) {
                 const qi = findCurrentQuestionIndex()
                 const q = questions[qi]
+                lastAnswerLatLon = pendingAnswer.latLon
 
                 if (q.answer === 'country') {
                     // Ignore ocean clicks (no country selected)
@@ -552,6 +574,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.AnimateCorrect: {
             if (!activeAnimation) {
                 globe.clearCountryOutline()
+                { const sp = getAnswerScreenPos(); showCorrectFeedback(sp.x, sp.y) }
                 const country = globe.getCountryByIndex(step.countryIndex)
                 if (country && globe.countryHasIslandsFrame(country.id)) {
                     globe.disableIslandsFrameForCountry(country.id)
@@ -570,6 +593,7 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.AnimateMarkerCorrect: {
+            { const sp = getAnswerScreenPos(); showCorrectFeedback(sp.x, sp.y) }
             const pos = globe.getMarkerPosition(step.markerId)
             if (pos) {
                 globe.hideMarker(step.markerId)
@@ -581,6 +605,7 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.AnimateMarkerWrongShake: {
             if (!activeAnimation && globe) {
+                { const sp = getAnswerScreenPos(); showWrongFeedback(sp.x, sp.y) }
                 // Red burst (fire-and-forget) + camera shake
                 const wrongPos = globe.getMarkerPosition(step.wrongMarkerId)
                 if (wrongPos) {
@@ -601,6 +626,7 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.AnimateMarkerWrongReveal: {
             if (!activeAnimation) {
+                { const sp = getAnswerScreenPos(); showWrongFeedback(sp.x, sp.y) }
                 activeAnimation = handleMarkerWrongReveal(
                     step.wrongMarkerId, step.correctMarkerId,
                     step.wrongLat, step.wrongLng,
@@ -633,6 +659,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.AnimateWrongShake: {
             if (!activeAnimation) {
                 globe.clearCountryOutline()
+                { const sp = getAnswerScreenPos(); showWrongFeedback(sp.x, sp.y) }
                 activeAnimation = Promise.all([
                     cameraShake(globe.getCamera(), 300, 0.02),
                     animateWrong(globe, step.wrongCountryIndex, removeOnWrong)
@@ -648,6 +675,7 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.AnimateWrongReveal: {
             if (!activeAnimation) {
+                { const sp = getAnswerScreenPos(); showWrongFeedback(sp.x, sp.y) }
                 activeAnimation = handleWrongReveal(step.wrongCountryIndex, step.correctCountryIndex)
                 activeAnimation.then(() => {
                     activeAnimation = null
@@ -659,6 +687,8 @@ export function tickQuiz(now: number): boolean {
 
         case StepOp.ShowResult: {
             // Result display handled by UI reading getCurrentStep()
+            if (step.wasCorrect) { const sp = getAnswerScreenPos(); showCorrectFeedback(sp.x, sp.y) }
+            else { const sp = getAnswerScreenPos(); showWrongFeedback(sp.x, sp.y) }
             advance(now)
             break
         }
