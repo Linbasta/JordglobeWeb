@@ -25,6 +25,7 @@ import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
 import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
 import { togglePerfOverlay } from '../shared/dev/perf-overlay';
+import { showPinTutorial, resetPinTutorial } from '../shared/ui/pin-tutorial';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -285,7 +286,8 @@ export class SoloGameController extends BaseGameController {
         this.quizAdapter = new QuizUIAdapter(this.globe, this.countryLabelUI);
         this.quizAdapter.startQuiz(config);
 
-        // Debug panel available via 'D' key (created hidden by default)
+        // Show pin tutorial for first-time users (after quiz starts)
+        showPinTutorial();
     }
 
     /**
@@ -369,6 +371,11 @@ export class SoloGameController extends BaseGameController {
             // Toggle zoom tweaker panel (Z key) - dev only
             if ((e.key === 'z' || e.key === 'Z') && import.meta.env.DEV) {
                 import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel());
+            }
+            // Show pin tutorial (T key) - dev only
+            if ((e.key === 't' || e.key === 'T') && import.meta.env.DEV) {
+                resetPinTutorial();
+                showPinTutorial(true);
             }
         });
     }

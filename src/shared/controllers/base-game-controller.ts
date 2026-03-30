@@ -23,6 +23,7 @@ import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../../earth-globe';
 import { initPinManager, onPlacingModeChange, onCancelZoneChange, onPinPlaced as onPinPlacedCb, enterPlacingMode, updatePinScaleIfPlacing } from '../managers/pin-manager';
 import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
+import { dismissPinTutorial } from '../ui/pin-tutorial';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -275,6 +276,7 @@ export abstract class BaseGameController {
             this.pinUI = new PinUI(this.advancedTexture);
             this.pinUI.create({
                 onPinButtonPress: () => {
+                    dismissPinTutorial();
                     enterPlacingMode();
                 }
             });
