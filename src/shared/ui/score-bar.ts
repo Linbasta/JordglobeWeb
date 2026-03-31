@@ -65,6 +65,12 @@ const FILL_RADIUS = 3
 export const SCORE_BAR_GAP = 8  // Gap below score bar for other UI elements
 export const SCORE_BAR_BOTTOM = BAR_TOP + BAR_HEIGHT + SCORE_BAR_GAP
 
+// Shared panel sizing — used by score bar, video overlay, etc.
+export const PANEL_HEIGHT_VH = 25
+export const PANEL_ASPECT = '16/9'
+export const PANEL_WIDTH_LANDSCAPE = `calc(${PANEL_HEIGHT_VH}vh * 16 / 9)`
+export const PANEL_WIDTH_PORTRAIT = '95vw'
+
 const GLOW_KEYFRAMES = `
 @keyframes scoreBarGlow {
     0% { box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.4); }

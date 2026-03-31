@@ -9,7 +9,7 @@
  * Click to hide/show animation (slides under score bar).
  */
 
-import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
+import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP, PANEL_HEIGHT_VH, PANEL_ASPECT } from './score-bar'
 
 // YouTube IFrame API types
 declare global {
@@ -157,7 +157,7 @@ export async function showVideoOverlay(
     // Iframe wrapper — fixed height, aspect ratio determines width
     const iframeWrap = document.createElement('div')
     iframeWrap.style.cssText =
-        'position:relative;height:25vh;aspect-ratio:16/9;overflow:hidden;'
+        `position:relative;height:${PANEL_HEIGHT_VH}vh;aspect-ratio:${PANEL_ASPECT};overflow:hidden;`
 
     // Create placeholder div for YouTube player
     const playerDiv = document.createElement('div')

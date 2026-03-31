@@ -4,6 +4,8 @@
  * Module-level state, plain functions. Same API shape as score-bar.ts.
  */
 
+import { PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
+
 // ── DOM elements ──
 let root: HTMLDivElement | null = null
 let questionEl: HTMLSpanElement | null = null
@@ -26,10 +28,10 @@ export function createSimpleScoreBar(turnsLeft: number, total: number): void {
 
     root = document.createElement('div')
     const isPortrait = window.innerHeight > window.innerWidth
-    const width = isPortrait ? 95 : 50
+    const width = isPortrait ? PANEL_WIDTH_PORTRAIT : PANEL_WIDTH_LANDSCAPE
     root.style.cssText =
         `position:absolute;top:${BAR_TOP}px;left:50%;transform:translateX(-50%);` +
-        `width:${width}vw;height:${BAR_HEIGHT}px;z-index:100;` +
+        `width:${width};height:${BAR_HEIGHT}px;z-index:100;` +
         `display:flex;align-items:center;justify-content:space-between;` +
         `box-sizing:border-box;` +
         `border-style:solid;border-width:${FRAME_BORDER}px;` +
