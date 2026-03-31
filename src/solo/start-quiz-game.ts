@@ -20,7 +20,7 @@ export interface QuizGameConfig {
     scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
-    onGameComplete?: (score: number, total: number, elapsedMs: number) => void
+    onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
     showHoverLabel?: boolean
     onReady?: () => void | Promise<void>
 }

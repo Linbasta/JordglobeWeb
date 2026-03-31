@@ -24,6 +24,7 @@
     <script type="module">
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        import { showResultOverlay } from '/src/shared/ui/result-overlay.ts';
         initMobile();
 
         function showStartButton() {
@@ -112,12 +113,18 @@
 
         startQuizGame({
             title: 'Loading Eurovision Quiz',
-            questions: EUROVISION_QUESTIONS,
+            questions: EUROVISION_QUESTIONS.slice(0, 3),
             scoreBarType: 'simple',
             showHoverLabel: true,
             onReady: () => showStartButton(),
-            onGameComplete: (score, total) => {
-                alert(`Eurovision Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+            onGameComplete: (score, total, elapsedMs, results) => {
+                showResultOverlay({
+                    score, total, elapsedMs, results,
+                    quizTitle: 'Eurovision Quiz',
+                    shareUrl: 'https://jordglobe.com/eurovision',
+                    shareEmoji: '🎵',
+                    onRetry: () => window.location.reload(),
+                })
             }
         });
     </script>

@@ -18,6 +18,7 @@ import {
     getScore,
     getTotal,
     getWrongCount,
+    getResults,
     isDone,
     isWaiting,
     getCurrentStep,
@@ -39,7 +40,7 @@ export interface QuizConfig {
     onQuestionChanged?: (prompt: string, index: number, total: number) => void
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
-    onGameComplete?: (score: number, total: number, elapsedMs: number) => void
+    onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
 }
 
 /**
@@ -134,7 +135,7 @@ export class QuizUIAdapter {
             this.active = false
             const elapsedMs = performance.now() - this.startTime
             if (this.config?.onGameComplete) {
-                this.config.onGameComplete(getScore(), getTotal(), elapsedMs)
+                this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
             }
             return false
         }
@@ -233,7 +234,7 @@ export class QuizUIAdapter {
             // (isDone() will be true on the next frame)
             const elapsedMs = performance.now() - this.startTime
             if (this.config?.onGameComplete) {
-                this.config.onGameComplete(getScore(), getTotal(), elapsedMs)
+                this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
             }
         }
     }

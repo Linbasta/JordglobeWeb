@@ -51,6 +51,7 @@ let stepStartTime = 0
 let waiting = false           // True when blocked on user input
 let score = 0
 let wrongCount = 0
+let results: boolean[] = []   // per-question correct/wrong
 let distances: number[] = []  // km per question (location-guess)
 let done = false
 
@@ -126,6 +127,7 @@ export function startQuiz(
     waiting = false
     score = 0
     wrongCount = 0
+    results = []
     distances = []
     done = false
     pendingAnswer = null
@@ -554,6 +556,7 @@ export function tickQuiz(now: number): boolean {
                     const correctCountry = globe.getCountryByISO2(q.countryISO2!)
                     if (!correctCountry) break
                     const isCorrect = pendingAnswer.countryIndex === correctCountry.index
+                    results.push(isCorrect)
                     if (isCorrect) { score++ } else { wrongCount++ }
                     const postSteps = generateCountryAnswerSteps(isCorrect, correctCountry.index, pendingAnswer.countryIndex, revealOnWrong)
                     steps.splice(pc + 1, 0, ...postSteps)
@@ -578,6 +581,7 @@ export function tickQuiz(now: number): boolean {
 
                     // Check if clicked province is correct
                     const isCorrect = pendingAnswer.countryIndex === correctProvince.index
+                    results.push(isCorrect)
                     if (isCorrect) { score++ } else { wrongCount++ }
 
                     // Generate answer steps (reuse country logic - works for provinces too!)
@@ -638,7 +642,8 @@ export function tickQuiz(now: number): boolean {
                         clearLocationHover()
                         globe.setMarkerScale(hitMarkerId, 2.0)
                         const isCorrect = hitQuestionIndex === qi
-                        if (isCorrect) { score++ } else { wrongCount++ }
+                        results.push(isCorrect)
+                    if (isCorrect) { score++ } else { wrongCount++ }
                         const correctMarkerId = locationMarkers.get(qi) ?? -1
                         const hitQ = questions[hitQuestionIndex]
                         const correctQ = questions[qi]
@@ -816,6 +821,7 @@ export function tickQuiz(now: number): boolean {
 
 export function getScore() { return score }
 export function getWrongCount() { return wrongCount }
+export function getResults() { return results }
 export function getDistances() { return distances }
 export function getTotal() { return questions.length }
 export function isDone() { return done }
