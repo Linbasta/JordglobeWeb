@@ -40,8 +40,11 @@
         <button onclick="show(2, 10, 200000)">Bad: 2/10, 3:20</button>
         <button onclick="show(35, 35, 312000)">Perfect 35: 35/35, 5:12</button>
         <button onclick="show(1, 35, 400000)">Bad 35: 1/35, 6:40</button>
+        <button onclick="show(10, 10, 83000, true)">World Record!</button>
     </div>
 
+        <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
     <script type="module" src="/shared/consoleLogger.ts"></script>
     <script type="module">
         import { showResultOverlay, hideResultOverlay } from '/src/shared/ui/result-overlay.ts';
@@ -55,7 +58,7 @@
             return arr;
         }
 
-        window.show = function(score, total, elapsedMs) {
+        window.show = function(score, total, elapsedMs, isNewRecord = false) {
             showResultOverlay({
                 score, total, elapsedMs,
                 results: randomResults(score, total),
@@ -63,6 +66,7 @@
                 shareUrl: 'https://jordglobe.com/eurovision',
                 shareEmoji: '🎵',
                 spritePath: '/eurovision/',
+                isNewRecord,
                 onRetry: () => hideResultOverlay(),
             });
         };

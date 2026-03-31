@@ -17,6 +17,7 @@ export interface ResultOverlayConfig {
     shareEmoji?: string
     /** Path prefix for sprite images (e.g. '/eurovision/' expects /eurovision/1.png through /eurovision/10.png) */
     spritePath?: string
+    isNewRecord?: boolean
     onRetry?: () => void
 }
 
@@ -55,7 +56,7 @@ const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.4
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, isNewRecord, onRetry } = config
     const isPerfect = score === total
     const SPRITE_COUNT = 10
 
@@ -84,6 +85,8 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-share-btn.copied:hover { background:#22c55e; }
             .ro-retry-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
             .ro-retry-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.03); }
+            .ro-record { font-size:20px;font-weight:bold;color:#ffd700;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 12px rgba(255,215,0,0.6);opacity:0;transition:opacity 0.5s ease-in; }
+            .ro-record.visible { opacity:1; }
         `
         document.head.appendChild(style)
     }
@@ -113,6 +116,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
                 <div class="ro-stat-value">${formatTime(elapsedMs)}</div>
             </div>
         </div>
+        ${isNewRecord ? '<div class="ro-record">🏆 NEW WORLD RECORD 🏆</div>' : ''}
         <div class="ro-message">${getMessage(score, total)}</div>
         <div class="ro-share">
             <div class="ro-share-text">Can your friends beat your score?</div>
@@ -151,8 +155,13 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             requestAnimationFrame(countUpTick)
         } else {
             // Fire confetti when count-up finishes
-            const bursts = isPerfect ? 6 : 2
+            const bursts = isNewRecord ? 10 : isPerfect ? 6 : 2
             startConfetti(backdrop!, card, bursts)
+            // Reveal world record text
+            if (isNewRecord) {
+                const recordEl = card.querySelector('.ro-record')
+                if (recordEl) recordEl.classList.add('visible')
+            }
         }
     }
     requestAnimationFrame(countUpTick)

@@ -8,8 +8,12 @@
  */
 
 import { WebSocketServer } from 'ws';
+import { createServer } from 'http';
 import os from 'os';
-import { appendFileSync, writeFileSync } from 'fs';
+import { appendFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import Database from 'better-sqlite3';
 import { getRandomCity, calculateDistance } from './cities.mjs';
 import { getRandomVideo, videos } from './videos.mjs';
 
@@ -57,7 +61,141 @@ function getLocalIP() {
     return 'localhost';
 }
 
-const wss = new WebSocketServer({ port: PORT, host: '0.0.0.0' });
+// ============================================================================
+// SQLITE VOTES DATABASE
+// ============================================================================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const DATA_DIR = join(__dirname, '..', 'data');
+if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+
+const db = new Database(join(DATA_DIR, 'votes.db'));
+db.pragma('journal_mode = WAL');
+db.exec(`CREATE TABLE IF NOT EXISTS votes (
+  game_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  vote    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (game_id, user_id)
+)`);
+
+// ============================================================================
+// SQLITE RECORDS TABLE
+// ============================================================================
+db.exec(`CREATE TABLE IF NOT EXISTS records (
+  quiz_id    TEXT PRIMARY KEY,
+  score      INTEGER NOT NULL,
+  total      INTEGER NOT NULL,
+  elapsed_ms INTEGER NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+)`);
+
+const stmtGetRecord = db.prepare('SELECT score, total, elapsed_ms FROM records WHERE quiz_id = ?');
+const stmtUpsertRecord = db.prepare(`
+  INSERT INTO records (quiz_id, score, total, elapsed_ms)
+  VALUES (?, ?, ?, ?)
+  ON CONFLICT(quiz_id) DO UPDATE SET
+    score = excluded.score,
+    total = excluded.total,
+    elapsed_ms = excluded.elapsed_ms,
+    created_at = datetime('now')
+`);
+
+const stmtGetScores = db.prepare('SELECT game_id, SUM(vote) AS score FROM votes GROUP BY game_id');
+const stmtGetUserVotes = db.prepare('SELECT game_id, vote FROM votes WHERE user_id = ?');
+const stmtUpsertVote = db.prepare('INSERT INTO votes (game_id, user_id, vote) VALUES (?, ?, ?) ON CONFLICT(game_id, user_id) DO UPDATE SET vote = excluded.vote');
+const stmtGameScore = db.prepare('SELECT SUM(vote) AS score FROM votes WHERE game_id = ?');
+
+// ============================================================================
+// HTTP SERVER (serves REST API + upgrades to WebSocket)
+// ============================================================================
+function handleRequest(req, res) {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+    if (req.url?.startsWith('/api/votes') && req.method === 'GET') {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const userId = url.searchParams.get('user_id');
+        const scores = Object.fromEntries(stmtGetScores.all().map(r => [r.game_id, r.score]));
+        const userVotes = userId
+            ? Object.fromEntries(stmtGetUserVotes.all(userId).map(r => [r.game_id, r.vote]))
+            : {};
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ scores, userVotes }));
+    } else if (req.url === '/api/vote' && req.method === 'POST') {
+        let body = '';
+        req.on('data', c => body += c);
+        req.on('end', () => {
+            try {
+                const { game_id, user_id, vote } = JSON.parse(body);
+                if (!game_id || !user_id || ![1, -1, 0].includes(vote)) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Bad request' }));
+                    return;
+                }
+                stmtUpsertVote.run(game_id, user_id, vote);
+                const row = stmtGameScore.get(game_id);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ score: row?.score ?? 0 }));
+            } catch {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+        });
+    } else if (req.url?.startsWith('/api/record') && req.method === 'GET') {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const quizId = url.searchParams.get('quiz_id');
+        if (!quizId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'quiz_id required' }));
+            return;
+        }
+        const row = stmtGetRecord.get(quizId);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ record: row ?? null }));
+    } else if (req.url === '/api/record' && req.method === 'POST') {
+        let body = '';
+        req.on('data', c => body += c);
+        req.on('end', () => {
+            try {
+                const { quiz_id, score, total, elapsed_ms } = JSON.parse(body);
+                if (!quiz_id || score == null || !total || !elapsed_ms) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Bad request' }));
+                    return;
+                }
+                // Check current record
+                const current = stmtGetRecord.get(quiz_id);
+                let isNewRecord = false;
+                if (!current) {
+                    isNewRecord = true;
+                } else if (score > current.score) {
+                    isNewRecord = true;
+                } else if (score === current.score && elapsed_ms < current.elapsed_ms) {
+                    isNewRecord = true;
+                }
+                if (isNewRecord) {
+                    stmtUpsertRecord.run(quiz_id, score, total, elapsed_ms);
+                }
+                const record = stmtGetRecord.get(quiz_id);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ isNewRecord, record }));
+            } catch {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+        });
+    } else {
+        res.writeHead(404);
+        res.end('Not found');
+    }
+}
+
+const httpServer = createServer(handleRequest);
+httpServer.listen(PORT, '0.0.0.0');
+const wss = new WebSocketServer({ server: httpServer });
 
 // Game state
 const players = [];

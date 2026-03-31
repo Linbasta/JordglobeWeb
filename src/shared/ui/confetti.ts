@@ -10,7 +10,7 @@
 const COLORS = ['#22BEFF', '#7CF6FF', '#22FF40']
 const PARTICLES_PER_CANNON = 18
 const DEFAULT_BURST_COUNT = 2
-const MAX_BURST_COUNT = 6
+const MAX_BURST_COUNT = 10
 const BURST_INTERVAL = 150
 const GRAVITY = 0.7
 const DECAY = 0.97
@@ -20,15 +20,21 @@ const WOBBLE_FREQUENCY = 0.14
 // ── Pre-allocated canvas (created once, reused) ──
 const canvas = document.createElement('canvas')
 canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;display:none;will-change:transform;'
-const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true })!
+const ctx = canvas.getContext('2d', { alpha: true })!
 
 // ── State ──
 let rafId = 0
 let burstTimers: number[] = []
 let particleCount = 0
 
-// 2 cannons × MAX_BURST_COUNT bursts × PARTICLES_PER_CANNON
-const MAX_PARTICLES = 2 * MAX_BURST_COUNT * PARTICLES_PER_CANNON
+// Rain state (portrait mode — continuous spawn inside tick loop)
+let rainActive = false
+let rainEndTime = 0
+let rainWidth = 0
+let rainRate = 0  // particles per frame
+
+// Enough for cannon mode (2 × 10 × 18 = 360) or rain mode (30 waves × 36 ≈ 1080)
+const MAX_PARTICLES = 1200
 
 // Dynamic arrays (reset each launch)
 const px = new Float32Array(MAX_PARTICLES)
@@ -92,7 +98,30 @@ function spawnBothCannons(cardRect: DOMRect): void {
     spawnCannon(cardRect.right, bottomY, -Math.PI * 0.35, 0.8)
 }
 
+/** Spawn a few rain particles at the top of the screen (called every frame during rain) */
+function spawnRainParticles(count: number, screenWidth: number): void {
+    for (let i = 0; i < count; i++) {
+        if (particleCount >= MAX_PARTICLES) return
+        const idx = particleCount++
+        px[idx] = Math.random() * screenWidth
+        py[idx] = -10 - Math.random() * 30
+
+        pvx[idx] = (Math.random() - 0.5) * 2
+        pvy[idx] = 1 + Math.random() * 2
+
+        ptilt[idx] = Math.random() * Math.PI * 2
+        pwobblePhase[idx] = Math.random() * Math.PI * 2
+    }
+}
+
 function tick(): void {
+    // Continuous rain spawning
+    if (rainActive && performance.now() < rainEndTime) {
+        spawnRainParticles(rainRate, rainWidth)
+    } else {
+        rainActive = false
+    }
+
     const cw = canvas.width
     const ch = canvas.height
     ctx.setTransform(1, 0, 0, 1, 0, 0)
@@ -124,7 +153,7 @@ function tick(): void {
         ctx.fillRect(-drawW / 2, -ph[i] / 2, drawW, ph[i])
     }
 
-    if (alive) {
+    if (alive || rainActive) {
         rafId = requestAnimationFrame(tick)
     }
 }
@@ -152,15 +181,26 @@ export function startConfetti(parent: HTMLElement, card?: HTMLElement, bursts?: 
             400
         )
 
+    const isPortrait = window.innerHeight > window.innerWidth
     const burstCount = Math.min(bursts ?? DEFAULT_BURST_COUNT, MAX_BURST_COUNT)
-    for (let b = 0; b < burstCount; b++) {
-        if (b === 0) {
-            spawnBothCannons(cardRect)
-        } else {
-            const timer = window.setTimeout(() => {
+
+    if (isPortrait) {
+        // Rain mode: continuous spawn for a duration, more bursts = longer + denser
+        rainActive = true
+        rainWidth = canvas.width
+        rainRate = Math.max(1, Math.round(burstCount / 2))  // 1-5 particles per frame
+        rainEndTime = performance.now() + 1500 + burstCount * 400  // 2.3s to 5.5s
+    } else {
+        // Cannon mode: timed volleys from card corners
+        for (let b = 0; b < burstCount; b++) {
+            if (b === 0) {
                 spawnBothCannons(cardRect)
-            }, b * BURST_INTERVAL)
-            burstTimers.push(timer)
+            } else {
+                const timer = window.setTimeout(() => {
+                    spawnBothCannons(cardRect)
+                }, b * BURST_INTERVAL)
+                burstTimers.push(timer)
+            }
         }
     }
 
@@ -173,6 +213,7 @@ export function stopConfetti(): void {
     rafId = 0
     burstTimers = []
     particleCount = 0
+    rainActive = false
     canvas.style.display = 'none'
     if (canvas.parentElement) canvas.parentElement.removeChild(canvas)
 }

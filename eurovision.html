@@ -27,6 +27,9 @@
         import { showResultOverlay } from '/src/shared/ui/result-overlay.ts';
         initMobile();
 
+        // Preload sprite images so they're cached when the result overlay shows
+        for (let i = 1; i <= 10; i++) new Image().src = `/eurovision/${i}.png`;
+
         function showStartButton() {
             return new Promise(resolve => {
                 const btn = document.createElement('button');
@@ -117,13 +120,27 @@
             scoreBarType: 'simple',
             showHoverLabel: true,
             onReady: () => showStartButton(),
-            onGameComplete: (score, total, elapsedMs, results) => {
+            onGameComplete: async (score, total, elapsedMs, results) => {
+                // Submit score and check for world record
+                let isNewRecord = false;
+                try {
+                    const res = await fetch('/api/record', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ quiz_id: 'eurovision', score, total, elapsed_ms: elapsedMs }),
+                    });
+                    const data = await res.json();
+                    isNewRecord = data.isNewRecord;
+                } catch (e) {
+                    console.warn('Failed to submit record:', e);
+                }
                 showResultOverlay({
                     score, total, elapsedMs, results,
                     quizTitle: 'Eurovision Quiz',
                     shareUrl: 'https://jordglobe.com/eurovision',
                     shareEmoji: '🎵',
                     spritePath: '/eurovision/',
+                    isNewRecord,
                     onRetry: () => window.location.reload(),
                 })
             }
