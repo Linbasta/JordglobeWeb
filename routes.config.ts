@@ -54,6 +54,12 @@ export const routes: RoutesConfig = {
       file: 'medals.html',
       title: 'Medals',
       description: 'Browse and play medal quizzes'
+    },
+    {
+      path: '/minigames',
+      file: 'minigames.html',
+      title: 'Minigames',
+      description: 'Browse and vote on quiz games'
     }
   ],
 

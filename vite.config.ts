@@ -13,7 +13,7 @@ export default defineConfig({
     open: true,
     allowedHosts: true,
     proxy: {
-      // Rewrite /party to /party.html
+      '/api': { target: 'http://localhost:3003', changeOrigin: true }
     }
   },
   build: {
@@ -35,7 +35,8 @@ export default defineConfig({
         'country-game': join(__dirname, 'country-game.html'),
         'medals': join(__dirname, 'medals.html'),
         'video-quiz': join(__dirname, 'video-quiz.html'),
-        'eurovision': join(__dirname, 'eurovision.html')
+        'eurovision': join(__dirname, 'eurovision.html'),
+        'minigames': join(__dirname, 'minigames.html')
       }
     }
   },
