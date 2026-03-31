@@ -52,7 +52,7 @@
         const SONG_OFFSET = 5;
 
         // Clip duration: how long each clip plays
-        const CLIP_DURATION = 25;
+        const CLIP_DURATION = 22;
 
         // Helper to parse "MM:SS" to seconds
         function parseTime(timeStr) {
@@ -60,10 +60,11 @@
             return min * 60 + sec;
         }
 
-        // [songStartTime, countryISO2, countryName]
+        // [songStartTime, countryISO2, countryName, clipDuration?]
         // Timecodes from the Eurovision 2025 compilation video
+        // Optional 4th element overrides CLIP_DURATION for that entry
         const EUROVISION_ENTRIES = [
-            ['00:00', 'AL', 'Albania'],
+            ['00:01', 'AL', 'Albania'],
             ['00:31', 'AM', 'Armenia'],
             ['01:00', 'AU', 'Australia'],
             ['01:29', 'AT', 'Austria'],
@@ -100,8 +101,9 @@
             ['17:00', 'GB', 'United Kingdom'],
         ];
 
-        const EUROVISION_QUESTIONS = EUROVISION_ENTRIES.map(([timeStr, iso2, countryName]) => {
+        const EUROVISION_QUESTIONS = EUROVISION_ENTRIES.map(([timeStr, iso2, countryName, duration]) => {
             const songStart = parseTime(timeStr);
+            const clipLen = duration ?? CLIP_DURATION;
             return {
                 present: 'video',
                 answer: 'country',
@@ -109,14 +111,14 @@
                 youtubeId: COMPILATION_VIDEO_ID,
                 prompt: 'Which country does this song represent?',
                 startTime: songStart + SONG_OFFSET,
-                endTime: songStart + SONG_OFFSET + CLIP_DURATION,
+                endTime: songStart + SONG_OFFSET + clipLen,
                 hideBottom: true,  // Hide country name overlay in compilation
             };
         });
 
         startQuizGame({
             title: 'Loading Eurovision Quiz',
-            questions: EUROVISION_QUESTIONS.slice(0, 3),
+            questions: EUROVISION_QUESTIONS,
             scoreBarType: 'simple',
             showHoverLabel: true,
             onReady: () => showStartButton(),
