@@ -180,7 +180,7 @@ export async function showVideoOverlay(
         const bottomCover = document.createElement('div')
         bottomCover.style.cssText =
             'position:absolute;bottom:10%;left:50%;transform:translateX(-50%);' +
-            'width:35%;height:12%;' +
+            'width:45%;height:12%;' +
             'background:#000;pointer-events:none;z-index:1;'
         iframeWrap.appendChild(bottomCover)
     }
