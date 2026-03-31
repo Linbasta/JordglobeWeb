@@ -149,8 +149,8 @@ export class RegionController {
     // Region queries
     // =========================================================================
 
-    getRegionAt(latLon: { lat: number; lon: number }): RegionPolygon | null {
-        return this.picker.getCountryAt(latLon);
+    getRegionAt(latLon: { lat: number; lon: number }, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
+        return this.picker.getCountryAt(latLon, filter);
     }
 
     getRegionByIndex(index: number): RegionData | undefined {

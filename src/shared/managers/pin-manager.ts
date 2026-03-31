@@ -16,7 +16,7 @@ import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import type { RegionPicker, RegionPolygon, LatLon } from '../../earth-globe';
-import { cartesianToLatLon, ANIMATION_AMPLITUDE } from '../../earth-globe';
+import { cartesianToLatLon, ANIMATION_AMPLITUDE, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { getZoomValue } from '../animation/camera-utils';
 import { zoom } from '../../earth-globe';
@@ -36,6 +36,7 @@ let getActiveRegionPicker: () => RegionPicker;
 let earthSphere: Mesh;
 let createUnlitMaterial: (mat: Material | null) => Material;
 let getCountryAltitude: (idx: number) => number;
+let getRegionState: (idx: number) => number;
 
 let bossPinTemplate: AbstractMesh | null = null;
 let previewPin: TransformNode | null = null;
@@ -185,7 +186,11 @@ function positionPinAtNormal(normal: Vector3): void {
 
     // Detect which region the pin is over (routes to active controller - countries or provinces)
     const latLon = cartesianToLatLon(normal.x, normal.y, normal.z);
-    const country = getActiveRegionPicker().getCountryAt(latLon);
+    const regionFilter = (p: RegionPolygon) => {
+        const s = getRegionState(p.regionIndex);
+        return s !== STATE_DISABLED && s !== STATE_CLEARED;
+    };
+    const country = getActiveRegionPicker().getCountryAt(latLon, regionFilter);
 
     // Get altitude: use country altitude if over land, otherwise base EARTH_RADIUS
     const altitudeNormalized = country ? getCountryAltitude(country.regionIndex) : 0.0;
@@ -257,7 +262,8 @@ export async function initPinManager(
     _getActiveRegionPicker: () => RegionPicker,
     _earthSphere: Mesh,
     _createUnlitMaterial: (mat: Material | null) => Material,
-    _getCountryAltitude: (idx: number) => number
+    _getCountryAltitude: (idx: number) => number,
+    _getRegionState: (idx: number) => number
 ): Promise<void> {
     scene = _scene;
     camera = _camera;
@@ -266,6 +272,7 @@ export async function initPinManager(
     earthSphere = _earthSphere;
     createUnlitMaterial = _createUnlitMaterial;
     getCountryAltitude = _getCountryAltitude;
+    getRegionState = _getRegionState;
 
     await loadBossPinModel();
     createPreviewPin();
@@ -315,7 +322,10 @@ export function exitPlacingMode(placePin: boolean = false): void {
     if (placePin && previewPin) {
         const pinPos = previewPin.position;
         const latLon = cartesianToLatLon(pinPos.x, pinPos.y, pinPos.z);
-        const country = getActiveRegionPicker().getCountryAt(latLon);
+        const country = getActiveRegionPicker().getCountryAt(latLon, (p) => {
+            const s = getRegionState(p.regionIndex);
+            return s !== STATE_DISABLED && s !== STATE_CLEARED;
+        });
 
         if (onPinPlacedCallback) {
             onPinPlacedCallback(country, latLon);

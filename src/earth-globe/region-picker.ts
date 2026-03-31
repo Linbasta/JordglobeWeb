@@ -90,29 +90,29 @@ export class RegionPicker {
      * Get which country contains the given point
      * @returns The country polygon containing the point, or null if over ocean/no country
      */
-    getCountryAt(point: LatLon): RegionPolygon | null {
+    getCountryAt(point: LatLon, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
         // Tier 1: standard point-in-polygon via spatial grid
-        const pipResult = this.pointInPolygonSearch(point);
+        const pipResult = this.pointInPolygonSearch(point, filter);
 
         // Tier 2: override — cursor near a surrounded country's centroid
-        const override = this.checkOverride(point);
+        const override = this.checkOverride(point, filter);
         if (override) return override;
 
         // If PIP found something, use it
         if (pipResult) return pipResult;
 
         // Tier 3: island frame polygons — point inside a bounding frame
-        const frameResult = this.checkFramePolygons(point);
+        const frameResult = this.checkFramePolygons(point, filter);
         if (frameResult) return frameResult;
 
         // Tier 4: catch — nothing else matched, check all centroids with catchRadius
-        return this.checkCatch(point);
+        return this.checkCatch(point, filter);
     }
 
     /**
      * Tier 1: standard point-in-polygon search via spatial grid
      */
-    private pointInPolygonSearch(point: LatLon): RegionPolygon | null {
+    private pointInPolygonSearch(point: LatLon, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
         const cellX = Math.floor(point.lon / this.cellSize);
         const cellY = Math.floor(point.lat / this.cellSize);
         const key = `${cellX},${cellY}`;
@@ -122,7 +122,10 @@ export class RegionPicker {
 
         for (const polygon of cell.polygons) {
             if (!pointInBoundingBox(point, polygon.bbox)) continue;
-            if (pointInPolygon(point, polygon.points)) return polygon;
+            if (pointInPolygon(point, polygon.points)) {
+                if (filter && !filter(polygon)) continue;
+                return polygon;
+            }
         }
 
         return null;
@@ -132,11 +135,12 @@ export class RegionPicker {
      * Tier 2: override — check override colliders (surrounded countries).
      * Returns the closest match within any circle's radius.
      */
-    private checkOverride(point: LatLon): RegionPolygon | null {
+    private checkOverride(point: LatLon, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
         let bestDist = Infinity;
         let bestMatch: RegionPolygon | null = null;
 
         for (const c of this.overrideColliders) {
+            if (filter && !filter(c.polygon)) continue;
             const dlat = point.lat - c.lat;
             const dlon = point.lon - c.lon;
             const dist = dlat * dlat + dlon * dlon;
@@ -154,10 +158,13 @@ export class RegionPicker {
     /**
      * Tier 3: island frame polygon check.
      */
-    private checkFramePolygons(point: LatLon): RegionPolygon | null {
+    private checkFramePolygons(point: LatLon, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
         for (const frame of this.frameColliders) {
             if (!pointInBoundingBox(point, frame.bbox)) continue;
-            if (pointInPolygon(point, frame.points)) return frame.polygon;
+            if (pointInPolygon(point, frame.points)) {
+                if (filter && !filter(frame.polygon)) continue;
+                return frame.polygon;
+            }
         }
         return null;
     }
@@ -180,11 +187,12 @@ export class RegionPicker {
      * Tier 4: catch — PIP found nothing, check all catch colliders.
      * Returns the closest match within any circle's radius.
      */
-    private checkCatch(point: LatLon): RegionPolygon | null {
+    private checkCatch(point: LatLon, filter?: (p: RegionPolygon) => boolean): RegionPolygon | null {
         let bestDist = Infinity;
         let bestMatch: RegionPolygon | null = null;
 
         for (const c of this.catchColliders) {
+            if (filter && !filter(c.polygon)) continue;
             const dlat = point.lat - c.lat;
             const dlon = point.lon - c.lon;
             const dist = dlat * dlat + dlon * dlon;
