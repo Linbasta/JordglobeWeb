@@ -102,6 +102,7 @@ export enum StepOp {
     ShowTextCard = "show_text_card",
     HideTextCard = "hide_text_card",
     RevealLocationGuess = "reveal_location_guess",
+    AnimateDisableNonGameCountries = "animate_disable_non_game_countries",
 }
 
 /**
@@ -165,6 +166,9 @@ export type Step =
 
     // Timing
     | { op: StepOp.Pause; duration: number }
+
+    // Animated setup
+    | { op: StepOp.AnimateDisableNonGameCountries }
 
     // Completion
     | { op: StepOp.GameComplete }

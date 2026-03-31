@@ -17,6 +17,7 @@ import {
     animateShowCorrectRegion,
     animateToClearedAfterRevealRegion,
     setRegionDisabledImmediate,
+    animateDisableWave,
     // Legacy exports for backward compatibility
     animateCorrect,
     animateWrong,
@@ -170,6 +171,8 @@ export function startQuiz(
             ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
             : allPoints
 
+        // For non-animated disable, insert FrameLocations as a separate step
+        // For animated disable, framing runs in parallel inside the handler
         const insertIndex = steps.findIndex(s => s.op === StepOp.DisableNonGameCountries)
         if (insertIndex !== -1) {
             steps.splice(insertIndex + 1, 0, {
@@ -200,7 +203,9 @@ export function startQuiz(
                     ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
                     : allPoints
 
-                const insertIndex = steps.findIndex(s => s.op === StepOp.DisableNonGameCountries)
+                const insertIndex = steps.findIndex(s =>
+                    s.op === StepOp.DisableNonGameCountries || s.op === StepOp.AnimateDisableNonGameCountries
+                )
                 if (insertIndex !== -1) {
                     steps.splice(insertIndex + 1, 0, {
                         op: StepOp.FrameLocations, points, duration: 800
@@ -297,6 +302,83 @@ export function tickQuiz(now: number): boolean {
             globe.showIslandsFramesForCountries(gameISO2Codes)
 
             advance(now)
+            break
+        }
+
+        case StepOp.AnimateDisableNonGameCountries: {
+            // Animated version: countries sink to disabled with longitude-based wave
+            if (!activeAnimation) {
+                const allRegions = globe.getAllActiveRegions()
+                const controller = globe.getActiveController()
+                const gameIndices = new Set(gameCountries.map(c => c.index))
+
+                // Collect regions to disable with their longitude
+                const toDisable: { index: number; lon: number }[] = []
+                for (const region of allRegions) {
+                    if (!gameIndices.has(region.index)) {
+                        // Set disabled state immediately so marker logic works
+                        controller.setState(region.index, STATE_DISABLED)
+                        if (controller.isSmallRegion(region.index)) {
+                            controller.hideSmallRegionMarker(region.index)
+                        }
+                        // Get longitude from centroid (atan2(z, x) in radians → degrees)
+                        const c = region.centroid
+                        const lon = c ? Math.atan2(c.z, c.x) * (180 / Math.PI) : 0
+                        toDisable.push({ index: region.index, lon })
+                    }
+                }
+
+                // Sort by longitude so the wave sweeps west → east
+                toDisable.sort((a, b) => a.lon - b.lon)
+
+                // Build delay array: 20 batches with 15ms between each, randomly assigned
+                const NUM_BATCHES = 20
+                const DELAY_PER_BATCH_MS = 15
+                const indices: number[] = []
+                const delays = new Float32Array(toDisable.length)
+
+                // Shuffle into random order
+                for (let i = toDisable.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [toDisable[i], toDisable[j]] = [toDisable[j], toDisable[i]]
+                }
+
+                for (let i = 0; i < toDisable.length; i++) {
+                    indices.push(toDisable[i].index)
+                    const batch = Math.floor(i / (toDisable.length / NUM_BATCHES))
+                    delays[i] = Math.min(batch, NUM_BATCHES - 1) * DELAY_PER_BATCH_MS
+                }
+
+                // Show markers for enabled small game countries (after states are set)
+                controller.showEnabledSmallRegionMarkers()
+
+                // Show island frames only for game countries
+                const gameISO2Codes = new Set(gameCountries.map(c => c.id))
+                globe.showIslandsFramesForCountries(gameISO2Codes)
+
+                // Frame camera to game countries in parallel with wave animation
+                const allPolygons = globe.getCountryPicker().getAllPolygons()
+                const gamePolygons = allPolygons.filter(p =>
+                    gameCountries.some(c => c.index === p.regionIndex)
+                )
+                const allPoints: { lat: number; lon: number }[] = []
+                for (const polygon of gamePolygons) {
+                    allPoints.push(...polygon.points)
+                }
+                const MAX_POINTS = 500
+                const framingPoints = allPoints.length > MAX_POINTS
+                    ? allPoints.filter((_, i) => i % Math.ceil(allPoints.length / MAX_POINTS) === 0)
+                    : allPoints
+                const vp = getQuizViewportRegion()
+
+                activeAnimation = Promise.all([
+                    animateDisableWave(globe, indices, delays),
+                    frameLocations(globe.getCamera(), framingPoints, 800, 0.8, vp),
+                ]).then(() => {
+                    activeAnimation = null
+                    advance(performance.now())
+                })
+            }
             break
         }
 

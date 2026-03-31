@@ -41,8 +41,8 @@ export function generateQuizSteps(questions: Question[]): Step[] {
         steps.push({ op: StepOp.EnterRegionMode, countryISO2 })
         steps.push({ op: StepOp.DisableNonGameCountries })  // Works for provinces too!
     } else if (hasCountryQuestions) {
-        // Country quiz: disable non-game regions
-        steps.push({ op: StepOp.DisableNonGameCountries })
+        // Country quiz: animate non-game regions to disabled with wave effect
+        steps.push({ op: StepOp.AnimateDisableNonGameCountries })
     }
     // location-guess: no setup needed — user clicks anywhere
 

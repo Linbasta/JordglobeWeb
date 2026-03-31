@@ -4,7 +4,8 @@ import {
     ALTITUDE_NORMAL,
     ALTITUDE_CLEARED,
     ALTITUDE_WRONG_POP,
-    ALTITUDE_SHOW_CORRECT
+    ALTITUDE_SHOW_CORRECT,
+    ALTITUDE_TEXTURE_SCALE
 } from '../../earth-globe/constants';
 
 // Animation timing constants
@@ -14,6 +15,9 @@ const CORRECT_DURATION = 400;
 // Easing lookup table for correct animation: pops up then settles down
 // Normalized 0→1 easing space, designed in the keyframe editor
 export const CORRECT_EASING = [0, -4.437, -9.936, -13.185, -14.94, -16.434, -18, -18, -17.685, -17.19, -11.439, -1.44, 0.035, 0.811, 0.847, 0.879, 0.907, 0.932, 0.953, 0.97, 0.983, 0.992, 0.998, 1];
+
+// Subtle version for disable wave: gentle lift then sink (peak ~-3 vs -18)
+const DISABLE_EASING = [0, -0.7, -1.5, -2.2, -2.7, -3.0, -3.0, -2.8, -2.4, -1.5, -0.3, 0.2, 0.5, 0.7, 0.8, 0.87, 0.92, 0.95, 0.97, 0.985, 0.993, 0.998, 1];
 
 function lookupEasing(table: number[], t: number): number {
     const n = table.length - 1;
@@ -193,4 +197,64 @@ export async function animateToNormalRegion(globe: EarthGlobeAPI, regionIndex: n
  */
 export async function animateToNormal(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
     return animateToNormalRegion(globe, countryIndex);
+}
+
+/**
+ * Animate multiple regions to disabled with a longitude-based wave effect.
+ * Each region pops up then sinks to cleared, staggered by longitude.
+ * Writes directly to animation texture arrays and flushes once per frame.
+ * @param globe - Globe API
+ * @param regionIndices - Indices of regions to animate
+ * @param delays - Per-region delay in ms (same order as regionIndices)
+ */
+export function animateDisableWave(
+    globe: EarthGlobeAPI,
+    regionIndices: number[],
+    delays: Float32Array,
+): Promise<void> {
+    if (regionIndices.length === 0) return Promise.resolve();
+
+    const controller = globe.getActiveController();
+    const animTexture = controller.getAnimationTexture();
+    const altitudeData = animTexture.getAltitudeData();
+    const blendData = animTexture.getBlendData();
+    const altitudeScale = ALTITUDE_TEXTURE_SCALE;
+    const maxDelay = delays.length > 0 ? delays[delays.length - 1] : 0;
+    const totalDuration = maxDelay + CORRECT_DURATION;
+
+    // Pre-encode the "not yet started" values
+    const normalAltEncoded = ALTITUDE_NORMAL / altitudeScale;
+
+    // Note: caller is responsible for setting STATE_DISABLED before calling this
+
+    return new Promise((resolve) => {
+        const startTime = performance.now();
+        function tick() {
+            const elapsed = performance.now() - startTime;
+
+            for (let i = 0; i < regionIndices.length; i++) {
+                const localElapsed = elapsed - delays[i];
+                if (localElapsed <= 0) {
+                    // Not started yet — keep at normal
+                    altitudeData[regionIndices[i]] = normalAltEncoded;
+                    blendData[regionIndices[i]] = 1.0;
+                    continue;
+                }
+                const t = Math.min(1, localElapsed / CORRECT_DURATION);
+                const eased = lookupEasing(DISABLE_EASING, t);
+                const altitude = ALTITUDE_NORMAL + (ALTITUDE_CLEARED - ALTITUDE_NORMAL) * eased;
+                altitudeData[regionIndices[i]] = altitude / altitudeScale;
+                blendData[regionIndices[i]] = Math.max(0, Math.min(1,
+                    (altitude - ALTITUDE_CLEARED) / (ALTITUDE_NORMAL - ALTITUDE_CLEARED)
+                ));
+            }
+
+            // Single GPU upload per frame
+            animTexture.update();
+
+            if (elapsed >= totalDuration) { resolve(); return; }
+            requestAnimationFrame(tick);
+        }
+        tick();
+    });
 }
