@@ -113,6 +113,7 @@
         startQuizGame({
             title: 'Loading Eurovision Quiz',
             questions: EUROVISION_QUESTIONS,
+            scoreBarType: 'simple',
             showHoverLabel: true,
             onReady: () => showStartButton(),
             onGameComplete: (score, total) => {

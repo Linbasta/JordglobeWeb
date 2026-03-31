@@ -24,12 +24,16 @@ import {
     getQuestion
 } from './quiz-runner'
 import { createScoreBar, updateScoreBar, disposeScoreBar } from '../ui/score-bar'
+import { createSimpleScoreBar, updateSimpleScoreBar, disposeSimpleScoreBar } from '../ui/score-bar-simple'
 
 /**
  * Quiz configuration
  */
+export type ScoreBarType = 'progressbar' | 'simple'
+
 export interface QuizConfig {
     questions: Question[]
+    scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
     onQuestionChanged?: (prompt: string, index: number, total: number) => void
@@ -63,7 +67,11 @@ export class QuizUIAdapter {
         this.lastShownQuestionIndex = -1
         this.startTime = performance.now()
 
-        createScoreBar(config.questions.length, config.questions.length)
+        if (config.scoreBarType === 'simple') {
+            createSimpleScoreBar(config.questions.length, config.questions.length)
+        } else {
+            createScoreBar(config.questions.length, config.questions.length)
+        }
 
         // Initialize the quiz runner
         startQuiz(
@@ -91,7 +99,13 @@ export class QuizUIAdapter {
         const total = getTotal()
         const score = getScore()
         const turnsLeft = total - score - getWrongCount()
-        updateScoreBar(score, turnsLeft, total)
+        const elapsedMs = performance.now() - this.startTime
+
+        if (this.config?.scoreBarType === 'simple') {
+            updateSimpleScoreBar(score, turnsLeft, total, elapsedMs)
+        } else {
+            updateScoreBar(score, turnsLeft, total)
+        }
 
         if (!stillActive) {
             // Quiz completed
@@ -146,6 +160,7 @@ export class QuizUIAdapter {
         this.config = null
         this.lastShownQuestionIndex = -1
         disposeScoreBar()
+        disposeSimpleScoreBar()
     }
 
     // ========================================================================

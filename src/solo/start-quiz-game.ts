@@ -7,6 +7,7 @@
  */
 
 import type { Question } from '../shared/quiz/quiz-types'
+import type { ScoreBarType } from '../shared/quiz/quiz-ui-adapter'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
 import { preloadQuizImages } from '../shared/ui/image-preloader'
 import { SoloGameController } from './solo-game-controller'
@@ -16,6 +17,7 @@ export interface QuizGameConfig {
     canvasId?: string
     title?: string
     shuffle?: boolean
+    scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
     onGameComplete?: (score: number, total: number, elapsedMs: number) => void
@@ -70,6 +72,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
 
                 controller.startQuizGame({
                     questions,
+                    scoreBarType: config.scoreBarType,
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
                     removeOnWrong: config.removeOnWrong ?? false,
                     onGameComplete: config.onGameComplete,

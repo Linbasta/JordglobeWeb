@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     port: 4817,
     open: true,
+    allowedHosts: true,
     proxy: {
       // Rewrite /party to /party.html
     }
