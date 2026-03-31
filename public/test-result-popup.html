@@ -58,6 +58,8 @@
             return arr;
         }
 
+        const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Eurovision Lover', 'Devoted Fan', 'Eurovision God'];
+
         window.show = function(score, total, elapsedMs, isNewRecord = false) {
             showResultOverlay({
                 score, total, elapsedMs,
@@ -66,6 +68,8 @@
                 shareUrl: 'https://jordglobe.com/eurovision',
                 shareEmoji: '🎵',
                 spritePath: '/eurovision/',
+                spriteNames,
+                getMessage: (s, t) => spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
                 isNewRecord,
                 onRetry: () => hideResultOverlay(),
             });

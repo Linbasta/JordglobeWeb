@@ -15,8 +15,12 @@ export interface ResultOverlayConfig {
     quizTitle: string
     shareUrl: string
     shareEmoji?: string
-    /** Path prefix for sprite images (e.g. '/eurovision/' expects /eurovision/1.png through /eurovision/10.png) */
+    /** Path prefix for sprite images (e.g. '/eurovision/' expects /eurovision/1.png through /eurovision/6.png) */
     spritePath?: string
+    /** Names for each sprite level (index 0 = sprite 1, etc). Shown below the avatar. */
+    spriteNames?: string[]
+    /** Custom message function override. Called with (score, total) to produce the result message. */
+    getMessage?: (score: number, total: number) => string
     isNewRecord?: boolean
     onRetry?: () => void
 }
@@ -56,9 +60,9 @@ const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.4
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, isNewRecord, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, isNewRecord, onRetry } = config
     const isPerfect = score === total
-    const SPRITE_COUNT = 10
+    const SPRITE_COUNT = 6
 
     // Inject styles
     const styleId = 'result-overlay-styles'
@@ -73,7 +77,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-stat { text-align:center;flex:1; }
             .ro-stat-label { font-size:14px;color:#7eb8e0;margin-bottom:4px;font-weight:bold;font-family:Arial,sans-serif; }
             .ro-stat-value { font-size:32px;font-weight:bold;color:#fff;font-family:Arial,sans-serif; }
-            .ro-sprite { width:80px;height:80px;object-fit:contain;flex-shrink:0; }
+            .ro-sprite { width:100px;height:100px;object-fit:contain;flex-shrink:0; }
             .ro-message { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:24px;font-family:Arial,sans-serif; }
             .ro-share { border-top:1px solid rgba(255,255,255,0.15);padding-top:20px;margin-top:4px; }
             .ro-share-text { font-size:14px;color:#a0c4e0;margin-bottom:14px;line-height:1.4;font-family:Arial,sans-serif; }
@@ -117,7 +121,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             </div>
         </div>
         ${isNewRecord ? '<div class="ro-record">🏆 NEW WORLD RECORD 🏆</div>' : ''}
-        <div class="ro-message">${getMessage(score, total)}</div>
+        <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
         <div class="ro-share">
             <div class="ro-share-text">Can your friends beat your score?</div>
             <button class="ro-share-btn">${COPY_ICON} Copy challenge link</button>
@@ -128,6 +132,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     // Count-up animation — duration ensures each sprite frame shows for at least 1s
     const scoreValueEl = card.querySelector('.ro-score-value') as HTMLElement
     const spriteEl = spritePath ? card.querySelector('.ro-sprite') as HTMLImageElement : null
+    const messageEl = card.querySelector('.ro-message') as HTMLElement
     const MS_PER_FRAME = 400
     const COUNT_UP_DURATION = spritePath ? finalSpriteIndex * MS_PER_FRAME : 1200
     const countUpStart = performance.now() + 400 // delay to let card animate in
@@ -149,6 +154,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
                 ? 1
                 : Math.max(1, Math.min(SPRITE_COUNT, Math.ceil((displayScore / total) * SPRITE_COUNT)))
             spriteEl.src = `${spritePath}${spriteIdx}.png`
+            if (spriteNames && messageEl) messageEl.textContent = spriteNames[spriteIdx - 1]
         }
 
         if (t < 1) {

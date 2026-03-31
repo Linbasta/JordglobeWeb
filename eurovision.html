@@ -32,7 +32,7 @@
         initMobile();
 
         // Preload sprite images so they're cached when the result overlay shows
-        for (let i = 1; i <= 10; i++) new Image().src = `/eurovision/${i}.png`;
+        for (let i = 1; i <= 6; i++) new Image().src = `/eurovision/${i}.png`;
 
         function showStartButton() {
             return new Promise(resolve => {
@@ -140,12 +140,15 @@
                 } catch (e) {
                     console.warn('Failed to submit record:', e);
                 }
+                const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Eurovision Lover', 'Devoted Fan', 'Eurovision God'];
                 showResultOverlay({
                     score, total, elapsedMs, results,
                     quizTitle: 'Eurovision Quiz',
                     shareUrl: 'https://jordglobe.com/eurovision',
                     shareEmoji: '🎵',
                     spritePath: '/eurovision/',
+                    spriteNames,
+                    getMessage: (s, t) => spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
                     isNewRecord,
                     onRetry: () => window.location.reload(),
                 })
