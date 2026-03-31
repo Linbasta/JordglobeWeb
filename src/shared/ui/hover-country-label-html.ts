@@ -17,6 +17,7 @@ export class HoverCountryLabelHTML {
     private camera: Camera;
     private anchorNode: TransformNode | null = null;
     private visible = false;
+    private fixedPosition = false;
 
     constructor(scene: Scene, camera: Camera) {
         this.scene = scene;
@@ -64,7 +65,7 @@ export class HoverCountryLabelHTML {
      * Update the label's screen position based on the linked node
      */
     updatePosition(): void {
-        if (!this.anchorNode || !this.visible) return;
+        if (!this.anchorNode || !this.visible || this.fixedPosition) return;
 
         const worldPos = this.anchorNode.getAbsolutePosition();
         const screenPos = this.worldToScreen(worldPos);
@@ -107,6 +108,7 @@ export class HoverCountryLabelHTML {
         this.element.textContent = countryName;
         this.element.style.display = 'block';
         this.visible = true;
+        this.fixedPosition = false;
         this.updatePosition();
     }
 
@@ -116,6 +118,19 @@ export class HoverCountryLabelHTML {
     hide(): void {
         this.element.style.display = 'none';
         this.visible = false;
+        this.fixedPosition = false;
+    }
+
+    /**
+     * Show the label at a fixed screen position (not linked to the anchor node)
+     */
+    showAtScreenPos(text: string, x: number, y: number): void {
+        this.element.textContent = text;
+        this.element.style.left = `${x}px`;
+        this.element.style.top = `${y}px`;
+        this.element.style.display = 'block';
+        this.visible = true;
+        this.fixedPosition = true;
     }
 
     /**

@@ -68,6 +68,8 @@ let questionShown = false
 // Config
 let revealOnWrong = true
 let removeOnWrong = false
+let onRevealCorrectCb: ((correctCountryIndex: number) => void) | null = null
+let onHideRevealCb: (() => void) | null = null
 
 // Globe reference and helpers
 let globe: EarthGlobeAPI | null = null
@@ -109,6 +111,8 @@ export function startQuiz(
     config?: {
         revealCorrectOnWrong?: boolean
         removeOnWrong?: boolean
+        onRevealCorrect?: (correctCountryIndex: number) => void
+        onHideReveal?: () => void
     }
 ) {
     // Reset state
@@ -133,6 +137,8 @@ export function startQuiz(
 
     revealOnWrong = config?.revealCorrectOnWrong ?? true
     removeOnWrong = config?.removeOnWrong ?? false
+    onRevealCorrectCb = config?.onRevealCorrect ?? null
+    onHideRevealCb = config?.onHideReveal ?? null
 
     // Resolve countries from questions
     for (const q of questions) {
@@ -1052,11 +1058,13 @@ async function handleWrongReveal(wrongCountryIndex: number, correctCountryIndex:
     // 5. Show and elevate correct country
     globe.showCountryOutline(correctCountryIndex)
     await animateShowCorrect(globe, correctCountryIndex)
+    onRevealCorrectCb?.(correctCountryIndex)
 
     // 6. Hold
     await new Promise(r => setTimeout(r, 1500))
 
     // 7. Clear and sink
+    onHideRevealCb?.()
     globe.clearCountryOutline()
     const correctCountry = globe.getCountryByIndex(correctCountryIndex)
     if (correctCountry && globe.countryHasIslandsFrame(correctCountry.id)) {

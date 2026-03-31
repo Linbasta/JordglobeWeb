@@ -115,6 +115,9 @@ export class SoloGameController extends BaseGameController {
     protected onPinPlaced(country: RegionPolygon | null, latLon: LatLon): void {
         // Check if we're in quiz mode
         if (this.quizAdapter) {
+            // Hide hover label immediately when answering
+            this.hoverCountryLabel?.hide();
+
             // For location questions, we allow clicking anywhere (country can be null)
             // For country/province questions, we need a valid region and check if disabled
             if (country) {
@@ -284,6 +287,7 @@ export class SoloGameController extends BaseGameController {
     startQuizGame(config: QuizConfig): void {
         // Create quiz adapter
         this.quizAdapter = new QuizUIAdapter(this.globe, this.countryLabelUI);
+        this.quizAdapter.setHoverLabel(this.hoverCountryLabel);
         this.quizAdapter.startQuiz(config);
 
         // Show pin tutorial for first-time users (after quiz starts)

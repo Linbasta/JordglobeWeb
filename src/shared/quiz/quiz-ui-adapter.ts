@@ -45,9 +45,16 @@ export interface QuizConfig {
 /**
  * Manages quiz-UI integration
  */
+export interface HoverLabel {
+    show(text: string): void
+    hide(): void
+    showAtScreenPos(text: string, x: number, y: number): void
+}
+
 export class QuizUIAdapter {
     private globe: EarthGlobeAPI
     private countryLabelUI: CountryLabelUI | null
+    private hoverLabel: HoverLabel | null = null
     private config: QuizConfig | null = null
     private active = false
     private lastShownQuestionIndex = -1
@@ -56,6 +63,10 @@ export class QuizUIAdapter {
     constructor(globe: EarthGlobeAPI, countryLabelUI: CountryLabelUI | null) {
         this.globe = globe
         this.countryLabelUI = countryLabelUI
+    }
+
+    setHoverLabel(label: HoverLabel | null): void {
+        this.hoverLabel = label
     }
 
     /**
@@ -79,7 +90,18 @@ export class QuizUIAdapter {
             this.globe,
             {
                 revealCorrectOnWrong: config.revealCorrectOnWrong,
-                removeOnWrong: config.removeOnWrong
+                removeOnWrong: config.removeOnWrong,
+                onRevealCorrect: (correctCountryIndex) => {
+                    if (!this.hoverLabel) return
+                    const country = this.globe.getCountryByIndex(correctCountryIndex)
+                    if (!country) return
+                    const x = window.innerWidth / 2
+                    const y = window.innerHeight / 2
+                    this.hoverLabel.showAtScreenPos(country.name, x, y)
+                },
+                onHideReveal: () => {
+                    this.hoverLabel?.hide()
+                },
             }
         )
 
@@ -164,8 +186,9 @@ export class QuizUIAdapter {
     }
 
     // ========================================================================
-    // Private - UI Update Logic
+    // Private
     // ========================================================================
+
 
     private updateUI(): void {
         const step = getCurrentStep()
