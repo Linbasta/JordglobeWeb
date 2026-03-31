@@ -9,6 +9,7 @@ const TUTORIAL_SEEN_KEY = 'pin-tutorial-seen'
 const TUTORIAL_DELAY_MS = 5000
 
 let tutorialElement: HTMLDivElement | null = null
+let tutorialTextElement: HTMLDivElement | null = null
 let dismissCallback: (() => void) | null = null
 let pendingTimer: number | null = null
 
@@ -47,15 +48,15 @@ function markSeen(): void {
 function createTutorialElement(): HTMLDivElement {
     const container = document.createElement('div')
     container.id = 'pin-tutorial'
-    // Position to match pin button location
     container.style.cssText = `
         position: fixed;
-        bottom: -12vh;
-        left: calc(50% + 130px);
+        bottom: -40px;
+        left: calc(50% + 50px);
         transform: translateX(-50%);
         pointer-events: none;
         z-index: 200;
         opacity: 1;
+        transition: opacity 0.5s ease-out;
     `
 
     const hand = document.createElement('img')
@@ -84,28 +85,6 @@ function createTutorialElement(): HTMLDivElement {
     document.head.appendChild(style)
 
     container.appendChild(hand)
-
-    // Add instructional text on desktop
-    if (!isMobile()) {
-        const text = document.createElement('div')
-        text.style.cssText = `
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            text-shadow:
-                -1px -1px 0 #000,
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000;
-            text-align: center;
-            margin-top: 10px;
-            white-space: nowrap;
-        `
-        text.textContent = 'Pick up the pin or right-click to answer'
-        container.appendChild(text)
-    }
-
     return container
 }
 
@@ -116,6 +95,10 @@ function removeTutorial(): void {
     if (tutorialElement) {
         tutorialElement.remove()
         tutorialElement = null
+    }
+    if (tutorialTextElement) {
+        tutorialTextElement.remove()
+        tutorialTextElement = null
     }
     if (dismissCallback) {
         dismissCallback()
@@ -162,6 +145,33 @@ function displayTutorial(): void {
     // Create and show - loops until user picks up pin
     tutorialElement = createTutorialElement()
     document.body.appendChild(tutorialElement)
+
+    // Add instructional text on desktop (separate element to not affect hand positioning)
+    if (!isMobile()) {
+        tutorialTextElement = document.createElement('div')
+        tutorialTextElement.id = 'pin-tutorial-text'
+        tutorialTextElement.style.cssText = `
+            position: fixed;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-shadow:
+                -1px -1px 0 #000,
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 200;
+        `
+        tutorialTextElement.textContent = 'Pick up the pin or right-click to answer'
+        document.body.appendChild(tutorialTextElement)
+    }
 }
 
 /**
@@ -204,22 +214,4 @@ export function resetPinTutorial(): void {
     } catch {
         // localStorage not available
     }
-}
-
-/**
- * Adjust tutorial position (for debugging)
- * Usage in console: setTutorialPos(50) or setTutorialPos(-20)
- */
-export function setTutorialXOffset(xOffsetPx: number): void {
-    if (tutorialElement) {
-        tutorialElement.style.left = `calc(50% + ${xOffsetPx}px)`
-        console.log(`Tutorial X offset set to ${xOffsetPx}px`)
-    } else {
-        console.log('Tutorial not showing. Press T first.')
-    }
-}
-
-// Expose to window for console access
-if (typeof window !== 'undefined') {
-    (window as any).setTutorialPos = setTutorialXOffset
 }
