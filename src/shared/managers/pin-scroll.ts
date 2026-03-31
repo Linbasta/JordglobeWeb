@@ -14,7 +14,7 @@ import { EARTH_RADIUS } from '../../earth-globe/constants';
 const EDGE_LEFT = 0.10;
 const EDGE_RIGHT = 0.10;
 const EDGE_TOP = 0.20;
-const EDGE_BOTTOM = 0.15;
+const EDGE_BOTTOM = 0.10;
 
 const GLOBE_EDGE_MARGIN = 0.3;
 
@@ -89,7 +89,7 @@ function tick(): void {
         const dy = (ny - 0.5) / radiusNy;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > 1.0) {
+        if (dist > 1.2) {
             const globePush = Math.min((dist - 1.0) / GLOBE_EDGE_MARGIN, 1.0);
             const invDist = 1.0 / dist;
             const globePushX = (dx * invDist) * globePush;
