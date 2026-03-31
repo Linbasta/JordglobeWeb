@@ -6,111 +6,7 @@
     <title>Test: Result Popup</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0a1628; overflow: hidden; font-family: 'Arial', sans-serif; }
-
-        #backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #card {
-            width: 340px;
-            background: linear-gradient(180deg, #1a3a5c 0%, #0f2744 100%);
-            border-radius: 16px;
-            padding: 28px 24px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 24px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-
-        .stat-block {
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #7eb8e0;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .divider {
-            width: 1px;
-            background: rgba(255, 255, 255, 0.2);
-            align-self: stretch;
-        }
-
-        .message {
-            font-size: 18px;
-            font-weight: bold;
-            color: #7cf6ff;
-            margin-bottom: 24px;
-        }
-
-        .share-section {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 20px;
-            margin-top: 4px;
-        }
-
-        .share-text {
-            font-size: 14px;
-            color: #a0c4e0;
-            margin-bottom: 14px;
-            line-height: 1.4;
-        }
-
-        .share-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            background: #2a7fff;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.1s;
-        }
-        .share-btn:hover { background: #3d8fff; transform: scale(1.03); }
-        .share-btn:active { transform: scale(0.97); }
-
-        .share-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: #fff;
-        }
-
-        .share-copied {
-            background: #22c55e;
-        }
-        .share-copied:hover { background: #22c55e; }
+        body { background: #0a1628; font-family: 'Arial', sans-serif; }
 
         /* Controls panel */
         #controls {
@@ -120,7 +16,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            z-index: 100;
+            z-index: 300;
         }
 
         #controls button {
@@ -137,63 +33,19 @@
     </style>
 </head>
 <body>
-    <div id="backdrop">
-        <div id="card">
-            <div class="title" id="title">Congrats!</div>
-
-            <div class="stats-row">
-                <div class="stat-block">
-                    <div class="stat-label">Result</div>
-                    <div class="stat-value" id="result">8/10</div>
-                </div>
-                <div class="divider"></div>
-                <div class="stat-block">
-                    <div class="stat-label">Time</div>
-                    <div class="stat-value" id="time">1:42</div>
-                </div>
-            </div>
-
-            <div class="message" id="message">Well played!</div>
-
-            <div class="share-section">
-                <div class="share-text">Can your friends beat your score?</div>
-                <button class="share-btn" id="shareBtn">
-                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                    Copy challenge link
-                </button>
-            </div>
-        </div>
-    </div>
-
     <div id="controls">
-        <button onclick="showResult(10, 10, 83000)">Perfect: 10/10, 1:23</button>
-        <button onclick="showResult(8, 10, 102000)">Good: 8/10, 1:42</button>
-        <button onclick="showResult(5, 10, 145000)">Mid: 5/10, 2:25</button>
-        <button onclick="showResult(2, 10, 200000)">Bad: 2/10, 3:20</button>
-        <button onclick="showResult(35, 35, 312000)">Perfect 35: 35/35, 5:12</button>
-        <button onclick="toggleConfetti()">Toggle Confetti</button>
+        <button onclick="show(10, 10, 83000)">Perfect: 10/10, 1:23</button>
+        <button onclick="show(8, 10, 102000)">Good: 8/10, 1:42</button>
+        <button onclick="show(5, 10, 145000)">Mid: 5/10, 2:25</button>
+        <button onclick="show(2, 10, 200000)">Bad: 2/10, 3:20</button>
+        <button onclick="show(35, 35, 312000)">Perfect 35: 35/35, 5:12</button>
+        <button onclick="show(1, 35, 400000)">Bad 35: 1/35, 6:40</button>
     </div>
 
     <script type="module" src="/shared/consoleLogger.ts"></script>
     <script type="module">
-        import { startConfetti, stopConfetti } from '/src/shared/ui/confetti.ts';
-        import { generateShareMessage } from '/src/shared/ui/share-message.ts';
+        import { showResultOverlay, hideResultOverlay } from '/src/shared/ui/result-overlay.ts';
 
-        const titleEl = document.getElementById('title');
-        const resultEl = document.getElementById('result');
-        const timeEl = document.getElementById('time');
-        const messageEl = document.getElementById('message');
-        const shareBtn = document.getElementById('shareBtn');
-        const backdrop = document.getElementById('backdrop');
-        const card = document.getElementById('card');
-
-        let confettiActive = false;
-        let currentResults = [];
-        let currentScore = 0;
-        let currentTotal = 0;
-        let currentElapsed = 0;
-
-        // Generate a random results array with the given score/total
         function randomResults(score, total) {
             const arr = Array(score).fill(true).concat(Array(total - score).fill(false));
             for (let i = arr.length - 1; i > 0; i--) {
@@ -203,84 +55,20 @@
             return arr;
         }
 
-        function formatTime(ms) {
-            const totalSeconds = Math.floor(ms / 1000);
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function getMessage(score, total) {
-            const pct = score / total;
-            if (pct === 1) return 'Congratulations!';
-            if (pct >= 0.8) return 'Well played!';
-            if (pct >= 0.5) return 'Not bad!';
-            return 'Better luck next time!';
-        }
-
-        function getTitle(score, total) {
-            return score === total ? 'Perfect!' : 'Congrats!';
-        }
-
-        window.showResult = function(score, total, elapsedMs) {
-            currentScore = score;
-            currentTotal = total;
-            currentElapsed = elapsedMs;
-            currentResults = randomResults(score, total);
-
-            titleEl.textContent = getTitle(score, total);
-            resultEl.textContent = `${score}/${total}`;
-            timeEl.textContent = formatTime(elapsedMs);
-            messageEl.textContent = getMessage(score, total);
-
-            // Reset share button
-            shareBtn.innerHTML =
-                '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-                'Copy challenge link';
-            shareBtn.classList.remove('share-copied');
-
-            // Always confetti, more bursts on perfect
-            stopConfetti();
-            confettiActive = true;
-            const bursts = score === total ? 6 : 2;
-            startConfetti(backdrop, card, bursts);
+        window.show = function(score, total, elapsedMs) {
+            showResultOverlay({
+                score, total, elapsedMs,
+                results: randomResults(score, total),
+                quizTitle: 'Eurovision Quiz',
+                shareUrl: 'https://jordglobe.com/eurovision',
+                shareEmoji: '🎵',
+                spritePath: '/eurovision/',
+                onRetry: () => hideResultOverlay(),
+            });
         };
 
-        window.toggleConfetti = function() {
-            if (confettiActive) {
-                stopConfetti();
-                confettiActive = false;
-            } else {
-                startConfetti(backdrop, card);
-                confettiActive = true;
-            }
-        };
-
-        shareBtn.addEventListener('click', () => {
-            const msg = generateShareMessage(
-                'Eurovision Quiz', currentScore, currentTotal, currentElapsed,
-                currentResults, 'https://jordglobe.com/eurovision', '🎵'
-            );
-            // Fallback for non-secure contexts (http://localhost)
-            const ta = document.createElement('textarea');
-            ta.value = msg;
-            ta.style.cssText = 'position:fixed;left:-9999px';
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-
-            shareBtn.innerHTML =
-                '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' +
-                'Copied!';
-            shareBtn.classList.add('share-copied');
-            setTimeout(() => {
-                shareBtn.innerHTML =
-                    '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
-                    'Copy challenge link';
-                shareBtn.classList.remove('share-copied');
-            }, 2000);
-        });
+        // Show a default on load
+        show(8, 10, 102000);
     </script>
 </body>
 </html>

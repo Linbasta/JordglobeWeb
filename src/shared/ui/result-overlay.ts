@@ -15,6 +15,8 @@ export interface ResultOverlayConfig {
     quizTitle: string
     shareUrl: string
     shareEmoji?: string
+    /** Path prefix for sprite images (e.g. '/eurovision/' expects /eurovision/1.png through /eurovision/10.png) */
+    spritePath?: string
     onRetry?: () => void
 }
 
@@ -53,8 +55,9 @@ const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.4
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, onRetry } = config
     const isPerfect = score === total
+    const SPRITE_COUNT = 10
 
     // Inject styles
     const styleId = 'result-overlay-styles'
@@ -65,11 +68,11 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-backdrop { position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transition:opacity 0.3s ease-in-out; }
             .ro-card { width:340px;background:linear-gradient(180deg,#1a3a5c 0%,#0f2744 100%);border-radius:16px;padding:28px 24px;text-align:center;position:relative;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:scale(0.8);opacity:0;transition:transform 0.3s ease-out,opacity 0.3s ease-out; }
             .ro-title { font-size:36px;font-weight:bold;color:#fff;margin-bottom:24px;text-shadow:0 2px 8px rgba(0,0,0,0.3);font-family:Arial,sans-serif; }
-            .ro-stats { display:flex;justify-content:space-around;margin-bottom:20px; }
-            .ro-stat { text-align:center; }
+            .ro-stats { display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:20px; }
+            .ro-stat { text-align:center;flex:1; }
             .ro-stat-label { font-size:14px;color:#7eb8e0;margin-bottom:4px;font-weight:bold;font-family:Arial,sans-serif; }
             .ro-stat-value { font-size:32px;font-weight:bold;color:#fff;font-family:Arial,sans-serif; }
-            .ro-divider { width:1px;background:rgba(255,255,255,0.2);align-self:stretch; }
+            .ro-sprite { width:80px;height:80px;object-fit:contain;flex-shrink:0; }
             .ro-message { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:24px;font-family:Arial,sans-serif; }
             .ro-share { border-top:1px solid rgba(255,255,255,0.15);padding-top:20px;margin-top:4px; }
             .ro-share-text { font-size:14px;color:#a0c4e0;margin-bottom:14px;line-height:1.4;font-family:Arial,sans-serif; }
@@ -91,14 +94,20 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     const card = document.createElement('div')
     card.className = 'ro-card'
 
+    // Determine starting sprite (1 = lowest)
+    const finalSpriteIndex = Math.max(1, Math.min(SPRITE_COUNT, Math.ceil((score / total) * SPRITE_COUNT)))
+    const spriteHtml = spritePath
+        ? `<img class="ro-sprite" src="${spritePath}1.png" alt="">`
+        : ''
+
     card.innerHTML = `
         <div class="ro-title">${isPerfect ? 'Perfect!' : 'Congrats!'}</div>
         <div class="ro-stats">
             <div class="ro-stat">
                 <div class="ro-stat-label">Result</div>
-                <div class="ro-stat-value">${score}/${total}</div>
+                <div class="ro-stat-value ro-score-value">0/${total}</div>
             </div>
-            <div class="ro-divider"></div>
+            ${spriteHtml}
             <div class="ro-stat">
                 <div class="ro-stat-label">Time</div>
                 <div class="ro-stat-value">${formatTime(elapsedMs)}</div>
@@ -111,6 +120,42 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             ${onRetry ? '<br><button class="ro-retry-btn">Play again</button>' : ''}
         </div>
     `
+
+    // Count-up animation — duration ensures each sprite frame shows for at least 1s
+    const scoreValueEl = card.querySelector('.ro-score-value') as HTMLElement
+    const spriteEl = spritePath ? card.querySelector('.ro-sprite') as HTMLImageElement : null
+    const MS_PER_FRAME = 400
+    const COUNT_UP_DURATION = spritePath ? finalSpriteIndex * MS_PER_FRAME : 1200
+    const countUpStart = performance.now() + 400 // delay to let card animate in
+
+    function countUpTick() {
+        const elapsed = performance.now() - countUpStart
+        if (elapsed < 0) { requestAnimationFrame(countUpTick); return }
+
+        const t = Math.min(1, elapsed / COUNT_UP_DURATION)
+        // Ease out quad
+        const eased = 1 - (1 - t) * (1 - t)
+        const displayScore = Math.round(eased * score)
+
+        scoreValueEl.textContent = `${displayScore}/${total}`
+
+        // Update sprite based on current display score
+        if (spriteEl && spritePath) {
+            const spriteIdx = displayScore === 0
+                ? 1
+                : Math.max(1, Math.min(SPRITE_COUNT, Math.ceil((displayScore / total) * SPRITE_COUNT)))
+            spriteEl.src = `${spritePath}${spriteIdx}.png`
+        }
+
+        if (t < 1) {
+            requestAnimationFrame(countUpTick)
+        } else {
+            // Fire confetti when count-up finishes
+            const bursts = isPerfect ? 6 : 2
+            startConfetti(backdrop!, card, bursts)
+        }
+    }
+    requestAnimationFrame(countUpTick)
 
     // Share button
     const shareBtn = card.querySelector('.ro-share-btn') as HTMLButtonElement
@@ -137,13 +182,11 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     backdrop.appendChild(card)
     document.body.appendChild(backdrop)
 
-    // Animate in + confetti
+    // Animate in
     requestAnimationFrame(() => {
         backdrop!.style.opacity = '1'
         card.style.transform = 'scale(1)'
         card.style.opacity = '1'
-        const bursts = isPerfect ? 6 : 2
-        startConfetti(backdrop!, card, bursts)
     })
 }
 
