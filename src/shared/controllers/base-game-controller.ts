@@ -24,6 +24,7 @@ import { initPinManager, onPlacingModeChange, onCancelZoneChange, onPinPlaced as
 import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 import { dismissPinTutorial } from '../ui/pin-tutorial';
+import { collapseVideoOverlay } from '../ui/video-overlay';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -114,10 +115,14 @@ export abstract class BaseGameController {
                 // Create GUI
                 this.createGUI();
 
-                // Wire PinManager to hide/show pin button
+                // Wire PinManager to hide/show pin button and collapse video
                 onPlacingModeChange((placing) => {
                     if (this.pinUI) {
                         this.pinUI.setPinButtonVisible(!placing);
+                    }
+                    // Auto-collapse video overlay when picking up pin
+                    if (placing) {
+                        collapseVideoOverlay();
                     }
                 });
 

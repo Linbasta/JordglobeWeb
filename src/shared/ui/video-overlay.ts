@@ -45,6 +45,7 @@ interface YTPlayer {
 let clipWrapper: HTMLDivElement | null = null
 let container: HTMLDivElement | null = null
 let promptElement: HTMLDivElement | null = null
+let toggleBtn: HTMLDivElement | null = null
 let visible = false
 let isHidden = false
 let ytPlayer: YTPlayer | null = null
@@ -257,7 +258,7 @@ export async function showVideoOverlay(
         'flex:1;color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:600;' +
         'text-align:center;'
 
-    const toggleBtn = document.createElement('div')
+    toggleBtn = document.createElement('div')
     toggleBtn.style.cssText =
         'width:24px;height:24px;display:flex;align-items:center;justify-content:center;' +
         'color:#fff;font-size:16px;opacity:0.7;'
@@ -342,6 +343,7 @@ export function hideVideoOverlay(): void {
 
     // Reset all state
     promptElement = null
+    toggleBtn = null
     currentYoutubeId = null
     currentStartTime = 0
     currentEndTime = undefined
@@ -354,4 +356,38 @@ export function hideVideoOverlay(): void {
  */
 export function isVideoVisible(): boolean {
     return visible
+}
+
+/**
+ * Collapse the video overlay (slide up, showing only the prompt bar).
+ * Used when entering pin placement state.
+ */
+export function collapseVideoOverlay(): void {
+    if (!container || !visible) return
+    if (isHidden) return // Already collapsed
+
+    const baseTop = Number(container.dataset.baseTop)
+    const cardHeight = container.offsetHeight
+    const hiddenTop = baseTop - (cardHeight * 0.9)
+    container.style.top = `${hiddenTop}px`
+
+    if (toggleBtn) toggleBtn.textContent = '▲'
+
+    isHidden = true
+}
+
+/**
+ * Expand the video overlay (slide down, showing full video).
+ * Used when a new question loads.
+ */
+export function expandVideoOverlay(): void {
+    if (!container || !visible) return
+    if (!isHidden) return // Already expanded
+
+    const baseTop = Number(container.dataset.baseTop)
+    container.style.top = `${baseTop}px`
+
+    if (toggleBtn) toggleBtn.textContent = '▼'
+
+    isHidden = false
 }
