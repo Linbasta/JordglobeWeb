@@ -39,6 +39,8 @@ const stmtGetUserVotes = db.prepare('SELECT game_id, vote FROM votes WHERE user_
 const stmtUpsertVote = db.prepare('INSERT INTO votes (game_id, user_id, vote) VALUES (?, ?, ?) ON CONFLICT(game_id, user_id) DO UPDATE SET vote = excluded.vote');
 const stmtGameScore = db.prepare('SELECT SUM(vote) AS score FROM votes WHERE game_id = ?');
 const stmtGetRecord = db.prepare('SELECT score, total, elapsed_ms FROM records WHERE quiz_id = ?');
+const stmtGetAllRecords = db.prepare('SELECT quiz_id, score, total, elapsed_ms, created_at FROM records ORDER BY quiz_id');
+const stmtDeleteRecord = db.prepare('DELETE FROM records WHERE quiz_id = ?');
 const stmtUpsertRecord = db.prepare(`
   INSERT INTO records (quiz_id, score, total, elapsed_ms)
   VALUES (?, ?, ?, ?)
@@ -94,4 +96,20 @@ export function postRecord(quiz_id, score, total, elapsed_ms) {
     }
     const record = stmtGetRecord.get(quiz_id);
     return { status: 200, body: { isNewRecord, record } };
+}
+
+export function getAllRecords() {
+    const records = stmtGetAllRecords.all();
+    return { status: 200, body: { records } };
+}
+
+export function resetRecord(quiz_id) {
+    if (!quiz_id) {
+        return { status: 400, body: { error: 'quiz_id required' } };
+    }
+    const result = stmtDeleteRecord.run(quiz_id);
+    if (result.changes === 0) {
+        return { status: 404, body: { error: 'Record not found' } };
+    }
+    return { status: 200, body: { success: true, quiz_id } };
 }

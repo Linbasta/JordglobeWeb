@@ -13,7 +13,7 @@ import os from 'os';
 import { appendFileSync, writeFileSync } from 'fs';
 import { getRandomCity, calculateDistance } from './cities.mjs';
 import { getRandomVideo, videos } from './videos.mjs';
-import { getVotes, postVote, getRecord, postRecord } from './database.mjs';
+import { getVotes, postVote, getRecord, postRecord, getAllRecords, resetRecord } from './database.mjs';
 
 // ============================================================================
 // QUIZ CONFIGURATION
@@ -95,6 +95,12 @@ function handleRequest(req, res) {
     } else if (url.pathname === '/api/record' && req.method === 'POST') {
         readBody(req).then(({ quiz_id, score, total, elapsed_ms }) => {
             sendJson(res, postRecord(quiz_id, score, total, elapsed_ms));
+        }).catch(() => sendJson(res, { status: 400, body: { error: 'Invalid JSON' } }));
+    } else if (url.pathname === '/api/records' && req.method === 'GET') {
+        sendJson(res, getAllRecords());
+    } else if (url.pathname === '/api/record/reset' && req.method === 'POST') {
+        readBody(req).then(({ quiz_id }) => {
+            sendJson(res, resetRecord(quiz_id));
         }).catch(() => sendJson(res, { status: 400, body: { error: 'Invalid JSON' } }));
     } else {
         res.writeHead(404);
