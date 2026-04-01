@@ -28,12 +28,12 @@
     <script type="module">
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
-        import { showResultOverlay } from '/src/shared/ui/result-overlay.ts';
-        import { getQuestions } from '/src/shared/quiz/quiz-runner.ts';
         initMobile();
 
-        // Preload sprite images so they're cached when the result overlay shows
-        for (let i = 1; i <= 6; i++) new Image().src = `/eurovision/${i}.png`;
+        // Preload sprite images when browser is idle (not blocking initial load)
+        requestIdleCallback(() => {
+            for (let i = 1; i <= 6; i++) new Image().src = `/eurovision/${i}.png`;
+        });
 
         function showStartButton() {
             return new Promise(resolve => {
@@ -132,6 +132,12 @@
             showHoverLabel: true,
             onReady: () => showStartButton(),
             onGameComplete: async (score, total, elapsedMs, results) => {
+                // Dynamic imports - only load when game ends
+                const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
+                    import('/src/shared/ui/result-overlay.ts'),
+                    import('/src/shared/quiz/quiz-runner.ts'),
+                ]);
+
                 // Submit score and check for world record
                 let isNewRecord = false;
                 try {
