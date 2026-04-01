@@ -32,6 +32,7 @@ interface YTPlayerConfig {
     events?: {
         onReady?: (event: { target: YTPlayer }) => void
         onStateChange?: (event: { data: number; target: YTPlayer }) => void
+        onError?: (event: { data: number; target: YTPlayer }) => void
     }
 }
 
@@ -56,6 +57,14 @@ let currentYoutubeId: string | null = null
 let currentStartTime = 0
 let currentEndTime: number | undefined = undefined
 
+// Error handling state
+let errorOverlay: HTMLDivElement | null = null
+let playbackTimeout: number | null = null
+let hasStartedPlaying = false
+let currentOptions: VideoOverlayOptions | null = null
+const PLAYBACK_TIMEOUT_MS = 10000 // 10 seconds to detect if video fails to load
+const RETRY_DELAY_SECONDS = 5
+
 /**
  * Clear existing loop interval and set up new one if needed
  */
@@ -79,6 +88,113 @@ function setupLoopInterval(startTime: number, endTime: number | undefined): void
                 ytPlayer.seekTo(startTime, true)
             }
         }, 250)
+    }
+}
+
+/**
+ * Clear playback timeout
+ */
+function clearPlaybackTimeout(): void {
+    if (playbackTimeout !== null) {
+        clearTimeout(playbackTimeout)
+        playbackTimeout = null
+    }
+}
+
+/**
+ * Show error overlay with countdown retry button
+ */
+function showErrorOverlay(iframeWrap: HTMLElement): void {
+    if (errorOverlay) return // Already showing
+
+    errorOverlay = document.createElement('div')
+    errorOverlay.style.cssText =
+        'position:absolute;top:0;left:0;right:0;bottom:0;' +
+        'background:rgba(0,0,0,0.85);display:flex;flex-direction:column;' +
+        'align-items:center;justify-content:center;z-index:10;'
+
+    const message = document.createElement('div')
+    message.textContent = 'Video unavailable'
+    message.style.cssText =
+        'color:#fff;font-family:Arial,sans-serif;font-size:18px;margin-bottom:16px;'
+
+    const retryBtn = document.createElement('button')
+    retryBtn.style.cssText =
+        'padding:12px 24px;font-size:16px;font-weight:600;font-family:Arial,sans-serif;' +
+        'color:#fff;background:#E91E63;border:none;border-radius:6px;cursor:pointer;' +
+        'min-width:140px;'
+    retryBtn.disabled = true
+
+    errorOverlay.appendChild(message)
+    errorOverlay.appendChild(retryBtn)
+    iframeWrap.appendChild(errorOverlay)
+
+    // Countdown timer
+    let countdown = RETRY_DELAY_SECONDS
+    retryBtn.textContent = `Retry in ${countdown}...`
+
+    const countdownInterval = setInterval(() => {
+        countdown--
+        if (countdown > 0) {
+            retryBtn.textContent = `Retry in ${countdown}...`
+        } else {
+            clearInterval(countdownInterval)
+            retryBtn.textContent = 'Try again'
+            retryBtn.disabled = false
+            retryBtn.style.cursor = 'pointer'
+        }
+    }, 1000)
+
+    retryBtn.addEventListener('click', () => {
+        if (retryBtn.disabled) return
+        clearInterval(countdownInterval)
+        retryVideo()
+    })
+}
+
+/**
+ * Hide error overlay
+ */
+function hideErrorOverlay(): void {
+    if (errorOverlay) {
+        errorOverlay.remove()
+        errorOverlay = null
+    }
+}
+
+/**
+ * Retry loading the video
+ */
+function retryVideo(): void {
+    if (!currentOptions) return
+
+    // Destroy current player
+    if (ytPlayer) {
+        try {
+            ytPlayer.destroy()
+        } catch {
+            // Player may already be destroyed
+        }
+        ytPlayer = null
+    }
+
+    // Reset state
+    hideErrorOverlay()
+    currentYoutubeId = null
+    hasStartedPlaying = false
+
+    // Re-show with current options
+    showVideoOverlay(currentOptions)
+}
+
+/**
+ * Handle YouTube player error
+ */
+function handlePlayerError(): void {
+    clearPlaybackTimeout()
+    const iframeWrap = container?.querySelector('div[style*="aspect-ratio"]') as HTMLElement
+    if (iframeWrap) {
+        showErrorOverlay(iframeWrap)
     }
 }
 
@@ -164,10 +280,14 @@ export async function showVideoOverlay(
     const videoEndTime = options.endTime
     const start = videoStartTime ?? 0
 
+    // Store options for retry
+    currentOptions = options
+
     // OPTIMIZATION: Reuse existing player if possible
     // This prevents YouTube rate-limiting by avoiding repeated player creation
     if (ytPlayer && currentYoutubeId === youtubeId && clipWrapper) {
         // Same video — just seek to new position and update UI
+        hideErrorOverlay()
         ytPlayer.seekTo(start, true)
         setupLoopInterval(start, videoEndTime)
         if (promptElement) {
@@ -179,6 +299,7 @@ export async function showVideoOverlay(
 
     if (ytPlayer && currentYoutubeId !== youtubeId && clipWrapper) {
         // Different video — reuse player with loadVideoById
+        hideErrorOverlay()
         ytPlayer.loadVideoById({ videoId: youtubeId, startSeconds: start })
         currentYoutubeId = youtubeId
         setupLoopInterval(start, videoEndTime)
@@ -194,6 +315,8 @@ export async function showVideoOverlay(
 
     visible = true
     currentYoutubeId = youtubeId
+    hasStartedPlaying = false
+    clearPlaybackTimeout()
 
     // Clipping wrapper — masks content above score bar
     clipWrapper = document.createElement('div')
@@ -295,6 +418,13 @@ export async function showVideoOverlay(
     // Load YouTube API and create player
     await ensureYouTubeAPI()
 
+    // Set up timeout to detect if video fails to load
+    playbackTimeout = window.setTimeout(() => {
+        if (!hasStartedPlaying) {
+            handlePlayerError()
+        }
+    }, PLAYBACK_TIMEOUT_MS)
+
     ytPlayer = new window.YT.Player(playerDiv.id, {
         videoId: youtubeId,
         playerVars: {
@@ -310,6 +440,17 @@ export async function showVideoOverlay(
             onReady: () => {
                 // Set up loop interval after player is ready
                 setupLoopInterval(start, videoEndTime)
+            },
+            onStateChange: (event: { data: number }) => {
+                // YT.PlayerState.PLAYING = 1
+                if (event.data === 1) {
+                    hasStartedPlaying = true
+                    clearPlaybackTimeout()
+                    hideErrorOverlay()
+                }
+            },
+            onError: () => {
+                handlePlayerError()
             }
         }
     })
@@ -324,6 +465,9 @@ export function hideVideoOverlay(): void {
         clearInterval(loopInterval)
         loopInterval = null
     }
+
+    // Clear playback timeout
+    clearPlaybackTimeout()
 
     // Destroy YouTube player
     if (ytPlayer) {
@@ -344,9 +488,12 @@ export function hideVideoOverlay(): void {
     // Reset all state
     promptElement = null
     toggleBtn = null
+    errorOverlay = null
     currentYoutubeId = null
     currentStartTime = 0
     currentEndTime = undefined
+    currentOptions = null
+    hasStartedPlaying = false
     visible = false
     isHidden = false
 }
