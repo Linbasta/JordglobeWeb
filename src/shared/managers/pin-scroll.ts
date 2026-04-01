@@ -7,13 +7,16 @@
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getZoomValue } from '../animation/camera-utils';
+import { EARTH_RADIUS } from '../../earth-globe/constants';
 
 // --- Constants ---
 
-const EDGE_LEFT = 0.10;
-const EDGE_RIGHT = 0.10;
+const EDGE_X_BASE = 0.10;        // Base horizontal edge zone (10%)
+const EDGE_X_PORTRAIT_MAX = 0.20; // Max edge zone in extreme portrait
 const EDGE_TOP = 0.20;
 const EDGE_BOTTOM = 0.05;
+// const GLOBE_EDGE_PADDING = 0.05;  // Extra padding inside globe edge when zoomed out
+const GLOBE_EDGE_PADDING = 0.00;  // Extra padding inside globe edge when zoomed out
 
 const ACTIVATION_DELAY_MS = 500;
 const ACCELERATION = 0.0005;
@@ -42,6 +45,49 @@ let bottomDeadZone = 0; // pixels from bottom reserved for cancel zone
 
 // --- Private functions ---
 
+/**
+ * Computes dynamic horizontal edge zone based on aspect ratio and zoom level.
+ * - Portrait mode: wider zones (up to 20%)
+ * - Zoomed out (full globe visible): zones clamp to globe edge
+ */
+function getEdgeX(): number {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (w === 0 || h === 0) return EDGE_X_BASE;
+
+    const aspectRatio = w / h;
+
+    // 1. Aspect ratio adjustment: wider zones in portrait
+    // Linear interpolation from EDGE_X_PORTRAIT_MAX at ratio 0.5 to EDGE_X_BASE at ratio 1.0
+    let edge = EDGE_X_BASE;
+    if (aspectRatio < 1) {
+        const t = Math.max(0, Math.min(1, (1 - aspectRatio) * 2)); // 0 at ratio 1, 1 at ratio 0.5
+        edge = EDGE_X_BASE + t * (EDGE_X_PORTRAIT_MAX - EDGE_X_BASE);
+    }
+
+    // 2. Zoom adjustment: when globe is fully visible, clamp to globe edge
+    // Calculate horizontal FOV from vertical FOV and aspect ratio
+    const verticalFOV = camera.fov;
+    const horizontalFOV = 2 * Math.atan(Math.tan(verticalFOV / 2) * aspectRatio);
+
+    // Globe's angular diameter from current camera distance
+    const globeAngularDiameter = 2 * Math.atan(EARTH_RADIUS / camera.radius);
+
+    // Fraction of screen width the globe occupies
+    const globeScreenFraction = globeAngularDiameter / horizontalFOV;
+
+    if (globeScreenFraction < 1) {
+        // Globe is fully visible horizontally
+        // Empty space on each side
+        const emptySpace = (1 - globeScreenFraction) / 2;
+        // Ensure scroll zone starts at least at globe edge + padding
+        const minEdge = emptySpace + GLOBE_EDGE_PADDING;
+        edge = Math.max(edge, minEdge);
+    }
+
+    return edge;
+}
+
 function tick(): void {
     if (!active) return;
 
@@ -62,10 +108,11 @@ function tick(): void {
     let pushX = 0;
     let pushY = 0;
 
-    if (nx < EDGE_LEFT) {
-        pushX = -(EDGE_LEFT - nx) / EDGE_LEFT;
-    } else if (nx > 1 - EDGE_RIGHT) {
-        pushX = (nx - (1 - EDGE_RIGHT)) / EDGE_RIGHT;
+    const edgeX = getEdgeX();
+    if (nx < edgeX) {
+        pushX = -(edgeX - nx) / edgeX;
+    } else if (nx > 1 - edgeX) {
+        pushX = (nx - (1 - edgeX)) / edgeX;
     }
 
     const deadNy = bottomDeadZone / h;
@@ -147,4 +194,13 @@ export function consumeScrolledFlag(): boolean {
     const was = scrolledThisFrame;
     scrolledThisFrame = false;
     return was;
+}
+
+/**
+ * Returns the current horizontal edge zone fraction (0-1).
+ * Useful for debug visualization.
+ */
+export function getCurrentEdgeX(): number {
+    if (!canvas || !camera) return EDGE_X_BASE;
+    return getEdgeX();
 }

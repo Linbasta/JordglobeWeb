@@ -10,19 +10,46 @@
     <style>
         html, body { height: 100%; }
         body { margin: 0; overflow: hidden; background-color: #6496DC; }
-        body.placing-mode { cursor: none; }
+        /* TEMP: cursor visible for debugging */
+        /* body.placing-mode { cursor: none; } */
         #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+        /* TEMP: scroll zone markers (positioned via JS) */
+        .scroll-zone-marker {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 
 <body>
     <canvas id="renderCanvas"></canvas>
+    <!-- TEMP: scroll zone markers -->
+    <div class="scroll-zone-marker left"></div>
+    <div class="scroll-zone-marker right"></div>
     <!-- Console logger - streams browser console to file for Claude -->
     <script type="module" src="/shared/consoleLogger.ts"></script>
     <script type="module">
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        import { getCurrentEdgeX } from '/src/shared/managers/pin-scroll.ts';
         initMobile();
+
+        // TEMP: Update scroll zone markers dynamically
+        const leftMarker = document.querySelector('.scroll-zone-marker.left');
+        const rightMarker = document.querySelector('.scroll-zone-marker.right');
+        function updateMarkers() {
+            const edgeX = getCurrentEdgeX();
+            const pct = (edgeX * 100).toFixed(1) + '%';
+            leftMarker.style.left = pct;
+            rightMarker.style.right = pct;
+            requestAnimationFrame(updateMarkers);
+        }
+        requestAnimationFrame(updateMarkers);
 
         const countries = [
             { iso2: 'SE', name: 'Sweden' },
