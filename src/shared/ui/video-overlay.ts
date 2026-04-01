@@ -282,7 +282,7 @@ export async function showVideoOverlay(
             if (toggleBtn) toggleBtn.textContent = '▼'
             isHidden = false
         } else {
-            const hiddenTop = baseTop - (cardHeight * 0.9)
+            const hiddenTop = baseTop - (cardHeight * 0.9) + 40
             container.style.top = `${hiddenTop}px`
             if (toggleBtn) toggleBtn.textContent = '▲'
             isHidden = true
@@ -368,7 +368,7 @@ export function collapseVideoOverlay(): void {
 
     const baseTop = Number(container.dataset.baseTop)
     const cardHeight = container.offsetHeight
-    const hiddenTop = baseTop - (cardHeight * 0.9)
+    const hiddenTop = baseTop - (cardHeight * 0.9) + 40
     container.style.top = `${hiddenTop}px`
 
     if (toggleBtn) toggleBtn.textContent = '▲'
