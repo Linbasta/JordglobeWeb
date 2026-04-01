@@ -58,6 +58,7 @@ export class QuizUIAdapter {
     private hoverLabel: HoverLabel | null = null
     private config: QuizConfig | null = null
     private active = false
+    private gameCompleteFired = false
     private lastShownQuestionIndex = -1
     private startTime = 0
 
@@ -76,6 +77,7 @@ export class QuizUIAdapter {
     startQuiz(config: QuizConfig): void {
         this.config = config
         this.active = true
+        this.gameCompleteFired = false
         this.lastShownQuestionIndex = -1
         this.startTime = performance.now()
 
@@ -134,7 +136,8 @@ export class QuizUIAdapter {
             // Quiz completed
             this.active = false
             const elapsedMs = performance.now() - this.startTime
-            if (this.config?.onGameComplete) {
+            if (this.config?.onGameComplete && !this.gameCompleteFired) {
+                this.gameCompleteFired = true
                 this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
             }
             return false
@@ -233,7 +236,8 @@ export class QuizUIAdapter {
             // This is the first frame of game_complete
             // (isDone() will be true on the next frame)
             const elapsedMs = performance.now() - this.startTime
-            if (this.config?.onGameComplete) {
+            if (this.config?.onGameComplete && !this.gameCompleteFired) {
+                this.gameCompleteFired = true
                 this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
             }
         }
