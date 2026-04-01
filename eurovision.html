@@ -31,7 +31,8 @@
         initMobile();
 
         // Preload sprite images when browser is idle (not blocking initial load)
-        requestIdleCallback(() => {
+        const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+        idleCallback(() => {
             for (let i = 1; i <= 6; i++) new Image().src = `/eurovision/${i}.png`;
         });
 
