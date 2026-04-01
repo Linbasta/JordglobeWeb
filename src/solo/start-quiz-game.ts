@@ -10,6 +10,7 @@ import type { Question } from '../shared/quiz/quiz-types'
 import type { ScoreBarType } from '../shared/quiz/quiz-ui-adapter'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
 import { preloadQuizImages } from '../shared/ui/image-preloader'
+import { showMobileAppAd } from '../shared/ui/mobile-app-ad'
 import { SoloGameController } from './solo-game-controller'
 
 export interface QuizGameConfig {
@@ -31,13 +32,16 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
     // 1. Loading screen (must exist before controller constructor queries it)
     createLoadingScreen(config.title ?? 'Loading Quiz')
 
-    // 2. Inspector (dev only)
+    // 2. Mobile app ad (desktop only)
+    showMobileAppAd()
+
+    // 3. Inspector (dev only)
     if (import.meta.env.DEV) {
         await import('@babylonjs/core/Debug/debugLayer')
         await import('@babylonjs/inspector')
     }
 
-    // 3. Shuffle
+    // 4. Shuffle
     const questions = [...config.questions]
     if (config.shuffle !== false) {
         for (let i = questions.length - 1; i > 0; i--) {
@@ -46,13 +50,13 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         }
     }
 
-    // 4. Preload images (warms browser cache before questions are shown)
+    // 5. Preload images (warms browser cache before questions are shown)
     preloadQuizImages(questions)
 
-    // 5. Derive showCountryLabel: show if any question uses text presentation
+    // 6. Derive showCountryLabel: show if any question uses text presentation
     const showCountryLabel = questions.some(q => q.present === 'text')
 
-    // 6. Debug hint (dev only)
+    // 7. Debug hint (dev only)
     if (import.meta.env.DEV) {
         const hint = document.createElement('div')
         hint.style.cssText =
@@ -62,7 +66,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
         document.body.appendChild(hint)
     }
 
-    // 7. Create controller and start quiz
+    // 8. Create controller and start quiz
     return new Promise<void>((resolve) => {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,
