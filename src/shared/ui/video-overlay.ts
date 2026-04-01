@@ -279,12 +279,12 @@ export async function showVideoOverlay(
 
         if (isHidden) {
             container.style.top = `${baseTop}px`
-            toggleBtn.textContent = '▼'
+            if (toggleBtn) toggleBtn.textContent = '▼'
             isHidden = false
         } else {
             const hiddenTop = baseTop - (cardHeight * 0.9)
             container.style.top = `${hiddenTop}px`
-            toggleBtn.textContent = '▲'
+            if (toggleBtn) toggleBtn.textContent = '▲'
             isHidden = true
         }
     }
