@@ -21,6 +21,8 @@ export interface ResultOverlayConfig {
     spriteNames?: string[]
     /** Custom message function override. Called with (score, total) to produce the result message. */
     getMessage?: (score: number, total: number) => string
+    /** Custom share squares formatter. If provided, replaces the default 🟩🟥 grid in the share message. */
+    formatShareSquares?: (results: boolean[]) => string
     isNewRecord?: boolean
     onRetry?: () => void
 }
@@ -60,7 +62,7 @@ const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.4
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, isNewRecord, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, onRetry } = config
     const isPerfect = score === total
     const SPRITE_COUNT = 6
 
@@ -102,7 +104,9 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     card.className = 'ro-card'
 
     // Determine starting sprite (1 = lowest)
-    const finalSpriteIndex = Math.max(1, Math.min(SPRITE_COUNT, Math.ceil((score / total) * SPRITE_COUNT)))
+    const finalSpriteIndex = score === total
+        ? SPRITE_COUNT
+        : Math.max(1, Math.min(SPRITE_COUNT - 1, Math.ceil((score / total) * (SPRITE_COUNT - 1))))
     const spriteHtml = spritePath
         ? `<img class="ro-sprite" src="${spritePath}1.png" alt="">`
         : ''
@@ -150,9 +154,11 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
 
         // Update sprite based on current display score
         if (spriteEl && spritePath) {
-            const spriteIdx = displayScore === 0
-                ? 1
-                : Math.max(1, Math.min(SPRITE_COUNT, Math.ceil((displayScore / total) * SPRITE_COUNT)))
+            const spriteIdx = displayScore === total
+                ? SPRITE_COUNT
+                : displayScore === 0
+                    ? 1
+                    : Math.max(1, Math.min(SPRITE_COUNT - 1, Math.ceil((displayScore / total) * (SPRITE_COUNT - 1))))
             spriteEl.src = `${spritePath}${spriteIdx}.png`
             if (spriteNames && messageEl) messageEl.textContent = spriteNames[spriteIdx - 1]
         }
@@ -175,7 +181,8 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     // Share button
     const shareBtn = card.querySelector('.ro-share-btn') as HTMLButtonElement
     shareBtn.addEventListener('click', () => {
-        const msg = generateShareMessage(quizTitle, score, total, elapsedMs, results, shareUrl, shareEmoji)
+        const customSquares = formatShareSquares ? formatShareSquares(results) : undefined
+        const msg = generateShareMessage(quizTitle, score, total, elapsedMs, results, shareUrl, shareEmoji, customSquares)
         copyToClipboard(msg)
         shareBtn.innerHTML = `${CHECK_ICON} Copied!`
         shareBtn.classList.add('copied')

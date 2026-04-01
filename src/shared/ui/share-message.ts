@@ -10,13 +10,14 @@ export function generateShareMessage(
     results: boolean[],
     url: string,
     emoji?: string,
+    customSquares?: string,
 ): string {
     const totalSeconds = Math.floor(elapsedMs / 1000)
     const minutes = Math.floor(totalSeconds / 60)
     const seconds = totalSeconds % 60
     const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`
 
-    const squares = results.map(r => r ? '🟩' : '🟥').join('')
+    const squares = customSquares ?? results.map(r => r ? '🟩' : '🟥').join('')
 
     const emojiSuffix = emoji ? ` ${emoji}` : ''
 

@@ -824,6 +824,7 @@ export function getWrongCount() { return wrongCount }
 export function getResults() { return results }
 export function getDistances() { return distances }
 export function getTotal() { return questions.length }
+export function getQuestions() { return questions }
 export function isDone() { return done }
 export function isWaiting() { return waiting }
 export function getCurrentStep() { return pc < steps.length ? steps[pc] : null }

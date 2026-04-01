@@ -29,6 +29,7 @@
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
         import { showResultOverlay } from '/src/shared/ui/result-overlay.ts';
+        import { getQuestions } from '/src/shared/quiz/quiz-runner.ts';
         initMobile();
 
         // Preload sprite images so they're cached when the result overlay shows
@@ -47,6 +48,10 @@
                 btn.onclick = () => { btn.remove(); resolve(); };
                 document.body.appendChild(btn);
             });
+        }
+
+        function iso2ToFlag(iso2) {
+            return [...iso2].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('');
         }
 
         // Single compilation video with all Eurovision 2025 entries
@@ -144,11 +149,15 @@
                 showResultOverlay({
                     score, total, elapsedMs, results,
                     quizTitle: 'Eurovision Quiz',
-                    shareUrl: 'https://jordglobe.com/eurovision',
+                    shareUrl: 'https://partytest.jordglobe.com/eurovision.html',
                     shareEmoji: '🎵',
                     spritePath: '/eurovision/',
                     spriteNames,
-                    getMessage: (s, t) => spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
+                    getMessage: (s, t) => s === t ? spriteNames[5] : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
+                    formatShareSquares: (results) => {
+                        const qs = getQuestions();
+                        return results.map((correct, i) => correct ? iso2ToFlag(qs[i].countryISO2) : '🟥').join('');
+                    },
                     isNewRecord,
                     onRetry: () => window.location.reload(),
                 })

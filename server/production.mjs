@@ -15,6 +15,7 @@ import { dirname, join } from 'path';
 import { getRandomCity, calculateDistance } from './cities.mjs';
 import { getRandomVideo, videos } from './videos.mjs';
 import basicAuth from 'express-basic-auth';
+import { getVotes, postVote, getRecord, postRecord } from './database.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -46,6 +47,24 @@ function log(message, data = null) {
         : `[${timestamp}] ${message}`;
     console.log(logLine);
 }
+
+// API routes (public, before basic auth)
+app.use(express.json());
+
+function sendResult(res, { status, body }) {
+    res.status(status).json(body);
+}
+
+app.get('/api/votes', (req, res) => sendResult(res, getVotes(req.query.user_id)));
+app.post('/api/vote', (req, res) => {
+    const { game_id, user_id, vote } = req.body;
+    sendResult(res, postVote(game_id, user_id, vote));
+});
+app.get('/api/record', (req, res) => sendResult(res, getRecord(req.query.quiz_id)));
+app.post('/api/record', (req, res) => {
+    const { quiz_id, score, total, elapsed_ms } = req.body;
+    sendResult(res, postRecord(quiz_id, score, total, elapsed_ms));
+});
 
 // Basic Auth - Protect the entire app with simple username/password
 const BASIC_AUTH_USER = process.env.BASIC_AUTH_USER || 'team';
