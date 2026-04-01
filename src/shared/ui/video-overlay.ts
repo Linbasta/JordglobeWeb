@@ -38,17 +38,48 @@ interface YTPlayerConfig {
 interface YTPlayer {
     getCurrentTime(): number
     seekTo(seconds: number, allowSeekAhead: boolean): void
+    loadVideoById(options: { videoId: string; startSeconds?: number }): void
     destroy(): void
 }
 
 let clipWrapper: HTMLDivElement | null = null
 let container: HTMLDivElement | null = null
+let promptElement: HTMLDivElement | null = null
 let visible = false
 let isHidden = false
 let ytPlayer: YTPlayer | null = null
 let loopInterval: number | null = null
 let apiReady = false
 let apiReadyCallbacks: (() => void)[] = []
+let currentYoutubeId: string | null = null
+let currentStartTime = 0
+let currentEndTime: number | undefined = undefined
+
+/**
+ * Clear existing loop interval and set up new one if needed
+ */
+function setupLoopInterval(startTime: number, endTime: number | undefined): void {
+    // Clear any existing loop
+    if (loopInterval !== null) {
+        clearInterval(loopInterval)
+        loopInterval = null
+    }
+
+    // Store current times for reference
+    currentStartTime = startTime
+    currentEndTime = endTime
+
+    // Set up new loop if we have an endTime
+    if (endTime !== undefined && ytPlayer) {
+        loopInterval = window.setInterval(() => {
+            if (!ytPlayer) return
+            const currentTime = ytPlayer.getCurrentTime()
+            if (currentTime >= endTime) {
+                ytPlayer.seekTo(startTime, true)
+            }
+        }, 250)
+    }
+}
 
 /**
  * Load YouTube IFrame API if not already loaded
@@ -130,10 +161,38 @@ export async function showVideoOverlay(
     const { youtubeId, prompt: promptText, hideTop, hideBottom } = options
     const videoStartTime = options.startTime
     const videoEndTime = options.endTime
-    // Remove any existing overlay first
+    const start = videoStartTime ?? 0
+
+    // OPTIMIZATION: Reuse existing player if possible
+    // This prevents YouTube rate-limiting by avoiding repeated player creation
+    if (ytPlayer && currentYoutubeId === youtubeId && clipWrapper) {
+        // Same video — just seek to new position and update UI
+        ytPlayer.seekTo(start, true)
+        setupLoopInterval(start, videoEndTime)
+        if (promptElement) {
+            promptElement.textContent = promptText
+        }
+        visible = true
+        return
+    }
+
+    if (ytPlayer && currentYoutubeId !== youtubeId && clipWrapper) {
+        // Different video — reuse player with loadVideoById
+        ytPlayer.loadVideoById({ videoId: youtubeId, startSeconds: start })
+        currentYoutubeId = youtubeId
+        setupLoopInterval(start, videoEndTime)
+        if (promptElement) {
+            promptElement.textContent = promptText
+        }
+        visible = true
+        return
+    }
+
+    // No existing player — create everything from scratch
     hideVideoOverlay()
 
     visible = true
+    currentYoutubeId = youtubeId
 
     // Clipping wrapper — masks content above score bar
     clipWrapper = document.createElement('div')
@@ -192,9 +251,9 @@ export async function showVideoOverlay(
     promptBar.style.cssText =
         'display:flex;align-items:center;padding:12px 16px;gap:8px;cursor:pointer;min-height:40px;'
 
-    const promptEl = document.createElement('div')
-    promptEl.textContent = promptText
-    promptEl.style.cssText =
+    promptElement = document.createElement('div')
+    promptElement.textContent = promptText
+    promptElement.style.cssText =
         'flex:1;color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:600;' +
         'text-align:center;'
 
@@ -204,7 +263,7 @@ export async function showVideoOverlay(
         'color:#fff;font-size:16px;opacity:0.7;'
     toggleBtn.textContent = '▼'
 
-    promptBar.appendChild(promptEl)
+    promptBar.appendChild(promptElement)
     promptBar.appendChild(toggleBtn)
     container.appendChild(promptBar)
 
@@ -235,8 +294,6 @@ export async function showVideoOverlay(
     // Load YouTube API and create player
     await ensureYouTubeAPI()
 
-    const start = videoStartTime ?? 0
-
     ytPlayer = new window.YT.Player(playerDiv.id, {
         videoId: youtubeId,
         playerVars: {
@@ -250,16 +307,8 @@ export async function showVideoOverlay(
         },
         events: {
             onReady: () => {
-                // Start loop checker if we have an endTime
-                if (videoEndTime !== undefined) {
-                    loopInterval = window.setInterval(() => {
-                        if (!ytPlayer) return
-                        const currentTime = ytPlayer.getCurrentTime()
-                        if (currentTime >= videoEndTime) {
-                            ytPlayer.seekTo(start, true)
-                        }
-                    }, 250)
-                }
+                // Set up loop interval after player is ready
+                setupLoopInterval(start, videoEndTime)
             }
         }
     })
@@ -290,6 +339,12 @@ export function hideVideoOverlay(): void {
         clipWrapper = null
         container = null
     }
+
+    // Reset all state
+    promptElement = null
+    currentYoutubeId = null
+    currentStartTime = 0
+    currentEndTime = undefined
     visible = false
     isHidden = false
 }
