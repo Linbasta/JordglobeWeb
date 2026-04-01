@@ -25,7 +25,7 @@ import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScr
 const EARTH_RADIUS = 2.0;
 const TOUCH_Y_OFFSET = -50; // negative = upward in screen space, ~50px above fingertip
 const CANCEL_ZONE_WIDTH = 600;
-const CANCEL_ZONE_VISIBLE_HEIGHT = 120; // 150px panel - 30px offset
+const CANCEL_ZONE_VISIBLE_HEIGHT = 50;
 
 // --- Module-level state ---
 

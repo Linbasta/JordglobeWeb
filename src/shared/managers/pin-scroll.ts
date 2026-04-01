@@ -7,21 +7,18 @@
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getZoomValue } from '../animation/camera-utils';
-import { EARTH_RADIUS } from '../../earth-globe/constants';
 
 // --- Constants ---
 
 const EDGE_LEFT = 0.10;
 const EDGE_RIGHT = 0.10;
 const EDGE_TOP = 0.20;
-const EDGE_BOTTOM = 0.10;
-
-const GLOBE_EDGE_MARGIN = 0.3;
+const EDGE_BOTTOM = 0.05;
 
 const ACTIVATION_DELAY_MS = 500;
-const ACCELERATION = 0.003;
-const MAX_SPEED_CLOSE = 0.004;
-const MAX_SPEED_FAR = 0.02;
+const ACCELERATION = 0.0005;
+const MAX_SPEED_CLOSE = 0.002;
+const MAX_SPEED_FAR = 0.008;
 const DAMPING = 0.85;
 const VELOCITY_THRESHOLD = 0.0001;
 const BETA_MIN = 0.1;
@@ -76,29 +73,6 @@ function tick(): void {
         pushY = -(EDGE_TOP - ny) / EDGE_TOP;  // negative = rotate up (beta decreases)
     } else if (ny > 1 - EDGE_BOTTOM - deadNy && ny <= 1 - deadNy) {
         pushY = (ny - (1 - EDGE_BOTTOM - deadNy)) / EDGE_BOTTOM;  // positive = rotate down (beta increases)
-    }
-
-    // Globe silhouette edge detection
-    const D = camera.radius;
-    if (D > EARTH_RADIUS) {
-        const silhouetteAngle = Math.asin(EARTH_RADIUS / D);
-        const radiusNy = Math.tan(silhouetteAngle) / Math.tan(camera.fov / 2) * 0.5;
-        const radiusNx = radiusNy * (h / w);
-
-        const dx = (nx - 0.5) / radiusNx;
-        const dy = (ny - 0.5) / radiusNy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 1.2) {
-            const globePush = Math.min((dist - 1.0) / GLOBE_EDGE_MARGIN, 1.0);
-            const invDist = 1.0 / dist;
-            const globePushX = (dx * invDist) * globePush;
-            const globePushY = (dy * invDist) * globePush;
-
-            // Take whichever source has greater magnitude, per axis
-            if (Math.abs(globePushX) > Math.abs(pushX)) pushX = globePushX;
-            if (Math.abs(globePushY) > Math.abs(pushY)) pushY = globePushY;
-        }
     }
 
     const maxSpeed = getZoomValue(camera, MAX_SPEED_CLOSE, MAX_SPEED_FAR);
