@@ -12,6 +12,18 @@ const SHOW_DURATION = 400   // ms fully visible
 const FADE_DURATION = 300   // ms fade-out
 const IMG_SIZE = 128        // px
 
+// Preload images once at module load to avoid repeated network requests
+const preloadedImages: Map<string, HTMLImageElement> = new Map()
+
+function preloadImage(src: string): void {
+    const image = new Image()
+    image.src = src
+    preloadedImages.set(src, image)
+}
+
+preloadImage('/Checkmark.png')
+preloadImage('/RedX.png')
+
 export function showCorrectFeedback(x: number, y: number): void {
     showFeedback('/Checkmark.png', x, y)
 }
@@ -23,8 +35,10 @@ export function showWrongFeedback(x: number, y: number): void {
 function showFeedback(src: string, x: number, y: number): void {
     dispose()
 
-    img = document.createElement('img')
-    img.src = src
+    // Clone preloaded image to avoid triggering new requests
+    const preloaded = preloadedImages.get(src)
+    img = preloaded ? preloaded.cloneNode() as HTMLImageElement : document.createElement('img')
+    if (!preloaded) img.src = src  // Fallback if preload failed
     img.style.cssText =
         `position:absolute;left:${x}px;top:${y}px;` +
         `width:${IMG_SIZE}px;height:${IMG_SIZE}px;` +
