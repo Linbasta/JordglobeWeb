@@ -34,6 +34,9 @@ import {
     CAMERA_PINCH_DELTA_PERCENTAGE,
     CAMERA_MIN_Z,
     MOBILE_ORBIT_MULTIPLIER,
+    ORBIT_SCALE,
+    ORBIT_SHIFT,
+    ORBIT_BASE,
     PICKER_CELL_SIZE,
     DEFAULT_ASSETS,
     MAX_ANIMATION_COUNTRIES,
@@ -597,10 +600,16 @@ export class EarthGlobe {
         this.countryController.getPicker().setColliderMultiplier(colliderMul);
 
         // Update orbit sensitivity based on camera zoom (and mobile)
-        let angular = getZoomValue(this.camera, zoom.orbitSensibilityClose, zoom.orbitSensibilityFar);
-        if (this.isMobile) angular *= MOBILE_ORBIT_MULTIPLIER;
-        this.camera.angularSensibilityX = angular;
-        this.camera.angularSensibilityY = angular;
+        // Hyperbolic curve fitted to calibration data: steep drop close-up, gradual flattening far out
+        if (zoom.orbitOverride !== null) {
+            this.camera.angularSensibilityX = zoom.orbitOverride;
+            this.camera.angularSensibilityY = zoom.orbitOverride;
+        } else {
+            let angular = ORBIT_SCALE / (this.camera.radius - ORBIT_SHIFT) + ORBIT_BASE;
+            if (this.isMobile) angular *= MOBILE_ORBIT_MULTIPLIER;
+            this.camera.angularSensibilityX = angular;
+            this.camera.angularSensibilityY = angular;
+        }
 
         // Rebuild debug circles if multiplier changed
         this.colliderDebugUpdate?.();

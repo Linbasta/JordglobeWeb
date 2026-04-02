@@ -22,8 +22,6 @@ const SLIDER_CONFIG: { key: keyof typeof zoom; constant: string; label: string; 
     { key: 'markerHitRadiusFar',   constant: 'ZOOM_MARKER_HIT_RADIUS_FAR', label: 'Hit Radius Far',    min: 0.02,  max: 0.5,  step: 0.01  },
     { key: 'colliderScaleClose',   constant: 'ZOOM_COLLIDER_SCALE_CLOSE',  label: 'Collider Close',     min: 0.5,   max: 3,    step: 0.1   },
     { key: 'colliderScaleFar',     constant: 'ZOOM_COLLIDER_SCALE_FAR',    label: 'Collider Far',       min: 1,     max: 5,    step: 0.1   },
-    { key: 'orbitSensibilityClose', constant: 'ORBIT_SENSIBILITY_CLOSE',   label: 'Orbit Close',        min: 500,   max: 8000, step: 100   },
-    { key: 'orbitSensibilityFar',   constant: 'ORBIT_SENSIBILITY_FAR',     label: 'Orbit Far',          min: 500,   max: 8000, step: 100   },
 ];
 
 const DEFAULTS: Record<string, number> = { ...zoom };

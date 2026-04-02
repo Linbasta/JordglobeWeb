@@ -376,6 +376,10 @@ export class SoloGameController extends BaseGameController {
             if ((e.key === 'z' || e.key === 'Z') && import.meta.env.DEV) {
                 import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel());
             }
+            // Toggle sensitivity calibrator (E key) - dev only
+            if ((e.key === 'e' || e.key === 'E') && import.meta.env.DEV) {
+                import('../shared/dev/sensitivity-calibrator').then(m => m.toggleSensitivityCalibrator(this.globe.getCamera()));
+            }
             // Show pin tutorial (T key) - dev only
             if ((e.key === 't' || e.key === 'T') && import.meta.env.DEV) {
                 dismissPinTutorial();  // Remove existing first

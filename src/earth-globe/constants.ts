@@ -152,11 +152,10 @@ export const CAMERA_PINCH_DELTA_PERCENTAGE = 0.0008;
 /** Camera near clipping plane */
 export const CAMERA_MIN_Z = 0.01;
 
-/** Orbit sensitivity when zoomed in (higher = slower) */
-export const ORBIT_SENSIBILITY_CLOSE = 4000;
-
-/** Orbit sensitivity when zoomed out (higher = slower) */
-export const ORBIT_SENSIBILITY_FAR = 1000;
+/** Orbit sensitivity: s = ORBIT_SCALE / (radius - ORBIT_SHIFT) + ORBIT_BASE */
+export const ORBIT_SCALE = 3600;
+export const ORBIT_SHIFT = 2;
+export const ORBIT_BASE = 800;
 
 /** Mobile orbit multiplier (lower = faster to compensate for small screens) */
 export const MOBILE_ORBIT_MULTIPLIER = 1.0;
@@ -257,8 +256,7 @@ export const zoom = {
     markerHitRadiusFar: ZOOM_MARKER_HIT_RADIUS_FAR,
     colliderScaleClose: ZOOM_COLLIDER_SCALE_CLOSE,
     colliderScaleFar: ZOOM_COLLIDER_SCALE_FAR,
-    orbitSensibilityClose: ORBIT_SENSIBILITY_CLOSE,
-    orbitSensibilityFar: ORBIT_SENSIBILITY_FAR,
+    orbitOverride: null as number | null,
     provinceBorderThicknessClose: PROVINCE_BORDER_THICKNESS_CLOSE,
     provinceBorderThicknessFar: PROVINCE_BORDER_THICKNESS_FAR,
     provinceBorderAlphaClose: PROVINCE_BORDER_ALPHA_CLOSE,
