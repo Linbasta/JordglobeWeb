@@ -408,10 +408,12 @@ export class EarthGlobe {
                 this.scene.render();
             });
 
-            // Handle resize
-            window.addEventListener('resize', () => {
+            // Handle resize - use ResizeObserver to detect any canvas size change
+            // (not just window resize, but also layout changes like banners appearing)
+            const resizeObserver = new ResizeObserver(() => {
                 this.engine.resize();
             });
+            resizeObserver.observe(this.canvas);
 
             // Call ready callback
             if (this.options.onReady) {
