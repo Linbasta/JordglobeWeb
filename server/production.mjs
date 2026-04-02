@@ -8,6 +8,7 @@
  */
 
 import express from 'express';
+import expressStaticGzip from 'express-static-gzip';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { fileURLToPath } from 'url';
@@ -109,12 +110,18 @@ app.get('/medals', (req, res, next) => {
     next();
 });
 
-// Serve static files
+// Serve static files with pre-compressed gzip support
 // Vite build output (frontend)
-app.use(express.static(join(__dirname, '../dist')));
+app.use(expressStaticGzip(join(__dirname, '../dist'), {
+    enableBrotli: false,
+    orderPreference: ['gz'],
+}));
 
 // Public assets (textures, JSON files, etc.)
-app.use(express.static(join(__dirname, '../public')));
+app.use(expressStaticGzip(join(__dirname, '../public'), {
+    enableBrotli: false,
+    orderPreference: ['gz'],
+}));
 
 // Health check endpoint for Cloud Run
 app.get('/health', (req, res) => {

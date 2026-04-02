@@ -94,10 +94,7 @@ if [ -n "$DOMAIN" ]; then
 $DOMAIN {
     reverse_proxy localhost:$APP_PORT
 
-    # Optional: Enable compression
-    encode gzip
-
-    # Optional: Access logging
+    # Access logging
     log {
         output file /var/log/caddy/access.log
     }
@@ -110,10 +107,7 @@ else
 :80 {
     reverse_proxy localhost:$APP_PORT
 
-    # Optional: Enable compression
-    encode gzip
-
-    # Optional: Access logging
+    # Access logging
     log {
         output file /var/log/caddy/access.log
     }

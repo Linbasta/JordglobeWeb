@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { routes } from './routes.config';
 import { generateLandingPage } from './scripts/generate-landing';
 import Obfuscator from 'javascript-obfuscator';
+import viteCompression from 'vite-plugin-compression';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -174,6 +175,13 @@ export default defineConfig({
           }
         }
       }
-    }
+    },
+    // Pre-compress static assets with gzip for Caddy to serve
+    viteCompression({
+      algorithm: 'gzip',
+      ext: '.gz',
+      threshold: 1024, // Only compress files > 1KB
+      deleteOriginFile: false, // Keep original files for fallback
+    })
   ]
 });
