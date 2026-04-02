@@ -228,8 +228,14 @@ function createCallToAction(): HTMLDivElement {
             'width:120px;height:120px;background:#fff;' +
             'display:flex;align-items:center;justify-content:center;'
 
-        // Generate QR code
-        generateQRCode(DOWNLOAD_URL, qrCode)
+        // Static pre-generated QR code
+        const qrImg = document.createElement('img')
+        qrImg.src = '/qr-download.png'
+        qrImg.alt = 'Download'
+        qrImg.width = 120
+        qrImg.height = 120
+        qrCode.innerHTML = ''
+        qrCode.appendChild(qrImg)
 
         // Badges row
         const badgeRow = document.createElement('div')
@@ -254,35 +260,6 @@ function createCallToAction(): HTMLDivElement {
     }
 
     return section
-}
-
-/**
- * Generate QR code using canvas
- * Simple implementation - generates QR code for the given URL
- */
-function generateQRCode(url: string, container: HTMLElement): void {
-    // Use the qrcode library if available, otherwise show a link
-    import('qrcode').then(QRCode => {
-        const canvas = document.createElement('canvas')
-        canvas.width = 120
-        canvas.height = 120
-        QRCode.toCanvas(canvas, url, {
-            width: 120,
-            margin: 1,
-            color: { dark: '#000000', light: '#ffffff' }
-        }, (error) => {
-            if (error) {
-                console.error('QR code generation failed:', error)
-                showFallbackLink(container, url)
-            } else {
-                container.innerHTML = ''
-                container.appendChild(canvas)
-            }
-        })
-    }).catch(() => {
-        // qrcode library not available, show fallback
-        showFallbackLink(container, url)
-    })
 }
 
 /**

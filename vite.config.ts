@@ -4,6 +4,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { routes } from './routes.config';
 import { generateLandingPage } from './scripts/generate-landing';
+import Obfuscator from 'javascript-obfuscator';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -129,6 +130,34 @@ export default defineConfig({
           return 'export default {}';
         }
       }
+    },
+    // Obfuscate user code chunks only (runs after Vite resolves all imports)
+    {
+      name: 'obfuscate-user-chunks',
+      apply: 'build' as const,
+      renderChunk(code, chunk) {
+        const userChunks = [
+          'eurovision', 'host', 'party', 'bot-panel',
+          'country-quiz', 'capitals-quiz', 'country-game',
+          'medals', 'video-quiz', 'minigames', 'flag-quiz', 'image-quiz',
+          'base-game-controller', 'solo-game-controller', 'start-quiz-game',
+          'result-overlay', 'end-game-overlay', 'mobile-app-ad',
+        ];
+        const isUserChunk = userChunks.some(name => chunk.fileName.includes(name));
+        if (!isUserChunk) return null;
+        const result = Obfuscator.obfuscate(code, {
+          compact: true,
+          controlFlowFlattening: true,
+          controlFlowFlatteningThreshold: 0.75,
+          numbersToExpressions: true,
+          simplify: true,
+          stringArray: false,
+          splitStrings: false,
+          reservedNames: ['onYouTubeIframeAPIReady'],
+          sourceMap: false,
+        });
+        return { code: result.getObfuscatedCode(), map: null };
+      },
     },
     // Remove dev-only folders from production build
     {

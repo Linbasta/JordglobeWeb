@@ -10,7 +10,6 @@ let adContainer: HTMLDivElement | null = null
 let resizeHandler: (() => void) | null = null
 
 // ── Constants ──
-const DOWNLOAD_URL = 'https://jordglobe.com/download'
 const QR_SIZE = 70
 const AD_MARGIN = 16
 const BG_COLOR = '#4a6fa5'  // Blue matching app theme
@@ -53,8 +52,8 @@ export function showMobileAppAd(): void {
         'display:flex;align-items:center;justify-content:center;' +
         'flex-shrink:0;'
 
-    // Generate QR code
-    generateQRCode(DOWNLOAD_URL, qrContainer)
+    // Static pre-generated QR code
+    insertQRCode(qrContainer)
 
     // Phone icon (center)
     const phoneIcon = document.createElement('img')
@@ -103,43 +102,13 @@ export function hideMobileAppAd(): void {
     }
 }
 
-/**
- * Generate QR code using canvas
- */
-function generateQRCode(url: string, container: HTMLElement): void {
-    import('qrcode').then(QRCode => {
-        const canvas = document.createElement('canvas')
-        canvas.width = QR_SIZE
-        canvas.height = QR_SIZE
-        QRCode.toCanvas(canvas, url, {
-            width: QR_SIZE,
-            margin: 1,
-            color: { dark: '#000000', light: '#ffffff' }
-        }, (error) => {
-            if (error) {
-                console.error('QR code generation failed:', error)
-                showFallbackLink(container, url)
-            } else {
-                container.innerHTML = ''
-                container.appendChild(canvas)
-            }
-        })
-    }).catch(() => {
-        showFallbackLink(container, url)
-    })
-}
-
-/**
- * Show a simple link as fallback when QR code generation fails
- */
-function showFallbackLink(container: HTMLElement, url: string): void {
+function insertQRCode(container: HTMLElement): void {
+    const img = document.createElement('img')
+    img.src = '/qr-download.png'
+    img.alt = 'Download'
+    img.width = QR_SIZE
+    img.height = QR_SIZE
+    img.style.cssText = 'display:block;'
     container.innerHTML = ''
-    const link = document.createElement('a')
-    link.href = url
-    link.target = '_blank'
-    link.rel = 'noopener noreferrer'
-    link.style.cssText =
-        'font-size:9px;color:#333;text-align:center;text-decoration:none;'
-    link.textContent = 'Download'
-    container.appendChild(link)
+    container.appendChild(img)
 }
