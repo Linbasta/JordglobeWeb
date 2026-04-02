@@ -42,6 +42,7 @@
     "generate-medal-menu": "tsx scripts/generate-medal-menu.ts",
     "test:e2e": "npx playwright test",
     "test:e2e:headed": "npx playwright test --headed",
+    "validate:seo": "tsx scripts/validate-seo.ts",
     "deploy": "scripts/gcp-staging/deploy.sh",
     "deploy:ssh": "scripts/gcp-staging/ssh.sh",
     "deploy:logs": "scripts/gcp-staging/logs.sh",
