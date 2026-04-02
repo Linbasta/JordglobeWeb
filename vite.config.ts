@@ -20,9 +20,17 @@ export default defineConfig({
     target: 'es2020',
     outDir: 'dist',
     sourcemap: false,
-    esbuild: {
-      pure: ['console.log', 'console.info'],
-      drop: ['debugger'],
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 2,
+      },
+      mangle: true,
+      format: {
+        comments: false,
+      },
     },
     rollupOptions: {
       input: {
@@ -104,6 +112,22 @@ export default defineConfig({
         const indexPath = join(__dirname, 'index.html');
         writeFileSync(indexPath, html, 'utf-8');
         console.log('✓ Generated index.html for build');
+      }
+    },
+    // Strip consoleLogger from production builds
+    {
+      name: 'strip-console-logger',
+      apply: 'build',
+      enforce: 'pre',
+      resolveId(source) {
+        if (source.includes('consoleLogger')) {
+          return '\0empty-console-logger';
+        }
+      },
+      load(id) {
+        if (id === '\0empty-console-logger') {
+          return 'export default {}';
+        }
       }
     },
     // Remove dev-only folders from production build

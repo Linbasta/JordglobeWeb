@@ -12,6 +12,7 @@ from pathlib import Path
 # Get project root
 project_root = Path(__file__).parent.parent
 public_dir = project_root / 'public'
+root_dir = project_root
 
 # Check if we're in dev mode
 is_dev = os.environ.get('NODE_ENV') != 'production'
@@ -82,8 +83,9 @@ def main():
     action = 'Injecting' if is_dev else 'Removing'
     print(f'{action} console logger ({mode} mode)...')
 
-    # Find all HTML files in public directory
+    # Find all HTML files in public directory and project root
     html_files = find_html_files(public_dir)
+    html_files += sorted(f for f in root_dir.glob('*.html') if f not in html_files)
 
     if not html_files:
         print('  No HTML files found in public directory')

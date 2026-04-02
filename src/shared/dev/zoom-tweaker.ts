@@ -24,7 +24,7 @@ const SLIDER_CONFIG: { key: keyof typeof zoom; constant: string; label: string; 
     { key: 'colliderScaleFar',     constant: 'ZOOM_COLLIDER_SCALE_FAR',    label: 'Collider Far',       min: 1,     max: 5,    step: 0.1   },
 ];
 
-const DEFAULTS: Record<string, number> = { ...zoom };
+const DEFAULTS: Record<string, number | null> = { ...zoom };
 
 let panel: HTMLDivElement | null = null;
 
@@ -94,7 +94,7 @@ export function toggleZoomPanel(): void {
     resetBtn.style.cssText = 'flex:1;padding:6px;cursor:pointer;border:none;border-radius:4px;background:#555;color:#eee;font:12px monospace;';
     resetBtn.addEventListener('click', () => {
         for (const cfg of SLIDER_CONFIG) {
-            zoom[cfg.key] = DEFAULTS[cfg.key];
+            (zoom as Record<string, number | null>)[cfg.key] = DEFAULTS[cfg.key];
         }
         // Update all sliders and labels
         const sliders = panel!.querySelectorAll('input[type=range]');
