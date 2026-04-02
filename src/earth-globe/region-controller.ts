@@ -23,7 +23,7 @@ import { ShaderFactory } from './shader-factory';
 import { loadSegments } from './segment-loader';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { PICKER_CELL_SIZE, TUBE_RADIUS, SMALL_OUTLINE_TUBE_RADIUS, zoom } from './constants';
-import type { RegionData, RegionPolygon, RegionType, SegmentData } from './types';
+import type { RegionData, RegionPolygon, RegionType, SegmentData, CountryBinData } from './types';
 import type { LocationMarkerPool } from './location-marker-pool';
 import { getExpansionFactorForCountry } from './expansion-formula';
 
@@ -134,6 +134,13 @@ export class RegionController {
         onRegionAdded?: (region: RegionData) => void
     ): Promise<void> {
         await this.renderer.loadFromURL(url, this.picker, onRegionAdded);
+    }
+
+    async loadFromData(
+        countries: CountryBinData[],
+        onRegionAdded?: (region: RegionData) => void
+    ): Promise<void> {
+        await this.renderer.loadFromData(countries, this.picker, onRegionAdded);
     }
 
     async loadFromItems(

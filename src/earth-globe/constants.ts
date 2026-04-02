@@ -179,7 +179,7 @@ export const PICKER_CELL_SIZE = 10;
 // ============================================================================
 
 export const DEFAULT_ASSETS = {
-    countriesJson: '/countries-enriched.json',
+    countriesJson: '/countries-enriched.bin',
     segmentsJson: '/segments.json',
     lofiCollidersJson: '/lofi-colliders.json',
     oceanDepthMap: '/OceanDepthMap.png',

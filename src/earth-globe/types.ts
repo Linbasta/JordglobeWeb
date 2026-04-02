@@ -122,6 +122,19 @@ export interface CountryJSON {
     skipHole?: boolean;  // If true, don't create a hole for this enclave (too small)
 }
 
+/**
+ * Country data loaded from binary format.
+ * Same as CountryJSON but paths are already parsed.
+ */
+export interface CountryBinData {
+    name_en: string;
+    iso2: string;
+    paths: number[][][];
+    holes?: Record<number, string[]>;
+    lakes?: Record<number, number[]>;
+    skipHole?: boolean;
+}
+
 // ============================================================================
 // Segment Types
 // ============================================================================

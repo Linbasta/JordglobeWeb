@@ -53,6 +53,7 @@ import { latLonToSphere, positionToLatLon } from './geo-math';
 import { RegionPicker } from './region-picker';
 import { RegionController } from './region-controller';
 import { loadSegments } from './segment-loader';
+import { loadCountriesBin } from './countries-bin-loader';
 import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
 import { BorderRenderer } from './border-renderer';
@@ -236,14 +237,16 @@ export class EarthGlobe {
         try {
             // Load countries
             const countriesUrl = this.assets.countriesJson || DEFAULT_ASSETS.countriesJson;
-            await this.countryController.loadFromURL(
-                countriesUrl,
-                (region) => {
-                    // Initialize animation data for each country
-                    const defaultAnimValue = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
-                    this.countryController.getAnimationTexture().setAltitude(region.index, defaultAnimValue);
-                }
-            );
+            const onCountryAdded = (region: RegionData) => {
+                const defaultAnimValue = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
+                this.countryController.getAnimationTexture().setAltitude(region.index, defaultAnimValue);
+            };
+            if (countriesUrl.endsWith('.bin')) {
+                const countries = await loadCountriesBin(countriesUrl);
+                await this.countryController.loadFromData(countries, onCountryAdded);
+            } else {
+                await this.countryController.loadFromURL(countriesUrl, onCountryAdded);
+            }
 
             // Load lofi colliders for enhanced hit detection
             const collidersUrl = this.assets.lofiCollidersJson || DEFAULT_ASSETS.lofiCollidersJson;

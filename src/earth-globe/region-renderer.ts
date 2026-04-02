@@ -26,7 +26,7 @@ import { latLonToSphere, hsvToRgb, generateInteriorPoints, pointInPolygon2D } fr
 import { cdt2d, filterTriangles } from './triangulation';
 import { ShaderFactory } from './shader-factory';
 import { RegionPicker, calculateBoundingBox } from './region-picker';
-import type { LatLonPoint, PolygonData, RegionData, CountryJSON, TriangulationResult } from './types';
+import type { LatLonPoint, PolygonData, RegionData, CountryJSON, CountryBinData, TriangulationResult } from './types';
 import { isSmallCountry, isSurroundedCountry, isSmallProvince } from './small-countries';
 
 // ============================================================================
@@ -776,11 +776,32 @@ export class RegionRenderer {
         picker: RegionPicker,
         onRegionAdded?: (region: RegionData) => void
     ): Promise<void> {
-        const startTime = performance.now();
-
         const response = await fetch(url);
-        const countries = await response.json() as CountryJSON[];
-        console.log(`Fetched ${countries.length} regions from URL`);
+        const rawCountries = await response.json() as CountryJSON[];
+        console.log(`Fetched ${rawCountries.length} regions from URL`);
+
+        // Convert JSON format to parsed format
+        const countries: CountryBinData[] = rawCountries.map(c => ({
+            name_en: c.name_en,
+            iso2: c.iso2,
+            paths: JSON.parse(c.paths) as number[][][],
+            holes: c.holes as unknown as Record<number, string[]>,
+            lakes: c.lakes as unknown as Record<number, number[]>,
+            skipHole: c.skipHole
+        }));
+
+        await this.loadFromData(countries, picker, onRegionAdded);
+    }
+
+    /**
+     * Load regions from pre-parsed country data (binary or JSON).
+     */
+    async loadFromData(
+        countries: CountryBinData[],
+        picker: RegionPicker,
+        onRegionAdded?: (region: RegionData) => void
+    ): Promise<void> {
+        const startTime = performance.now();
 
         // Build enclave set
         const enclaveISO2Set = new Set<string>();
@@ -797,10 +818,10 @@ export class RegionRenderer {
         let addedCount = 0;
 
         for (const country of countries) {
-            if (!country.paths || country.paths === '[]') continue;
+            if (!country.paths || country.paths.length === 0) continue;
 
             try {
-                const paths = JSON.parse(country.paths) as number[][][];
+                const paths = country.paths;
                 const polygonIndices: number[] = [];
 
                 // Lake indices
@@ -862,8 +883,7 @@ export class RegionRenderer {
                         for (const holeISO2 of holesForPolygon) {
                             const holeCountry = countries.find(c => c.iso2 === holeISO2);
                             if (holeCountry && holeCountry.paths && !holeCountry.skipHole) {
-                                const holePaths = JSON.parse(holeCountry.paths) as number[][][];
-                                for (const holePoly of holePaths) {
+                                for (const holePoly of holeCountry.paths) {
                                     holePolygons.push(holePoly);
                                 }
                             }

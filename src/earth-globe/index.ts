@@ -47,6 +47,7 @@ export type {
     PolygonData,
     NeighborInfo,
     CountryJSON,
+    CountryBinData,
 
     // Segment types
     Point2D,

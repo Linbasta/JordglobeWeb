@@ -12,6 +12,7 @@
     "server": "node --watch server/index.mjs",
     "start": "node server/production.mjs",
     "generate-qr": "tsx scripts/generate-qr.ts",
+    "generate-countries-bin": "tsx scripts/generate-countries-bin.ts",
     "build": "NODE_ENV=production npm run inject-console && npm run generate-qr && tsc && vite build",
     "build:production": "npm run build",
     "preview": "npm run build && vite preview",
