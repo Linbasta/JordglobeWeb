@@ -9,7 +9,7 @@
  * Click to hide/show animation (slides under score bar).
  */
 
-import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP, PANEL_HEIGHT_VH, PANEL_ASPECT } from './score-bar'
+import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP, PANEL_HEIGHT_VH, PANEL_ASPECT, PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
 
 // YouTube IFrame API types
 declare global {
@@ -325,10 +325,13 @@ export async function showVideoOverlay(
         `position:fixed;top:${clipTop}px;left:0;right:0;bottom:0;` +
         'overflow:hidden;pointer-events:none;z-index:50;'
 
-    // Container — centered horizontally, positioned inside clip wrapper
+    // Container — centered horizontally, width matches scorebar
+    const isPortrait = window.innerHeight > window.innerWidth
+    const panelWidth = isPortrait ? PANEL_WIDTH_PORTRAIT : PANEL_WIDTH_LANDSCAPE
     container = document.createElement('div')
     container.style.cssText =
         'position:absolute;top:0;left:50%;transform:translateX(-50%);' +
+        `width:${panelWidth};` +
         'display:flex;flex-direction:column;' +
         'border-radius:8px;overflow:hidden;' +
         'box-shadow:0 4px 24px rgba(0,0,0,0.5);' +
