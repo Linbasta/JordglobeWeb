@@ -7,7 +7,7 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import { easedValue, getEasingFunction } from '../utils/easing';
-import { CAMERA_LOWER_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE, zoom } from '../../earth-globe';
+import { CAMERA_LOWER_RADIUS, AUTO_FRAME_MIN_RADIUS, CAMERA_UPPER_RADIUS, EARTH_RADIUS, ANIMATION_AMPLITUDE, zoom } from '../../earth-globe';
 import { ALTITUDE_NORMAL } from '../../earth-globe/constants';
 import type { RegionPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, latLonToSphere } from '../../earth-globe';
@@ -422,7 +422,7 @@ export async function frameCountry(
         vRight: number,
         vBottom: number
     ): number => {
-        let minRadius = CAMERA_LOWER_RADIUS;
+        let minRadius = AUTO_FRAME_MIN_RADIUS;
         let maxRadius = 10.0;
         const TARGET_FILL = 0.95;
         const MAX_ITERATIONS = 20;
@@ -534,7 +534,7 @@ export async function frameCountry(
 
         // Search radius ±20% around optimal
         const RADIUS_RANGE_FRACTION = 0.20;
-        const MIN_RADIUS = Math.max(CAMERA_LOWER_RADIUS, optimalRadius * (1 - RADIUS_RANGE_FRACTION));
+        const MIN_RADIUS = Math.max(AUTO_FRAME_MIN_RADIUS, optimalRadius * (1 - RADIUS_RANGE_FRACTION));
         const MAX_RADIUS = Math.min(10.0, optimalRadius * (1 + RADIUS_RANGE_FRACTION));
 
         console.log(`  Search ranges: alpha ${(smartAlpha * 180 / Math.PI).toFixed(2)}° ± ${alphaRangeDeg}°, beta ${(smartBeta * 180 / Math.PI).toFixed(2)}° ± ${betaRangeDeg}°, radius [${MIN_RADIUS.toFixed(2)}, ${MAX_RADIUS.toFixed(2)}]`);
@@ -669,7 +669,7 @@ export async function frameCountry(
 
             const FALLBACK_ALPHA_RANGE = ALPHA_RANGE * 3;
             const FALLBACK_BETA_RANGE = BETA_RANGE * 3;
-            const FALLBACK_MIN_RADIUS = CAMERA_LOWER_RADIUS;
+            const FALLBACK_MIN_RADIUS = AUTO_FRAME_MIN_RADIUS;
             const FALLBACK_MAX_RADIUS = 10.0;
 
             gridBestSolution = searchGrid(
@@ -909,7 +909,7 @@ export async function frameLocations(
     const vRight = vLeft + vWidth
     const vBottom = vTop + vHeight
 
-    let minRadius = CAMERA_LOWER_RADIUS
+    let minRadius = AUTO_FRAME_MIN_RADIUS
     let maxRadius = 10.0
     const MAX_ITERATIONS = 20
 

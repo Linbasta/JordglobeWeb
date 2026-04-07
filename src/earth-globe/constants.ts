@@ -137,6 +137,9 @@ export const BORDER_COLOR_GRAY = new Color3(0.788, 0.494, 0.298);
 /** Minimum camera distance from globe center */
 export const CAMERA_LOWER_RADIUS = 3;
 
+/** Minimum camera distance auto-framing will zoom to (prevents excessive zoom-in) */
+export const AUTO_FRAME_MIN_RADIUS = 4.5;
+
 /** Maximum camera distance from globe center */
 export const CAMERA_UPPER_RADIUS = 20;
 
