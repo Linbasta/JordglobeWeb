@@ -18,6 +18,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 // Side effect imports
 import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Loading/loadingScreen';
+import { PatchedArcRotatePointersInput } from './patched-arc-rotate-input';
 import '@babylonjs/loaders/glTF';
 import '@babylonjs/core/Materials/PBR/pbrMaterial';
 import '@babylonjs/core/Culling/ray';  // Required for scene.pick() to work!
@@ -225,12 +226,19 @@ export class EarthGlobe {
 
     private setupCamera(): void {
         this.camera.attachControl(this.canvas, true);
+
+        // Replace default pointer input to suppress rotation during pinch
+        // transitions (fixes Firefox Android coordinate jump bug)
+        this.camera.inputs.removeByType('ArcRotateCameraPointersInput');
+        const patchedInput = new PatchedArcRotatePointersInput();
+        patchedInput.panningSensibility = 0;
+        patchedInput.pinchDeltaPercentage = CAMERA_PINCH_DELTA_PERCENTAGE;
+        this.camera.inputs.add(patchedInput);
+
         this.camera.lowerRadiusLimit = CAMERA_LOWER_RADIUS;
         this.camera.upperRadiusLimit = CAMERA_UPPER_RADIUS;
         this.camera.wheelPrecision = CAMERA_WHEEL_PRECISION;
-        this.camera.pinchDeltaPercentage = CAMERA_PINCH_DELTA_PERCENTAGE;
         this.camera.minZ = CAMERA_MIN_Z;
-        this.camera.panningSensibility = 0; // Disable two-finger pan
     }
 
     private async init(): Promise<void> {
