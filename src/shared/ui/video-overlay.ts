@@ -403,7 +403,7 @@ export async function showVideoOverlay(
     promptElement.textContent = promptText
     promptElement.style.cssText =
         'flex:1;color:#fff;font-family:Arial,sans-serif;font-size:16px;font-weight:600;' +
-        'text-align:center;'
+        'text-align:center;white-space:nowrap;'
 
     toggleBtn = document.createElement('div')
     toggleBtn.style.cssText =
