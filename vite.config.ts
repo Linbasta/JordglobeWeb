@@ -4,8 +4,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { routes } from './routes.config';
 import { generateLandingPage } from './scripts/generate-landing';
-import Obfuscator from 'javascript-obfuscator';
-import viteCompression from 'vite-plugin-compression';
+import { buildPlugins, entryPoints } from './vite-shared.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -35,19 +34,9 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      input: {
-        main: join(__dirname, 'index.html'),
-        party: join(__dirname, 'party.html'),
-        host: join(__dirname, 'host.html'),
-        'bot-panel': join(__dirname, 'bot-panel.html'),
-        'country-quiz': join(__dirname, 'country-quiz.html'),
-        'capitals-quiz': join(__dirname, 'capitals-quiz.html'),
-        'country-game': join(__dirname, 'country-game.html'),
-        'medals': join(__dirname, 'medals.html'),
-        'video-quiz': join(__dirname, 'video-quiz.html'),
-        'eurovision': join(__dirname, 'eurovision.html'),
-        'minigames': join(__dirname, 'minigames.html')
-      }
+      input: Object.fromEntries(
+        entryPoints.map(e => [e.name, join(__dirname, e.file)])
+      ),
     }
   },
   publicDir: 'public',
@@ -108,6 +97,18 @@ export default defineConfig({
         });
       },
 
+      // Same route rewrites for preview mode
+      configurePreviewServer(server) {
+        server.middlewares.use((req, res, next) => {
+          routes.main.forEach(route => {
+            if (route.file && (req.url === route.path || req.url === route.path + '/')) {
+              req.url = '/' + route.file;
+            }
+          });
+          next();
+        });
+      },
+
       // Also generate during build
       buildStart() {
         const html = generateLandingPage(__dirname);
@@ -116,72 +117,6 @@ export default defineConfig({
         console.log('✓ Generated index.html for build');
       }
     },
-    // Strip consoleLogger from production builds
-    {
-      name: 'strip-console-logger',
-      apply: 'build',
-      enforce: 'pre',
-      resolveId(source) {
-        if (source.includes('consoleLogger')) {
-          return '\0empty-console-logger';
-        }
-      },
-      load(id) {
-        if (id === '\0empty-console-logger') {
-          return 'export default {}';
-        }
-      }
-    },
-    // Obfuscate user code chunks only (runs after Vite resolves all imports)
-    {
-      name: 'obfuscate-user-chunks',
-      apply: 'build' as const,
-      renderChunk(code, chunk) {
-        const userChunks = [
-          'eurovision', 'host', 'party', 'bot-panel',
-          'country-quiz', 'capitals-quiz', 'country-game',
-          'medals', 'video-quiz', 'minigames', 'flag-quiz', 'image-quiz',
-          'base-game-controller', 'solo-game-controller', 'start-quiz-game',
-          'result-overlay', 'end-game-overlay', 'mobile-app-ad',
-        ];
-        const isUserChunk = userChunks.some(name => chunk.fileName.includes(name));
-        if (!isUserChunk) return null;
-        const result = Obfuscator.obfuscate(code, {
-          compact: true,
-          controlFlowFlattening: true,
-          controlFlowFlatteningThreshold: 0.75,
-          numbersToExpressions: true,
-          simplify: true,
-          stringArray: false,
-          splitStrings: false,
-          reservedNames: ['onYouTubeIframeAPIReady'],
-          sourceMap: false,
-        });
-        return { code: result.getObfuscatedCode(), map: null };
-      },
-    },
-    // Remove dev-only folders from production build
-    {
-      name: 'remove-dev-folders',
-      closeBundle() {
-        const devFolders = ['edit', 'tests'];
-        for (const folder of devFolders) {
-          const folderPath = join(__dirname, 'dist', folder);
-          try {
-            rmSync(folderPath, { recursive: true, force: true });
-            console.log(`✓ Removed dev folder from build: ${folder}/`);
-          } catch {
-            // Folder doesn't exist, that's fine
-          }
-        }
-      }
-    },
-    // Pre-compress static assets with gzip for Caddy to serve
-    viteCompression({
-      algorithm: 'gzip',
-      ext: '.gz',
-      threshold: 1024, // Only compress files > 1KB
-      deleteOriginFile: false, // Keep original files for fallback
-    })
+    ...buildPlugins(__dirname),
   ]
 });
