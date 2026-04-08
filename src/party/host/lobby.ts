@@ -7,7 +7,7 @@ import { EarthGlobe } from '../../earth-globe';
 import { RevealVisualizer } from '../../shared/visualizers/reveal-visualizer';
 import { Confetti } from '../../shared/effects/confetti';
 import { config } from '../../config';
-import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
+import { showVideoOverlay, hideVideoOverlay, suspendVideoOverlay } from '../../shared/ui/video-overlay';
 import { showImageOverlay, hideImageOverlay } from '../../shared/ui/image-overlay';
 
 interface Player {
@@ -333,11 +333,11 @@ class HostLobby {
             showVideoOverlay(question.youtubeId, question.prompt, question.startTime, question.endTime, question.hideTitle);
             this.questionOverlay.style.display = 'none';
         } else if (question.present === 'image') {
-            hideVideoOverlay();
+            suspendVideoOverlay();
             showImageOverlay(question.imageUrl || '', question.prompt || '', question.imageFrame ?? 'default');
             this.questionOverlay.style.display = 'none';
         } else {
-            hideVideoOverlay();
+            suspendVideoOverlay();
             hideImageOverlay();
             const promptEl = this.questionOverlay.querySelector('#cityName');
             if (promptEl) promptEl.textContent = question.prompt;

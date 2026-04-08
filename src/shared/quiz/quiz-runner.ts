@@ -31,7 +31,7 @@ import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
 import { zoom, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe'
 import { ALTITUDE_NORMAL, ALTITUDE_CLEARED, ALTITUDE_WRONG_POP, ALTITUDE_SHOW_CORRECT } from '../../earth-globe/constants'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
-import { showVideoOverlay, hideVideoOverlay, expandVideoOverlay } from '../ui/video-overlay'
+import { showVideoOverlay, suspendVideoOverlay, expandVideoOverlay } from '../ui/video-overlay'
 import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
 import { showTextCardOverlay, hideTextCardOverlay } from '../ui/text-card-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
@@ -492,7 +492,7 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.HideVideo: {
-            hideVideoOverlay()
+            suspendVideoOverlay()
             advance(now)
             break
         }

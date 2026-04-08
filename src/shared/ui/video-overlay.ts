@@ -40,6 +40,8 @@ interface YTPlayer {
     getCurrentTime(): number
     seekTo(seconds: number, allowSeekAhead: boolean): void
     loadVideoById(options: { videoId: string; startSeconds?: number }): void
+    pauseVideo(): void
+    playVideo(): void
     destroy(): void
 }
 
@@ -49,6 +51,7 @@ let promptElement: HTMLDivElement | null = null
 let toggleBtn: HTMLDivElement | null = null
 let visible = false
 let isHidden = false
+let suspended = false
 let ytPlayer: YTPlayer | null = null
 let loopInterval: number | null = null
 let apiReady = false
@@ -283,12 +286,24 @@ export async function showVideoOverlay(
     // Store options for retry
     currentOptions = options
 
+    // Resume from suspended state — un-hide the overlay
+    if (suspended && clipWrapper) {
+        clipWrapper.style.display = ''
+        suspended = false
+    }
+
     // OPTIMIZATION: Reuse existing player if possible
     // This prevents YouTube rate-limiting by avoiding repeated player creation
     if (ytPlayer && currentYoutubeId === youtubeId && clipWrapper) {
         // Same video — just seek to new position and update UI
         hideErrorOverlay()
+        hasStartedPlaying = false
+        clearPlaybackTimeout()
+        playbackTimeout = window.setTimeout(() => {
+            if (!hasStartedPlaying) handlePlayerError()
+        }, PLAYBACK_TIMEOUT_MS)
         ytPlayer.seekTo(start, true)
+        ytPlayer.playVideo()
         setupLoopInterval(start, videoEndTime)
         if (promptElement) {
             promptElement.textContent = promptText
@@ -300,7 +315,13 @@ export async function showVideoOverlay(
     if (ytPlayer && currentYoutubeId !== youtubeId && clipWrapper) {
         // Different video — reuse player with loadVideoById
         hideErrorOverlay()
+        hasStartedPlaying = false
+        clearPlaybackTimeout()
+        playbackTimeout = window.setTimeout(() => {
+            if (!hasStartedPlaying) handlePlayerError()
+        }, PLAYBACK_TIMEOUT_MS)
         ytPlayer.loadVideoById({ videoId: youtubeId, startSeconds: start })
+        ytPlayer.playVideo()
         currentYoutubeId = youtubeId
         setupLoopInterval(start, videoEndTime)
         if (promptElement) {
@@ -499,6 +520,36 @@ export function hideVideoOverlay(): void {
     hasStartedPlaying = false
     visible = false
     isHidden = false
+    suspended = false
+}
+
+/**
+ * Suspend the video overlay — pause and hide, but keep the player alive.
+ * Use this between questions to avoid YouTube rate-limiting from repeated
+ * player creation/destruction.
+ */
+export function suspendVideoOverlay(): void {
+    if (loopInterval !== null) {
+        clearInterval(loopInterval)
+        loopInterval = null
+    }
+
+    clearPlaybackTimeout()
+
+    if (ytPlayer) {
+        try {
+            ytPlayer.pauseVideo()
+        } catch {
+            // Player may be in a bad state
+        }
+    }
+
+    if (clipWrapper) {
+        clipWrapper.style.display = 'none'
+    }
+
+    visible = false
+    suspended = true
 }
 
 /**

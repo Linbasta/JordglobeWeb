@@ -7,7 +7,7 @@ import { GameSocket } from './socket';
 import { PartyGameController } from './party-game-controller';
 import { onPinPlaced, getRecordedPositions, onPlacingModeChange } from '../../shared/managers/pin-manager';
 import { Confetti } from '../../shared/effects/confetti';
-import { showVideoOverlay, hideVideoOverlay } from '../../shared/ui/video-overlay';
+import { showVideoOverlay, hideVideoOverlay, suspendVideoOverlay } from '../../shared/ui/video-overlay';
 import { showImageOverlay, hideImageOverlay } from '../../shared/ui/image-overlay';
 
 
@@ -464,18 +464,18 @@ window.addEventListener('DOMContentLoaded', async () => {
                 if (questionOverlay) questionOverlay.style.display = 'none';
             } else if (q.present === 'image') {
                 // Show image overlay
-                hideVideoOverlay();
+                suspendVideoOverlay();
                 showImageOverlay(q.imageUrl || '', q.prompt || '', q.imageFrame ?? 'default');
                 if (questionOverlay) questionOverlay.style.display = 'none';
             } else {
                 // Show text question
-                hideVideoOverlay();
+                suspendVideoOverlay();
                 hideImageOverlay();
                 showQuestion(q.prompt || q.locationName || 'Unknown');
             }
         } else {
             // Host-only mode: hide all presentation overlays, just show minimal instruction
-            hideVideoOverlay();
+            suspendVideoOverlay();
             hideImageOverlay();
             if (questionOverlay) {
                 questionOverlay.style.display = 'block';
