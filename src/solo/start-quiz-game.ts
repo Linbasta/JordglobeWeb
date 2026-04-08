@@ -35,8 +35,8 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
     // 2. Mobile app ad (desktop only)
     showMobileAppAd()
 
-    // 3. Inspector (dev only)
-    if (import.meta.env.DEV) {
+    // 3. Inspector (dev only, localhost only — too heavy over LAN)
+    if (import.meta.env.DEV && location.hostname === 'localhost') {
         await import('@babylonjs/core/Debug/debugLayer')
         await import('@babylonjs/inspector')
     }
