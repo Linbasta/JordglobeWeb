@@ -40,4 +40,10 @@ export class PatchedArcRotatePointersInput extends ArcRotateCameraPointersInput 
         this._lastMultiTouchTime = 0;
         super.onLostFocus();
     }
+
+    detachControl(): void {
+        this._pointerCount = 0;
+        this._lastMultiTouchTime = 0;
+        super.detachControl();
+    }
 }
