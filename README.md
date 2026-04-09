@@ -54,7 +54,7 @@ npm run preview
 
 ## Deploying the Eurovision Quiz to Firebase Hosting
 
-The Eurovision quiz is deployed standalone to the `jordglobegl-dev` Firebase Hosting site (within the `geotest-319417` project) at **https://jordglobegl-dev.web.app/**.
+The Eurovision quiz is deployed standalone to the `jordglobegl-dev` Firebase Hosting site (within the `geotest-319417` project), served from a Firebase custom domain at **https://eurovision.jordglobe.com/** (default Firebase URL: `https://jordglobegl-dev.web.app/`).
 
 The deploy artifact lives in a self-contained `dist-eurovision/` folder, populated from an explicit allow-list of files defined in `scripts/build-eurovision-deploy.mjs`. This ensures only the files Eurovision actually needs are uploaded — adding new quizzes or assets to the project won't accidentally leak into this deploy.
 
@@ -66,13 +66,15 @@ firebase login
 firebase projects:list   # confirm geotest-319417 is listed
 ```
 
+The custom domain `eurovision.jordglobe.com` is configured in Firebase Console → Hosting → `jordglobegl-dev` site → Add custom domain. Requires a TXT record for verification and an A record (Firebase provides exact values). SSL is auto-provisioned.
+
 ### Deploy
 
 ```bash
 npm run deploy:firebase
 ```
 
-This runs `npm run build:eurovision-deploy` (which builds the page and stages `dist-eurovision/`) and then `firebase deploy --only hosting`. The site goes live at https://jordglobegl-dev.web.app/.
+This runs `npm run build:eurovision-deploy` (which injects SEO meta tags, builds the page, and stages `dist-eurovision/`) and then `firebase deploy --only hosting`. The site goes live at https://eurovision.jordglobe.com/ (custom domain) and https://jordglobegl-dev.web.app/ (default Firebase URL).
 
 ### Preview channel (optional)
 
@@ -92,6 +94,10 @@ If a runtime 404 appears in DevTools after a deploy, the missing file isn't in t
 ### Firestore note
 
 Quiz records are written to Firestore in the same `geotest-319417` project (database `webversion`, collection `records/eurovision`). No separate Firestore setup is needed for the Firebase Hosting deploy — the client SDK config in `src/shared/firebase.ts` is already correct.
+
+### SEO
+
+The Eurovision page has its own canonical URL (`https://eurovision.jordglobe.com/`) configured via the `baseUrlOverride` field in `seo-config.ts`. The deploy generates a small `sitemap.xml` and `robots.txt` scoped to the subdomain — these are NOT the shared `jordglobe.com` versions in `public/`. The `inject-seo` script runs automatically as part of `npm run build:eurovision-deploy` and rewrites the meta tags + `<title>` in `eurovision.html` from `seo-config.ts`.
 
 ### Run Neighbor Detection Test
 

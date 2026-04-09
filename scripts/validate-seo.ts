@@ -133,8 +133,13 @@ function validateSitemap(): string[] {
 
     const content = readFileSync(sitemapPath, 'utf-8');
 
-    // Check that all public pages are in sitemap
+    // Check that all public pages are in sitemap.
+    // Skip pages with baseUrlOverride — they live on a different domain
+    // and have their own sitemap served from their own deploy.
     for (const page of publicPages) {
+        const seo = seoConfig.pages[page];
+        if (seo?.baseUrlOverride) continue;
+
         const pageName = page.replace('.html', '');
         const urlPattern = pageName === 'index'
             ? /jordglobe\.com\/["'<]/

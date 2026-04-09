@@ -17,9 +17,14 @@ const ROOT_DIR = process.cwd();
 // ── Generate meta tags for a page ──
 
 function generateMetaTags(page: string, seo: PageSEO): string {
-    const pagePath = page === 'index.html' ? '/' : `/${page.replace('.html', '')}`;
-    const fullUrl = `${seoConfig.baseUrl}${pagePath}`;
-    const imageUrl = `${seoConfig.baseUrl}${seoConfig.defaultImage}`;
+    // If the page has a baseUrlOverride, it lives at the root of that domain
+    // (no path derivation). Otherwise, derive the path from the filename.
+    const baseUrl = seo.baseUrlOverride || seoConfig.baseUrl;
+    const pagePath = seo.baseUrlOverride
+        ? '/'
+        : (page === 'index.html' ? '/' : `/${page.replace('.html', '')}`);
+    const fullUrl = `${baseUrl}${pagePath}`;
+    const imageUrl = `${baseUrl}${seoConfig.defaultImage}`;
 
     const ogTitle = seo.ogTitle || seo.title;
     const ogDescription = seo.ogDescription || seo.description;

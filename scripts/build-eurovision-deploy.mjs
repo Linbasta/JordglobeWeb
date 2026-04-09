@@ -9,7 +9,7 @@
  */
 
 import { execSync } from 'child_process';
-import { cpSync, rmSync, mkdirSync, existsSync, readdirSync, readFileSync } from 'fs';
+import { cpSync, rmSync, mkdirSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -64,6 +64,11 @@ const ALLOW_LIST = [
     'phone-icon.svg',
     'qr-download.png',
     'AppIcon.png',
+
+    // SEO: og:image (sitemap.xml and robots.txt are written inline below
+    // since the eurovision deploy lives on its own subdomain and shouldn't
+    // share the jordglobe.com sitemap.)
+    'og-image.png',
 ];
 
 // Files matched by glob (the hashed bundle filename varies per build).
@@ -72,7 +77,16 @@ const ALLOW_GLOBS = [
 ];
 
 // ---------------------------------------------------------------------------
-// 1. Build Eurovision (deterministic — ignores manifest rebuild flags)
+// 1. Inject SEO meta tags into eurovision.html (from seo-config.ts)
+// ---------------------------------------------------------------------------
+console.log('🏷  Injecting SEO meta tags...');
+execSync('npx tsx scripts/inject-seo.ts', {
+    cwd: rootDir,
+    stdio: 'inherit',
+});
+
+// ---------------------------------------------------------------------------
+// 2. Build Eurovision (deterministic — ignores manifest rebuild flags)
 // ---------------------------------------------------------------------------
 console.log('🔨 Building eurovision page...');
 execSync('npx tsx scripts/build-inlined.mjs --pages eurovision', {
@@ -177,4 +191,30 @@ if (unexplained.length > 0) {
     console.log('✓ No drift — bundle does not reference any non-allow-listed assets.');
 }
 
-console.log(`\n✅ dist-eurovision/ ready (${allFiles.length} files).`);
+// ---------------------------------------------------------------------------
+// 6. Write eurovision-specific sitemap.xml and robots.txt.
+//    These live on eurovision.jordglobe.com and must NOT be the shared
+//    jordglobe.com versions (cross-domain sitemaps confuse Google).
+// ---------------------------------------------------------------------------
+const eurovisionSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://eurovision.jordglobe.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`;
+writeFileSync(join(dstDist, 'sitemap.xml'), eurovisionSitemap, 'utf-8');
+
+const eurovisionRobots = `# Robots.txt for eurovision.jordglobe.com
+User-agent: *
+Allow: /
+
+Sitemap: https://eurovision.jordglobe.com/sitemap.xml
+`;
+writeFileSync(join(dstDist, 'robots.txt'), eurovisionRobots, 'utf-8');
+
+console.log('✓ Wrote eurovision-specific sitemap.xml and robots.txt');
+
+console.log(`\n✅ dist-eurovision/ ready (${allFiles.length + 2} files).`);

@@ -16,6 +16,13 @@ export interface PageSEO {
     ogDescription?: string;
     twitterTitle?: string;
     twitterDescription?: string;
+    /**
+     * Override the base URL for canonical / og:url / twitter:url and og:image.
+     * Use for pages hosted on a different domain than seoConfig.baseUrl.
+     * When set, the page is treated as the root (/) of the override URL —
+     * the filename-derived path is NOT appended.
+     */
+    baseUrlOverride?: string;
 }
 
 export interface SEOConfig {
@@ -73,6 +80,16 @@ export const seoConfig: SEOConfig = {
             description: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge in this interactive quiz game.',
             ogTitle: 'US States Quiz - Find All 50 States',
             ogDescription: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge.',
+        },
+
+        'eurovision.html': {
+            title: 'Eurovision Quiz - Guess Songs from Eurovision 2025 | JordGlobe',
+            description: 'Watch Eurovision Song Contest 2025 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
+            ogTitle: 'Eurovision 2025 Quiz - Guess the Country from the Song',
+            ogDescription: 'Watch Eurovision 2025 performances and guess which country each one is from in this interactive 3D globe quiz.',
+            // Eurovision lives on its own subdomain, served from a separate
+            // Firebase Hosting site (jordglobegl-dev) with a custom domain.
+            baseUrlOverride: 'https://eurovision.jordglobe.com',
         },
 
         // ─────────────────────────────────────────────────────────────
