@@ -52,6 +52,47 @@ Output will be in the `dist/` directory.
 npm run preview
 ```
 
+## Deploying the Eurovision Quiz to Firebase Hosting
+
+The Eurovision quiz is deployed standalone to the `jordglobegl-dev` Firebase Hosting site (within the `geotest-319417` project) at **https://jordglobegl-dev.web.app/**.
+
+The deploy artifact lives in a self-contained `dist-eurovision/` folder, populated from an explicit allow-list of files defined in `scripts/build-eurovision-deploy.mjs`. This ensures only the files Eurovision actually needs are uploaded — adding new quizzes or assets to the project won't accidentally leak into this deploy.
+
+### One-time setup
+
+```bash
+npm install -g firebase-tools
+firebase login
+firebase projects:list   # confirm geotest-319417 is listed
+```
+
+### Deploy
+
+```bash
+npm run deploy:firebase
+```
+
+This runs `npm run build:eurovision-deploy` (which builds the page and stages `dist-eurovision/`) and then `firebase deploy --only hosting`. The site goes live at https://jordglobegl-dev.web.app/.
+
+### Preview channel (optional)
+
+To test on a temporary URL without touching the live site:
+
+```bash
+npm run build:eurovision-deploy
+firebase hosting:channel:deploy preview-eurovision
+```
+
+Firebase prints a preview URL that's isolated from production and expires after 7 days by default.
+
+### Adding a new asset to the deploy
+
+If a runtime 404 appears in DevTools after a deploy, the missing file isn't in the allow-list. Add it to `ALLOW_LIST` in `scripts/build-eurovision-deploy.mjs` and re-run `npm run deploy:firebase`. The build script also runs a drift check on the JS bundle and warns about asset references it doesn't recognize.
+
+### Firestore note
+
+Quiz records are written to Firestore in the same `geotest-319417` project (database `webversion`, collection `records/eurovision`). No separate Firestore setup is needed for the Firebase Hosting deploy — the client SDK config in `src/shared/firebase.ts` is already correct.
+
 ### Run Neighbor Detection Test
 
 Test the neighbor detection algorithm from CLI:

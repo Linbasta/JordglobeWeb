@@ -48,7 +48,9 @@
     "deploy": "scripts/gcp-staging/deploy.sh",
     "deploy:ssh": "scripts/gcp-staging/ssh.sh",
     "deploy:logs": "scripts/gcp-staging/logs.sh",
-    "deploy:analytics": "scripts/gcp-staging/analytics.sh"
+    "deploy:analytics": "scripts/gcp-staging/analytics.sh",
+    "build:eurovision-deploy": "node scripts/build-eurovision-deploy.mjs",
+    "deploy:firebase": "npm run build:eurovision-deploy && firebase deploy --only hosting"
   },
   "devDependencies": {
     "@babylonjs/inspector": "^7.54.3",
