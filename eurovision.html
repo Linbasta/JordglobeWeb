@@ -142,12 +142,8 @@
                 // Submit score and check for world record
                 let isNewRecord = false;
                 try {
-                    const res = await fetch('/api/record', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ quiz_id: 'eurovision', score, total, elapsed_ms: elapsedMs }),
-                    });
-                    const data = await res.json();
+                    const { postRecord } = await import('/src/shared/firestore-records.ts');
+                    const data = await postRecord('eurovision', score, total, elapsedMs);
                     isNewRecord = data.isNewRecord;
                 } catch (e) {
                     console.warn('Failed to submit record:', e);
