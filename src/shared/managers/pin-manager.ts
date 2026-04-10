@@ -23,7 +23,7 @@ import { zoom } from '../../earth-globe';
 import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
 
 const EARTH_RADIUS = 2.0;
-const TOUCH_Y_OFFSET = -50; // negative = upward in screen space, ~50px above fingertip
+const TOUCH_Y_OFFSET_PERCENT = 0.10; // 10% of screen height, upward from fingertip
 const CANCEL_ZONE_WIDTH = 600;
 const CANCEL_ZONE_VISIBLE_HEIGHT = 50;
 
@@ -153,7 +153,8 @@ function setupEventHandlers(): void {
 
     canvas.addEventListener('pointerdown', (e) => {
         if (e.button === 2 && !isPlacingMode) {
-            const pickY = e.pointerType === 'touch' ? e.clientY + TOUCH_Y_OFFSET : e.clientY;
+            const touchYOffset = -TOUCH_Y_OFFSET_PERCENT * canvas.clientHeight;
+            const pickY = e.pointerType === 'touch' ? e.clientY + touchYOffset : e.clientY;
             const pickResult = scene.pick(e.clientX, pickY, (mesh) => mesh === earthSphere);
             if (pickResult.hit) {
                 enterPlacingMode();
@@ -168,7 +169,8 @@ function setupEventHandlers(): void {
 }
 
 function updatePreviewPinFromEvent(event: PointerEvent): void {
-    const pickY = event.pointerType === 'touch' ? event.clientY + TOUCH_Y_OFFSET : event.clientY;
+    const touchYOffset = -TOUCH_Y_OFFSET_PERCENT * canvas.clientHeight;
+    const pickY = event.pointerType === 'touch' ? event.clientY + touchYOffset : event.clientY;
     lastClientX = event.clientX;
     lastClientY = pickY;
     updatePointer(event.clientX, event.clientY);
