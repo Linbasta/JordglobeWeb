@@ -12,7 +12,7 @@ const BANNER_HEIGHT = '60px'
 const BANNER_HEIGHT_PX = 60 // Numeric value for calculations
 
 // TEMP: Set to true to always show banner (for desktop testing)
-const DEBUG_ALWAYS_SHOW_BANNER = true
+const DEBUG_ALWAYS_SHOW_BANNER = false
 
 /**
  * Banner visibility change callback
