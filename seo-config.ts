@@ -83,10 +83,10 @@ export const seoConfig: SEOConfig = {
         },
 
         'eurovision.html': {
-            title: 'Eurovision Quiz - Guess Songs from Eurovision 2025 | JordGlobe',
-            description: 'Watch Eurovision Song Contest 2025 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
-            ogTitle: 'Eurovision 2025 Quiz - Guess the Country from the Song',
-            ogDescription: 'Watch Eurovision 2025 performances and guess which country each one is from in this interactive 3D globe quiz.',
+            title: 'Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe',
+            description: 'Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
+            ogTitle: 'Eurovision 2026 Quiz - Guess the Country from the Song',
+            ogDescription: 'Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.',
             // Eurovision lives on its own subdomain, served from a separate
             // Firebase Hosting site (jordglobegl-dev) with a custom domain.
             baseUrlOverride: 'https://eurovision.jordglobe.com',

@@ -6,7 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-itunes-app" content="app-id=1599500931">
     <meta name="theme-color" content="#6496DC">
-    <title>Eurovision Quiz</title>
+    <title>Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe</title>
+    <!-- SEO - Generated from seo-config.ts -->
+    <meta name="description" content="Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!">
+    <link rel="canonical" href="https://eurovision.jordglobe.com/">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Eurovision 2026 Quiz - Guess the Country from the Song">
+    <meta property="og:description" content="Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.">
+    <meta property="og:image" content="https://eurovision.jordglobe.com/og-image.png">
+    <meta property="og:url" content="https://eurovision.jordglobe.com/">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Eurovision 2026 Quiz - Guess the Country from the Song">
+    <meta name="twitter:description" content="Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.">
+    <meta name="twitter:image" content="https://eurovision.jordglobe.com/og-image.png">
+    <!-- /SEO -->
     <link rel="manifest" href="/eurovision-manifest.json">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/JordglobeIconSquare.png">
@@ -28,7 +43,9 @@
     <script type="module">
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        import { initAnalytics } from '/src/shared/analytics.ts';
         initMobile();
+        initAnalytics();  // Enable Firebase Analytics
 
         // Preload sprite images when browser is idle (not blocking initial load)
         const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
@@ -55,7 +72,7 @@
             return [...iso2].map(c => String.fromCodePoint(0x1F1E6 + c.charCodeAt(0) - 65)).join('');
         }
 
-        // Single compilation video with all Eurovision 2025 entries
+        // Single compilation video with all Eurovision 2026 entries
         const COMPILATION_VIDEO_ID = '1jnR-m5u5yQ';
 
         // Global offset: start this many seconds into each song (to skip intros)
@@ -71,7 +88,7 @@
         }
 
         // [songStartTime, countryISO2, countryName, clipDuration?]
-        // Timecodes from the Eurovision 2025 compilation video
+        // Timecodes from the Eurovision 2026 compilation video
         // Optional 4th element overrides CLIP_DURATION for that entry
         const EUROVISION_ENTRIES = [
             ['00:01', 'AL', 'Albania'],
@@ -131,6 +148,8 @@
             questions: EUROVISION_QUESTIONS,
             scoreBarType: 'simple',
             showHoverLabel: true,
+            analyticsGame: 'Eurovision',
+            analyticsGameId: 'eurovision_2026',
             onReady: () => showStartButton(),
             onGameComplete: async (score, total, elapsedMs, results) => {
                 // Dynamic imports - only load when game ends

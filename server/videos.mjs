@@ -1,5 +1,5 @@
 /**
- * Eurovision 2025 Video Quiz
+ * Eurovision 2026 Video Quiz
  *
  * Uses a single compilation video with timecodes to prevent
  * country names being revealed in individual video titles.
@@ -10,7 +10,7 @@
  * - youtubeId, lat, lng, prompt, locationName, startTime, endTime
  */
 
-// Single compilation video with all Eurovision 2025 entries
+// Single compilation video with all Eurovision 2026 entries
 const COMPILATION_VIDEO_ID = '1jnR-m5u5yQ';
 
 // Global offset: start this many seconds into each song (to skip intros)
@@ -26,7 +26,7 @@ function parseTime(timeStr) {
 }
 
 // [songStartTime, lat, lng, locationName]
-// Timecodes from the Eurovision 2025 compilation video
+// Timecodes from the Eurovision 2026 compilation video
 const EUROVISION_ENTRIES = [
     ['00:00', 41.3275, 19.8187, 'Albania'],
     ['00:31', 40.1792, 44.4991, 'Armenia'],

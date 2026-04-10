@@ -49,7 +49,7 @@ export interface QuizConfig {
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
     /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
     analyticsGame?: string
-    /** Analytics: game ID (e.g., 'eurovision_2025', 'daily_2026-04-10') */
+    /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
     analyticsGameId?: string
 }
 
