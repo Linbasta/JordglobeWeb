@@ -11,6 +11,7 @@ let clipWrapper: HTMLDivElement | null = null
 let container: HTMLDivElement | null = null
 let visible = false
 let isHidden = false
+let bannerOffsetPx = 0
 
 /**
  * Show a text card centered at top of screen.
@@ -24,7 +25,7 @@ export function showTextCardOverlay(prompt: string): void {
 
     // Clipping wrapper — masks content above score bar
     clipWrapper = document.createElement('div')
-    const clipTop = SCORE_BAR_BOTTOM - SCORE_BAR_GAP
+    const clipTop = SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
     clipWrapper.style.cssText =
         `position:fixed;top:${clipTop}px;left:0;right:0;bottom:0;` +
         'overflow:hidden;pointer-events:none;z-index:50;'
@@ -104,4 +105,13 @@ export function hideTextCardOverlay(): void {
  */
 export function isTextCardVisible(): boolean {
     return visible
+}
+
+/** Set banner offset (call when Android app banner visibility changes) */
+export function setTextCardBannerOffset(offsetPx: number): void {
+    bannerOffsetPx = offsetPx
+    if (clipWrapper) {
+        const clipTop = SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
+        clipWrapper.style.top = `${clipTop}px`
+    }
 }

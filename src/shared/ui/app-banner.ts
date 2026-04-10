@@ -11,6 +11,9 @@ const BANNER_DISMISSED_KEY = 'app-banner-dismissed'
 const BANNER_HEIGHT = '60px'
 const BANNER_HEIGHT_PX = 60 // Numeric value for calculations
 
+// TEMP: Set to true to always show banner (for desktop testing)
+const DEBUG_ALWAYS_SHOW_BANNER = true
+
 /**
  * Banner visibility change callback
  */
@@ -18,9 +21,20 @@ type BannerVisibilityCallback = (visible: boolean, heightPx: number) => void
 
 const visibilityCallbacks: BannerVisibilityCallback[] = []
 
+// Track current banner state for late subscribers
+let currentBannerVisible = false
+
+/**
+ * Get the current banner height in pixels
+ * Use this to initialize UI elements with correct offset
+ */
+export function getBannerHeight(): number {
+    return currentBannerVisible ? BANNER_HEIGHT_PX : 0
+}
+
 /**
  * Subscribe to banner visibility changes
- * @param callback - Called when banner is shown (true) or hidden (false), with height in pixels
+ * @param callback - Called when banner visibility changes (not on subscribe)
  * @returns Unsubscribe function
  */
 export function onBannerVisibilityChange(callback: BannerVisibilityCallback): () => void {
@@ -37,6 +51,7 @@ export function onBannerVisibilityChange(callback: BannerVisibilityCallback): ()
  * Notify all subscribers of banner visibility change
  */
 function notifyVisibilityChange(visible: boolean): void {
+    currentBannerVisible = visible
     visibilityCallbacks.forEach(callback => callback(visible, BANNER_HEIGHT_PX))
 }
 
@@ -104,7 +119,6 @@ function createAndroidBanner(): HTMLElement {
     `
     closeBtn.onclick = () => {
         setDismissed()
-        document.body.style.paddingTop = ''
         banner.remove()
         notifyVisibilityChange(false)
     }
@@ -176,19 +190,19 @@ function createAndroidBanner(): HTMLElement {
  */
 export function initAppBanner(): void {
     // Only show on Android, and only if not dismissed
-    if (!isAndroid() || wasDismissed()) {
+    // (unless DEBUG_ALWAYS_SHOW_BANNER is true)
+    if (!DEBUG_ALWAYS_SHOW_BANNER && (!isAndroid() || wasDismissed())) {
         return
     }
 
     // Wait for DOM to be ready
+    // Banner is position:fixed overlay. UI elements are offset via callbacks.
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            document.body.style.paddingTop = BANNER_HEIGHT
             document.body.appendChild(createAndroidBanner())
             notifyVisibilityChange(true)
         })
     } else {
-        document.body.style.paddingTop = BANNER_HEIGHT
         document.body.appendChild(createAndroidBanner())
         notifyVisibilityChange(true)
     }

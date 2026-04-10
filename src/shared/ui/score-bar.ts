@@ -26,6 +26,9 @@ let animFrameId = 0
 let percentRequirement = -1
 let winShown = false
 
+// Banner offset (when Android app banner is visible)
+let bannerOffsetPx = 0
+
 // ── Particles ──
 const PARTICLE_COUNT = 8
 const PARTICLE_LIFETIME_MS = 400
@@ -65,6 +68,11 @@ const FILL_RADIUS = 3
 export const SCORE_BAR_GAP = 8  // Gap below score bar for other UI elements
 export const SCORE_BAR_BOTTOM = BAR_TOP + BAR_HEIGHT + SCORE_BAR_GAP
 
+/** Get current score bar bottom position including banner offset */
+export function getScoreBarBottom(): number {
+    return BAR_TOP + bannerOffsetPx + BAR_HEIGHT + SCORE_BAR_GAP
+}
+
 // Shared panel sizing — used by score bar, video overlay, etc.
 export const PANEL_HEIGHT_VH = 25
 export const PANEL_ASPECT = '16/9'
@@ -85,7 +93,7 @@ export function createScoreBar(turnsLeft: number, total: number): void {
 
     root = document.createElement('div')
     root.style.cssText =
-        `position:absolute;top:${BAR_TOP}px;left:50%;transform:translateX(-50%);` +
+        `position:absolute;top:${BAR_TOP + bannerOffsetPx}px;left:50%;transform:translateX(-50%);` +
         `width:${window.innerHeight > window.innerWidth ? BAR_WIDTH_PORTRAIT : BAR_WIDTH_LANDSCAPE}vw;height:${BAR_HEIGHT}px;z-index:100;` +
         `display:flex;align-items:center;gap:3px;`
 
@@ -219,6 +227,14 @@ export function disposeScoreBar(): void {
     percentRequirement = -1
     winShown = false
     removeKeyframes()
+}
+
+/** Set banner offset (call when Android app banner visibility changes) */
+export function setScoreBarBannerOffset(offsetPx: number): void {
+    bannerOffsetPx = offsetPx
+    if (root) {
+        root.style.top = `${BAR_TOP + bannerOffsetPx}px`
+    }
 }
 
 // ── Fill Animation ──

@@ -20,6 +20,7 @@ const FRAME_BORDER = 10
 
 // ── State ──
 let totalQuestions = 0
+let bannerOffsetPx = 0
 
 export function createSimpleScoreBar(turnsLeft: number, total: number): void {
     disposeSimpleScoreBar()
@@ -30,7 +31,7 @@ export function createSimpleScoreBar(turnsLeft: number, total: number): void {
     const isPortrait = window.innerHeight > window.innerWidth
     const width = isPortrait ? PANEL_WIDTH_PORTRAIT : PANEL_WIDTH_LANDSCAPE
     root.style.cssText =
-        `position:absolute;top:${BAR_TOP}px;left:50%;transform:translateX(-50%);` +
+        `position:absolute;top:${BAR_TOP + bannerOffsetPx}px;left:50%;transform:translateX(-50%);` +
         `width:${width};height:${BAR_HEIGHT}px;z-index:100;` +
         `display:flex;align-items:center;justify-content:space-between;` +
         `box-sizing:border-box;` +
@@ -99,4 +100,12 @@ export function disposeSimpleScoreBar(): void {
     }
     questionEl = scoreEl = timeEl = null
     totalQuestions = 0
+}
+
+/** Set banner offset (call when Android app banner visibility changes) */
+export function setSimpleScoreBarBannerOffset(offsetPx: number): void {
+    bannerOffsetPx = offsetPx
+    if (root) {
+        root.style.top = `${BAR_TOP + bannerOffsetPx}px`
+    }
 }

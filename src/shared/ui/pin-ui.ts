@@ -35,6 +35,7 @@ export class PinUI {
 
     constructor(advancedTexture: AdvancedDynamicTexture) {
         this.advancedTexture = advancedTexture;
+        // No offset needed - banner is position:fixed overlay, doesn't affect canvas layout
     }
 
     /**

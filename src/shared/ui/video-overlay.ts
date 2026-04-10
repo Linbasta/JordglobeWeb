@@ -59,6 +59,7 @@ let apiReadyCallbacks: (() => void)[] = []
 let currentYoutubeId: string | null = null
 let currentStartTime = 0
 let currentEndTime: number | undefined = undefined
+let bannerOffsetPx = 0
 
 // Error handling state
 let errorOverlay: HTMLDivElement | null = null
@@ -341,7 +342,7 @@ export async function showVideoOverlay(
 
     // Clipping wrapper — masks content above score bar
     clipWrapper = document.createElement('div')
-    const clipTop = SCORE_BAR_BOTTOM - SCORE_BAR_GAP
+    const clipTop = SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
     clipWrapper.style.cssText =
         `position:fixed;top:${clipTop}px;left:0;right:0;bottom:0;` +
         'overflow:hidden;pointer-events:none;z-index:50;'
@@ -591,4 +592,13 @@ export function expandVideoOverlay(): void {
     if (toggleBtn) toggleBtn.textContent = '▼'
 
     isHidden = false
+}
+
+/** Set banner offset (call when Android app banner visibility changes) */
+export function setVideoBannerOffset(offsetPx: number): void {
+    bannerOffsetPx = offsetPx
+    if (clipWrapper) {
+        const clipTop = SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
+        clipWrapper.style.top = `${clipTop}px`
+    }
 }

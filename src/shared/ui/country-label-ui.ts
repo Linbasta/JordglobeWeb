@@ -11,9 +11,22 @@ export class CountryLabelUI {
     private advancedTexture: AdvancedDynamicTexture;
     private countryCard: Image | null = null;
     private countryText: TextBlock | null = null;
+    private bannerOffsetPx = 0;
 
     constructor(advancedTexture: AdvancedDynamicTexture) {
         this.advancedTexture = advancedTexture;
+    }
+
+    /** Set banner offset (call when Android app banner visibility changes) */
+    setBannerOffset(offsetPx: number): void {
+        this.bannerOffsetPx = offsetPx;
+        const topValue = `${SCORE_BAR_BOTTOM + this.bannerOffsetPx}px`;
+        if (this.countryCard) {
+            this.countryCard.top = topValue;
+        }
+        if (this.countryText) {
+            this.countryText.top = topValue;
+        }
     }
 
     /**
@@ -69,7 +82,7 @@ export class CountryLabelUI {
         this.countryCard.height = "100px";
         this.countryCard.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         this.countryCard.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        this.countryCard.top = `${SCORE_BAR_BOTTOM}px`;
+        this.countryCard.top = `${SCORE_BAR_BOTTOM + this.bannerOffsetPx}px`;
         this.countryCard.isPointerBlocker = false;
 
         // Set nine-patch stretch mode
@@ -93,7 +106,7 @@ export class CountryLabelUI {
         this.countryText.fontWeight = "bold";
         this.countryText.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         this.countryText.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        this.countryText.top = `${SCORE_BAR_BOTTOM}px`;
+        this.countryText.top = `${SCORE_BAR_BOTTOM + this.bannerOffsetPx}px`;
         this.countryText.isPointerBlocker = false;
 
         // Add text to GUI (on top of the card)

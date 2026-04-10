@@ -18,6 +18,7 @@ let clipWrapper: HTMLDivElement | null = null  // Clipping container
 let container: HTMLDivElement | null = null
 let visible = false
 let isHidden = false  // Track if card is slid up under score bar
+let bannerOffsetPx = 0
 
 /**
  * Show an image panel centered at top of screen.
@@ -40,7 +41,7 @@ export function showImageOverlay(
     // Simple frame (flags): positioned below score bar, no clipping, no hide behavior
     if (frame === 'simple') {
         clipWrapper = document.createElement('div')
-        const simpleTop = SCORE_BAR_BOTTOM + SIMPLE_FRAME_TOP_MARGIN
+        const simpleTop = SCORE_BAR_BOTTOM + bannerOffsetPx + SIMPLE_FRAME_TOP_MARGIN
         clipWrapper.style.cssText =
             `position:fixed;top:${simpleTop}px;left:0;right:0;pointer-events:none;z-index:50;` +
             'display:flex;justify-content:center;'
@@ -61,7 +62,7 @@ export function showImageOverlay(
 
     // Default frame: clipping wrapper masks content above score bar
     clipWrapper = document.createElement('div')
-    const clipTop = SCORE_BAR_BOTTOM - SCORE_BAR_GAP
+    const clipTop = SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
     clipWrapper.style.cssText =
         `position:fixed;top:${clipTop}px;left:0;right:0;bottom:0;` +
         'overflow:hidden;pointer-events:none;z-index:50;'
@@ -255,4 +256,19 @@ export function hideImageOverlay(): void {
  */
 export function isImageVisible(): boolean {
     return visible
+}
+
+/** Set banner offset (call when Android app banner visibility changes) */
+export function setImageBannerOffset(offsetPx: number): void {
+    bannerOffsetPx = offsetPx
+    if (clipWrapper) {
+        // For simple frame, top is SCORE_BAR_BOTTOM + offset + margin
+        // For default frame, top is SCORE_BAR_BOTTOM + offset - gap
+        // We check if it's a simple frame by looking at the overflow style
+        const isSimple = clipWrapper.style.overflow !== 'hidden'
+        const newTop = isSimple
+            ? SCORE_BAR_BOTTOM + bannerOffsetPx + SIMPLE_FRAME_TOP_MARGIN
+            : SCORE_BAR_BOTTOM + bannerOffsetPx - SCORE_BAR_GAP
+        clipWrapper.style.top = `${newTop}px`
+    }
 }

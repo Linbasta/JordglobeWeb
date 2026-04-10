@@ -25,7 +25,12 @@ import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 import { dismissPinTutorial } from '../ui/pin-tutorial';
 import { collapseVideoOverlay } from '../ui/video-overlay';
-import { onBannerVisibilityChange } from '../ui/app-banner';
+import { getBannerHeight, onBannerVisibilityChange } from '../ui/app-banner';
+import { setScoreBarBannerOffset } from '../ui/score-bar';
+import { setSimpleScoreBarBannerOffset } from '../ui/score-bar-simple';
+import { setTextCardBannerOffset } from '../ui/text-card-overlay';
+import { setVideoBannerOffset } from '../ui/video-overlay';
+import { setImageBannerOffset } from '../ui/image-overlay';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -57,8 +62,8 @@ export abstract class BaseGameController {
     // GUI elements
     protected advancedTexture: AdvancedDynamicTexture | null = null;
 
-    // Banner subscription cleanup
-    private unsubscribeBanner?: () => void;
+    // Banner visibility subscription
+    private unsubscribeBanner: (() => void) | null = null;
 
     // Loading screen elements
     private loadingProgress: HTMLElement | null;
@@ -290,14 +295,16 @@ export abstract class BaseGameController {
                     enterPlacingMode();
                 }
             });
-
-            // Subscribe to banner visibility changes
-            this.unsubscribeBanner = onBannerVisibilityChange((visible, heightPx) => {
-                if (this.pinUI) {
-                    this.pinUI.setBannerOffset(visible ? heightPx : 0);
-                }
-            });
         }
+
+        // Set initial banner offset (if banner is already visible)
+        const initialOffset = getBannerHeight();
+        this.applyBannerOffset(initialOffset);
+
+        // Subscribe to banner visibility changes
+        this.unsubscribeBanner = onBannerVisibilityChange((visible, heightPx) => {
+            this.applyBannerOffset(visible ? heightPx : 0);
+        });
 
         // Let subclass add additional UI
         if (this.setupAdditionalUI) {
@@ -314,7 +321,7 @@ export abstract class BaseGameController {
         // Unsubscribe from banner changes
         if (this.unsubscribeBanner) {
             this.unsubscribeBanner();
-            this.unsubscribeBanner = undefined;
+            this.unsubscribeBanner = null;
         }
 
         // Dispose old PinUI
@@ -336,5 +343,29 @@ export abstract class BaseGameController {
         if (this.recreateAdditionalUI) {
             this.recreateAdditionalUI();
         }
+    }
+
+    /**
+     * Apply banner offset to all UI components.
+     * Called on init and when banner visibility changes.
+     *
+     * Note: Only TOP elements need adjustment. Bottom elements (PinUI) stay in place
+     * because the banner is at the TOP of the screen and doesn't affect the bottom.
+     */
+    private applyBannerOffset(offsetPx: number): void {
+        // Score bars (HTML-based, top of screen)
+        setScoreBarBannerOffset(offsetPx);
+        setSimpleScoreBarBannerOffset(offsetPx);
+
+        // Question overlays (HTML-based, below score bar)
+        setTextCardBannerOffset(offsetPx);
+        setVideoBannerOffset(offsetPx);
+        setImageBannerOffset(offsetPx);
+
+        // Note: CountryLabelUI is created by subclasses and they should call
+        // countryLabelUI.setBannerOffset() in their own banner handling if needed.
+        //
+        // PinUI is NOT adjusted because it's anchored to the BOTTOM of the screen,
+        // and a TOP banner doesn't affect bottom positioning.
     }
 }
