@@ -26,6 +26,12 @@ import {
 } from './quiz-runner'
 import { createScoreBar, updateScoreBar, disposeScoreBar } from '../ui/score-bar'
 import { createSimpleScoreBar, updateSimpleScoreBar, disposeSimpleScoreBar } from '../ui/score-bar-simple'
+import {
+    generateSessionId,
+    logGameSessionStart,
+    logGameSessionEnd,
+    logAnswer,
+} from '../analytics'
 
 /**
  * Quiz configuration
@@ -41,6 +47,10 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
+    /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
+    analyticsGame?: string
+    /** Analytics: game ID (e.g., 'eurovision_2025', 'daily_2026-04-10') */
+    analyticsGameId?: string
 }
 
 /**
@@ -61,6 +71,11 @@ export class QuizUIAdapter {
     private gameCompleteFired = false
     private lastShownQuestionIndex = -1
     private startTime = 0
+    // Analytics
+    private sessionId: string = ''
+    private analyticsGame: string = ''
+    private analyticsGameId: string = ''
+    private lastQuestionStartTime = 0
 
     constructor(globe: EarthGlobeAPI, countryLabelUI: CountryLabelUI | null) {
         this.globe = globe
@@ -80,6 +95,17 @@ export class QuizUIAdapter {
         this.gameCompleteFired = false
         this.lastShownQuestionIndex = -1
         this.startTime = performance.now()
+        this.lastQuestionStartTime = this.startTime
+
+        // Analytics setup
+        this.analyticsGame = config.analyticsGame ?? ''
+        this.analyticsGameId = config.analyticsGameId ?? ''
+        this.sessionId = this.analyticsGame ? generateSessionId() : ''
+
+        // Log session start (only if analytics configured)
+        if (this.analyticsGame && this.analyticsGameId) {
+            logGameSessionStart(this.analyticsGame, this.analyticsGameId, this.sessionId)
+        }
 
         if (config.scoreBarType === 'simple') {
             createSimpleScoreBar(config.questions.length, config.questions.length)
@@ -104,6 +130,25 @@ export class QuizUIAdapter {
                 },
                 onHideReveal: () => {
                     this.hoverLabel?.hide()
+                },
+                onAnswer: (data) => {
+                    // Log answer to analytics (only if configured)
+                    if (this.analyticsGame && this.analyticsGameId) {
+                        const timeMs = performance.now() - this.lastQuestionStartTime
+                        logAnswer({
+                            game: this.analyticsGame,
+                            gameId: this.analyticsGameId,
+                            sessionId: this.sessionId,
+                            questionId: data.questionId,
+                            correctId: data.correctId,
+                            answerId: data.answerId,
+                            latitude: data.lat,
+                            longitude: data.lng,
+                            correct: data.correct,
+                            timeMs,
+                            distanceKm: data.distanceKm,
+                        })
+                    }
                 },
             }
         )
@@ -136,6 +181,17 @@ export class QuizUIAdapter {
             // Quiz completed
             this.active = false
             const elapsedMs = performance.now() - this.startTime
+            // Log session end (only if analytics configured)
+            if (this.analyticsGame && this.analyticsGameId && !this.gameCompleteFired) {
+                logGameSessionEnd(
+                    this.analyticsGame,
+                    this.analyticsGameId,
+                    this.sessionId,
+                    getScore(),
+                    getTotal(),
+                    elapsedMs
+                )
+            }
             if (this.config?.onGameComplete && !this.gameCompleteFired) {
                 this.gameCompleteFired = true
                 this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
@@ -205,6 +261,8 @@ export class QuizUIAdapter {
             // Only update if this is a new question
             if (questionIndex !== this.lastShownQuestionIndex) {
                 this.lastShownQuestionIndex = questionIndex
+                // Reset question timer for analytics
+                this.lastQuestionStartTime = performance.now()
 
                 const question = getQuestion(questionIndex)
                 const total = getTotal()

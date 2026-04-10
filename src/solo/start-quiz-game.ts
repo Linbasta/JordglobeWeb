@@ -24,6 +24,10 @@ export interface QuizGameConfig {
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
     showHoverLabel?: boolean
     onReady?: () => void | Promise<void>
+    /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
+    analyticsGame?: string
+    /** Analytics: game ID (e.g., 'eurovision_2025', 'daily_2026-04-10') */
+    analyticsGameId?: string
 }
 
 export async function startQuizGame(config: QuizGameConfig): Promise<void> {
@@ -80,6 +84,8 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
                     removeOnWrong: config.removeOnWrong ?? false,
                     onGameComplete: config.onGameComplete,
+                    analyticsGame: config.analyticsGame,
+                    analyticsGameId: config.analyticsGameId,
                 })
 
                 resolve()

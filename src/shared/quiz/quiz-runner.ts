@@ -72,6 +72,16 @@ let revealOnWrong = true
 let removeOnWrong = false
 let onRevealCorrectCb: ((correctCountryIndex: number) => void) | null = null
 let onHideRevealCb: (() => void) | null = null
+let onAnswerCb: ((data: {
+    questionIndex: number;
+    questionId: string;
+    correctId: string;
+    answerId: string;
+    lat: number;
+    lng: number;
+    correct: boolean;
+    distanceKm?: number;
+}) => void) | null = null
 
 // Globe reference and helpers
 let globe: EarthGlobeAPI | null = null
@@ -115,6 +125,16 @@ export function startQuiz(
         removeOnWrong?: boolean
         onRevealCorrect?: (correctCountryIndex: number) => void
         onHideReveal?: () => void
+        onAnswer?: (data: {
+            questionIndex: number;
+            questionId: string;
+            correctId: string;
+            answerId: string;
+            lat: number;
+            lng: number;
+            correct: boolean;
+            distanceKm?: number;
+        }) => void
     }
 ) {
     // Reset state
@@ -142,6 +162,7 @@ export function startQuiz(
     removeOnWrong = config?.removeOnWrong ?? false
     onRevealCorrectCb = config?.onRevealCorrect ?? null
     onHideRevealCb = config?.onHideReveal ?? null
+    onAnswerCb = config?.onAnswer ?? null
 
     // Resolve countries from questions
     for (const q of questions) {
@@ -560,6 +581,17 @@ export function tickQuiz(now: number): boolean {
                     const isCorrect = pendingAnswer.countryIndex === correctCountry.index
                     results.push(isCorrect)
                     if (isCorrect) { score++ } else { wrongCount++ }
+                    // Fire answer callback
+                    const answeredCountry = globe.getCountryByIndex(pendingAnswer.countryIndex)
+                    onAnswerCb?.({
+                        questionIndex: qi,
+                        questionId: q.countryISO2!,
+                        correctId: q.countryISO2!,
+                        answerId: answeredCountry?.id ?? '',
+                        lat: pendingAnswer.latLon.lat,
+                        lng: pendingAnswer.latLon.lng,
+                        correct: isCorrect,
+                    })
                     const postSteps = generateCountryAnswerSteps(isCorrect, correctCountry.index, pendingAnswer.countryIndex, revealOnWrong)
                     steps.splice(pc + 1, 0, ...postSteps)
                     pendingAnswer = null
@@ -572,6 +604,10 @@ export function tickQuiz(now: number): boolean {
                         break
                     }
 
+                    // Capture answer data before any potential type narrowing loss
+                    const clickedProvinceIndex = pendingAnswer.countryIndex
+                    const clickLatLon = pendingAnswer.latLon
+
                     // Province question - find correct province by composite ID (e.g., "IT-10")
                     const allProvinces = globe.getAllActiveRegions()
                     const provinceId = `${q.countryISO2}-${q.provinceId}`
@@ -582,13 +618,24 @@ export function tickQuiz(now: number): boolean {
                     }
 
                     // Check if clicked province is correct
-                    const isCorrect = pendingAnswer.countryIndex === correctProvince.index
+                    const isCorrect = clickedProvinceIndex === correctProvince.index
                     results.push(isCorrect)
                     if (isCorrect) { score++ } else { wrongCount++ }
+                    // Fire answer callback
+                    const answeredProvince = allProvinces.find(p => p.index === clickedProvinceIndex)
+                    onAnswerCb?.({
+                        questionIndex: qi,
+                        questionId: provinceId,
+                        correctId: provinceId,
+                        answerId: answeredProvince?.id ?? '',
+                        lat: clickLatLon.lat,
+                        lng: clickLatLon.lng,
+                        correct: isCorrect,
+                    })
 
                     // Generate answer steps (reuse country logic - works for provinces too!)
                     waiting = false
-                    const postSteps = generateCountryAnswerSteps(isCorrect, correctProvince.index, pendingAnswer.countryIndex, revealOnWrong)
+                    const postSteps = generateCountryAnswerSteps(isCorrect, correctProvince.index, clickedProvinceIndex, revealOnWrong)
                     steps.splice(pc + 1, 0, ...postSteps)
                     pendingAnswer = null
                     advance(now)
@@ -601,6 +648,18 @@ export function tickQuiz(now: number): boolean {
                         q.lat!, q.lng!
                     )
                     distances.push(distKm)
+                    // Fire answer callback (location-guess has no correct/wrong, just distance)
+                    const locationId = q.locationName ?? q.prompt
+                    onAnswerCb?.({
+                        questionIndex: qi,
+                        questionId: locationId,
+                        correctId: locationId,
+                        answerId: locationId,  // Same as correct - user clicked to place
+                        lat: clickLatLon.lat,
+                        lng: clickLatLon.lng,
+                        correct: true,  // Location-guess doesn't have wrong answers
+                        distanceKm: distKm,
+                    })
                     waiting = false
                     const postSteps = generateLocationGuessAnswerSteps(
                         clickLatLon.lat, clickLatLon.lng,
@@ -645,9 +704,21 @@ export function tickQuiz(now: number): boolean {
                         globe.setMarkerScale(hitMarkerId, 2.0)
                         const isCorrect = hitQuestionIndex === qi
                         results.push(isCorrect)
-                    if (isCorrect) { score++ } else { wrongCount++ }
-                        const correctMarkerId = locationMarkers.get(qi) ?? -1
+                        if (isCorrect) { score++ } else { wrongCount++ }
+                        // Fire answer callback
                         const hitQ = questions[hitQuestionIndex]
+                        const correctLocationId = q.locationName ?? q.prompt
+                        const answeredLocationId = hitQ.locationName ?? hitQ.prompt
+                        onAnswerCb?.({
+                            questionIndex: qi,
+                            questionId: correctLocationId,
+                            correctId: correctLocationId,
+                            answerId: answeredLocationId,
+                            lat: clickLatLon.lat,
+                            lng: clickLatLon.lng,
+                            correct: isCorrect,
+                        })
+                        const correctMarkerId = locationMarkers.get(qi) ?? -1
                         const correctQ = questions[qi]
                         const wrongLat = hitQ.answer === 'location-alternatives' ? hitQ.lat! : 0
                         const wrongLng = hitQ.answer === 'location-alternatives' ? hitQ.lng! : 0
