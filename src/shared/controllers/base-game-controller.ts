@@ -25,6 +25,7 @@ import { PinUI } from '../ui/pin-ui';
 import { GlobeState } from '../state';
 import { dismissPinTutorial } from '../ui/pin-tutorial';
 import { collapseVideoOverlay } from '../ui/video-overlay';
+import { onBannerVisibilityChange } from '../ui/app-banner';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -55,6 +56,9 @@ export abstract class BaseGameController {
 
     // GUI elements
     protected advancedTexture: AdvancedDynamicTexture | null = null;
+
+    // Banner subscription cleanup
+    private unsubscribeBanner?: () => void;
 
     // Loading screen elements
     private loadingProgress: HTMLElement | null;
@@ -286,6 +290,13 @@ export abstract class BaseGameController {
                     enterPlacingMode();
                 }
             });
+
+            // Subscribe to banner visibility changes
+            this.unsubscribeBanner = onBannerVisibilityChange((visible, heightPx) => {
+                if (this.pinUI) {
+                    this.pinUI.setBannerOffset(visible ? heightPx : 0);
+                }
+            });
         }
 
         // Let subclass add additional UI
@@ -300,6 +311,12 @@ export abstract class BaseGameController {
             this.disposeAdditionalUI();
         }
 
+        // Unsubscribe from banner changes
+        if (this.unsubscribeBanner) {
+            this.unsubscribeBanner();
+            this.unsubscribeBanner = undefined;
+        }
+
         // Dispose old PinUI
         if (this.pinUI) {
             this.pinUI.dispose();
@@ -312,7 +329,7 @@ export abstract class BaseGameController {
             this.advancedTexture = null;
         }
 
-        // Recreate GUI
+        // Recreate GUI (will re-subscribe to banner changes)
         this.createGUI();
 
         // Let subclass recreate additional UI

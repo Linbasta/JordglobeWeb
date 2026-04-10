@@ -26,6 +26,13 @@ export class PinUI {
     private bottomPanel: Rectangle | null = null;
     private callbacks: PinUICallbacks = {};
 
+    // Original positions (before any banner adjustments)
+    private readonly PIN_BUTTON_TOP_ORIGINAL = 300; // px from bottom
+    private readonly BOTTOM_PANEL_TOP_ORIGINAL = 25; // px from bottom (negative = above bottom edge)
+
+    // Current banner offset
+    private bannerOffsetPx = 0;
+
     constructor(advancedTexture: AdvancedDynamicTexture) {
         this.advancedTexture = advancedTexture;
     }
@@ -63,7 +70,7 @@ export class PinUI {
         pinButton.height = `${900 * pinScale}px`;
         pinButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         pinButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        pinButton.top = "300px";
+        pinButton.top = `${this.PIN_BUTTON_TOP_ORIGINAL - this.bannerOffsetPx}px`;
         pinButton.left = "50px";
         pinButton.rotation = 0.14;
         pinButton.isPointerBlocker = true;
@@ -81,7 +88,7 @@ export class PinUI {
         panel.thickness = 0;
         panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-        panel.top = "5%";
+        panel.top = `${this.BOTTOM_PANEL_TOP_ORIGINAL - this.bannerOffsetPx}px`;
         panel.background = "#6496DC";
         panel.alpha = 1.0;
         panel.cornerRadius = 60;
@@ -147,6 +154,35 @@ export class PinUI {
      */
     getBottomPanel(): Rectangle | null {
         return this.bottomPanel;
+    }
+
+    /**
+     * Adjust UI positions to compensate for app banner height
+     *
+     * When a banner appears at the top of the screen, it pushes content down.
+     * To keep the pin UI in the same visual position, we need to move it UP
+     * by subtracting the banner height from the `top` values.
+     *
+     * With VERTICAL_ALIGNMENT_BOTTOM:
+     * - `top = "300px"` means 300px from the bottom edge
+     * - To move UP by 60px, we subtract: `top = "240px"` (closer to bottom = higher on screen)
+     *
+     * @param bannerHeightPx - Height of the banner in pixels (0 = no banner)
+     */
+    setBannerOffset(bannerHeightPx: number): void {
+        this.bannerOffsetPx = bannerHeightPx;
+
+        // Update pin button position
+        if (this.pinButton) {
+            const adjustedTop = this.PIN_BUTTON_TOP_ORIGINAL - this.bannerOffsetPx;
+            this.pinButton.top = `${adjustedTop}px`;
+        }
+
+        // Update bottom panel position
+        if (this.bottomPanel) {
+            const adjustedTop = this.BOTTOM_PANEL_TOP_ORIGINAL - this.bannerOffsetPx;
+            this.bottomPanel.top = `${adjustedTop}px`;
+        }
     }
 
     /**

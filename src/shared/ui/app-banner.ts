@@ -9,6 +9,36 @@
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 const BANNER_DISMISSED_KEY = 'app-banner-dismissed'
 const BANNER_HEIGHT = '60px'
+const BANNER_HEIGHT_PX = 60 // Numeric value for calculations
+
+/**
+ * Banner visibility change callback
+ */
+type BannerVisibilityCallback = (visible: boolean, heightPx: number) => void
+
+const visibilityCallbacks: BannerVisibilityCallback[] = []
+
+/**
+ * Subscribe to banner visibility changes
+ * @param callback - Called when banner is shown (true) or hidden (false), with height in pixels
+ * @returns Unsubscribe function
+ */
+export function onBannerVisibilityChange(callback: BannerVisibilityCallback): () => void {
+    visibilityCallbacks.push(callback)
+    return () => {
+        const index = visibilityCallbacks.indexOf(callback)
+        if (index !== -1) {
+            visibilityCallbacks.splice(index, 1)
+        }
+    }
+}
+
+/**
+ * Notify all subscribers of banner visibility change
+ */
+function notifyVisibilityChange(visible: boolean): void {
+    visibilityCallbacks.forEach(callback => callback(visible, BANNER_HEIGHT_PX))
+}
 
 /**
  * Detect if user is on Android
@@ -76,6 +106,7 @@ function createAndroidBanner(): HTMLElement {
         setDismissed()
         document.body.style.paddingTop = ''
         banner.remove()
+        notifyVisibilityChange(false)
     }
 
     // App icon
@@ -154,9 +185,11 @@ export function initAppBanner(): void {
         document.addEventListener('DOMContentLoaded', () => {
             document.body.style.paddingTop = BANNER_HEIGHT
             document.body.appendChild(createAndroidBanner())
+            notifyVisibilityChange(true)
         })
     } else {
         document.body.style.paddingTop = BANNER_HEIGHT
         document.body.appendChild(createAndroidBanner())
+        notifyVisibilityChange(true)
     }
 }
