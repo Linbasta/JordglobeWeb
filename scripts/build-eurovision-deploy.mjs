@@ -65,6 +65,10 @@ const ALLOW_LIST = [
     'qr-download.png',
     'AppIcon.png',
 
+    // App store badges (result overlay)
+    'app-store-badge.svg',
+    'google-play-badge.png',
+
     // SEO: og:image (sitemap.xml and robots.txt are written inline below
     // since the eurovision deploy lives on its own subdomain and shouldn't
     // share the jordglobe.com sitemap.)

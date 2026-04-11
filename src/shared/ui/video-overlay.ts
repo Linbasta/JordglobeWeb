@@ -463,7 +463,9 @@ export async function showVideoOverlay(
         },
         events: {
             onReady: () => {
-                // Set up loop interval after player is ready
+                // Video loaded successfully - clear error timeout
+                // (On iOS, autoplay is blocked so we won't get PLAYING state until user taps)
+                clearPlaybackTimeout()
                 setupLoopInterval(start, videoEndTime)
             },
             onStateChange: (event: { data: number }) => {

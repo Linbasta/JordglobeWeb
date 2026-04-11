@@ -58,6 +58,8 @@ function copyToClipboard(text: string): void {
 
 const COPY_ICON = '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
 const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
@@ -91,6 +93,9 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-share-btn.copied:hover { background:#22c55e; }
             .ro-retry-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
             .ro-retry-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.03); }
+            .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:16px; }
+            .ro-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
+            .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
             .ro-record { font-size:20px;font-weight:bold;color:#ffd700;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 12px rgba(255,215,0,0.6);opacity:0;transition:opacity 0.5s ease-in; }
             .ro-record.visible { opacity:1; }
         `
@@ -129,7 +134,11 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         <div class="ro-share">
             <div class="ro-share-text">Can your friends beat your score?</div>
             <button class="ro-share-btn">${COPY_ICON} Copy challenge link</button>
-            ${onRetry ? '<br><button class="ro-retry-btn">Play again</button>' : ''}
+            <div class="ro-store-links">
+                <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="/app-store-badge.svg" alt="Download on the App Store" class="ro-store-badge"></a>
+                <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="/google-play-badge.png" alt="Get it on Google Play" class="ro-store-badge"></a>
+            </div>
+            ${onRetry ? '<button class="ro-retry-btn">Play again</button>' : ''}
         </div>
     `
 
