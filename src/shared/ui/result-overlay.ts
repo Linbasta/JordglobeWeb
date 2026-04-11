@@ -24,6 +24,8 @@ export interface ResultOverlayConfig {
     /** Custom share squares formatter. If provided, replaces the default 🟩🟥 grid in the share message. */
     formatShareSquares?: (results: boolean[]) => string
     isNewRecord?: boolean
+    /** Display "Personal Best" banner when user beats their previous best score */
+    isPersonalBest?: boolean
     onRetry?: () => void
 }
 
@@ -64,7 +66,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbas
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, isPersonalBest, onRetry } = config
     const isPerfect = score === total
     const SPRITE_COUNT = 6
 
@@ -98,6 +100,8 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
             .ro-record { font-size:20px;font-weight:bold;color:#ffd700;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 12px rgba(255,215,0,0.6);opacity:0;transition:opacity 0.5s ease-in; }
             .ro-record.visible { opacity:1; }
+            .ro-personal-best { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 10px rgba(124,246,255,0.5);opacity:0;transition:opacity 0.5s ease-in; }
+            .ro-personal-best.visible { opacity:1; }
         `
         document.head.appendChild(style)
     }
@@ -130,6 +134,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             </div>
         </div>
         ${isNewRecord ? '<div class="ro-record">🏆 NEW WORLD RECORD 🏆</div>' : ''}
+        ${!isNewRecord && isPersonalBest ? '<div class="ro-personal-best">⭐ PERSONAL BEST ⭐</div>' : ''}
         <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
         <div class="ro-share">
             <div class="ro-share-text">Can your friends beat your score?</div>
@@ -176,12 +181,15 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             requestAnimationFrame(countUpTick)
         } else {
             // Fire confetti when count-up finishes
-            const bursts = isNewRecord ? 10 : isPerfect ? 6 : 2
+            const bursts = isNewRecord ? 10 : isPersonalBest ? 8 : isPerfect ? 6 : 2
             startConfetti(backdrop!, card, bursts)
-            // Reveal world record text
+            // Reveal world record or personal best text
             if (isNewRecord) {
                 const recordEl = card.querySelector('.ro-record')
                 if (recordEl) recordEl.classList.add('visible')
+            } else if (isPersonalBest) {
+                const pbEl = card.querySelector('.ro-personal-best')
+                if (pbEl) pbEl.classList.add('visible')
             }
         }
     }
@@ -227,4 +235,81 @@ export function hideResultOverlay(): void {
         backdrop.remove()
         backdrop = null
     }
+}
+
+// --- Personal Best localStorage helpers ---
+
+export interface PersonalBestRecord {
+    score: number
+    total: number
+    elapsedMs: number
+    timestamp: number
+}
+
+const PB_PREFIX = 'pb_'
+
+/**
+ * Get the stored personal best for a quiz
+ * @param quizId Unique identifier for the quiz (e.g. 'eurovision', 'country-quiz')
+ */
+export function getPersonalBest(quizId: string): PersonalBestRecord | null {
+    try {
+        const stored = localStorage.getItem(PB_PREFIX + quizId)
+        if (!stored) return null
+        return JSON.parse(stored) as PersonalBestRecord
+    } catch {
+        return null
+    }
+}
+
+/**
+ * Save a new personal best record
+ */
+export function setPersonalBest(quizId: string, score: number, total: number, elapsedMs: number): void {
+    const record: PersonalBestRecord = {
+        score,
+        total,
+        elapsedMs,
+        timestamp: Date.now()
+    }
+    localStorage.setItem(PB_PREFIX + quizId, JSON.stringify(record))
+}
+
+/**
+ * Check if the current score beats the personal best and update if so.
+ * Returns true if this is a new personal best.
+ *
+ * Scoring logic:
+ * 1. Higher score always wins
+ * 2. If same score, faster time wins
+ */
+export function checkAndUpdatePersonalBest(quizId: string, score: number, total: number, elapsedMs: number): boolean {
+    const existing = getPersonalBest(quizId)
+
+    // No existing record = new personal best
+    if (!existing) {
+        setPersonalBest(quizId, score, total, elapsedMs)
+        return true
+    }
+
+    // Higher score wins
+    if (score > existing.score) {
+        setPersonalBest(quizId, score, total, elapsedMs)
+        return true
+    }
+
+    // Same score, faster time wins
+    if (score === existing.score && elapsedMs < existing.elapsedMs) {
+        setPersonalBest(quizId, score, total, elapsedMs)
+        return true
+    }
+
+    return false
+}
+
+/**
+ * Clear the personal best for a quiz (useful for testing)
+ */
+export function clearPersonalBest(quizId: string): void {
+    localStorage.removeItem(PB_PREFIX + quizId)
 }
