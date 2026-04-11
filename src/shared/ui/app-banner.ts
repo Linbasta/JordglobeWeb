@@ -62,23 +62,28 @@ function isAndroid(): boolean {
     return /Android/i.test(navigator.userAgent)
 }
 
+const ONE_DAY_MS = 24 * 60 * 60 * 1000
+
 /**
- * Check if banner was previously dismissed
+ * Check if banner was dismissed within the last 24 hours
  */
 function wasDismissed(): boolean {
     try {
-        return localStorage.getItem(BANNER_DISMISSED_KEY) === 'true'
+        const dismissedAt = localStorage.getItem(BANNER_DISMISSED_KEY)
+        if (!dismissedAt) return false
+        const elapsed = Date.now() - Number(dismissedAt)
+        return elapsed < ONE_DAY_MS
     } catch {
         return false
     }
 }
 
 /**
- * Mark banner as dismissed
+ * Mark banner as dismissed (stores timestamp)
  */
 function setDismissed(): void {
     try {
-        localStorage.setItem(BANNER_DISMISSED_KEY, 'true')
+        localStorage.setItem(BANNER_DISMISSED_KEY, Date.now().toString())
     } catch {
         // localStorage not available
     }
