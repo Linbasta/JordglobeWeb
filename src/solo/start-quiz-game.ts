@@ -11,6 +11,7 @@ import type { ScoreBarType } from '../shared/quiz/quiz-ui-adapter'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
 import { preloadQuizImages } from '../shared/ui/image-preloader'
 import { showMobileAppAd } from '../shared/ui/mobile-app-ad'
+import { checkAndUpdatePersonalBest } from '../shared/ui/result-overlay'
 import { SoloGameController } from './solo-game-controller'
 
 export interface QuizGameConfig {
@@ -21,9 +22,12 @@ export interface QuizGameConfig {
     scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
-    onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
+    /** Callback when game completes. isPersonalBest is true if this score beat the stored PB. */
+    onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[], isPersonalBest: boolean) => void
     showHoverLabel?: boolean
     onReady?: () => void | Promise<void>
+    /** Quiz ID for personal best tracking (e.g., 'eurovision', 'country-quiz') */
+    quizId?: string
     /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
     analyticsGame?: string
     /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
@@ -78,12 +82,23 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
             onReady: async (controller) => {
                 if (config.onReady) await config.onReady()
 
+                // Wrap onGameComplete to check personal best
+                const wrappedOnGameComplete = config.onGameComplete
+                    ? (score: number, total: number, elapsedMs: number, results: boolean[]) => {
+                        const isPersonalBest = config.quizId
+                            ? checkAndUpdatePersonalBest(config.quizId, score, total, elapsedMs)
+                            : false
+                        config.onGameComplete!(score, total, elapsedMs, results, isPersonalBest)
+                    }
+                    : undefined
+
                 controller.startQuizGame({
                     questions,
                     scoreBarType: config.scoreBarType,
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
                     removeOnWrong: config.removeOnWrong ?? false,
-                    onGameComplete: config.onGameComplete,
+                    onGameComplete: wrappedOnGameComplete,
+                    quizId: config.quizId,
                     analyticsGame: config.analyticsGame,
                     analyticsGameId: config.analyticsGameId,
                 })

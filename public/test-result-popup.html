@@ -83,6 +83,9 @@
         <button class="pb-test" onclick="testWithPB(8, 10, 90000)">Play: 8/10, 1:30</button>
         <button class="pb-test" onclick="testWithPB(8, 10, 70000)">Play: 8/10, 1:10 (faster)</button>
         <button class="danger" onclick="clearPB()">Clear Personal Best</button>
+
+        <div class="section-label">Score Bar Preview</div>
+        <button onclick="toggleScoreBar()">Toggle Score Bar</button>
     </div>
 
         <!-- Console logger - streams browser console to file for Claude -->
@@ -95,8 +98,15 @@
             checkAndUpdatePersonalBest,
             clearPersonalBest
         } from '/src/shared/ui/result-overlay.ts';
+        import {
+            createSimpleScoreBar,
+            updateSimpleScoreBar,
+            disposeSimpleScoreBar
+        } from '/src/shared/ui/score-bar-simple.ts';
 
         const QUIZ_ID = 'test-quiz';
+        let scoreBarVisible = false;
+        let scoreBarTimer = null;
 
         function randomResults(score, total) {
             const arr = Array(score).fill(true).concat(Array(total - score).fill(false));
@@ -168,6 +178,30 @@
             clearPersonalBest(QUIZ_ID);
             updatePBStatus();
             console.log('Personal best cleared');
+        };
+
+        // Toggle score bar (to preview PB display)
+        window.toggleScoreBar = function() {
+            if (scoreBarVisible) {
+                disposeSimpleScoreBar();
+                if (scoreBarTimer) {
+                    clearInterval(scoreBarTimer);
+                    scoreBarTimer = null;
+                }
+                scoreBarVisible = false;
+                console.log('Score bar hidden');
+            } else {
+                createSimpleScoreBar(10, 10, QUIZ_ID);
+                let elapsed = 0;
+                let score = 0;
+                scoreBarTimer = setInterval(() => {
+                    elapsed += 1000;
+                    if (Math.random() < 0.3 && score < 10) score++;
+                    updateSimpleScoreBar(score, 10 - score, 10, elapsed);
+                }, 1000);
+                scoreBarVisible = true;
+                console.log('Score bar shown with PB:', getPersonalBest(QUIZ_ID));
+            }
         };
 
         // Initialize on load

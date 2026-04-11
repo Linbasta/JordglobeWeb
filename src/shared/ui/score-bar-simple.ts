@@ -5,12 +5,14 @@
  */
 
 import { PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
+import { getPersonalBest } from './result-overlay'
 
 // ── DOM elements ──
 let root: HTMLDivElement | null = null
 let questionEl: HTMLSpanElement | null = null
 let scoreEl: HTMLSpanElement | null = null
 let timeEl: HTMLSpanElement | null = null
+let pbEl: HTMLSpanElement | null = null
 
 // ── Constants ──
 const BAR_HEIGHT = 36
@@ -21,11 +23,26 @@ const FRAME_BORDER = 10
 // ── State ──
 let totalQuestions = 0
 let bannerOffsetPx = 0
+let personalBestMs: number | null = null
 
-export function createSimpleScoreBar(turnsLeft: number, total: number): void {
+function formatTime(ms: number): string {
+    const totalSeconds = Math.floor(ms / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: string): void {
     disposeSimpleScoreBar()
 
     totalQuestions = total
+
+    // Load personal best if quizId provided
+    personalBestMs = null
+    if (quizId) {
+        const pb = getPersonalBest(quizId)
+        if (pb) personalBestMs = pb.elapsedMs
+    }
 
     root = document.createElement('div')
     const isPortrait = window.innerHeight > window.innerWidth
@@ -58,11 +75,20 @@ export function createSimpleScoreBar(turnsLeft: number, total: number): void {
     scoreEl.style.cssText = lh
     scoreEl.textContent = '0p'
 
-    // Right group: "| 0:00"
+    // Right group: "PB 1:23 | 0:00"
     const rightGroup = document.createElement('span')
     rightGroup.style.cssText = lh
+
+    // Personal best display (only if we have one)
+    if (personalBestMs !== null) {
+        pbEl = document.createElement('span')
+        pbEl.style.cssText = `opacity:0.6;font-size:14px;`
+        pbEl.textContent = `PB ${formatTime(personalBestMs)}`
+        rightGroup.appendChild(pbEl)
+    }
+
     const divider2 = document.createElement('span')
-    divider2.style.cssText = `margin-right:10px;opacity:0.5;`
+    divider2.style.cssText = `margin-left:10px;margin-right:10px;opacity:0.5;`
     divider2.textContent = '|'
     timeEl = document.createElement('span')
     timeEl.textContent = '0:00'
@@ -84,13 +110,7 @@ export function updateSimpleScoreBar(score: number, turnsLeft: number, total: nu
 
     if (questionEl) questionEl.textContent = `${currentQuestion}/${total}`
     if (scoreEl) scoreEl.textContent = `${score}p`
-
-    if (timeEl) {
-        const totalSeconds = Math.floor(elapsedMs / 1000)
-        const minutes = Math.floor(totalSeconds / 60)
-        const seconds = totalSeconds % 60
-        timeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`
-    }
+    if (timeEl) timeEl.textContent = formatTime(elapsedMs)
 }
 
 export function disposeSimpleScoreBar(): void {
@@ -98,8 +118,9 @@ export function disposeSimpleScoreBar(): void {
         root.remove()
         root = null
     }
-    questionEl = scoreEl = timeEl = null
+    questionEl = scoreEl = timeEl = pbEl = null
     totalQuestions = 0
+    personalBestMs = null
 }
 
 /** Set banner offset (call when Android app banner visibility changes) */

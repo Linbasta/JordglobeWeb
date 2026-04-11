@@ -47,6 +47,8 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
+    /** Quiz ID for personal best tracking (e.g., 'eurovision', 'country-quiz') */
+    quizId?: string
     /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
     analyticsGame?: string
     /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
@@ -108,7 +110,7 @@ export class QuizUIAdapter {
         }
 
         if (config.scoreBarType === 'simple') {
-            createSimpleScoreBar(config.questions.length, config.questions.length)
+            createSimpleScoreBar(config.questions.length, config.questions.length, config.quizId)
         } else {
             createScoreBar(config.questions.length, config.questions.length)
         }

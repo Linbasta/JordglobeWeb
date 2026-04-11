@@ -148,10 +148,11 @@
             questions: EUROVISION_QUESTIONS,
             scoreBarType: 'simple',
             showHoverLabel: true,
+            quizId: 'eurovision',
             analyticsGame: 'Eurovision',
             analyticsGameId: 'eurovision_2026',
             onReady: () => showStartButton(),
-            onGameComplete: async (score, total, elapsedMs, results) => {
+            onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
                 // Dynamic imports - only load when game ends
                 const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
                     import('/src/shared/ui/result-overlay.ts'),
@@ -181,6 +182,7 @@
                         return results.map((correct, i) => correct ? iso2ToFlag(qs[i].countryISO2) : '🟥').join('');
                     },
                     isNewRecord,
+                    isPersonalBest,
                     onRetry: () => window.location.reload(),
                 })
             }
