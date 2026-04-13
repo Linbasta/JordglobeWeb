@@ -50,6 +50,7 @@
     "deploy:logs": "scripts/gcp-staging/logs.sh",
     "deploy:analytics": "scripts/gcp-staging/analytics.sh",
     "build:eurovision-deploy": "node scripts/build-eurovision-deploy.mjs",
+    "build:eurovision-embedded": "node scripts/build-eurovision-embedded.mjs",
     "deploy:firebase": "npm run build:eurovision-deploy && firebase deploy --only hosting"
   },
   "devDependencies": {

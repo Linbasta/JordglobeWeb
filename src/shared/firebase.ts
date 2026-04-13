@@ -14,7 +14,7 @@ const firebaseConfig = {
     measurementId: 'G-HFQQ54DL8H',
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 
 // App Check — only in production, and only if a reCAPTCHA site key is configured.
 // To enable: register the web app in Firebase Console → App Check with reCAPTCHA v3,
