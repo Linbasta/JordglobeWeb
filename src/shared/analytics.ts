@@ -12,6 +12,7 @@
 
 import { Analytics, getAnalytics, logEvent } from 'firebase/analytics';
 import { app } from './firebase';
+import { hasAnalyticsConsent } from './ui/consent-banner';
 
 let analytics: Analytics | null = null;
 
@@ -22,11 +23,15 @@ const analyticsAvailable = typeof crypto !== 'undefined' && typeof crypto.random
 /**
  * Initialize Firebase Analytics. Call once at startup to enable event logging.
  * If not called, all log functions are no-ops.
- * Analytics is disabled on non-secure contexts (e.g., LAN HTTP).
+ * Analytics is disabled on non-secure contexts (e.g., LAN HTTP) or without consent.
  */
 export function initAnalytics(): void {
     if (!analyticsAvailable) {
         console.log('[Analytics] Disabled (non-secure context)');
+        return;
+    }
+    if (!hasAnalyticsConsent()) {
+        console.log('[Analytics] Disabled (no consent)');
         return;
     }
     if (typeof window !== 'undefined' && !analytics) {

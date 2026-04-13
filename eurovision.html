@@ -43,9 +43,7 @@
     <script type="module">
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
-        import { initAnalytics } from '/src/shared/analytics.ts';
         initMobile();
-        initAnalytics();  // Enable Firebase Analytics
 
         // Preload sprite images when browser is idle (not blocking initial load)
         const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
