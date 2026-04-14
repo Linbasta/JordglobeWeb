@@ -1,0 +1,11 @@
+---
+import GamesPage from "@components/pages/GamesPage.astro";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "sv" } },
+    { params: { locale: "fr" } },
+  ];
+}
+---
+<GamesPage />

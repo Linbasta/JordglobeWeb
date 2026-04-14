@@ -15,10 +15,12 @@ const imageMap: Record<string, string> = {
   eurovision: eurovisionImg.src,
 };
 
+// Get locale from URL (works for both /games and /sv/games)
+const locale = getLocaleFromUrl(Astro.url);
+
 // data
-const currLocale = getLocaleFromUrl(Astro.url);
-const siteData = getTranslatedData("siteData", currLocale);
-const gamesData = getTranslatedData("gamesData", currLocale);
+const siteData = getTranslatedData("siteData", locale);
+const gamesData = getTranslatedData("gamesData", locale);
 
 // Map images to games
 const gamesWithImages = gamesData.games.map(game => ({

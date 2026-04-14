@@ -1,0 +1,11 @@
+---
+import GdprPage from "@components/pages/GdprPage.astro";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "sv" } },
+    { params: { locale: "fr" } },
+  ];
+}
+---
+<GdprPage />

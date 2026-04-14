@@ -1,0 +1,11 @@
+---
+import IndexPage from "@components/pages/IndexPage.astro";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "sv" } },
+    { params: { locale: "fr" } },
+  ];
+}
+---
+<IndexPage />
