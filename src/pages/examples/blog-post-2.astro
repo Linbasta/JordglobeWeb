@@ -22,6 +22,6 @@ const post = posts[0];
 const { Content, headings } = await render(post);
 ---
 
-<BlogLayoutCenter post={post} headings={headings}>
+<BlogLayoutCenter post={post} headings={headings} noindex={true}>
 	<Content components={{ a: ExternalLink }} />
 </BlogLayoutCenter>

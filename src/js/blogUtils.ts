@@ -145,6 +145,9 @@ export function arePostsRelated(
 	// if titles are the same, then they are the same post. return false
 	if (postOne.id === postTwo.id) return false;
 
+	// if either post doesn't have categories, they can't be related by category
+	if (!postOne.data.categories || !postTwo.data.categories) return false;
+
 	const postOneCategories = postOne.data.categories.map((category) => slugify(category));
 
 	const postTwoCategories = postTwo.data.categories.map((category) => slugify(category));

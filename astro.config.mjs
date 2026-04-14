@@ -47,7 +47,21 @@ export default defineConfig({
 		react(),
 		icon(),
 		keystatic(),
-		sitemap(),
+		sitemap({
+			filter: (page) =>
+				!page.includes('/404') &&
+				!page.includes('/examples/') &&
+				!page.includes('/download') &&
+				!page.includes('/play') &&
+				!page.includes('/medal') &&
+				!page.includes('/duel') &&
+				!page.includes('/elements'),
+			// Game pages are built separately and copied during deploy
+			// Add them here so they appear in the sitemap
+			customPages: [
+				'https://jordglobe.com/games/eurovision/',
+			],
+		}),
 		compress({
 			HTML: true,
 			JavaScript: true,

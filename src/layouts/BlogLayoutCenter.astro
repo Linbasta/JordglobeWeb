@@ -18,9 +18,10 @@ import { useTranslations } from "@js/translationUtils";
 interface Props {
 	post: CollectionEntry<"blog">;
 	headings?: import("astro").MarkdownHeading[];
+	noindex?: boolean;
 }
 
-const { post } = Astro.props as Props;
+const { post, noindex = false } = Astro.props as Props;
 const { title, description, authors, categories, pubDate, updatedDate, heroImage } = post.data;
 
 const currLocale = getLocaleFromUrl(Astro.url);
@@ -35,6 +36,7 @@ const authorsData = await getEntries(authors);
 	image={heroImage}
 	authorsData={authorsData}
 	postFrontmatter={post.data}
+	noindex={noindex}
 >
 	<article class="site-container mt-24">
 		<!-- Blog post info -->
@@ -42,9 +44,11 @@ const authorsData = await getEntries(authors);
 			<div class="mx-auto flex w-full max-w-[800px]">
 				<div class="mx-auto text-center">
 					<!-- Categories -->
-					<div class="flex justify-center gap-4">
-						{categories.map((category) => <Category category={category} />)}
-					</div>
+					{categories && categories.length > 0 && (
+						<div class="flex justify-center gap-4">
+							{categories.map((category) => <Category category={category} />)}
+						</div>
+					)}
 
 					<!-- title -->
 					<h1 class="h1 mt-6">{title}</h1>

@@ -20,7 +20,7 @@ const blogCollection = defineCollection({
 				.optional()
 				.transform((str) => (str ? new Date(str) : undefined)),
 			heroImage: image(),
-			categories: z.array(z.string()),
+			categories: z.array(z.string()).optional(),
 			// blog posts will be excluded from build if draft is "true"
 			draft: z.boolean().optional(),
 		}),

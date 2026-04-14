@@ -48,7 +48,7 @@ const currLocale = getLocaleFromUrl(Astro.url);
 const siteData = getTranslatedData("siteData", currLocale);
 ---
 
-<BaseLayout title={siteData.title} description={siteData.description}>
+<BaseLayout title={siteData.title} description={siteData.description} noindex={true}>
 	<HeroCenteredImages />
 	<!-- <HeroCentered /> -->
 	<!-- <HeroSideImage /> -->

@@ -42,9 +42,11 @@ const currLocale = getLocaleFromUrl(Astro.url);
 	</a>
 	<div>
 		<!-- categories -->
-		<div class="mt-6 flex flex-wrap gap-4">
-			{categories.map((category) => <Category category={category} />)}
-		</div>
+		{categories && categories.length > 0 && (
+			<div class="mt-6 flex flex-wrap gap-4">
+				{categories.map((category) => <Category category={category} />)}
+			</div>
+		)}
 
 		<!-- title -->
 		<div class="mt-3">

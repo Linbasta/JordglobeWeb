@@ -17,11 +17,6 @@
                 "source": "/sv/trivia",
                 "destination": "/sv/games",
                 "type": 301
-            },
-            {
-                "source": "/fr/trivia",
-                "destination": "/fr/games",
-                "type": 301
             }
         ],
         "rewrites": [
@@ -98,11 +93,6 @@
             {
                 "source": "/sv/trivia",
                 "destination": "/sv/games",
-                "type": 301
-            },
-            {
-                "source": "/fr/trivia",
-                "destination": "/fr/games",
                 "type": 301
             }
         ],
