@@ -3,15 +3,14 @@
 	"type": "module",
 	"version": "3.0.0",
 	"scripts": {
-		"dev": "node ./scripts/copy-pages.js && astro dev --host",
-		"start": "node ./scripts/copy-pages.js && astro dev --host",
-		"build": "node ./scripts/copy-pages.js && astro build",
+		"dev": "astro dev --host",
+		"start": "astro dev --host",
+		"build": "astro build",
 		"preview": "./scripts/deploy.sh preview",
 		"astro": "astro",
 		"config-i18n": "node ./scripts/config-i18n.js",
 		"remove-keystatic": "node ./scripts/remove-keystatic.js",
 		"format": "prettier -w \"**/*\" --ignore-unknown --cache",
-		"copy-pages": "node ./scripts/copy-pages.js",
 		"deploy:stage": "./scripts/deploy.sh stage",
 		"deploy:prod": "./scripts/deploy.sh prod"
 	},
