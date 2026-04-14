@@ -50,7 +50,7 @@
     "deploy:logs": "scripts/gcp-staging/logs.sh",
     "deploy:analytics": "scripts/gcp-staging/analytics.sh",
     "build:eurovision-deploy": "node scripts/build-eurovision-deploy.mjs",
-    "build:eurovision-embedded": "node scripts/build-eurovision-embedded.mjs",
+    "build:eurovision-embedded": "BASE_PATH=/games/eurovision/ node scripts/build-eurovision-deploy.mjs",
     "deploy:firebase": "npm run build:eurovision-deploy && firebase deploy --only hosting"
   },
   "devDependencies": {

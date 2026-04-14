@@ -18,6 +18,7 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { hexToRgb } from '../../../shared/playerColors';
 import { getZoomValue } from '../animation/camera-utils';
+import { BASE_URL } from '../asset-path';
 import { zoom } from '../../earth-globe';
 
 const EARTH_RADIUS = 2.0;
@@ -59,7 +60,7 @@ export class MultiPinManager {
      */
     private async loadBossPinModel(): Promise<void> {
         try {
-            const result = await SceneLoader.ImportMeshAsync("", "/", "BossPin.glb", this.scene);
+            const result = await SceneLoader.ImportMeshAsync("", BASE_URL, "BossPin.glb", this.scene);
             if (result.meshes.length === 0) {
                 console.error('No meshes found in BossPin model');
                 return;

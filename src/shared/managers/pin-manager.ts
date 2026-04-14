@@ -18,6 +18,7 @@ import '@babylonjs/loaders/glTF';
 import type { RegionPicker, RegionPolygon, LatLon } from '../../earth-globe';
 import { cartesianToLatLon, ANIMATION_AMPLITUDE, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
+import { BASE_URL } from '../asset-path';
 import { getZoomValue } from '../animation/camera-utils';
 import { zoom } from '../../earth-globe';
 import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
@@ -59,7 +60,7 @@ let onCancelZoneChangeCallback: ((inZone: boolean) => void) | null = null;
 
 async function loadBossPinModel(): Promise<void> {
     try {
-        const result = await SceneLoader.ImportMeshAsync("", "/", "BossPin.glb", scene);
+        const result = await SceneLoader.ImportMeshAsync("", BASE_URL, "BossPin.glb", scene);
         if (result.meshes.length === 0) {
             console.error('No meshes found in BossPin model');
             return;

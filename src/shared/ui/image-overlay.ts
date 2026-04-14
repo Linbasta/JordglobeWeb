@@ -11,6 +11,7 @@
  */
 
 import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
+import { asset } from '../asset-path'
 
 const SIMPLE_FRAME_TOP_MARGIN = 12  // Gap between score bar and simple frame (flags)
 
@@ -154,7 +155,7 @@ function buildDefaultFrame(
 
     // Frame overlay — 9-patch border-image
     const frameEl = document.createElement('div')
-    const frameSrc = '/frame-default.png'
+    const frameSrc = asset('frame-default.png')
     const overlapTop = 18
     const overlapSide = 17  // 1px less to extend frame beyond image
     const overlapBottom = 26
@@ -201,7 +202,7 @@ function buildSimpleFrame(wrapper: HTMLDivElement, imageUrl: string): void {
     wrapper.appendChild(img)
 
     const frameEl = document.createElement('div')
-    const frameSrc = '/frame-simple.png'
+    const frameSrc = asset('frame-simple.png')
     const overlap = 3
     const bw = 16
     frameEl.style.cssText =

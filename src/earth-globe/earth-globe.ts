@@ -54,6 +54,7 @@ import { latLonToSphere, positionToLatLon } from './geo-math';
 import { RegionPicker } from './region-picker';
 import { RegionController } from './region-controller';
 import { loadSegments } from './segment-loader';
+import { asset } from '../shared/asset-path';
 import { loadCountriesBin } from './countries-bin-loader';
 import { GlobeSphere } from './globe-sphere';
 import { RegionRenderer } from './region-renderer';
@@ -445,7 +446,7 @@ export class EarthGlobe {
     private async loadProvinces(): Promise<void> {
         // Fetch province index
         try {
-            const indexResponse = await fetch('/provinces/index.json');
+            const indexResponse = await fetch(asset('provinces/index.json'));
             if (!indexResponse.ok) {
                 console.log('No province index found — skipping province loading');
                 return;
@@ -495,9 +496,10 @@ export class EarthGlobe {
         console.log(`Loading provinces for ${iso2}...`);
         const startTime = performance.now();
 
-        const response = await fetch(`/provinces/${iso2}.json`);
+        const provinceUrl = asset(`provinces/${iso2}.json`);
+        const response = await fetch(provinceUrl);
         if (!response.ok) {
-            console.warn(`Province file not found: /provinces/${iso2}.json`);
+            console.warn(`Province file not found: ${provinceUrl}`);
             return;
         }
         const data = await response.json() as { country: string; provinces: Array<{ id: number; name: string; paths: string }> };
@@ -871,7 +873,7 @@ export class EarthGlobe {
             try {
                 // Province segments use their OWN animation texture, so offset starts after provinces (not after countries!)
                 const provinceSegmentOffset = provinceCount;
-                await this.provinceController.loadSegments(`/province-segments/${iso2}.json`, provinceSegmentOffset);
+                await this.provinceController.loadSegments(asset(`province-segments/${iso2}.json`), provinceSegmentOffset);
 
                 // NOW resize province animation texture to include provinces + province segments
                 const provinceSegmentCount = this.provinceController.getSegmentAnimationIndices().size;

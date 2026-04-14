@@ -2,21 +2,38 @@
 /**
  * Build Eurovision quiz and stage a self-contained deploy folder.
  *
- * Output: dist-eurovision/ — populated from an explicit ALLOW_LIST.
+ * Two modes, selected by BASE_PATH env var:
  *
- * Drift detection: after copying, scans the eurovision JS bundle for
- * absolute /asset paths and warns if any reference a file not in ALLOW_LIST.
+ *   BASE_PATH unset (or "/")  — Standalone deploy for eurovision.jordglobe.com.
+ *                               Output: dist-eurovision/. Includes sitemap.xml
+ *                               and robots.txt scoped to that subdomain.
+ *
+ *   BASE_PATH="/games/foo/"   — Embedded deploy for a subpath on the main
+ *                               site. Output: dist-eurovision-embedded/.
+ *                               Aliases eurovision.html → index.html. No
+ *                               sitemap/robots (main site owns those). Asset
+ *                               URLs are already rewritten at Vite build time
+ *                               via the base config + asset() helper.
+ *
+ * Output directory can be overridden with OUT_DIR.
  */
 
 import { execSync } from 'child_process';
 import { cpSync, rmSync, mkdirSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
 const srcDist = join(rootDir, 'dist');
-const dstDist = join(rootDir, 'dist-eurovision');
+
+const BASE_PATH = process.env.BASE_PATH ?? '/';
+if (!BASE_PATH.startsWith('/') || !BASE_PATH.endsWith('/')) {
+    console.error(`✗ BASE_PATH must start and end with "/", got: ${BASE_PATH}`);
+    process.exit(1);
+}
+const isEmbedded = BASE_PATH !== '/';
+const dstDist = join(rootDir, process.env.OUT_DIR ?? (isEmbedded ? 'dist-eurovision-embedded' : 'dist-eurovision'));
 
 // ---------------------------------------------------------------------------
 // Explicit allow-list. Every entry has a verified loader in src/.
@@ -92,11 +109,11 @@ execSync('npx tsx scripts/inject-seo.ts', {
 // ---------------------------------------------------------------------------
 // 2. Build Eurovision (deterministic — ignores manifest rebuild flags)
 // ---------------------------------------------------------------------------
-console.log('🔨 Building eurovision page...');
+console.log(`🔨 Building eurovision page (base=${BASE_PATH})...`);
 execSync('npx tsx scripts/build-inlined.mjs --pages eurovision', {
     cwd: rootDir,
     stdio: 'inherit',
-    env: { ...process.env, NODE_ENV: 'production' },
+    env: { ...process.env, NODE_ENV: 'production', BASE_PATH },
 });
 
 if (!existsSync(srcDist)) {
@@ -129,7 +146,7 @@ const allFiles = [...ALLOW_LIST, ...resolvedGlobFiles];
 // ---------------------------------------------------------------------------
 // 3. Clean destination
 // ---------------------------------------------------------------------------
-console.log('🧹 Cleaning dist-eurovision/...');
+console.log(`🧹 Cleaning ${relative(rootDir, dstDist)}/...`);
 rmSync(dstDist, { recursive: true, force: true });
 mkdirSync(dstDist, { recursive: true });
 
@@ -152,7 +169,7 @@ if (missing > 0) {
     console.error(`\n✗ ${missing} allow-listed file(s) missing from dist/. Did the build succeed?`);
     process.exit(1);
 }
-console.log(`✓ Copied ${allFiles.length} files to dist-eurovision/`);
+console.log(`✓ Copied ${allFiles.length} files to ${relative(rootDir, dstDist)}/`);
 
 // ---------------------------------------------------------------------------
 // 5. Drift detection: scan the JS bundle for absolute /asset paths.
@@ -162,12 +179,19 @@ console.log(`✓ Copied ${allFiles.length} files to dist-eurovision/`);
 const bundleFile = resolvedGlobFiles[0]; // e.g., assets/eurovision-XYZ.js
 const bundleSource = readFileSync(join(srcDist, bundleFile), 'utf-8');
 
-// Match absolute paths to common asset extensions
-const ASSET_RE = /["'`](\/[A-Za-z0-9_./-]+\.(?:png|jpg|jpeg|svg|webp|woff2|wasm|bin|glb|gltf|hdr|env|dds|ktx|json))["'`]/g;
+// Match absolute paths to common asset extensions. In embedded mode all app
+// assets are prefixed with BASE_PATH; in standalone mode with "/". Pull refs
+// matching our configured base (plus the raw "/" form to catch any asset
+// literal that wasn't routed through asset()).
+const BASE_RE_PART = BASE_PATH.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const ASSET_RE = new RegExp(
+    `["'\`](?:${BASE_RE_PART}|\\/)([A-Za-z0-9_./-]+\\.(?:png|jpg|jpeg|svg|webp|woff2|wasm|bin|glb|gltf|hdr|env|dds|ktx|json))["'\`]`,
+    'g'
+);
 const discovered = new Set();
 let m;
 while ((m = ASSET_RE.exec(bundleSource)) !== null) {
-    discovered.add(m[1].slice(1)); // strip leading "/"
+    discovered.add(m[1]);
 }
 
 // Filter out allow-listed entries and known-irrelevant patterns.
@@ -189,18 +213,26 @@ const unexplained = [...discovered].filter((p) => {
 
 if (unexplained.length > 0) {
     console.warn('\n⚠ Drift detected: the bundle references these paths but they are NOT in the allow-list:');
-    for (const u of unexplained) console.warn(`    /${u}`);
+    for (const u of unexplained) console.warn(`    ${BASE_PATH}${u}`);
     console.warn('  → Add them to ALLOW_LIST in scripts/build-eurovision-deploy.mjs if Eurovision actually needs them.');
 } else {
     console.log('✓ No drift — bundle does not reference any non-allow-listed assets.');
 }
 
 // ---------------------------------------------------------------------------
-// 6. Write eurovision-specific sitemap.xml and robots.txt.
-//    These live on eurovision.jordglobe.com and must NOT be the shared
-//    jordglobe.com versions (cross-domain sitemaps confuse Google).
+// 6. Mode-specific finishing touches.
 // ---------------------------------------------------------------------------
-const eurovisionSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+let extraCount = 0;
+if (isEmbedded) {
+    // The main site's deploy pipeline (JordglobeSite/scripts/deploy.sh) looks
+    // for index.html in the source dir. Alias eurovision.html to satisfy it.
+    cpSync(join(dstDist, 'eurovision.html'), join(dstDist, 'index.html'));
+    extraCount = 1;
+    console.log('✓ Aliased eurovision.html → index.html for embedded deploy');
+} else {
+    // Standalone subdomain gets its own sitemap/robots. Cross-domain sitemaps
+    // confuse Google, so these must NOT be shared with jordglobe.com.
+    const eurovisionSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://eurovision.jordglobe.com/</loc>
@@ -209,16 +241,17 @@ const eurovisionSitemap = `<?xml version="1.0" encoding="UTF-8"?>
   </url>
 </urlset>
 `;
-writeFileSync(join(dstDist, 'sitemap.xml'), eurovisionSitemap, 'utf-8');
+    writeFileSync(join(dstDist, 'sitemap.xml'), eurovisionSitemap, 'utf-8');
 
-const eurovisionRobots = `# Robots.txt for eurovision.jordglobe.com
+    const eurovisionRobots = `# Robots.txt for eurovision.jordglobe.com
 User-agent: *
 Allow: /
 
 Sitemap: https://eurovision.jordglobe.com/sitemap.xml
 `;
-writeFileSync(join(dstDist, 'robots.txt'), eurovisionRobots, 'utf-8');
+    writeFileSync(join(dstDist, 'robots.txt'), eurovisionRobots, 'utf-8');
+    extraCount = 2;
+    console.log('✓ Wrote eurovision-specific sitemap.xml and robots.txt');
+}
 
-console.log('✓ Wrote eurovision-specific sitemap.xml and robots.txt');
-
-console.log(`\n✅ dist-eurovision/ ready (${allFiles.length + 2} files).`);
+console.log(`\n✅ ${relative(rootDir, dstDist)}/ ready (${allFiles.length + extraCount} files, base="${BASE_PATH}").`);

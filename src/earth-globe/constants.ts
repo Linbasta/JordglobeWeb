@@ -181,15 +181,17 @@ export const PICKER_CELL_SIZE = 10;
 // Default Asset Paths
 // ============================================================================
 
+import { asset } from '../shared/asset-path';
+
 export const DEFAULT_ASSETS = {
-    countriesJson: '/countries-enriched.bin',
-    segmentsJson: '/segments.json',
-    lofiCollidersJson: '/lofi-colliders.json',
-    oceanDepthMap: '/OceanDepthMap.png',
-    spaceTextureMid: '/SpaceMidTexture.png',
-    spaceTextureTop: '/SpaceTop.png',
-    spaceTextureBottom: '/SpaceBottom.png',
-    worldTexture: '/WorldTexture.png',
+    countriesJson: asset('countries-enriched.bin'),
+    segmentsJson: asset('segments.json'),
+    lofiCollidersJson: asset('lofi-colliders.json'),
+    oceanDepthMap: asset('OceanDepthMap.png'),
+    spaceTextureMid: asset('SpaceMidTexture.png'),
+    spaceTextureTop: asset('SpaceTop.png'),
+    spaceTextureBottom: asset('SpaceBottom.png'),
+    worldTexture: asset('WorldTexture.png'),
 } as const;
 
 // ============================================================================

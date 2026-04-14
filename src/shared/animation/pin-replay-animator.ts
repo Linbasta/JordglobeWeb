@@ -16,6 +16,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { hexToRgb } from '../../../shared/playerColors';
 import type { PinRecording } from './pin-recorder';
+import { BASE_URL } from '../asset-path';
 
 const EARTH_RADIUS = 2.0;
 const ANIMATION_SPEED = 1.0; // 1.0 = real-time, 2.0 = 2x speed, etc.
@@ -50,7 +51,7 @@ export class PinReplayAnimator {
      */
     private async loadBossPinModel(): Promise<void> {
         try {
-            const result = await SceneLoader.ImportMeshAsync("", "/", "BossPin.glb", this.scene);
+            const result = await SceneLoader.ImportMeshAsync("", BASE_URL, "BossPin.glb", this.scene);
             if (result.meshes.length === 0) {
                 console.error('No meshes found in BossPin model');
                 return;

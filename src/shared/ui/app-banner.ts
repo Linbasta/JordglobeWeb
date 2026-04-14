@@ -6,6 +6,8 @@
  * - Android: Custom dismissible banner linking to Google Play
  */
 
+import { asset } from '../asset-path'
+
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 const BANNER_DISMISSED_KEY = 'app-banner-dismissed'
 const BANNER_HEIGHT = '60px'
@@ -130,7 +132,7 @@ function createAndroidBanner(): HTMLElement {
 
     // App icon
     const icon = document.createElement('img')
-    icon.src = '/AppIcon.png'
+    icon.src = asset('AppIcon.png')
     icon.alt = 'Jordglobe'
     icon.style.cssText = `
         width: 40px;

@@ -4,6 +4,7 @@
  */
 
 import { AdvancedDynamicTexture, Image, TextBlock, Control } from '@babylonjs/gui';
+import { asset } from '../asset-path';
 
 export class SelectedCountryLabel {
     private advancedTexture: AdvancedDynamicTexture;
@@ -21,7 +22,7 @@ export class SelectedCountryLabel {
      */
     private createUI(): void {
         // Create nine-patch country card at bottom center
-        this.countryCard = new Image("selectedCountryCard", "/BlueButton.png");
+        this.countryCard = new Image("selectedCountryCard", asset("BlueButton.png"));
         this.countryCard.width = "250px";
         this.countryCard.height = "80px";
         this.countryCard.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;

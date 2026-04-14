@@ -5,6 +5,8 @@
  * Horizontal layout: QR code left, text right.
  */
 
+import { asset } from '../asset-path'
+
 // ── DOM element ──
 let adContainer: HTMLDivElement | null = null
 let resizeHandler: (() => void) | null = null
@@ -57,7 +59,7 @@ export function showMobileAppAd(): void {
 
     // Phone icon (center)
     const phoneIcon = document.createElement('img')
-    phoneIcon.src = '/phone-icon.svg'
+    phoneIcon.src = asset('phone-icon.svg')
     phoneIcon.alt = ''
     phoneIcon.style.cssText = 'width:64px;height:64px;flex-shrink:0;'
 
@@ -104,7 +106,7 @@ export function hideMobileAppAd(): void {
 
 function insertQRCode(container: HTMLElement): void {
     const img = document.createElement('img')
-    img.src = '/qr-download.png'
+    img.src = asset('qr-download.png')
     img.alt = 'Download'
     img.width = QR_SIZE
     img.height = QR_SIZE

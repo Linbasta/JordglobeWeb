@@ -6,6 +6,7 @@
 
 import { PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
 import { getPersonalBest } from './result-overlay'
+import { asset } from '../asset-path'
 
 // ── DOM elements ──
 let root: HTMLDivElement | null = null
@@ -53,7 +54,7 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
         `display:flex;align-items:center;justify-content:space-between;` +
         `box-sizing:border-box;` +
         `border-style:solid;border-width:${FRAME_BORDER}px;` +
-        `border-image:url("/BlueButton.png") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;` +
+        `border-image:url("${asset('BlueButton.png')}") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;` +
         `color:#fff;font-family:Arial,sans-serif;font-size:18px;font-weight:bold;` +
         `gap:0;`
 

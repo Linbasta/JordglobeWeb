@@ -6,6 +6,7 @@
 
 import { AdvancedDynamicTexture, Image, TextBlock, Control } from '@babylonjs/gui';
 import { SCORE_BAR_BOTTOM } from './score-bar';
+import { asset } from '../asset-path';
 
 export class CountryLabelUI {
     private advancedTexture: AdvancedDynamicTexture;
@@ -77,7 +78,7 @@ export class CountryLabelUI {
         }
 
         // Create nine-patch country card at top center
-        this.countryCard = new Image("countryCard", "/question_card_simple.png");
+        this.countryCard = new Image("countryCard", asset("question_card_simple.png"));
         this.countryCard.width = widthPx;
         this.countryCard.height = "100px";
         this.countryCard.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;

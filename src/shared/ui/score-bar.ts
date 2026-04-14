@@ -4,6 +4,8 @@
  * Module-level state, plain functions. Inspired by Unity ScoreBar.
  */
 
+import { asset } from '../asset-path'
+
 // ── DOM elements ──
 let root: HTMLDivElement | null = null
 let barBG: HTMLDivElement | null = null
@@ -107,7 +109,7 @@ export function createScoreBar(turnsLeft: number, total: number): void {
     barBG.style.cssText =
         `position:absolute;inset:0;` +
         `border-style:solid;border-width:${FRAME_BORDER}px;` +
-        `border-image:url("/BlueButton.png") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;`
+        `border-image:url("${asset('BlueButton.png')}") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;`
 
     // Dark inner area — shifted up to sit above the button's faked depth
     barInner = document.createElement('div')
@@ -155,7 +157,7 @@ export function createScoreBar(turnsLeft: number, total: number): void {
         `font-weight:bold;flex-shrink:0;min-width:50px;text-align:center;` +
         `box-sizing:border-box;height:${BAR_HEIGHT}px;line-height:${BAR_HEIGHT - 16}px;` +
         `border-style:solid;border-width:8px;` +
-        `border-image:url("/BlueButton.png") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;`
+        `border-image:url("${asset('BlueButton.png')}") ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} ${BLUE_SLICE} fill stretch;`
     turnsBadge.textContent = `${turnsLeft}`
     root.appendChild(turnsBadge)
 

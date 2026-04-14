@@ -6,6 +6,7 @@
  */
 
 import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP } from './score-bar'
+import { asset } from '../asset-path'
 
 let clipWrapper: HTMLDivElement | null = null
 let container: HTMLDivElement | null = null
@@ -47,7 +48,7 @@ export function showTextCardOverlay(prompt: string): void {
     card.style.cssText =
         `width:${cardWidth}px;position:relative;` +
         'border-style:solid;border-width:4px;' +
-        'border-image:url("/BlueButton.png") 33 33 33 33 fill stretch;' +
+        `border-image:url("${asset('BlueButton.png')}") 33 33 33 33 fill stretch;` +
         'box-sizing:border-box;'
 
     // Inner white area — no rounded corners, minimal gap

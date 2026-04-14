@@ -4,6 +4,7 @@
 
 import { startConfetti, stopConfetti } from './confetti'
 import { generateShareMessage } from './share-message'
+import { asset } from '../asset-path'
 
 let backdrop: HTMLDivElement | null = null
 
@@ -140,8 +141,8 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             <div class="ro-share-text">Can your friends beat your score?</div>
             <button class="ro-share-btn">${COPY_ICON} Copy challenge link</button>
             <div class="ro-store-links">
-                <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="/app-store-badge.svg" alt="Download on the App Store" class="ro-store-badge"></a>
-                <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="/google-play-badge.png" alt="Get it on Google Play" class="ro-store-badge"></a>
+                <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="ro-store-badge"></a>
+                <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="ro-store-badge"></a>
             </div>
             ${onRetry ? '<button class="ro-retry-btn">Play again</button>' : ''}
         </div>

@@ -8,6 +8,7 @@
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture';
 import { Control } from '@babylonjs/gui/2D/controls/control';
 import { Image } from '@babylonjs/gui/2D/controls/image';
+import { asset } from '../asset-path';
 import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle';
 
 export interface PinUIElements {
@@ -66,7 +67,7 @@ export class PinUI {
      */
     private createPinButton(): Image {
         const pinScale = 0.5;
-        const pinButton = new Image("pinButton", "/DefaultPin.png");
+        const pinButton = new Image("pinButton", asset("DefaultPin.png"));
         pinButton.width = `${196 * pinScale}px`;
         pinButton.height = `${900 * pinScale}px`;
         pinButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;

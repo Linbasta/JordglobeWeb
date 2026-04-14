@@ -22,10 +22,10 @@
     <meta name="twitter:description" content="Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.">
     <meta name="twitter:image" content="https://eurovision.jordglobe.com/og-image.png">
     <!-- /SEO -->
-    <link rel="manifest" href="/eurovision-manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/JordglobeIconSquare.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="./eurovision-manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./JordglobeIconSquare.png">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
     <style>
         html, body { height: 100%; }
         body { margin: 0; overflow: hidden; background-color: #6496DC; }
@@ -48,7 +48,7 @@
         // Preload sprite images when browser is idle (not blocking initial load)
         const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
         idleCallback(() => {
-            for (let i = 1; i <= 6; i++) new Image().src = `/eurovision/${i}.png`;
+            for (let i = 1; i <= 6; i++) new Image().src = `${import.meta.env.BASE_URL}eurovision/${i}.png`;
         });
 
         function showStartButton() {
@@ -172,7 +172,7 @@
                     quizTitle: 'Eurovision Quiz',
                     shareUrl: 'https://eurovision.jordglobe.com/',
                     shareEmoji: '🎵',
-                    spritePath: '/eurovision/',
+                    spritePath: `${import.meta.env.BASE_URL}eurovision/`,
                     spriteNames,
                     getMessage: (s, t) => s === t ? spriteNames[5] : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
                     formatShareSquares: (results) => {

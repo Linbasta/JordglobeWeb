@@ -5,6 +5,8 @@
  * Module-level state, plain functions (consistent with other overlays).
  */
 
+import { asset } from '../asset-path'
+
 // ── DOM elements ──
 let backdrop: HTMLDivElement | null = null
 let container: HTMLDivElement | null = null
@@ -14,8 +16,8 @@ const BACKDROP_COLOR = 'rgba(0, 0, 0, 0.6)'
 const CARD_WIDTH = 320
 const BUTTON_HEIGHT = 50
 const DOWNLOAD_URL = 'https://jordglobe.com/download/'
-const APP_STORE_BADGE = '/app-store-badge.svg'
-const GOOGLE_PLAY_BADGE = '/google-play-badge.png'
+const APP_STORE_BADGE = asset('app-store-badge.svg')
+const GOOGLE_PLAY_BADGE = asset('google-play-badge.png')
 const BADGE_HEIGHT = 40
 
 /**
@@ -56,7 +58,7 @@ export function showEndGameOverlay(
     container.style.cssText =
         `width:${CARD_WIDTH}px;` +
         'border-style:solid;border-width:10px;' +
-        'border-image:url("/BlueButton.png") 20 20 20 20 fill stretch;' +
+        `border-image:url("${asset('BlueButton.png')}") 20 20 20 20 fill stretch;` +
         'box-sizing:border-box;' +
         'transform:scale(0.8);opacity:0;' +
         'transition:transform 0.3s ease-out, opacity 0.3s ease-out;'
@@ -156,7 +158,7 @@ function createButton(text: string, onClick: () => void): HTMLButtonElement {
         'font-family:Arial,sans-serif;font-size:18px;font-weight:bold;' +
         'color:#fff;' +
         'border-style:solid;border-width:8px;' +
-        'border-image:url("/BlueButton.png") 20 20 20 20 fill stretch;' +
+        `border-image:url("${asset('BlueButton.png')}") 20 20 20 20 fill stretch;` +
         'transition:transform 0.1s ease-out;'
 
     btn.textContent = text
@@ -230,7 +232,7 @@ function createCallToAction(): HTMLDivElement {
 
         // Static pre-generated QR code
         const qrImg = document.createElement('img')
-        qrImg.src = '/qr-download.png'
+        qrImg.src = asset('qr-download.png')
         qrImg.alt = 'Download'
         qrImg.width = 120
         qrImg.height = 120

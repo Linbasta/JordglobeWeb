@@ -5,6 +5,8 @@
  * Module-level state, plain functions.
  */
 
+import { asset } from '../asset-path'
+
 let img: HTMLImageElement | null = null
 let fadeTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -21,15 +23,17 @@ function preloadImage(src: string): void {
     preloadedImages.set(src, image)
 }
 
-preloadImage('/Checkmark.png')
-preloadImage('/RedX.png')
+const CHECKMARK = asset('Checkmark.png')
+const RED_X = asset('RedX.png')
+preloadImage(CHECKMARK)
+preloadImage(RED_X)
 
 export function showCorrectFeedback(x: number, y: number): void {
-    showFeedback('/Checkmark.png', x, y)
+    showFeedback(CHECKMARK, x, y)
 }
 
 export function showWrongFeedback(x: number, y: number): void {
-    showFeedback('/RedX.png', x, y)
+    showFeedback(RED_X, x, y)
 }
 
 function showFeedback(src: string, x: number, y: number): void {

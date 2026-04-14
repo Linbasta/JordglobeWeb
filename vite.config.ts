@@ -9,6 +9,10 @@ import { buildPlugins, entryPoints } from './vite-shared.ts';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // Allow embedded builds (e.g. under /games/eurovision/ on the main site) to
+  // rewrite asset URLs at build time. Defaults to root for standalone deploys
+  // and local dev.
+  base: process.env.BASE_PATH ?? '/',
   server: {
     port: 4817,
     open: true,

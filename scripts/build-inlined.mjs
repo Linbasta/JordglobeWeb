@@ -132,6 +132,7 @@ for (const name of targets) {
     configFile: false,
     publicDir: isFirst ? 'public' : false,
     appType: 'mpa',
+    base: process.env.BASE_PATH ?? '/',
     build: {
       target: 'es2020',
       outDir: 'dist',

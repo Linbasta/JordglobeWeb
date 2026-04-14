@@ -6,6 +6,7 @@ import type { MedalsData, Medal, MenuNode, LocationsData } from './types'
 import type { Question } from '../shared/quiz/quiz-types'
 import { showEndGameOverlay } from '../shared/ui/end-game-overlay'
 import { initMobile } from '../shared/ui/mobile-init'
+import { asset } from '../shared/asset-path'
 
 // Initialize mobile features (theme color, app banner)
 initMobile()
@@ -56,9 +57,9 @@ async function init() {
 
     // Fetch data
     const [medalsRes, locationsRes, countriesRes] = await Promise.all([
-        fetch('/medals.json'),
-        fetch('/locations.json'),
-        fetch('/countries-enriched.json'),
+        fetch(asset('medals.json')),
+        fetch(asset('locations.json')),
+        fetch(asset('countries-enriched.json')),
     ])
     medalsData = await medalsRes.json()
     locationsData = await locationsRes.json()
@@ -325,7 +326,7 @@ async function startMedal(medalId: number) {
             return
         }
 
-        const provinceRes = await fetch(`/provinces/${medal.countryISO2}.json`)
+        const provinceRes = await fetch(asset(`provinces/${medal.countryISO2}.json`))
         const provinceData: { country: string; provinces: { id: number; name: string }[] } = await provinceRes.json()
 
         // Create map of province ID → name
@@ -355,7 +356,7 @@ async function startMedal(medalId: number) {
                 present: 'image',
                 answer: 'country',
                 countryISO2: iso2 as string,
-                imageUrl: `/_flags/${iso2}.png`,
+                imageUrl: asset(`_flags/${iso2}.png`),
                 imageFrame: 'simple',
                 prompt: '',
             })

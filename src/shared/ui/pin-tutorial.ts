@@ -5,6 +5,8 @@
  * Displays once for new users, dismisses when they start dragging.
  */
 
+import { asset } from '../asset-path'
+
 const TUTORIAL_SEEN_KEY = 'pin-tutorial-seen'
 const TUTORIAL_DELAY_MS = 5000
 
@@ -60,7 +62,7 @@ function createTutorialElement(): HTMLDivElement {
     `
 
     const hand = document.createElement('img')
-    hand.src = '/PointWhite0006.png'
+    hand.src = asset('PointWhite0006.png')
     hand.style.cssText = `
         width: 160px;
         height: auto;
