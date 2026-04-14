@@ -19,7 +19,113 @@ export interface BlogProps {
 	canonicalUrl: URL;
 }
 
-export type JsonLDProps = BlogProps | GeneralProps;
+export interface AppProps {
+	type: "app";
+}
+
+export type JsonLDProps = BlogProps | GeneralProps | AppProps;
+
+/**
+ * Generates Organization schema for the site
+ */
+export function organizationSchema() {
+	return {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"name": "Jordglobe",
+		"url": import.meta.env.SITE,
+		"logo": `${import.meta.env.SITE}/images/jordglobe-logo.png`,
+		"email": siteData.contact?.email || "info@jordglobe.com",
+		"sameAs": [
+			"https://twitter.com/ollelandin"
+		],
+		"address": {
+			"@type": "PostalAddress",
+			"streetAddress": siteData.contact?.address1 || "Box 92138",
+			"addressLocality": "Johanneshov",
+			"postalCode": "121 62",
+			"addressCountry": "SE"
+		}
+	};
+}
+
+/**
+ * Generates SoftwareApplication schema for app download pages
+ */
+export function softwareApplicationSchema() {
+	return {
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "JordGlobe",
+		"applicationCategory": "GameApplication",
+		"operatingSystem": "iOS, Android",
+		"description": siteData.description || "JordGlobe uses addictive gaming to make learning geography fun and effortless.",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"aggregateRating": {
+			"@type": "AggregateRating",
+			"ratingValue": "4.6",
+			"ratingCount": "93"
+		}
+	};
+}
+
+/**
+ * Generates BreadcrumbList schema
+ */
+export function breadcrumbSchema(items: { name: string; url: string }[]) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": items.map((item, index) => ({
+			"@type": "ListItem",
+			"position": index + 1,
+			"name": item.name,
+			"item": item.url
+		}))
+	};
+}
+
+export interface VideoGameSchemaProps {
+	name: string;
+	description: string;
+	url: string;
+	image?: string;
+	genre?: string;
+	playMode?: string;
+}
+
+/**
+ * Generates VideoGame schema for browser-based games
+ */
+export function videoGameSchema(game: VideoGameSchemaProps) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "VideoGame",
+		"name": game.name,
+		"description": game.description,
+		"url": game.url,
+		"image": game.image,
+		"genre": game.genre || "Quiz",
+		"gamePlatform": "Web Browser",
+		"playMode": game.playMode || "SinglePlayer",
+		"applicationCategory": "Game",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD",
+			"availability": "https://schema.org/InStock"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "Jordglobe",
+			"url": import.meta.env.SITE
+		}
+	};
+}
 
 export default function jsonLDGenerator(props: JsonLDProps) {
 	const { type } = props;
@@ -59,6 +165,18 @@ export default function jsonLDGenerator(props: JsonLDProps) {
       }
     </script>`;
 	}
+
+	if (type === "app") {
+		// Return both Organization and SoftwareApplication schemas for app pages
+		return `<script type="application/ld+json">
+${JSON.stringify(organizationSchema(), null, 2)}
+    </script>
+    <script type="application/ld+json">
+${JSON.stringify(softwareApplicationSchema(), null, 2)}
+    </script>`;
+	}
+
+	// General pages: include WebSite and Organization schemas
 	return `<script type="application/ld+json">
       {
       "@context": "https://schema.org/",
@@ -66,5 +184,8 @@ export default function jsonLDGenerator(props: JsonLDProps) {
       "name": "${siteData.title}",
       "url": "${import.meta.env.SITE}"
       }
+    </script>
+    <script type="application/ld+json">
+${JSON.stringify(organizationSchema(), null, 2)}
     </script>`;
 }

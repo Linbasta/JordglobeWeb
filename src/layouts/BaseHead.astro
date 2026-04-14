@@ -38,7 +38,8 @@ import InterVariable from "@fontsource-variable/inter/files/inter-latin-wght-nor
 <link rel="preload" href={InterVariable} as="font" type="font/woff2" crossorigin="anonymous" />
 
 <!-- Sentient Font -->
-<link rel="preconnect" href="https://api.fontshare.com" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="dns-prefetch" href="https://api.fontshare.com" />
 <link href="https://api.fontshare.com/v2/css?f[]=sentient@400,500&display=swap" rel="stylesheet" />
 
 <!-- Favicons. I store these in public/favicons. Wherever you store them in the public folder is what you need these href's to match -->
@@ -54,6 +55,11 @@ import InterVariable from "@fontsource-variable/inter/files/inter-latin-wght-nor
 <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
 <meta name="theme-color" content="000000" />
 <!-- end favicons -->
+
+<!-- Search Engine Verification -->
+<!-- Uncomment and add your verification codes below -->
+<!-- <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" /> -->
+<!-- <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" /> -->
 
 <!-- other -->
 <meta name="generator" content={Astro.generator} />
