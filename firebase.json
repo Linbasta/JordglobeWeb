@@ -17,6 +17,10 @@
                 "destination": "/games/eurovision/index.html"
             },
             {
+                "source": "/eurovision{,/**}",
+                "destination": "/games/eurovision/index.html"
+            },
+            {
                 "source": "**",
                 "destination": "/index.html"
             }
@@ -75,6 +79,10 @@
             },
             {
                 "source": "/games/eurovision/**",
+                "destination": "/games/eurovision/index.html"
+            },
+            {
+                "source": "/eurovision{,/**}",
                 "destination": "/games/eurovision/index.html"
             },
             {
