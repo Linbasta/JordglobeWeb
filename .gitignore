@@ -27,3 +27,7 @@ pnpm-debug.log*
 .netlify
 .vercel
 .wrangler
+.firebase
+
+# Claude Code
+.claude/

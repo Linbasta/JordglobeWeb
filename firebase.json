@@ -7,6 +7,23 @@
             "**/.*",
             "**/node_modules/**"
         ],
+        "redirects": [
+            {
+                "source": "/trivia",
+                "destination": "/games",
+                "type": 301
+            },
+            {
+                "source": "/sv/trivia",
+                "destination": "/sv/games",
+                "type": 301
+            },
+            {
+                "source": "/fr/trivia",
+                "destination": "/fr/games",
+                "type": 301
+            }
+        ],
         "rewrites": [
             {
                 "source": "/duel",
@@ -71,6 +88,23 @@
             "firebase.json",
             "**/.*",
             "**/node_modules/**"
+        ],
+        "redirects": [
+            {
+                "source": "/trivia",
+                "destination": "/games",
+                "type": 301
+            },
+            {
+                "source": "/sv/trivia",
+                "destination": "/sv/games",
+                "type": 301
+            },
+            {
+                "source": "/fr/trivia",
+                "destination": "/fr/games",
+                "type": 301
+            }
         ],
         "rewrites": [
             {
