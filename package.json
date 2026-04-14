@@ -6,7 +6,7 @@
 		"dev": "node ./scripts/copy-pages.js && astro dev --host",
 		"start": "node ./scripts/copy-pages.js && astro dev --host",
 		"build": "node ./scripts/copy-pages.js && astro build",
-		"preview": "astro preview",
+		"preview": "./scripts/deploy.sh preview",
 		"astro": "astro",
 		"config-i18n": "node ./scripts/config-i18n.js",
 		"remove-keystatic": "node ./scripts/remove-keystatic.js",

@@ -2,8 +2,8 @@
 set -euo pipefail
 
 TARGET="${1:-}"
-if [[ "$TARGET" != "prod" && "$TARGET" != "stage" ]]; then
-  echo "Usage: $0 <prod|stage>" >&2
+if [[ "$TARGET" != "prod" && "$TARGET" != "stage" && "$TARGET" != "preview" ]]; then
+  echo "Usage: $0 <prod|stage|preview>" >&2
   exit 1
 fi
 
@@ -48,7 +48,12 @@ for game in "${GAMES[@]}"; do
   echo "    $game: $src -> dist/games/$game"
 done
 
-echo "==> Deploying to Firebase Hosting ($TARGET)"
-firebase deploy --only "hosting:$TARGET"
+if [[ "$TARGET" == "preview" ]]; then
+  echo "==> Starting Firebase Hosting emulator (respects firebase.json rewrites)"
+  firebase emulators:start --only hosting:stage
+else
+  echo "==> Deploying to Firebase Hosting ($TARGET)"
+  firebase deploy --only "hosting:$TARGET"
+fi
 
 echo "==> Done"
