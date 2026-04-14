@@ -7,74 +7,29 @@ import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
 import { videoGameSchema } from "@js/jsonLD";
 
-// images - TODO: Replace with actual Eurovision thumbnail
-import placeholder from "@images/place-for-photo.png";
+// images
+import eurovisionImg from "@images/front/eurovision.png";
+
+// Image mapping - add new game images here
+const imageMap: Record<string, string> = {
+  eurovision: eurovisionImg.src,
+};
 
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
 const siteData = getTranslatedData("siteData", currLocale);
+const gamesData = getTranslatedData("gamesData", currLocale);
 
-// Games data with i18n support
-const games = [
-  {
-    id: "eurovision",
-    title: {
-      en: "Eurovision 2026 Quiz",
-      sv: "Eurovision 2026 Quiz",
-      fr: "Quiz Eurovision 2026"
-    },
-    description: {
-      en: "Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!",
-      sv: "Se Eurovision Song Contest 2026-bidragen och gissa vilket land varje framträdande kommer ifrån på en interaktiv 3D-glob. Testa dina Eurovision-kunskaper!",
-      fr: "Regardez les participations au Concours Eurovision de la Chanson 2026 et devinez de quel pays vient chaque performance sur un globe 3D interactif. Testez vos connaissances Eurovision!"
-    },
-    howToPlay: {
-      en: "Listen to the song, then click on the globe to guess which country it's from. The closer you are, the more points you get!",
-      sv: "Lyssna på låten och klicka sedan på globen för att gissa vilket land den kommer ifrån. Ju närmare du är, desto fler poäng får du!",
-      fr: "Écoutez la chanson, puis cliquez sur le globe pour deviner de quel pays elle vient. Plus vous êtes proche, plus vous gagnez de points!"
-    },
-    image: placeholder.src,
-    link: "/games/eurovision/",
-    genre: "Music Quiz"
-  }
-];
-
-// Localize games data
-const localizedGames = games.map(game => ({
+// Map images to games
+const gamesWithImages = gamesData.games.map(game => ({
   ...game,
-  title: game.title[currLocale] || game.title.en,
-  description: game.description[currLocale] || game.description.en,
-  howToPlay: game.howToPlay[currLocale] || game.howToPlay.en
+  image: imageMap[game.image] || game.image,
 }));
 
-// Page text translations
-const pageText = {
-  en: {
-    title: "Games",
-    subtitle: "Play geography games and test your knowledge",
-    howToPlayLabel: "How to play:",
-    playButton: "Play Now"
-  },
-  sv: {
-    title: "Spel",
-    subtitle: "Spela geografispel och testa dina kunskaper",
-    howToPlayLabel: "Så spelar du:",
-    playButton: "Spela nu"
-  },
-  fr: {
-    title: "Jeux",
-    subtitle: "Jouez à des jeux de géographie et testez vos connaissances",
-    howToPlayLabel: "Comment jouer:",
-    playButton: "Jouer maintenant"
-  }
-};
-
-const t = pageText[currLocale] || pageText.en;
-
 // Generate VideoGame schema for each game
-const gameSchemas = games.map(game => videoGameSchema({
-  name: game.title.en,
-  description: game.description.en,
+const gameSchemas = gamesWithImages.map(game => videoGameSchema({
+  name: game.title,
+  description: game.description,
   url: `${import.meta.env.SITE}${game.link}`,
   image: game.image.startsWith('http') ? game.image : `${import.meta.env.SITE}${game.image}`,
   genre: game.genre
@@ -82,8 +37,8 @@ const gameSchemas = games.map(game => videoGameSchema({
 ---
 
 <BaseLayout
-  title={`${t.title} | ${siteData.title}`}
-  description={t.subtitle}
+  title={`${gamesData.pageTitle} | ${siteData.title}`}
+  description={gamesData.pageSubtitle}
 >
   <!-- VideoGame structured data -->
   {gameSchemas.map(schema => (
@@ -92,12 +47,12 @@ const gameSchemas = games.map(game => videoGameSchema({
 
   <div class="container mx-auto px-4 py-16">
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold mb-4">{t.title}</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400">{t.subtitle}</p>
+      <h1 class="text-4xl font-bold mb-4">{gamesData.pageTitle}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400">{gamesData.pageSubtitle}</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {localizedGames.map((game) => (
+      {gamesWithImages.map((game) => (
         <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
           <a href={game.link} class="block">
             <div class="aspect-video">
@@ -118,19 +73,11 @@ const gameSchemas = games.map(game => videoGameSchema({
             <p class="text-gray-600 dark:text-gray-300 mb-4">
               {game.description}
             </p>
-            <div class="mb-4">
-              <h3 class="font-medium text-sm text-gray-500 dark:text-gray-400 mb-1">
-                {t.howToPlayLabel}
-              </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-300">
-                {game.howToPlay}
-              </p>
-            </div>
             <a
               href={game.link}
               class="inline-block w-full text-center bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
-              {t.playButton}
+              {gamesData.playButton}
             </a>
           </div>
         </article>

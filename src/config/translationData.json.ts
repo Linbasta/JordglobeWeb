@@ -15,6 +15,7 @@ const dataKeys = [
 	"faqData",
 	"teamData",
 	"testimonialData",
+	"gamesData",
 ];
 
 // Define supported languages
