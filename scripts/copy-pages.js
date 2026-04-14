@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const PAGES_DIR = 'src/pages';
-const LANGUAGES = ['sv', 'fr']; // Add more languages as needed
+const LANGUAGES = ['sv']; // Add more languages as needed
 
 async function copyPages() {
     try {

@@ -19,13 +19,12 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'fr'];
+const supportedLangs = ['en', 'sv'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
 	en: import.meta.glob('./en/*.json.ts', { eager: true }),
 	sv: import.meta.glob('./sv/*.json.ts', { eager: true }),
-	fr: import.meta.glob('./fr/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -40,7 +39,6 @@ for (const lang of supportedLangs) {
 		}
 	}
 }
-console.log(dataTranslations)
 export { dataTranslations };
 
 /**
@@ -71,14 +69,6 @@ export const textTranslations = {
 		back_to_all_posts: "Till alla inlägg",
 		updated: "Uppdaterad",
 	},
-// Added French translations
-	fr: {
-		hero_text: "Tout ce dont vous avez besoin pour un site web incroyable.",
-		hero_description:
-			"Un modèle pour le prochain SaaS phare. Plusieurs pages et sections, blog, i18n, animations, CMS - tout prêt à l'emploi.",
-		back_to_all_posts: "Retour à tous les articles",
-		updated: "Mis à jour",
-	}
 } as const;
 
 /**
@@ -96,8 +86,4 @@ export const routeTranslations = {
 	sv: {
 		aboutKey: "om",
 	},
-	fr: {
-		aboutKey: "about",
-	},
-
 } as const;
