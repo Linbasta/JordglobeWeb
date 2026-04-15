@@ -1,17 +1,21 @@
+// Import shared SEO config (single source of truth)
+import gamesSeoConfig from "../games-seo.json";
+
+// Derive game listing data from SEO config (Swedish locale)
+const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => ({
+	id,
+	title: game.sv.ogTitle || game.sv.title.split(" | ")[0], // Use short title for cards
+	description: game.sv.description,
+	image: id, // Image key for imageMap in GamesPage
+	link: `/sv/games/${id}/`,
+	genre: game.genre,
+}));
+
 const gamesData = {
 	pageTitle: "Spel",
 	pageSubtitle: "Spela geografispel och testa dina kunskaper",
 	playButton: "Spela nu",
-	games: [
-		{
-			id: "eurovision",
-			title: "Eurovision 2026 Quiz",
-			description: "Se Eurovision Song Contest 2026-bidragen och gissa vilket land varje framträdande kommer ifrån på en interaktiv 3D-glob. Testa dina Eurovision-kunskaper!",
-			image: "eurovision",
-			link: "/games/eurovision/",
-			genre: "Music Quiz"
-		}
-	]
+	games,
 };
 
 export default gamesData;
