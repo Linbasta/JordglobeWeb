@@ -6,7 +6,13 @@
  *
  * The inject-seo.ts script reads this config and injects
  * the meta tags into HTML files during build.
+ *
+ * GAME PAGES: SEO for game pages (eurovision, etc.) is loaded from an
+ * external JSON file in JordglobeSite to maintain a single source of truth.
+ * Set GAMES_SEO_CONFIG_PATH env variable to point to the JSON file.
  */
+
+import { existsSync, readFileSync } from 'fs';
 
 export interface PageSEO {
     title: string;
@@ -36,6 +42,82 @@ export interface SEOConfig {
     pages: Record<string, PageSEO>;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Load game SEO from external config (single source of truth in JordglobeSite)
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface ExternalGameSEO {
+    siteUrl: string;
+    siteName: string;
+    defaultImage: string;
+    twitterCard: string;
+    games: Record<string, {
+        baseUrlOverride?: string;
+        image?: string;
+        en: {
+            title: string;
+            description: string;
+            ogTitle?: string;
+            ogDescription?: string;
+        };
+    }>;
+}
+
+function loadGameSEO(): Record<string, PageSEO> {
+    const configPath = process.env.GAMES_SEO_CONFIG_PATH;
+
+    if (!configPath) {
+        console.log('ℹ GAMES_SEO_CONFIG_PATH not set, using fallback game SEO');
+        return getFallbackGameSEO();
+    }
+
+    if (!existsSync(configPath)) {
+        console.warn(`⚠ Games SEO config not found at ${configPath}, using fallback`);
+        return getFallbackGameSEO();
+    }
+
+    try {
+        const config: ExternalGameSEO = JSON.parse(readFileSync(configPath, 'utf-8'));
+        const gameSEO: Record<string, PageSEO> = {};
+
+        for (const [gameId, game] of Object.entries(config.games)) {
+            const locale = game.en; // Use English for now
+            gameSEO[`${gameId}.html`] = {
+                title: locale.title,
+                description: locale.description,
+                ogTitle: locale.ogTitle,
+                ogDescription: locale.ogDescription,
+                baseUrlOverride: game.baseUrlOverride,
+            };
+        }
+
+        console.log(`✓ Loaded game SEO from ${configPath}`);
+        return gameSEO;
+    } catch (e) {
+        console.error(`✗ Failed to load game SEO from ${configPath}:`, e);
+        return getFallbackGameSEO();
+    }
+}
+
+// Fallback SEO for development without external config
+function getFallbackGameSEO(): Record<string, PageSEO> {
+    return {
+        'eurovision.html': {
+            title: 'Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe',
+            description: 'Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
+            ogTitle: 'Eurovision 2026 Quiz - Guess the Country from the Song',
+            ogDescription: 'Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.',
+            baseUrlOverride: 'https://jordglobe.com/games/eurovision',
+        },
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main SEO Config
+// ─────────────────────────────────────────────────────────────────────────────
+
+const gameSEO = loadGameSEO();
+
 export const seoConfig: SEOConfig = {
     baseUrl: 'https://jordglobe.com',
     defaultImage: '/og-image.png',
@@ -52,8 +134,10 @@ export const seoConfig: SEOConfig = {
         },
 
         // ─────────────────────────────────────────────────────────────
-        // Quiz Games
+        // Quiz Games (loaded from external config)
         // ─────────────────────────────────────────────────────────────
+        ...gameSEO,
+
         'country-quiz.html': {
             title: 'Country Quiz - Find Countries on the Globe | JordGlobe',
             description: 'Can you find countries on a 3D globe? Test your geography skills by locating countries around the world in this interactive quiz game.',
@@ -80,16 +164,6 @@ export const seoConfig: SEOConfig = {
             description: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge in this interactive quiz game.',
             ogTitle: 'US States Quiz - Find All 50 States',
             ogDescription: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge.',
-        },
-
-        'eurovision.html': {
-            title: 'Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe',
-            description: 'Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
-            ogTitle: 'Eurovision 2026 Quiz - Guess the Country from the Song',
-            ogDescription: 'Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.',
-            // Eurovision lives on its own subdomain, served from a separate
-            // Firebase Hosting site (jordglobegl-dev) with a custom domain.
-            baseUrlOverride: 'https://eurovision.jordglobe.com',
         },
 
         // ─────────────────────────────────────────────────────────────
