@@ -32,7 +32,11 @@ const today = new Date();
 					</div>
 				</div>
 				<div class="w-full p-2 md:w-1/2">
-					<div class="flex flex-wrap justify-between"></div>
+					<div class="flex flex-wrap justify-end gap-x-10">
+						<FooterLink href={getRelativeLocaleUrl(currLocale, "/games")}>Games</FooterLink>
+						<FooterLink href={getRelativeLocaleUrl(currLocale, "/blog")}>Blog</FooterLink>
+						<FooterLink href={getRelativeLocaleUrl(currLocale, "/gdpr")}>Privacy</FooterLink>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -54,11 +58,6 @@ const today = new Date();
 								icon="tabler/brand-x"
 								social="twitter (x)"
 							/>
-							<!-- <SocialIcon
-							href="https://twitter.com/BowTiedWebReapr"
-							icon="tabler/brand-facebook"
-							social="facebook"
-						/> -->
 						</div>
 					</div>
 				</div>
