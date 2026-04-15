@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.linbasta.jordglobegeo",
+      "sha256_cert_fingerprints": [
+        "2C:E7:1F:25:4D:8C:0A:DE:F5:DB:87:69:AA:E8:D6:23:3A:1B:65:13:36:65:1C:E6:A8:4A:BC:96:17:A2:54:D6" 
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.linbasta.jordglobegeo.dev",
+      "sha256_cert_fingerprints": [
+        "1F:94:9C:1C:1C:46:69:51:CC:4E:90:43:F5:46:92:E8:38:F8:15:81:9C:D2:A1:B8:87:E9:0C:BF:37:A9:0C:4A"
+      ]
+    }
+  }
+]

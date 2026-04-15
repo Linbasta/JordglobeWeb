@@ -1,0 +1,104 @@
+---
+/**
+ * Hero section with fullscreen video background,
+ * showing a poster image (first video frame) until the video is ready.
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+    videoSrc: string;
+    videoSrcMobile: string; // Add mobile video source
+    posterSrc: string; // first frame image
+    logoSrc: string;
+    logoAlt: string;
+    overlayColor?: string;
+    overlayOpacity?: string;
+}
+
+const {
+    videoSrc,
+    videoSrcMobile,
+    posterSrc,
+    logoSrc,
+    logoAlt,
+    overlayColor = "rgb(0,0,0)",
+    overlayOpacity = "0",
+} = Astro.props;
+---
+
+<section id="feature-video" 
+    class="relative h-screen w-full overflow-hidden"
+    data-video-desktop={videoSrc}
+    data-video-mobile={videoSrcMobile}
+>
+    <!-- Video Background -->
+    <div class="absolute inset-0 h-full w-full">
+        <video id="hero-video" autoplay loop muted playsinline class="h-full w-full object-cover">
+            <source id="video-source" src={videoSrc} type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Poster Overlay (First Video Frame) -->
+    <div
+        id="poster-overlay"
+        class="absolute inset-0 z-30 bg-cover bg-center"
+        style={`background-image: url('${posterSrc.src}');`}
+    >
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
+        <div class="animate-fadeIn w-full max-w-[500px]" style="animation-duration: 1s;">
+            <Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={400} />
+        </div>
+    </div>
+</section>
+
+<script client:load>
+    const featureVideo = document.getElementById("feature-video");
+    const video = document.getElementById("hero-video");
+    const videoSource = document.getElementById("video-source");
+    const posterOverlay = document.getElementById("poster-overlay");
+    const logo = document.querySelector(".animate-fadeIn");
+
+    // Set video source once based on initial screen width
+    const isMobile = window.innerWidth < 768;
+    videoSource.src = isMobile ? 
+        featureVideo.dataset.videoMobile : 
+        featureVideo.dataset.videoDesktop;
+    video.load();
+
+    video.addEventListener("loadeddata", () => {
+        if (posterOverlay) {
+            posterOverlay.style.transition = "opacity 0.5s";
+            posterOverlay.style.opacity = "0";
+            setTimeout(() => posterOverlay.remove(), 500);
+        }
+    });
+
+    video.addEventListener("play", () => {
+        if (logo) {
+            logo.style.animationPlayState = "running";
+        }
+    });
+</script>
+
+<style>
+    /* Fade-in animation for content */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.7);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        animation-play-state: paused; /* Start paused */
+    }
+</style>

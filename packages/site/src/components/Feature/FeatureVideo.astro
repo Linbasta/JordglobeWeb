@@ -1,0 +1,49 @@
+---
+/**
+ * * Large video feature. This is for a self-hosted video (under src/assets/videos).
+ */
+
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+import video from "@videos/trailer.m4v";
+import videoMobile from "@videos/trailer-mobile.m4v";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+const localizedSiteData = getTranslatedData("siteData", currLocale);
+---
+
+<section id="feature-video" class="overflow-x-clip py-4 md:py-8">
+  <div class="site-container">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="mx-auto flex max-w-2xl justify-center text-center">
+        <h2 class="h2 relative mx-4">{localizedSiteData.featureVideo.title}</h2>
+      </div>
+      <div id="feature-video__selfhosted-container" class="mx-auto mt-2">
+        <video id="feature-video__video" class="w-full" height="500" loop muted playsinline preload="metadata">
+          <source media="(min-width: 768px)" src={video} type="video/mp4" />
+          <source media="(max-width: 767px)" src={videoMobile} type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Replace IntersectionObserver logic to auto-play the self-hosted video
+const selfhostedVideo = document.getElementById("feature-video__video");
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            selfhostedVideo.play();
+            observer.disconnect();
+        }
+    });
+});
+observer.observe(document.getElementById("feature-video"));
+</script>
+
+<style>
+</style>

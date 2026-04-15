@@ -1,0 +1,89 @@
+---
+import { Icon } from "astro-icon/components";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// components
+import Button from "@components/Button/Button.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+
+// data
+const currLocale = getLocaleFromUrl(Astro.url);
+---
+
+<div class="mx-auto max-w-lg">
+	<div class="mb-12 text-center">
+		<h1 class="h2 mb-4 text-5xl md:text-6xl">Create an account</h1>
+		<p class="description text-xl tracking-tight">Free 1 month trial. No credit card required</p>
+	</div>
+	<div
+		class="mb-6 rounded-2xl border border-base-200 bg-white p-5 sm:p-9 dark:border-base-800 dark:bg-base-900"
+	>
+		<form class="-m-2 flex flex-wrap" id="signup__form" name="signup__form">
+			<div class="w-full p-2">
+				<label class="block">
+					<input
+						class="form__input w-full"
+						id="signup__name"
+						type="text"
+						placeholder="Your Name"
+						autofocus
+					/>
+				</label>
+			</div>
+			<div class="w-full p-2">
+				<label class="block">
+					<input
+						class="form__input w-full"
+						id="signup__email"
+						type="email"
+						placeholder="Email Address"
+					/>
+				</label>
+			</div>
+			<div class="w-full p-2">
+				<label class="relative block">
+					<input
+						class="form__input w-full md:pr-40"
+						id="signup__password"
+						type="password"
+						placeholder="Password"
+					/>
+				</label>
+			</div>
+			<div class="w-full p-2">
+				<Button variant="primary" type="submit" class="mb-4 w-full py-4">Create Account</Button>
+				<div class="-m-2.5 mb-4 flex items-center">
+					<div class="flex-1 p-2.5">
+						<div class="h-px bg-base-300 dark:bg-base-700"></div>
+					</div>
+					<div class="auto p-2.5">
+						<span class="text-xl tracking-tight text-base-600 dark:text-base-400">or</span>
+					</div>
+					<div class="flex-1 p-2.5">
+						<div class="h-px bg-base-300 dark:bg-base-700"></div>
+					</div>
+				</div>
+
+				<!-- Google sign in button -->
+				<a
+					class="flex w-full justify-center rounded-lg bg-base-100 px-5 py-4 font-semibold tracking-tight transition duration-200 hover:bg-base-200 focus:outline-none focus:ring-4 focus:ring-primary-300"
+					href="#"
+				>
+					<Icon name="nova/google" aria-hidden="true" class="mr-3 size-6 shrink-0" />
+					<span class="hidden text-base-900 xs:block">Sign up with Google</span><span
+						class="xs:hidden">Google</span
+					>
+				</a>
+			</div>
+		</form>
+	</div>
+	<p class="text-center font-medium tracking-tight text-base-600 dark:text-base-400">
+		<span>Already have an account?</span>
+		<a
+			class="whitespace-nowrap text-primary-500 transition duration-200 hover:text-primary-600"
+			href={getRelativeLocaleUrl(currLocale, "/login")}>Sign In</a
+		>
+	</p>
+</div>

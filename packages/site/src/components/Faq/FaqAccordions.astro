@@ -1,0 +1,38 @@
+---
+/**
+ * * FAQ section in accordions, left header text with right FAQ items
+ * using the Accordion component
+ */
+import { Icon } from "astro-icon/components";
+
+// components
+import Accordion from "@components/Accordion/Accordion.astro";
+import Badge from "@components/Badge/Badge.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+// data
+const currLocale = getLocaleFromUrl(Astro.url);
+const faqSection = getTranslatedData("faqData", currLocale); // now an object with title and items
+---
+
+<section id="faq-accordions" class="overflow-hidden py-24 md:py-28">
+	<div class="site-container">
+		<div class="mx-auto max-w-7xl px-4 grid gap-10 md:grid-cols-2 md:gap-16">
+			<div class="mr-auto max-w-lg" data-aos="fade-right">
+				<Badge>FAQ</Badge>
+				<h2 class="h2">{faqSection.title}</h2>
+				<!-- <p class="description mt-6 md:text-lg">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat
+        consequuntur doloremque saepe, laboriosam excepturi cumque nostrum
+        tempora perferendis perspiciatis.
+      </p> -->
+			</div>
+			<div class="flex flex-col gap-3" data-aos="fade-left">
+				{faqSection.items.map(({ question, answer }) => <Accordion title={question} details={answer} />)}
+			</div>
+		</div>
+	</div>
+</section>

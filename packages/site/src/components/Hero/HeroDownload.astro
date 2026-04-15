@@ -1,0 +1,33 @@
+---
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+import appStoreBadge from "@images/app-store-badge.svg";
+import googlePlayBadge from "@images/google-play-badge.png";
+import qrCode from "@images/qr.png";
+
+// get localized data
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
+const hero = siteData.heroDownload;
+---
+
+<div id="feature-download" class="feature-section mx-auto max-w-2xl px-4 py-12 text-center">
+    <h2 class="h2 mb-6 font-bold" style="font-family: 'Delight', sans-serif;">{hero.title}</h2> <!-- Apply Delight font and bold weight -->
+
+    <p class="description mb-8 text-xl font-light" style="font-family: 'Delight', sans-serif;">{hero.description}</p> <!-- Apply Delight font and light weight -->
+
+    <div class="flex flex-col items-center gap-8">
+        <div class="hidden md:block">
+            <img src={qrCode.src} alt="QR Code to download app" class="w-96 h-96 object-contain" />
+        </div>
+
+        <div class="flex flex-wrap justify-center items-center gap-4">
+            <a href="https://apps.apple.com/se/app/jordglobe/id1599500931?l=en" class="h-auto">
+                <img src={appStoreBadge.src} alt={hero.appStoreAlt} class="h-12 w-auto" />
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo" class="h-auto">
+                <img src={googlePlayBadge.src} alt={hero.googlePlayAlt} class="h-12 w-auto" />
+            </a>
+        </div>
+    </div>
+</div>

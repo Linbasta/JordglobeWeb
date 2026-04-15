@@ -1,0 +1,105 @@
+---
+// layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+import { videoGameSchema } from "@js/jsonLD";
+
+// images
+import eurovisionImg from "@images/front/eurovision.png";
+
+// Image mapping - add new game images here
+const imageMap: Record<string, string> = {
+  eurovision: eurovisionImg.src,
+};
+
+// Get locale from URL (works for both /games and /sv/games)
+const locale = getLocaleFromUrl(Astro.url);
+
+// data
+const siteData = getTranslatedData("siteData", locale);
+const gamesData = getTranslatedData("gamesData", locale);
+
+// Map images to games
+const gamesWithImages = gamesData.games.map(game => ({
+  ...game,
+  image: imageMap[game.image] || game.image,
+}));
+
+// Generate VideoGame schema for each game
+const gameSchemas = gamesWithImages.map(game => videoGameSchema({
+  name: game.title,
+  description: game.description,
+  url: `${import.meta.env.SITE}${game.link}`,
+  image: game.image.startsWith('http') ? game.image : `${import.meta.env.SITE}${game.image}`,
+  genre: game.genre
+}));
+---
+
+<BaseLayout
+  title={`${gamesData.pageTitle} | ${siteData.title}`}
+  description={gamesData.pageSubtitle}
+>
+  <!-- VideoGame structured data -->
+  {gameSchemas.map(schema => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
+
+  <div class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">{gamesData.pageTitle}</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400">{gamesData.pageSubtitle}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {gamesWithImages.map((game) => (
+        <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+          <a href={game.link} class="block">
+            <div class="aspect-video">
+              <img
+                src={game.image}
+                alt={game.title}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </a>
+          <div class="p-6">
+            <h2 class="text-xl font-semibold mb-3">
+              <a href={game.link} class="hover:text-primary-600 transition-colors">
+                {game.title}
+              </a>
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              {game.description}
+            </p>
+            <a
+              href={game.link}
+              class="inline-block w-full text-center bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              {gamesData.playButton}
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .aspect-video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  }
+
+  .aspect-video img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "geotest-319417"
+  },
+  "targets": {
+    "geotest-319417": {
+      "hosting": {
+        "prod": [
+          "jordglobe"
+        ],
+        "stage": [
+          "jordglobe-stage"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

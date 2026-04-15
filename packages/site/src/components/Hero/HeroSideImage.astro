@@ -1,0 +1,68 @@
+---
+/**
+ * * Hero with background blobs and side image
+ *
+ * There is a commented out "awards" section below in case you want that
+ */
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// components
+import Button from "@components/Button/Button.astro";
+import DiscordButton from "@components/DiscordButton/DiscordButton.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+// images
+import heroImage from "@assets/images/front/community.png";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
+const heroSide = siteData.heroSide;
+---
+
+<section id="hero-side" class="mt-[4.5rem] overflow-clip">
+	<!-- "dark" class forces dark mode for this section -->
+	<div class="site-container mx-auto px-4 pb-20 pt-10 md:py-28">
+		<div class="-mx-4 flex max-w-7xl flex-wrap xl:items-center">
+			<div class="mb-16 w-full px-4 md:w-1/2 lg:pr-10">
+				<div
+					class="relative mx-auto max-w-lg md:mr-0"
+					data-aos="fade-right"
+					data-aos-trigger="#hero-side"
+				>
+					<div
+						class="relative overflow-hidden transition-transform duration-500 hover:-translate-y-2"
+					>
+						<Image
+							src={heroImage}
+							class="h-auto min-w-full object-cover"
+							 alt={heroSide.imageAlt}
+							loading="eager"
+							width={550}
+							densities={[1.5, 2]}
+						/>
+					</div>
+				</div>
+			</div>
+
+			<div class="w-full px-4 md:mb-auto md:mt-20 md:w-1/2 lg:pl-10">
+				<div data-aos="fade-left" data-aos-trigger="#hero-side">
+					<h2 class="mb-6 text-4xl md:text-6xl">
+						{heroSide.title}
+					</h2>
+				</div>
+				<p class="mb-8 lg:text-lg" data-aos="fade-left" data-aos-delay=".1" data-aos-trigger="#hero-side">
+					{heroSide.description}
+				</p>
+				<div class="mt-6 flex items-center space-x-3" data-aos="fade-left" data-aos-delay=".2" data-aos-trigger="#hero-side">
+					<p class="">{heroSide.communityCtaText} --&gt;</p>
+					<DiscordButton />
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

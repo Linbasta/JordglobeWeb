@@ -1,0 +1,48 @@
+---
+/**
+ * * These are small cards with titles, and text, and a check icon
+ * This looks best with an even number of cards. They are smaller to
+ * use with more cards in the same section. 4 or 6 cards is probably ideal
+ *
+ * ! I copy all icons into the src/icons folder and recommend you do the same
+ * ! If the icon is at src/icons/tabler/paint.svg then you put in "tabler/paint"
+ */
+
+import { Icon } from "astro-icon/components";
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+// components
+import FeatureCard from "@components/FeatureCard/FeatureCardSmall2.astro";
+import Badge from "@components/Badge/Badge.astro";
+
+// get localized data
+const currLocale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", currLocale);
+
+interface FeatureData {
+	title: string;
+	text: string;
+	image: ImageMetadata;
+}
+
+// data
+const featureData: FeatureData[] = siteData.featureCardsSmall2;
+---
+
+<section id="feature-cards-small-2" class="py-16 md:py-24">
+	<div class="site-container relative">
+		<!-- Updated title container to align with Bento and ThreeImage -->
+		<div class="mx-auto mb-12 lg:mb-24 max-w-2xl text-center" id="trigger-cards-small-2" data-aos="fade-right">
+			<h2 class="h2">{siteData.featureCardsTitle}</h2>
+		</div>
+		<!-- Updated grid container constrained to same max width as Bento -->
+		<div class="mx-auto max-w-7xl px-4" data-aos="fade-right" data-aos-delay=".3" data-aos-trigger="#trigger-cards-small-2">
+			<div class="grid gap-16 sm:grid-cols-2 lg:grid-cols-3">
+				{featureData.map((feature, idx) => (
+					<FeatureCard title={feature.title} text={feature.text} image={feature.image.src} key={idx}/>
+				))}
+			</div>
+		</div>
+	</div>
+</section>
