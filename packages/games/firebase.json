@@ -1,0 +1,29 @@
+{
+  "hosting": {
+    "site": "jordglobegl-dev",
+    "public": "dist-eurovision",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "/", "destination": "/eurovision.html" }
+    ],
+    "cleanUrls": false,
+    "headers": [
+      {
+        "source": "**/*.@(png|jpg|jpeg|webp|svg|woff2|wasm|bin|glb)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=300" }
+        ]
+      }
+    ]
+  }
+}

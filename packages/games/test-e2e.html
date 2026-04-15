@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E2E Test Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        body.placing-mode {
+            cursor: none;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loadingScreen h2 {
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadingScreen">
+        <h2>Loading E2E Test</h2>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Initializing...</div>
+    </div>
+
+    <canvas id="renderCanvas"></canvas>
+
+    <script type="module">
+        import { SoloGameController } from './src/solo/solo-game-controller.ts';
+        import { exposeTestAPI } from './src/tests/test-api.ts';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const game = new SoloGameController('renderCanvas', {
+                showCountryLabel: true,
+                showHoverLabel: false,
+                onReady: (controller) => {
+                    // Expose test API before starting quiz
+                    exposeTestAPI(controller);
+
+                    // Deterministic questions: France, Brazil, Japan (no shuffle)
+                    const countries = ['FR', 'BR', 'JP'];
+
+                    const questions = countries.map(iso2 => {
+                        const country = controller.getGlobe().getCountryByISO2(iso2);
+                        return {
+                            present: 'text',
+                            answer: 'country',
+                            countryISO2: iso2,
+                            prompt: country?.name || iso2
+                        };
+                    });
+
+                    // Start quiz - NO shuffle, NO alert on complete
+                    controller.startQuizGame({
+                        questions,
+                        revealCorrectOnWrong: true,
+                        removeOnWrong: false,
+                        onQuestionChanged: (prompt, i, total) => {
+                            console.log(`[E2E] Question ${i}/${total}: ${prompt}`);
+                        },
+                        onCorrectAnswer: (prompt) => {
+                            console.log(`[E2E] Correct: ${prompt}`);
+                        },
+                        onWrongAnswer: (wrong, correct) => {
+                            console.log(`[E2E] Wrong: clicked ${wrong}, answer was ${correct}`);
+                        },
+                        onGameComplete: (score, total) => {
+                            console.log(`[E2E] Game complete: ${score}/${total}`);
+                            // No alert() - would block Playwright
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

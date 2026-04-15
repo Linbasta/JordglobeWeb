@@ -1,0 +1,467 @@
+/**
+ * Earth Globe Module - Location Marker Pool
+ *
+ * Manages a pool of reusable location markers using instancing for efficient batching.
+ * All instances are automatically batched by Babylon.js for optimal rendering performance.
+ */
+
+import { Scene } from '@babylonjs/core/scene';
+import { Vector3, Color3, Quaternion } from '@babylonjs/core/Maths/math';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { InstancedMesh } from '@babylonjs/core/Meshes/instancedMesh';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
+
+/**
+ * Configuration for the marker pool
+ */
+export interface LocationMarkerPoolOptions {
+    /** Name for the parent node in scene hierarchy (default: 'LocationMarkers') */
+    name?: string;
+
+    /** Number of markers to create in the pool (default: 200) */
+    poolSize?: number;
+
+    /** Radius of each marker (default: 0.03) */
+    radius?: number;
+
+    /** Height of each marker (default: 0.01) */
+    height?: number;
+
+    /** Fill color (default: white) */
+    fillColor?: Color3;
+
+    /** Stroke color (default: black) */
+    strokeColor?: Color3;
+
+    /** Stroke width as fraction of radius (default: 0.15) */
+    strokeWidth?: number;
+}
+
+interface PooledMarker {
+    id: number;
+    strokeInstance: InstancedMesh;
+    fillInstance: InstancedMesh;
+    debugSphereInstance: InstancedMesh | null;
+    inUse: boolean;
+    scaleMultiplier: number;
+}
+
+/**
+ * Manages a pool of reusable location markers using GPU instancing
+ * All markers are batched automatically for optimal rendering performance
+ */
+export class LocationMarkerPool {
+    private scene: Scene;
+    private markers: PooledMarker[] = [];
+
+    // Source meshes for instancing
+    private sourceFillMesh: Mesh;
+    private sourceStrokeMesh: Mesh;
+    private sourceDebugSphereMesh: Mesh | null = null;
+
+    // Parent node to organize all marker-related nodes in scene hierarchy
+    private parentNode: TransformNode;
+    private sourceMeshesNode: TransformNode;
+    private instancesNode: TransformNode;
+
+    private radius: number;
+    private height: number;
+    private debugEnabled = false;
+
+    constructor(scene: Scene, options: LocationMarkerPoolOptions = {}) {
+        this.scene = scene;
+
+        const name = options.name ?? 'LocationMarkers';
+        const poolSize = options.poolSize ?? 200;
+        this.radius = options.radius ?? 0.03;
+        this.height = options.height ?? 0.01;
+        const fillColor = options.fillColor ?? new Color3(1, 1, 1);
+        const strokeColor = options.strokeColor ?? new Color3(0, 0, 0);
+        const strokeWidth = options.strokeWidth ?? 0.15;
+
+        // Create hierarchy: <name> > SourceMeshes, Instances
+        this.parentNode = new TransformNode(name, scene);
+        this.sourceMeshesNode = new TransformNode('SourceMeshes', scene);
+        this.sourceMeshesNode.parent = this.parentNode;
+        this.instancesNode = new TransformNode('Instances', scene);
+        this.instancesNode.parent = this.parentNode;
+
+        // Create source meshes (these won't be rendered, only their instances)
+        this.sourceFillMesh = this.createSourceFillMesh(this.radius, this.height, fillColor);
+        this.sourceStrokeMesh = this.createSourceStrokeMesh(this.radius, this.height, strokeColor, strokeWidth);
+
+        // Parent source meshes to organize them in inspector
+        this.sourceFillMesh.parent = this.sourceMeshesNode;
+        this.sourceStrokeMesh.parent = this.sourceMeshesNode;
+
+        // Hide source meshes (only instances will be visible)
+        this.sourceFillMesh.setEnabled(false);
+        this.sourceStrokeMesh.setEnabled(false);
+
+        // Create pool of marker instances
+        for (let i = 0; i < poolSize; i++) {
+            const strokeInstance = this.sourceStrokeMesh.createInstance(`markerStroke_${i}`);
+            const fillInstance = this.sourceFillMesh.createInstance(`markerFill_${i}`);
+
+            // Parent stroke instances to Instances node
+            strokeInstance.parent = this.instancesNode;
+
+            // Parent fill to stroke so they move together
+            fillInstance.parent = strokeInstance;
+
+            // Offset fill outward to prevent z-fighting
+            fillInstance.position.y = this.height * 0.5;
+
+            // Start hidden
+            strokeInstance.setEnabled(false);
+
+            this.markers.push({
+                id: i,
+                strokeInstance,
+                fillInstance,
+                debugSphereInstance: null,
+                inUse: false,
+                scaleMultiplier: 1.0
+            });
+        }
+
+        console.log(`LocationMarkerPool: Created ${poolSize} markers (batched rendering enabled)`);
+    }
+
+    /**
+     * Create the source mesh for marker fills (white cylinder)
+     */
+    private createSourceFillMesh(radius: number, height: number, fillColor: Color3): Mesh {
+        const mesh = MeshBuilder.CreateCylinder('markerFillSource', {
+            diameter: radius * 2,
+            height: height,
+            tessellation: 32
+        }, this.scene);
+
+        const material = new StandardMaterial('markerFillMaterial', this.scene);
+        material.diffuseColor = fillColor;
+        material.emissiveColor = fillColor.scale(0.5);
+        material.specularColor = new Color3(0.2, 0.2, 0.2);
+        mesh.material = material;
+
+        return mesh;
+    }
+
+    /**
+     * Create the source mesh for marker strokes (black cylinder)
+     */
+    private createSourceStrokeMesh(radius: number, height: number, strokeColor: Color3, strokeWidth: number): Mesh {
+        const strokeRadius = radius + (radius * strokeWidth);
+        const mesh = MeshBuilder.CreateCylinder('markerStrokeSource', {
+            diameter: strokeRadius * 2,
+            height: height * 0.95,
+            tessellation: 32
+        }, this.scene);
+
+        const material = new StandardMaterial('markerStrokeMaterial', this.scene);
+        material.diffuseColor = strokeColor;
+        material.emissiveColor = strokeColor.scale(0.3);
+        material.specularColor = new Color3(0.1, 0.1, 0.1);
+        mesh.material = material;
+
+        return mesh;
+    }
+
+    /**
+     * Acquire a marker from the pool and position it
+     * @returns Marker ID, or -1 if pool is exhausted
+     */
+    acquireMarker(position: Vector3, normal: Vector3): number {
+        // Find first available marker
+        const marker = this.markers.find(m => !m.inUse);
+
+        if (!marker) {
+            console.warn('LocationMarkerPool: No available markers in pool');
+            return -1;
+        }
+
+        marker.inUse = true;
+        this.positionMarker(marker, position, normal);
+        marker.strokeInstance.setEnabled(true);
+
+        // Enable debug sphere if debugging is active
+        if (this.debugEnabled && marker.debugSphereInstance) {
+            marker.debugSphereInstance.setEnabled(true);
+        }
+
+        return marker.id;
+    }
+
+    /**
+     * Release a marker back to the pool
+     */
+    releaseMarker(id: number): void {
+        const marker = this.markers[id];
+        if (!marker) {
+            console.warn(`LocationMarkerPool: Invalid marker ID ${id}`);
+            return;
+        }
+
+        marker.inUse = false;
+        marker.scaleMultiplier = 1.0;
+        marker.strokeInstance.setEnabled(false);
+
+        // Hide debug sphere
+        if (marker.debugSphereInstance) {
+            marker.debugSphereInstance.setEnabled(false);
+        }
+    }
+
+    /**
+     * Update a marker's position
+     */
+    updateMarkerPosition(id: number, position: Vector3, normal: Vector3): void {
+        const marker = this.markers[id];
+        if (!marker || !marker.inUse) {
+            console.warn(`LocationMarkerPool: Cannot update marker ${id} (not in use)`);
+            return;
+        }
+
+        this.positionMarker(marker, position, normal);
+    }
+
+    /**
+     * Position and orient a marker
+     */
+    private positionMarker(marker: PooledMarker, position: Vector3, normal: Vector3): void {
+        // Position at the location
+        marker.strokeInstance.position = position;
+
+        // Orient the cylinder so its top faces along the normal
+        // Cylinders are created with Y-axis as height, so we need to align Y with normal
+        const up = new Vector3(0, 1, 0);
+        const axis = Vector3.Cross(up, normal);
+        const angle = Math.acos(Vector3.Dot(up, normal));
+
+        if (axis.length() > 0.001) {
+            // Create rotation quaternion
+            const quaternion = Quaternion.RotationAxis(axis.normalize(), angle);
+            marker.strokeInstance.rotationQuaternion = quaternion;
+        } else {
+            // Normal is aligned with up or down
+            marker.strokeInstance.rotationQuaternion = Quaternion.Identity();
+        }
+
+        // Update debug sphere position if it exists
+        if (marker.debugSphereInstance) {
+            marker.debugSphereInstance.position = position;
+        }
+    }
+
+    /**
+     * Release all markers
+     */
+    releaseAll(): void {
+        this.markers.forEach(marker => {
+            if (marker.inUse) {
+                this.releaseMarker(marker.id);
+            }
+        });
+    }
+
+    /**
+     * Get pool statistics
+     */
+    getStats(): { total: number; inUse: number; available: number } {
+        const inUse = this.markers.filter(m => m.inUse).length;
+        return {
+            total: this.markers.length,
+            inUse,
+            available: this.markers.length - inUse
+        };
+    }
+
+    /**
+     * Update the scale of all markers based on zoom
+     * @param scale Scale factor (1.0 = normal size)
+     */
+    updateScale(scale: number): void {
+        // Update all marker instances (both in use and available)
+        this.markers.forEach(marker => {
+            // Scale the stroke instance (parent), preserving per-marker multiplier
+            marker.strokeInstance.scaling.setAll(scale * marker.scaleMultiplier);
+        });
+    }
+
+    /**
+     * Set the scale of a specific marker
+     * @param id Marker ID
+     * @param scale Scale factor (1.0 = normal size)
+     */
+    setMarkerScale(id: number, scale: number): void {
+        const marker = this.markers[id];
+        if (!marker) {
+            console.warn(`LocationMarkerPool: Invalid marker ID ${id}`);
+            return;
+        }
+
+        marker.scaleMultiplier = scale;
+    }
+
+    /**
+     * Get the world position of a marker
+     * @param id Marker ID
+     * @returns Position vector, or null if marker not found or not in use
+     */
+    getMarkerPosition(id: number): Vector3 | null {
+        const marker = this.markers[id];
+        if (!marker || !marker.inUse) return null;
+        return marker.strokeInstance.position;
+    }
+
+    /**
+     * Hide a marker visually without releasing it from the pool.
+     * The slot stays acquired so nothing else grabs it.
+     */
+    hideMarker(id: number): void {
+        const marker = this.markers[id];
+        if (!marker) return;
+        marker.strokeInstance.setEnabled(false);
+    }
+
+    /**
+     * Show a previously hidden marker (inverse of hideMarker)
+     */
+    showMarker(id: number): void {
+        const marker = this.markers[id];
+        if (!marker || !marker.inUse) return;
+        marker.strokeInstance.setEnabled(true);
+    }
+
+    /**
+     * Get the current scale of a specific marker
+     * @param id Marker ID
+     * @returns Scale factor, or 1.0 if marker not found
+     */
+    getMarkerScale(id: number): number {
+        const marker = this.markers[id];
+        if (!marker) {
+            return 1.0;
+        }
+
+        return marker.scaleMultiplier;
+    }
+
+    /**
+     * Create the source mesh for debug spheres
+     */
+    private createDebugSphereMesh(): Mesh {
+        const mesh = MeshBuilder.CreateSphere('markerDebugSphereSource', {
+            diameter: 1.0, // Will be scaled based on hit radius
+            segments: 16
+        }, this.scene);
+
+        const material = new StandardMaterial('markerDebugSphereMaterial', this.scene);
+        material.diffuseColor = new Color3(1, 0, 0);
+        material.alpha = 0.2;
+        material.wireframe = true;
+        mesh.material = material;
+
+        return mesh;
+    }
+
+    /**
+     * Enable debug visualization of hit areas
+     */
+    enableDebugVisualization(): void {
+        if (this.debugEnabled) return;
+
+        console.log('[LocationMarkerPool] Enabling debug visualization');
+        this.debugEnabled = true;
+
+        // Create debug sphere source mesh if it doesn't exist
+        if (!this.sourceDebugSphereMesh) {
+            this.sourceDebugSphereMesh = this.createDebugSphereMesh();
+            this.sourceDebugSphereMesh.setEnabled(false);
+        }
+
+        // Create debug sphere instances for all markers
+        this.markers.forEach((marker, i) => {
+            if (!marker.debugSphereInstance) {
+                marker.debugSphereInstance = this.sourceDebugSphereMesh!.createInstance(`markerDebugSphere_${i}`);
+                marker.debugSphereInstance.position = marker.strokeInstance.position.clone();
+                marker.debugSphereInstance.setEnabled(marker.inUse);
+            }
+        });
+    }
+
+    /**
+     * Disable debug visualization of hit areas
+     */
+    disableDebugVisualization(): void {
+        if (!this.debugEnabled) return;
+
+        console.log('[LocationMarkerPool] Disabling debug visualization');
+        this.debugEnabled = false;
+
+        // Dispose debug sphere instances
+        this.markers.forEach(marker => {
+            if (marker.debugSphereInstance) {
+                marker.debugSphereInstance.dispose();
+                marker.debugSphereInstance = null;
+            }
+        });
+    }
+
+    /**
+     * Toggle debug visualization
+     */
+    toggleDebugVisualization(): void {
+        if (this.debugEnabled) {
+            this.disableDebugVisualization();
+        } else {
+            this.enableDebugVisualization();
+        }
+    }
+
+    /**
+     * Update debug sphere radius based on hit radius
+     * @param hitRadius The current hit radius in world units
+     */
+    updateDebugRadius(hitRadius: number): void {
+        if (!this.debugEnabled) return;
+
+        // Scale debug spheres to match hit radius
+        // Diameter is 1.0, so scale by 2*hitRadius to get correct diameter
+        const scale = hitRadius * 2.0;
+
+        this.markers.forEach(marker => {
+            if (marker.debugSphereInstance) {
+                marker.debugSphereInstance.scaling.setAll(scale);
+            }
+        });
+    }
+
+    /**
+     * Dispose of all resources
+     */
+    dispose(): void {
+        // Disable debug visualization first
+        this.disableDebugVisualization();
+
+        // Dispose instances
+        this.markers.forEach(marker => {
+            marker.fillInstance.dispose();
+            marker.strokeInstance.dispose();
+        });
+
+        // Dispose source meshes
+        this.sourceFillMesh.dispose();
+        this.sourceStrokeMesh.dispose();
+        if (this.sourceDebugSphereMesh) {
+            this.sourceDebugSphereMesh.dispose();
+        }
+
+        // Dispose hierarchy (children are disposed automatically with parent)
+        this.parentNode.dispose();
+
+        this.markers = [];
+    }
+}

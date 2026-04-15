@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=1599500931">
+    <meta name="theme-color" content="#6496DC">
+    <title>Geography Medals - Master Countries &amp; Earn Achievements | JordGlobe</title>
+    <!-- SEO - Generated from seo-config.ts -->
+    <meta name="description" content="Earn bronze, silver, and gold medals by mastering countries on the 3D globe. Track your progress and become a geography expert.">
+    <link rel="canonical" href="https://jordglobe.com/medals">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Geography Medals - Earn Achievements">
+    <meta property="og:description" content="Earn bronze, silver, and gold medals by mastering countries on the 3D globe.">
+    <meta property="og:image" content="https://jordglobe.com/og-image.png">
+    <meta property="og:url" content="https://jordglobe.com/medals">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Geography Medals - Earn Achievements">
+    <meta name="twitter:description" content="Earn bronze, silver, and gold medals by mastering countries on the 3D globe.">
+    <meta name="twitter:image" content="https://jordglobe.com/og-image.png">
+    <!-- /SEO -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        body.placing-mode { cursor: none; }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            display: none;
+        }
+
+        #medals-root {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .search-bar {
+            margin-bottom: 16px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #16213e;
+            color: #e0e0e0;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: #4a90d9;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-header {
+            padding: 12px 14px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .menu-header:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .menu-header::before {
+            content: '▾ ';
+            display: inline-block;
+            transition: transform 0.15s;
+        }
+
+        .menu-header.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        .depth-0 {
+            font-size: 15px;
+            color: #8ab4f8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .depth-1 {
+            font-size: 14px;
+            color: #aaa;
+            padding-left: 24px;
+        }
+
+        .depth-2 {
+            font-size: 13px;
+            color: #888;
+            padding-left: 40px;
+        }
+
+        .menu-children {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .medal-leaf {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px 10px 28px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .medal-leaf:hover,
+        .medal-leaf.selected {
+            background: rgba(74, 144, 217, 0.15);
+        }
+
+        .medal-leaf.selected {
+            outline: 2px solid #4a90d9;
+            outline-offset: -2px;
+        }
+
+        .medal-name {
+            font-size: 14px;
+        }
+
+        .medal-badge {
+            font-size: 12px;
+            color: #888;
+            white-space: nowrap;
+            margin-left: 12px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="medals-root">Loading medals...</div>
+    <canvas id="renderCanvas"></canvas>
+    <script type="module" src="/src/medals/main.ts"></script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-eurovision/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# Playwright
+test-results/
+
+# WASM build artifacts (source wasm gets copied to public/)
+wasm/*.wasm
+
+# Log files
+browser-console.log
+game-server.log
+*.log
+
+# Deployment secrets
+scripts/gcp-staging/config.sh

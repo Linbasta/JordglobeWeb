@@ -1,0 +1,260 @@
+import type { EarthGlobeAPI } from '../../earth-globe';
+import { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
+import {
+    ALTITUDE_NORMAL,
+    ALTITUDE_CLEARED,
+    ALTITUDE_WRONG_POP,
+    ALTITUDE_SHOW_CORRECT,
+    ALTITUDE_TEXTURE_SCALE
+} from '../../earth-globe/constants';
+
+// Animation timing constants
+const ANIMATION_DURATION = 200;   // ms per phase
+const CORRECT_DURATION = 400;
+
+// Easing lookup table for correct animation: pops up then settles down
+// Normalized 0→1 easing space, designed in the keyframe editor
+export const CORRECT_EASING = [0, -4.437, -9.936, -13.185, -14.94, -16.434, -18, -18, -17.685, -17.19, -11.439, -1.44, 0.035, 0.811, 0.847, 0.879, 0.907, 0.932, 0.953, 0.97, 0.983, 0.992, 0.998, 1];
+
+// Subtle version for disable wave: gentle lift then sink (peak ~-3 vs -18)
+const DISABLE_EASING = [0, -0.7, -1.5, -2.2, -2.7, -3.0, -3.0, -2.8, -2.4, -1.5, -0.3, 0.2, 0.5, 0.7, 0.8, 0.87, 0.92, 0.95, 0.97, 0.985, 0.993, 0.998, 1];
+
+function lookupEasing(table: number[], t: number): number {
+    const n = table.length - 1;
+    const idx = t * n;
+    const lo = Math.floor(idx);
+    const hi = Math.min(lo + 1, n);
+    const frac = idx - lo;
+    return table[lo] + (table[hi] - table[lo]) * frac;
+}
+
+/**
+ * Correct Animation: Pop up then sink to cleared + gray out
+ * Uses hand-authored easing curve from keyframe editor
+ * Works for both countries and provinces (uses active region API)
+ */
+export function animateCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_CLEARED);
+    return new Promise((resolve) => {
+        const startTime = performance.now();
+        function tick() {
+            const elapsed = performance.now() - startTime;
+            const t = Math.min(1, elapsed / CORRECT_DURATION);
+            const eased = lookupEasing(CORRECT_EASING, t);
+            const altitude = ALTITUDE_NORMAL + (ALTITUDE_CLEARED - ALTITUDE_NORMAL) * eased;
+            controller.setAltitude(regionIndex, altitude);
+            const blend = Math.max(0, Math.min(1,
+                (altitude - ALTITUDE_CLEARED) / (ALTITUDE_NORMAL - ALTITUDE_CLEARED)
+            ));
+            controller.setBlend(regionIndex, blend);
+            if (t >= 1) { resolve(); return; }
+            requestAnimationFrame(tick);
+        }
+        tick();
+    });
+}
+
+/**
+ * @deprecated Use animateCorrectRegion instead
+ */
+export function animateCorrect(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateCorrectRegion(globe, countryIndex);
+}
+
+/**
+ * Cleared after reveal: simple sink + gray out (no pop)
+ * Used after wrong answer to clear the revealed correct region
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateToClearedAfterRevealRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_CLEARED);
+    await Promise.all([
+        controller.animateAltitude(regionIndex, ALTITUDE_CLEARED, ANIMATION_DURATION * 2),
+        controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION * 2),
+    ]);
+}
+
+/**
+ * @deprecated Use animateToClearedAfterRevealRegion instead
+ */
+export async function animateToClearedAfterReveal(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateToClearedAfterRevealRegion(globe, countryIndex);
+}
+
+/**
+ * Disabled Animation (0.2s): Sink down + gray out immediately
+ * Used at game start for non-game regions
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateToDisabledRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_DISABLED);
+    await Promise.all([
+        controller.animateAltitude(regionIndex, ALTITUDE_CLEARED, ANIMATION_DURATION),
+        controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION)
+    ]);
+}
+
+/**
+ * @deprecated Use animateToDisabledRegion instead
+ */
+export async function animateToDisabled(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateToDisabledRegion(globe, countryIndex);
+}
+
+/**
+ * Set disabled state immediately (no animation)
+ * Used for batch-disabling regions at game start
+ * Works for both countries and provinces (uses active region API)
+ */
+export function setRegionDisabledImmediate(globe: EarthGlobeAPI, regionIndex: number): void {
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_DISABLED);
+    controller.setBlend(regionIndex, 0.0);
+    controller.setAltitude(regionIndex, ALTITUDE_CLEARED);
+}
+
+/**
+ * @deprecated Use setRegionDisabledImmediate instead
+ */
+export function setDisabledImmediate(globe: EarthGlobeAPI, countryIndex: number): void {
+    setRegionDisabledImmediate(globe, countryIndex);
+}
+
+/**
+ * Wrong Animation (0.2s): Brief pop, returns to normal or cleared
+ * Used when player clicks wrong region
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateWrongRegion(globe: EarthGlobeAPI, regionIndex: number, markAsCleared: boolean = false): Promise<void> {
+    const controller = globe.getActiveController();
+    // Brief pop up
+    await controller.animateAltitude(regionIndex, ALTITUDE_WRONG_POP, ANIMATION_DURATION);
+
+    if (markAsCleared) {
+        // Transition to cleared state
+        controller.setState(regionIndex, STATE_CLEARED);
+        await Promise.all([
+            controller.animateAltitude(regionIndex, ALTITUDE_CLEARED, ANIMATION_DURATION),
+            controller.animateBlend(regionIndex, 0.0, ANIMATION_DURATION)
+        ]);
+    } else {
+        // Return to normal
+        await controller.animateAltitude(regionIndex, ALTITUDE_NORMAL, ANIMATION_DURATION);
+    }
+}
+
+/**
+ * @deprecated Use animateWrongRegion instead
+ */
+export async function animateWrong(globe: EarthGlobeAPI, countryIndex: number, markAsCleared: boolean = false): Promise<void> {
+    return animateWrongRegion(globe, countryIndex, markAsCleared);
+}
+
+/**
+ * Show Correct Animation (0.3s): Rise up to highlight
+ * Used to reveal the correct answer after wrong guess
+ * Works for both countries and provinces (uses active region API)
+ * Small regions also expand geometrically to become visible
+ */
+export async function animateShowCorrectRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    const controller = globe.getActiveController();
+
+    // Small region expansion (on-demand calculation using surface area)
+    if (controller.isSmallRegion(regionIndex)) {
+        const expansion = controller.getExpansionFactor(regionIndex);
+        await controller.animateExpansion(regionIndex, expansion, 300);
+        controller.hideSmallRegionMarker(regionIndex);
+    }
+
+    await controller.animateAltitude(regionIndex, ALTITUDE_SHOW_CORRECT, 300);
+}
+
+/**
+ * @deprecated Use animateShowCorrectRegion instead
+ */
+export async function animateShowCorrect(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateShowCorrectRegion(globe, countryIndex);
+}
+
+/**
+ * Return to Normal (0.2s): Animate back to normal state
+ * Works for both countries and provinces (uses active region API)
+ */
+export async function animateToNormalRegion(globe: EarthGlobeAPI, regionIndex: number): Promise<void> {
+    const controller = globe.getActiveController();
+    controller.setState(regionIndex, STATE_NORMAL);
+    await Promise.all([
+        controller.animateAltitude(regionIndex, ALTITUDE_NORMAL, ANIMATION_DURATION),
+        controller.animateBlend(regionIndex, 1.0, ANIMATION_DURATION)
+    ]);
+}
+
+/**
+ * @deprecated Use animateToNormalRegion instead
+ */
+export async function animateToNormal(globe: EarthGlobeAPI, countryIndex: number): Promise<void> {
+    return animateToNormalRegion(globe, countryIndex);
+}
+
+/**
+ * Animate multiple regions to disabled with a longitude-based wave effect.
+ * Each region pops up then sinks to cleared, staggered by longitude.
+ * Writes directly to animation texture arrays and flushes once per frame.
+ * @param globe - Globe API
+ * @param regionIndices - Indices of regions to animate
+ * @param delays - Per-region delay in ms (same order as regionIndices)
+ */
+export function animateDisableWave(
+    globe: EarthGlobeAPI,
+    regionIndices: number[],
+    delays: Float32Array,
+): Promise<void> {
+    if (regionIndices.length === 0) return Promise.resolve();
+
+    const controller = globe.getActiveController();
+    const animTexture = controller.getAnimationTexture();
+    const altitudeData = animTexture.getAltitudeData();
+    const blendData = animTexture.getBlendData();
+    const altitudeScale = ALTITUDE_TEXTURE_SCALE;
+    const maxDelay = delays.length > 0 ? delays[delays.length - 1] : 0;
+    const totalDuration = maxDelay + CORRECT_DURATION;
+
+    // Pre-encode the "not yet started" values
+    const normalAltEncoded = ALTITUDE_NORMAL / altitudeScale;
+
+    // Note: caller is responsible for setting STATE_DISABLED before calling this
+
+    return new Promise((resolve) => {
+        const startTime = performance.now();
+        function tick() {
+            const elapsed = performance.now() - startTime;
+
+            for (let i = 0; i < regionIndices.length; i++) {
+                const localElapsed = elapsed - delays[i];
+                if (localElapsed <= 0) {
+                    // Not started yet — keep at normal
+                    altitudeData[regionIndices[i]] = normalAltEncoded;
+                    blendData[regionIndices[i]] = 1.0;
+                    continue;
+                }
+                const t = Math.min(1, localElapsed / CORRECT_DURATION);
+                const eased = lookupEasing(DISABLE_EASING, t);
+                const altitude = ALTITUDE_NORMAL + (ALTITUDE_CLEARED - ALTITUDE_NORMAL) * eased;
+                altitudeData[regionIndices[i]] = altitude / altitudeScale;
+                blendData[regionIndices[i]] = Math.max(0, Math.min(1,
+                    (altitude - ALTITUDE_CLEARED) / (ALTITUDE_NORMAL - ALTITUDE_CLEARED)
+                ));
+            }
+
+            // Single GPU upload per frame
+            animTexture.update();
+
+            if (elapsed >= totalDuration) { resolve(); return; }
+            requestAnimationFrame(tick);
+        }
+        tick();
+    });
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Long Text</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        body.placing-mode { cursor: none; }
+        #renderCanvas { width: 100%; height: 100vh; touch-action: none; }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module">
+        import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+
+        startQuizGame({
+            title: 'Long Text Test',
+            shuffle: false,
+            questions: [
+                {
+                    present: 'text',
+                    answer: 'country',
+                    countryISO2: 'BR',
+                    prompt: 'French Southern and Antarctic Lands',
+                },
+            ],
+        });
+    </script>
+</body>
+
+</html>

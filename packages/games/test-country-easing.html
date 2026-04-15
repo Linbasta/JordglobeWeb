@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Easing Test</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #renderCanvas {
+        width: 100%;
+        height: 100vh;
+        touch-action: none;
+      }
+      #controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 14px;
+        min-width: 240px;
+      }
+      #controls label {
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+      #controls select, #controls input {
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+    <div id="controls">
+      <h3>Country Easing Test</h3>
+      <label for="easing">Easing:</label>
+      <select id="easing">
+        <option value="Linear">Linear</option>
+        <option value="InQuad">InQuad</option>
+        <option value="OutQuad" selected>OutQuad</option>
+        <option value="InOutQuad">InOutQuad</option>
+        <option value="InSine">InSine</option>
+        <option value="OutSine">OutSine</option>
+        <option value="InOutSine">InOutSine</option>
+        <option value="InCubic">InCubic</option>
+        <option value="OutCubic">OutCubic</option>
+        <option value="InOutCubic">InOutCubic</option>
+        <option value="Custom">Custom</option>
+      </select>
+      <label for="duration">Duration: <span id="durationValue">400</span>ms</label>
+      <input type="range" id="duration" min="200" max="1000" step="50" value="400" />
+      <button id="animateUK">Animate UK</button>
+      <button id="reset">Reset All Countries</button>
+      <button id="copyEasing">Copy Easing</button>
+      <canvas id="keyframeEditor" width="240" height="140" style="margin-top: 10px; background: #1a1a2e; border-radius: 4px; cursor: crosshair;"></canvas>
+      <div id="status" style="margin-top: 10px;">Click a country to animate</div>
+    </div>
+    <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module" src="/src/tests/test-country-easing.ts"></script>
+  </body>
+</html>

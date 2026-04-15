@@ -1,0 +1,42 @@
+precision highp float;
+
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+attribute float countryIndex;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+uniform mat4 world;
+uniform sampler2D animationTexture;
+uniform float animationTextureWidth;
+uniform float animationAmplitude;
+uniform float altitudeScale;
+uniform float thicknessOffset;
+
+// Varyings (will be injected)
+// VARYINGS_PLACEHOLDER
+
+void main(void) {
+    // Read animation value from 1D texture (single row)
+    // Texture stores scaled-down value, multiply by altitudeScale to get actual altitude
+    float texCoord = (countryIndex + 0.5) / animationTextureWidth;
+    float animValue = texture2D(animationTexture, vec2(texCoord, 0.5)).r * altitudeScale;
+
+    // Apply animation - scale outward from center
+    // For extruded borders: uv.y = 0 (bottom) stays fixed, uv.y = 1 (top) animates
+    // For country meshes: uv.y is typically 0 or undefined, so they fully animate
+    vec3 animatedPosition = position;
+    vec3 centerDir = normalize(position);
+    float topFactor = uv.y;  // 0 = bottom (fixed), 1 = top (animates)
+    animatedPosition += centerDir * animValue * animationAmplitude * topFactor;
+
+    // Scale tube thickness along tube's radial direction
+    // normal points away from tube axis, so offsetting along it changes tube thickness
+    animatedPosition += normal * thicknessOffset;
+
+    gl_Position = worldViewProjection * vec4(animatedPosition, 1.0);
+
+    // VARYING_ASSIGNMENTS_PLACEHOLDER
+}

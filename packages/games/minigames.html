@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=1599500931">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Geography Minigames - Quick Geography Challenges | JordGlobe</title>
+    <!-- SEO - Generated from seo-config.ts -->
+    <meta name="description" content="Play quick geography minigames and challenges. Test your knowledge with bite-sized quizzes on the interactive 3D globe.">
+    <link rel="canonical" href="https://jordglobe.com/minigames">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Geography Minigames - Quick Challenges">
+    <meta property="og:description" content="Play quick geography minigames and challenges on the interactive 3D globe.">
+    <meta property="og:image" content="https://jordglobe.com/og-image.png">
+    <meta property="og:url" content="https://jordglobe.com/minigames">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Geography Minigames - Quick Challenges">
+    <meta name="twitter:description" content="Play quick geography minigames and challenges on the interactive 3D globe.">
+    <meta name="twitter:image" content="https://jordglobe.com/og-image.png">
+    <!-- /SEO -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        #minigames-root {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #8ab4f8;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #16213e;
+            border-radius: 10px;
+            padding: 16px;
+            transition: background 0.15s;
+        }
+
+        .game-card:hover {
+            background: #1a2745;
+        }
+
+        .vote-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 40px;
+            user-select: none;
+        }
+
+        .vote-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 4px;
+            border-radius: 4px;
+            color: #555;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .vote-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .vote-btn.active-up {
+            color: #4CAF50;
+        }
+
+        .vote-btn.active-down {
+            color: #f44336;
+        }
+
+        .vote-score {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ccc;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .game-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 4px;
+        }
+
+        .game-description {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .play-link {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #4a90d9;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.15s;
+        }
+
+        .play-link:hover {
+            background: #5ba0e9;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minigames-root">
+        <h1>Minigames</h1>
+        <p class="subtitle">Vote for your favorite games</p>
+        <div class="game-list">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+    <script type="module" src="/src/minigames/main.ts"></script>
+</body>
+
+</html>

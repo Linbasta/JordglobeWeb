@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Border Overlay Test</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #renderCanvas { width: 100%; height: 100vh; touch-action: none; }
+        #overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #eee;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: auto;
+            min-width: 280px;
+        }
+        #overlay h3 { margin: 0 0 8px; color: #fff; font-size: 14px; }
+        .ok  { color: #6f6; }
+        .err { color: #f66; }
+        .loading { color: #fa0; }
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            margin: 4px 4px 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        button.active {
+            background: rgba(100, 200, 255, 0.3);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+        .section {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <div id="overlay">
+        <h3>Static Border Overlay Test</h3>
+        <div id="status">Initializing globe…</div>
+
+        <div class="section">
+            <strong>Province Overlays:</strong>
+            <div id="province-buttons"></div>
+        </div>
+
+        <div class="section">
+            <strong>Country Overlay:</strong>
+            <div id="country-buttons">
+                <button id="btn-all-countries">Load All Countries</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div id="border-list"></div>
+        </div>
+
+        <div class="section">
+            <div id="zoom-info" style="color:#aaa;"></div>
+        </div>
+    </div>
+
+
+                <!-- Console logger - streams browser console to file for Claude -->
+    <script type="module" src="/shared/consoleLogger.ts"></script>
+    <script type="module">
+        import { EarthGlobe } from '/src/earth-globe/index.ts';
+        import {
+            loadStaticBorderOverlay,
+            loadProvinceBorders,
+            showStaticBorderOverlay,
+            hideStaticBorderOverlay,
+            updateStaticBorderOverlayUniforms,
+        } from '/src/earth-globe/static-border-overlay.ts';
+
+        const statusEl = document.getElementById('status');
+        const borderListEl = document.getElementById('border-list');
+        const zoomInfoEl = document.getElementById('zoom-info');
+        const provinceButtonsEl = document.getElementById('province-buttons');
+        const countryButtonsEl = document.getElementById('country-buttons');
+
+        // Track loaded overlays
+        const overlays = new Map(); // name -> state
+
+        function setStatus(msg, cls = '') {
+            statusEl.textContent = msg;
+            statusEl.className = cls;
+        }
+
+        function addBorderItem(name, ok, detail = '') {
+            const div = document.createElement('div');
+            div.className = ok ? 'ok' : 'err';
+            div.textContent = `${ok ? '✓' : '✗'} ${name}${detail ? ' — ' + detail : ''}`;
+            div.id = `border-item-${name}`;
+            borderListEl.appendChild(div);
+        }
+
+        function updateBorderItem(name, visible) {
+            const item = document.getElementById(`border-item-${name}`);
+            if (item) {
+                item.style.opacity = visible ? '1.0' : '0.5';
+                item.textContent = item.textContent.replace(/[✓✗]/, visible ? '✓' : '○');
+            }
+        }
+
+        const globe = new EarthGlobe({
+            canvasId: 'renderCanvas',
+            onReady: async (g) => {
+                setStatus('Globe ready. Loading province index…', 'loading');
+
+                const scene = g.getScene();
+                const camera = g.getCamera();
+
+                // Fetch province index
+                let provinceCountries = [];
+                try {
+                    const resp = await fetch('/provinces/index.json');
+                    if (resp.ok) {
+                        provinceCountries = await resp.json();
+                    } else {
+                        provinceCountries = ['US'];
+                        console.warn('No /provinces/index.json found, falling back to ["US"]');
+                    }
+                } catch {
+                    provinceCountries = ['US'];
+                }
+
+                // Create buttons for each province country
+                for (const iso2 of provinceCountries) {
+                    const btn = document.createElement('button');
+                    btn.textContent = iso2;
+                    btn.id = `btn-province-${iso2}`;
+                    btn.onclick = async () => {
+                        const name = `${iso2}-provinces`;
+                        if (overlays.has(name)) {
+                            // Toggle visibility
+                            const state = overlays.get(name);
+                            if (state.isVisible) {
+                                hideStaticBorderOverlay(state);
+                                btn.classList.remove('active');
+                                updateBorderItem(name, false);
+                            } else {
+                                showStaticBorderOverlay(state);
+                                btn.classList.add('active');
+                                updateBorderItem(name, true);
+                            }
+                        } else {
+                            // Load for first time
+                            btn.disabled = true;
+                            btn.textContent = `${iso2} loading...`;
+                            try {
+                                const state = await loadProvinceBorders(scene, iso2);
+                                overlays.set(name, state);
+                                showStaticBorderOverlay(state);
+                                addBorderItem(name, true, `${state.borderMesh?.getTotalVertices() || 0} vertices`);
+                                btn.textContent = iso2;
+                                btn.classList.add('active');
+                                btn.disabled = false;
+                            } catch (e) {
+                                addBorderItem(name, false, String(e));
+                                btn.textContent = `${iso2} (failed)`;
+                                btn.disabled = false;
+                                console.error(`Failed to load province borders for ${iso2}:`, e);
+                            }
+                        }
+                    };
+                    provinceButtonsEl.appendChild(btn);
+                }
+
+                // Country overlay button
+                const btnAllCountries = document.getElementById('btn-all-countries');
+                btnAllCountries.onclick = async () => {
+                    const name = 'all-countries';
+                    if (overlays.has(name)) {
+                        // Toggle visibility
+                        const state = overlays.get(name);
+                        if (state.isVisible) {
+                            hideStaticBorderOverlay(state);
+                            btnAllCountries.classList.remove('active');
+                            updateBorderItem(name, false);
+                        } else {
+                            showStaticBorderOverlay(state);
+                            btnAllCountries.classList.add('active');
+                            updateBorderItem(name, true);
+                        }
+                    } else {
+                        // Load for first time
+                        btnAllCountries.disabled = true;
+                        btnAllCountries.textContent = 'Loading...';
+                        try {
+                            const state = await loadStaticBorderOverlay(scene, {
+                                segmentUrl: '/segments.json',
+                                name: 'all-countries',
+                                segmentFormat: 'country'
+                            });
+                            overlays.set(name, state);
+                            showStaticBorderOverlay(state);
+                            addBorderItem(name, true, `${state.borderMesh?.getTotalVertices() || 0} vertices`);
+                            btnAllCountries.textContent = 'All Countries';
+                            btnAllCountries.classList.add('active');
+                            btnAllCountries.disabled = false;
+                        } catch (e) {
+                            addBorderItem(name, false, String(e));
+                            btnAllCountries.textContent = 'All Countries (failed)';
+                            btnAllCountries.disabled = false;
+                            console.error('Failed to load country borders:', e);
+                        }
+                    }
+                };
+
+                setStatus('Ready. Click buttons to load overlays.', 'ok');
+
+                // Expose globe for DevTools testing
+                window.globe = g;
+                window.overlays = overlays;
+
+                // Update border uniforms each frame based on zoom
+                scene.registerBeforeRender(() => {
+                    for (const state of overlays.values()) {
+                        updateStaticBorderOverlayUniforms(state, camera);
+                    }
+                    zoomInfoEl.textContent = `zoom radius: ${camera.radius.toFixed(2)}`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

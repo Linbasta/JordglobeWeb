@@ -1,0 +1,8 @@
+{
+  "name": "JordGlobe Party",
+  "short_name": "JordGlobe",
+  "start_url": "/party.html",
+  "display": "fullscreen",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560"
+}

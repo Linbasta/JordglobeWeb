@@ -1,0 +1,3481 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c6be9b2a7941118e3babe56393b055, type: 3}
+  m_Name: LowResConfig
+  m_EditorClassIdentifier: 
+  LowResColliderScaleRange: {x: 1.0057168, y: 2}
+  Colliders:
+  - Id: AF
+    Colliders:
+    - LatLon:
+        x: 30.326805
+        y: 63.62785
+      _radius: 290
+      _radiusInSphereUnits: 0.022759378
+    - LatLon:
+        x: 37.33583
+        y: 72.33139
+      _radius: 274.117
+      _radiusInSphereUnits: 0.021512872
+    - LatLon:
+        x: 33.74818
+        y: 62.06774
+      _radius: 278.005
+      _radiusInSphereUnits: 0.021818005
+    - LatLon:
+        x: 36.62708
+        y: 66.589584
+      _radius: 258.219
+      _radiusInSphereUnits: 0.020265186
+    - LatLon:
+        x: 32.871883
+        y: 69.04784
+      _radius: 268.829
+      _radiusInSphereUnits: 0.021097867
+    IsSurrounded: 0
+  - Id: AO
+    Colliders: []
+    IsSurrounded: 0
+  - Id: AL
+    Colliders:
+    - LatLon:
+        x: 41.1
+        y: 20.5
+      _radius: 179.77
+      _radiusInSphereUnits: 0.01410846
+    IsSurrounded: 0
+  - Id: AE
+    Colliders:
+    - LatLon:
+        x: 24.564074
+        y: 54.035778
+      _radius: 282.979
+      _radiusInSphereUnits: 0.022208367
+    IsSurrounded: 0
+  - Id: AM
+    Colliders:
+    - LatLon:
+        x: 39.980045
+        y: 45.04423
+      _radius: 185.225
+      _radiusInSphereUnits: 0.014536573
+    IsSurrounded: 0
+  - Id: TF
+    Colliders:
+    - LatLon:
+        x: -49.294456
+        y: 69.5985
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: AT
+    Colliders:
+    - LatLon:
+        x: 47.8
+        y: 15
+      _radius: 277.9
+      _radiusInSphereUnits: 0.021809762
+    - LatLon:
+        x: 47.4
+        y: 12.1
+      _radius: 260.1
+      _radiusInSphereUnits: 0.020412808
+    IsSurrounded: 0
+  - Id: AZ
+    Colliders:
+    - LatLon:
+        x: 40.216366
+        y: 47.57565
+      _radius: 284.48
+      _radiusInSphereUnits: 0.022326166
+    IsSurrounded: 0
+  - Id: BI
+    Colliders:
+    - LatLon:
+        x: -3.4544315
+        y: 29.904846
+      _radius: 169.4
+      _radiusInSphereUnits: 0.013294616
+    IsSurrounded: 0
+  - Id: BE
+    Colliders:
+    - LatLon:
+        x: 50.7
+        y: 4.3152866
+      _radius: 160
+      _radiusInSphereUnits: 0.012556898
+    IsSurrounded: 0
+  - Id: BJ
+    Colliders:
+    - LatLon:
+        x: 7.845404
+        y: 2.3
+      _radius: 220.855
+      _radiusInSphereUnits: 0.017332835
+    - LatLon:
+        x: 10.7
+        y: 2.4
+      _radius: 210.69
+      _radiusInSphereUnits: 0.016535081
+    IsSurrounded: 0
+  - Id: BF
+    Colliders:
+    - LatLon:
+        x: 11.485684
+        y: -3.70091
+      _radius: 267.232
+      _radiusInSphereUnits: 0.020972531
+    - LatLon:
+        x: 14.254892
+        y: -1.3644073
+      _radius: 238.666
+      _radiusInSphereUnits: 0.018730655
+    - LatLon:
+        x: 11.833282
+        y: 0.4868751
+      _radius: 229.759
+      _radiusInSphereUnits: 0.018031629
+    IsSurrounded: 0
+  - Id: BD
+    Colliders:
+    - LatLon:
+        x: 24.731539
+        y: 89.09345
+      _radius: 292.2
+      _radiusInSphereUnits: 0.022932036
+    - LatLon:
+        x: 22.858984
+        y: 91.30899
+      _radius: 281.737
+      _radiusInSphereUnits: 0.022110892
+    IsSurrounded: 0
+  - Id: BG
+    Colliders:
+    - LatLon:
+        x: 42.9
+        y: 26.2
+      _radius: 228.513
+      _radiusInSphereUnits: 0.017933842
+    - LatLon:
+        x: 42.9
+        y: 24.2
+      _radius: 228.513
+      _radiusInSphereUnits: 0.017933842
+    IsSurrounded: 0
+  - Id: BS
+    Colliders:
+    - LatLon:
+        x: 25.2
+        y: -77.9
+      _radius: 250
+      _radiusInSphereUnits: 0.019620154
+    IsSurrounded: 0
+  - Id: BA
+    Colliders:
+    - LatLon:
+        x: 44.2
+        y: 17.665127
+      _radius: 180
+      _radiusInSphereUnits: 0.01412651
+    IsSurrounded: 0
+  - Id: BY
+    Colliders:
+    - LatLon:
+        x: 55
+        y: 28.8
+      _radius: 221.2
+      _radiusInSphereUnits: 0.017359912
+    - LatLon:
+        x: 52.796703
+        y: 25.5
+      _radius: 235.351
+      _radiusInSphereUnits: 0.01847049
+    - LatLon:
+        x: 52.506386
+        y: 30
+      _radius: 219.5
+      _radiusInSphereUnits: 0.017226495
+    IsSurrounded: 0
+  - Id: BZ
+    Colliders:
+    - LatLon:
+        x: 17.218102
+        y: -88.76457
+      _radius: 180.867
+      _radiusInSphereUnits: 0.014194554
+    IsSurrounded: 0
+  - Id: BO
+    Colliders:
+    - LatLon:
+        x: -16.9
+        y: -63.8
+      _radius: 830.9
+      _radiusInSphereUnits: 0.065209545
+    - LatLon:
+        x: -16.9
+        y: -63.8
+      _radius: 830.9
+      _radiusInSphereUnits: 0.065209545
+    IsSurrounded: 0
+  - Id: BN
+    Colliders:
+    - LatLon:
+        x: 4.765957
+        y: 114.99505
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: BT
+    Colliders:
+    - LatLon:
+        x: 27.368208
+        y: 90.5
+      _radius: 193.2
+      _radiusInSphereUnits: 0.015162455
+    IsSurrounded: 0
+  - Id: BW
+    Colliders:
+    - LatLon:
+        x: -20.44
+        y: 23.61
+      _radius: 360.75
+      _radiusInSphereUnits: 0.028311882
+    - LatLon:
+        x: -22.9
+        y: 27.4
+      _radius: 319.8
+      _radiusInSphereUnits: 0.0250981
+    - LatLon:
+        x: -24
+        y: 21.8
+      _radius: 331.1
+      _radiusInSphereUnits: 0.025984932
+    IsSurrounded: 0
+  - Id: CF
+    Colliders:
+    - LatLon:
+        x: 8.227544
+        y: 17.669573
+      _radius: 282.089
+      _radiusInSphereUnits: 0.022138517
+    - LatLon:
+        x: 5.6495733
+        y: 25.224993
+      _radius: 292.298
+      _radiusInSphereUnits: 0.022939727
+    - LatLon:
+        x: 9.229123
+        y: 22.912035
+      _radius: 243.243
+      _radiusInSphereUnits: 0.01908986
+    - LatLon:
+        x: 4.1117563
+        y: 20.647272
+      _radius: 260.734
+      _radiusInSphereUnits: 0.020462565
+    - LatLon:
+        x: 4.4632297
+        y: 15.797897
+      _radius: 269.035
+      _radiusInSphereUnits: 0.021114033
+    IsSurrounded: 0
+  - Id: CH
+    Colliders:
+    - LatLon:
+        x: 46.631424
+        y: 8.232656
+      _radius: 178.88
+      _radiusInSphereUnits: 0.014038613
+    IsSurrounded: 0
+  - Id: CI
+    Colliders:
+    - LatLon:
+        x: 6.6957774
+        y: -3.5969627
+      _radius: 266.088
+      _radiusInSphereUnits: 0.020882752
+    - LatLon:
+        x: 9.903515
+        y: -4.839001
+      _radius: 266.913
+      _radiusInSphereUnits: 0.020947495
+    - LatLon:
+        x: 5.8758926
+        y: -7.173087
+      _radius: 203.252
+      _radiusInSphereUnits: 0.015951341
+    - LatLon:
+        x: 8.857505
+        y: -8.192518
+      _radius: 175.691
+      _radiusInSphereUnits: 0.013788337
+    IsSurrounded: 0
+  - Id: CM
+    Colliders:
+    - LatLon:
+        x: 7.384144
+        y: 10.726018
+      _radius: 201.262
+      _radiusInSphereUnits: 0.015795166
+    - LatLon:
+        x: 11.777481
+        y: 14.185093
+      _radius: 158.39
+      _radiusInSphereUnits: 0.012430545
+    - LatLon:
+        x: 3.2426324
+        y: 14.316622
+      _radius: 280.585
+      _radiusInSphereUnits: 0.022020483
+    - LatLon:
+        x: 8.303221
+        y: 14.241183
+      _radius: 290.544
+      _radiusInSphereUnits: 0.022802072
+    - LatLon:
+        x: 3.907535
+        y: 10.254599
+      _radius: 288.226
+      _radiusInSphereUnits: 0.022620155
+    IsSurrounded: 0
+  - Id: CG
+    Colliders:
+    - LatLon:
+        x: 1.5037135
+        y: 17.433767
+      _radius: 280.772
+      _radiusInSphereUnits: 0.02203516
+    - LatLon:
+        x: -3.8277774
+        y: 13.021015
+      _radius: 236.495
+      _radiusInSphereUnits: 0.018560274
+    - LatLon:
+        x: 0.96693367
+        y: 13.94245
+      _radius: 210.484
+      _radiusInSphereUnits: 0.016518913
+    - LatLon:
+        x: -2.6118782
+        y: 15.704133
+      _radius: 219.039
+      _radiusInSphereUnits: 0.017190315
+    IsSurrounded: 0
+  - Id: CR
+    Colliders:
+    - LatLon:
+        x: 9.572454
+        y: -84.45375
+      _radius: 223.714
+      _radiusInSphereUnits: 0.017557213
+    IsSurrounded: 0
+  - Id: CU
+    Colliders:
+    - LatLon:
+        x: 22.3
+        y: -79.37803
+      _radius: 191.165
+      _radiusInSphereUnits: 0.015002746
+    - LatLon:
+        x: 22.9
+        y: -83.18968
+      _radius: 198.481
+      _radiusInSphereUnits: 0.015576911
+    - LatLon:
+        x: 20.4
+        y: -75.5
+      _radius: 182.2
+      _radiusInSphereUnits: 0.014299168
+    - LatLon:
+        x: 20.1
+        y: -76.5
+      _radius: 199.791
+      _radiusInSphereUnits: 0.01567972
+    IsSurrounded: 0
+  - Id: CY
+    Colliders:
+    - LatLon:
+        x: 35.43429
+        y: 33.416573
+      _radius: 259.58
+      _radiusInSphereUnits: 0.020371998
+    IsSurrounded: 0
+  - Id: CZ
+    Colliders:
+    - LatLon:
+        x: 49.92776
+        y: 15.546628
+      _radius: 265.849
+      _radiusInSphereUnits: 0.020863993
+    IsSurrounded: 0
+  - Id: DE
+    Colliders:
+    - LatLon:
+        x: 53.33986
+        y: 8.89649
+      _radius: 230.241
+      _radiusInSphereUnits: 0.018069455
+    - LatLon:
+        x: 52.652073
+        y: 13.44239
+      _radius: 247.116
+      _radiusInSphereUnits: 0.019393815
+    - LatLon:
+        x: 48.307106
+        y: 11.575309
+      _radius: 200.488
+      _radiusInSphereUnits: 0.015734423
+    - LatLon:
+        x: 49.779003
+        y: 7.15298
+      _radius: 274.037
+      _radiusInSphereUnits: 0.02150659
+    IsSurrounded: 0
+  - Id: DJ
+    Colliders:
+    - LatLon:
+        x: 11.891231
+        y: 42.4184
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: DO
+    Colliders:
+    - LatLon:
+        x: 18.806255
+        y: -70.140335
+      _radius: 224.55
+      _radiusInSphereUnits: 0.017622823
+    IsSurrounded: 0
+  - Id: EC
+    Colliders:
+    - LatLon:
+        x: -3.244064
+        y: -79.571396
+      _radius: 225.343
+      _radiusInSphereUnits: 0.017685058
+    - LatLon:
+        x: -0.83086574
+        y: -77.057175
+      _radius: 263.632
+      _radiusInSphereUnits: 0.020690002
+    - LatLon:
+        x: 0.1628557
+        y: -79.89446
+      _radius: 189.422
+      _radiusInSphereUnits: 0.014865955
+    IsSurrounded: 0
+  - Id: EG
+    Colliders:
+    - LatLon:
+        x: 31.427969
+        y: 32.62083
+      _radius: 171.093
+      _radiusInSphereUnits: 0.013427484
+    - LatLon:
+        x: 22.032196
+        y: 30.96
+      _radius: 199.964
+      _radiusInSphereUnits: 0.015693298
+    - LatLon:
+        x: 30.454987
+        y: 25.747663
+      _radius: 158.914
+      _radiusInSphereUnits: 0.012471668
+    - LatLon:
+        x: 27.9198
+        y: 34.27495
+      _radius: 222.823
+      _radiusInSphereUnits: 0.017487286
+    - LatLon:
+        x: 23.876038
+        y: 24.999998
+      _radius: 205.026
+      _radiusInSphereUnits: 0.016090566
+    - LatLon:
+        x: 31.441149
+        y: 28.776325
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 23.834011
+        y: 35.67005
+      _radius: 246.342
+      _radiusInSphereUnits: 0.019333072
+    IsSurrounded: 0
+  - Id: ER
+    Colliders:
+    - LatLon:
+        x: 13.628389
+        y: 41.553722
+      _radius: 227.097
+      _radiusInSphereUnits: 0.017822713
+    - LatLon:
+        x: 16.00744
+        y: 37.828182
+      _radius: 253.155
+      _radiusInSphereUnits: 0.01986776
+    IsSurrounded: 0
+  - Id: ES
+    Colliders:
+    - LatLon:
+        x: 41.90064
+        y: 1.6348839
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 41.756435
+        y: -7.7475677
+      _radius: 204.915
+      _radiusInSphereUnits: 0.016081855
+    - LatLon:
+        x: 37.73981
+        y: -5.3552914
+      _radius: 251.955
+      _radiusInSphereUnits: 0.019773584
+    - LatLon:
+        x: 38.44722
+        y: -1.0198805
+      _radius: 223.658
+      _radiusInSphereUnits: 0.017552817
+    - LatLon:
+        x: 43.35305
+        y: -3.4573288
+      _radius: 168.756
+      _radiusInSphereUnits: 0.013244075
+    IsSurrounded: 0
+  - Id: EE
+    Colliders:
+    - LatLon:
+        x: 58.8
+        y: 26.1
+      _radius: 177.1
+      _radiusInSphereUnits: 0.0138989175
+    IsSurrounded: 0
+  - Id: ET
+    Colliders:
+    - LatLon:
+        x: 13.851739
+        y: 39.596165
+      _radius: 239.022
+      _radiusInSphereUnits: 0.018758593
+    - LatLon:
+        x: 4.982554
+        y: 36.07655
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 6.488015
+        y: 45.725147
+      _radius: 295.404
+      _radiusInSphereUnits: 0.023183487
+    - LatLon:
+        x: 11.039325
+        y: 42.84425
+      _radius: 250.614
+      _radiusInSphereUnits: 0.01966834
+    - LatLon:
+        x: 8.098972
+        y: 34.334316
+      _radius: 188.3
+      _radiusInSphereUnits: 0.0147779
+    - LatLon:
+        x: 12.543133
+        y: 35.34348
+      _radius: 270.868
+      _radiusInSphereUnits: 0.021257889
+    - LatLon:
+        x: 3.92986
+        y: 40.445293
+      _radius: 288.557
+      _radiusInSphereUnits: 0.022646131
+    IsSurrounded: 0
+  - Id: FI
+    Colliders:
+    - LatLon:
+        x: 65.782936
+        y: 24.481974
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 63.824787
+        y: 30.214378
+      _radius: 240.174
+      _radiusInSphereUnits: 0.018849002
+    - LatLon:
+        x: 61.866413
+        y: 22.65622
+      _radius: 218.717
+      _radiusInSphereUnits: 0.017165044
+    - LatLon:
+        x: 68.4209
+        y: 27.833319
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 68.902954
+        y: 22.690638
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 60.31675
+        y: 26.28331
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: FJ
+    Colliders:
+    - LatLon:
+        x: -17.11046
+        y: 178.69072
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: -16.282812
+        y: -179.89665
+      _radius: 170
+      _radiusInSphereUnits: 0.013341704
+    IsSurrounded: 0
+  - Id: FR
+    Colliders:
+    - LatLon:
+        x: 43.28751
+        y: 0.5988056
+      _radius: 209.888
+      _radiusInSphereUnits: 0.01647214
+    - LatLon:
+        x: 47.818935
+        y: -2.562074
+      _radius: 266.568
+      _radiusInSphereUnits: 0.02092042
+    - LatLon:
+        x: 41.91
+        y: 9.6
+      _radius: 145.5
+      _radiusInSphereUnits: 0.011418929
+    - LatLon:
+        x: 50.102646
+        y: 3.0689914
+      _radius: 153.5
+      _radiusInSphereUnits: 0.012046775
+    - LatLon:
+        x: 47.76104
+        y: 6.557832
+      _radius: 217.4
+      _radiusInSphereUnits: 0.017061686
+    IsSurrounded: 0
+  - Id: GA
+    Colliders:
+    - LatLon:
+        x: -0.949161
+        y: 9.948209
+      _radius: 271.043
+      _radiusInSphereUnits: 0.021271622
+    - LatLon:
+        x: -2.2640727
+        y: 12.705095
+      _radius: 267.152
+      _radiusInSphereUnits: 0.020966254
+    - LatLon:
+        x: 1.1718581
+        y: 12.577905
+      _radius: 212.24
+      _radiusInSphereUnits: 0.016656727
+    IsSurrounded: 0
+  - Id: GB
+    Colliders:
+    - LatLon:
+        x: 55.913677
+        y: -4.765724
+      _radius: 274.246
+      _radiusInSphereUnits: 0.021522995
+    - LatLon:
+        x: -51.663937
+        y: -59.475002
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 51.68984
+        y: -4.2692413
+      _radius: 230.497
+      _radiusInSphereUnits: 0.018089546
+    - LatLon:
+        x: 52.81936
+        y: -0.06894803
+      _radius: 259.791
+      _radiusInSphereUnits: 0.020388557
+    IsSurrounded: 0
+  - Id: GE
+    Colliders:
+    - LatLon:
+        x: 41.815933
+        y: 45.091858
+      _radius: 162.86
+      _radiusInSphereUnits: 0.012781353
+    - LatLon:
+        x: 42.55802
+        y: 41.287277
+      _radius: 174.995
+      _radiusInSphereUnits: 0.013733715
+    IsSurrounded: 0
+  - Id: GH
+    Colliders:
+    - LatLon:
+        x: 9.649998
+        y: -1.1141901
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    - LatLon:
+        x: 6.471978
+        y: -1.1378793
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    IsSurrounded: 0
+  - Id: GN
+    Colliders:
+    - LatLon:
+        x: 9.010023
+        y: -9.258956
+      _radius: 224.266
+      _radiusInSphereUnits: 0.017600534
+    - LatLon:
+        x: 10.841541
+        y: -13.214668
+      _radius: 234.512
+      _radiusInSphereUnits: 0.018404646
+    - LatLon:
+        x: 11.455956
+        y: -9.99684
+      _radius: 232.621
+      _radiusInSphereUnits: 0.01825624
+    IsSurrounded: 0
+  - Id: GM
+    Colliders:
+    - LatLon:
+        x: 13.346535
+        y: -15.343245
+      _radius: 182.523
+      _radiusInSphereUnits: 0.014324517
+    IsSurrounded: 0
+  - Id: GW
+    Colliders:
+    - LatLon:
+        x: 12.295114
+        y: -15.174918
+      _radius: 174.547
+      _radiusInSphereUnits: 0.0136985555
+    IsSurrounded: 0
+  - Id: GQ
+    Colliders:
+    - LatLon:
+        x: 1.6541473
+        y: 10.32374
+      _radius: 153.745
+      _radiusInSphereUnits: 0.012066002
+    IsSurrounded: 0
+  - Id: GR
+    Colliders:
+    - LatLon:
+        x: 39.539974
+        y: 22.123693
+      _radius: 259.912
+      _radiusInSphereUnits: 0.020398052
+    - LatLon:
+        x: 36.119736
+        y: 23.980015
+      _radius: 233.918
+      _radiusInSphereUnits: 0.01835803
+    - LatLon:
+        x: 40.900845
+        y: 25.198854
+      _radius: 157.64
+      _radiusInSphereUnits: 0.012371684
+    IsSurrounded: 0
+  - Id: GT
+    Colliders:
+    - LatLon:
+        x: 15.992462
+        y: -90.468735
+      _radius: 275.044
+      _radiusInSphereUnits: 0.021585623
+    IsSurrounded: 0
+  - Id: GY
+    Colliders:
+    - LatLon:
+        x: 3.1927342
+        y: -58.15508
+      _radius: 276.164
+      _radiusInSphereUnits: 0.021673521
+    - LatLon:
+        x: 6.2781286
+        y: -59.27988
+      _radius: 291.273
+      _radiusInSphereUnits: 0.022859285
+    IsSurrounded: 0
+  - Id: HN
+    Colliders:
+    - LatLon:
+        x: 14.441301
+        y: -87.76308
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 15.212912
+        y: -84.8415
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: HR
+    Colliders:
+    - LatLon:
+        x: 44.2952
+        y: 18.169788
+      _radius: 211.684
+      _radiusInSphereUnits: 0.01661309
+    - LatLon:
+        x: 45.28803
+        y: 15.46987
+      _radius: 180.479
+      _radiusInSphereUnits: 0.014164103
+    IsSurrounded: 0
+  - Id: HT
+    Colliders:
+    - LatLon:
+        x: 18.903936
+        y: -73.00905
+      _radius: 186.745
+      _radiusInSphereUnits: 0.014655862
+    IsSurrounded: 0
+  - Id: HU
+    Colliders:
+    - LatLon:
+        x: 47.41512
+        y: 19.456415
+      _radius: 271.027
+      _radiusInSphereUnits: 0.021270366
+    IsSurrounded: 0
+  - Id: IE
+    Colliders:
+    - LatLon:
+        x: 53.099693
+        y: -8.196916
+      _radius: 235.546
+      _radiusInSphereUnits: 0.018485796
+    IsSurrounded: 0
+  - Id: IQ
+    Colliders:
+    - LatLon:
+        x: 30.518538
+        y: 46.459503
+      _radius: 297.408
+      _radiusInSphereUnits: 0.023340762
+    - LatLon:
+        x: 36.446808
+        y: 43.07833
+      _radius: 176.445
+      _radiusInSphereUnits: 0.013847513
+    - LatLon:
+        x: 32.59921
+        y: 40.532307
+      _radius: 220.548
+      _radiusInSphereUnits: 0.017308744
+    - LatLon:
+        x: 34.543636
+        y: 45.764988
+      _radius: 194.513
+      _radiusInSphereUnits: 0.0152655
+    IsSurrounded: 0
+  - Id: IS
+    Colliders:
+    - LatLon:
+        x: 65.2
+        y: -18.967958
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    IsSurrounded: 0
+  - Id: IL
+    Colliders:
+    - LatLon:
+        x: 31.433056
+        y: 35.371853
+      _radius: 294.177
+      _radiusInSphereUnits: 0.023087192
+    IsSurrounded: 0
+  - Id: IT
+    Colliders:
+    - LatLon:
+        x: 45.00419
+        y: 8.1
+      _radius: 210.459
+      _radiusInSphereUnits: 0.016516952
+    - LatLon:
+        x: 43.3
+        y: 11.64
+      _radius: 231.4
+      _radiusInSphereUnits: 0.018160414
+    - LatLon:
+        x: 40.119877
+        y: 9
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 39.5
+        y: 14.6
+      _radius: 350
+      _radiusInSphereUnits: 0.027468216
+    - LatLon:
+        x: 45.9
+        y: 12.068645
+      _radius: 188.9
+      _radiusInSphereUnits: 0.014824987
+    IsSurrounded: 0
+  - Id: JM
+    Colliders:
+    - LatLon:
+        x: 18.082468
+        y: -77.268684
+      _radius: 208.27
+      _radiusInSphereUnits: 0.016345158
+    IsSurrounded: 0
+  - Id: JO
+    Colliders:
+    - LatLon:
+        x: 31.73521
+        y: 38.14796
+      _radius: 218.983
+      _radiusInSphereUnits: 0.01718592
+    - LatLon:
+        x: 30.98234
+        y: 35.750515
+      _radius: 224.754
+      _radiusInSphereUnits: 0.017638832
+    IsSurrounded: 0
+  - Id: JP
+    Colliders:
+    - LatLon:
+        x: 41.3058
+        y: 141.09834
+      _radius: 264.038
+      _radiusInSphereUnits: 0.020721864
+    - LatLon:
+        x: 34.31397
+        y: 134.1848
+      _radius: 209.623
+      _radiusInSphereUnits: 0.016451342
+    - LatLon:
+        x: 36.43745
+        y: 139.08853
+      _radius: 286.197
+      _radiusInSphereUnits: 0.022460915
+    - LatLon:
+        x: 44.1611
+        y: 143.56693
+      _radius: 224.568
+      _radiusInSphereUnits: 0.017624235
+    - LatLon:
+        x: 32.5
+        y: 131.3
+      _radius: 222.965
+      _radiusInSphereUnits: 0.01749843
+    IsSurrounded: 0
+  - Id: KE
+    Colliders:
+    - LatLon:
+        x: 4.217864
+        y: 35.439495
+      _radius: 175.6
+      _radiusInSphereUnits: 0.013781196
+    - LatLon:
+        x: -2.541804
+        y: 39.62077
+      _radius: 263.899
+      _radiusInSphereUnits: 0.020710954
+    - LatLon:
+        x: 0.4244103
+        y: 34.554302
+      _radius: 198.563
+      _radiusInSphereUnits: 0.015583347
+    - LatLon:
+        x: 3.7628102
+        y: 39.988003
+      _radius: 226.621
+      _radiusInSphereUnits: 0.017785355
+    IsSurrounded: 0
+  - Id: KG
+    Colliders:
+    - LatLon:
+        x: 41.128193
+        y: 70.8035
+      _radius: 226.162
+      _radiusInSphereUnits: 0.017749334
+    - LatLon:
+        x: 42.410053
+        y: 78.89012
+      _radius: 185.7
+      _radiusInSphereUnits: 0.01457385
+    - LatLon:
+        x: 41.31917
+        y: 74.772514
+      _radius: 247.7
+      _radiusInSphereUnits: 0.019439649
+    IsSurrounded: 0
+  - Id: KH
+    Colliders:
+    - LatLon:
+        x: 12.473543
+        y: 103.94147
+      _radius: 294.3
+      _radiusInSphereUnits: 0.023096845
+    - LatLon:
+        x: 12.975491
+        y: 105.73836
+      _radius: 268.5
+      _radiusInSphereUnits: 0.021072045
+    IsSurrounded: 0
+  - Id: KR
+    Colliders:
+    - LatLon:
+        x: 36.548454
+        y: 127.41773
+      _radius: 308
+      _radiusInSphereUnits: 0.02417203
+    IsSurrounded: 0
+  - Id: XK
+    Colliders:
+    - LatLon:
+        x: 42.68463
+        y: 20.922874
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: KW
+    Colliders:
+    - LatLon:
+        x: 29.13514
+        y: 47.571976
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: LA
+    Colliders:
+    - LatLon:
+        x: 15.716201
+        y: 106.31545
+      _radius: 292.7
+      _radiusInSphereUnits: 0.022971276
+    - LatLon:
+        x: 18.981672
+        y: 102.92228
+      _radius: 274.608
+      _radiusInSphereUnits: 0.021551404
+    - LatLon:
+        x: 20.943188
+        y: 101.52842
+      _radius: 201.2
+      _radiusInSphereUnits: 0.0157903
+    IsSurrounded: 0
+  - Id: LB
+    Colliders:
+    - LatLon:
+        x: 33.888245
+        y: 35.787125
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: LR
+    Colliders:
+    - LatLon:
+        x: 7.244746
+        y: -9.939039
+      _radius: 195.901
+      _radiusInSphereUnits: 0.015374431
+    - LatLon:
+        x: 5.5224257
+        y: -8.512167
+      _radius: 185.226
+      _radiusInSphereUnits: 0.01453665
+    IsSurrounded: 0
+  - Id: LK
+    Colliders:
+    - LatLon:
+        x: 7.909972
+        y: 81
+      _radius: 267.3
+      _radiusInSphereUnits: 0.020977868
+    IsSurrounded: 0
+  - Id: LS
+    Colliders:
+    - LatLon:
+        x: -29.558887
+        y: 28.162212
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: LT
+    Colliders:
+    - LatLon:
+        x: 55.640793
+        y: 23.82204
+      _radius: 200.878
+      _radiusInSphereUnits: 0.01576503
+    IsSurrounded: 0
+  - Id: LU
+    Colliders:
+    - LatLon:
+        x: 49.81076
+        y: 5.96445
+      _radius: 90
+      _radiusInSphereUnits: 0.007063255
+    IsSurrounded: 0
+  - Id: LV
+    Colliders:
+    - LatLon:
+        x: 56.285297
+        y: 24.613466
+      _radius: 248.017
+      _radiusInSphereUnits: 0.019464526
+    IsSurrounded: 0
+  - Id: MD
+    Colliders:
+    - LatLon:
+        x: 47.37016
+        y: 28.321999
+      _radius: 197.7
+      _radiusInSphereUnits: 0.015515617
+    IsSurrounded: 0
+  - Id: MG
+    Colliders:
+    - LatLon:
+        x: -16.350689
+        y: 49.826527
+      _radius: 210.679
+      _radiusInSphereUnits: 0.016534217
+    - LatLon:
+        x: -23.853333
+        y: 45.220707
+      _radius: 252.284
+      _radiusInSphereUnits: 0.019799404
+    - LatLon:
+        x: -20.18893
+        y: 43.648582
+      _radius: 216.175
+      _radiusInSphereUnits: 0.016965548
+    - LatLon:
+        x: -21.444742
+        y: 48.29476
+      _radius: 271.203
+      _radiusInSphereUnits: 0.021284178
+    - LatLon:
+        x: -16.304829
+        y: 45.42263
+      _radius: 202.438
+      _radiusInSphereUnits: 0.01588746
+    - LatLon:
+        x: -13.388053
+        y: 48.57969
+      _radius: 190.297
+      _radiusInSphereUnits: 0.0149346255
+    IsSurrounded: 0
+  - Id: MK
+    Colliders:
+    - LatLon:
+        x: 41.588646
+        y: 21.715816
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: MM
+    Colliders:
+    - LatLon:
+        x: 16.648258
+        y: 98.1143
+      _radius: 246.326
+      _radiusInSphereUnits: 0.019331817
+    - LatLon:
+        x: 25.09848
+        y: 96.70994
+      _radius: 272.27
+      _radiusInSphereUnits: 0.021367917
+    - LatLon:
+        x: 11.896225
+        y: 98.82565
+      _radius: 248.042
+      _radiusInSphereUnits: 0.01946649
+    - LatLon:
+        x: 21.998907
+        y: 93.20173
+      _radius: 253.697
+      _radiusInSphereUnits: 0.019910296
+    - LatLon:
+        x: 17.74615
+        y: 94.516304
+      _radius: 263.783
+      _radiusInSphereUnits: 0.020701852
+    - LatLon:
+        x: 27.002018
+        y: 97.76806
+      _radius: 192.698
+      _radiusInSphereUnits: 0.015123057
+    - LatLon:
+        x: 21.316015
+        y: 99.32668
+      _radius: 239.838
+      _radiusInSphereUnits: 0.018822633
+    IsSurrounded: 0
+  - Id: ME
+    Colliders:
+    - LatLon:
+        x: 42.738224
+        y: 19.3949
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: MW
+    Colliders:
+    - LatLon:
+        x: -15.171692
+        y: 33.96658
+      _radius: 233.552
+      _radiusInSphereUnits: 0.018329306
+    - LatLon:
+        x: -10.991923
+        y: 33.035587
+      _radius: 225.105
+      _radiusInSphereUnits: 0.017666379
+    IsSurrounded: 0
+  - Id: MY
+    Colliders:
+    - LatLon:
+        x: 2.929689
+        y: 103.18365
+      _radius: 229.846
+      _radiusInSphereUnits: 0.018038455
+    - LatLon:
+        x: 3.4462304
+        y: 115.020485
+      _radius: 271.348
+      _radiusInSphereUnits: 0.021295557
+    - LatLon:
+        x: 1.6135958
+        y: 111.73455
+      _radius: 271.365
+      _radiusInSphereUnits: 0.021296892
+    - LatLon:
+        x: 5.4363885
+        y: 101.338776
+      _radius: 205.151
+      _radiusInSphereUnits: 0.016100377
+    - LatLon:
+        x: 5.7001386
+        y: 117.69573
+      _radius: 197.336
+      _radiusInSphereUnits: 0.015487051
+    IsSurrounded: 0
+  - Id: NA
+    Colliders:
+    - LatLon:
+        x: -17.718641
+        y: 23.6
+      _radius: 215.5
+      _radiusInSphereUnits: 0.016912572
+    - LatLon:
+        x: -18.1
+        y: 20.8
+      _radius: 241.3
+      _radiusInSphereUnits: 0.018937374
+    IsSurrounded: 0
+  - Id: NG
+    Colliders: []
+    IsSurrounded: 0
+  - Id: NI
+    Colliders:
+    - LatLon:
+        x: 13.141775
+        y: -85.0241
+      _radius: 289.616
+      _radiusInSphereUnits: 0.022729242
+    IsSurrounded: 0
+  - Id: NL
+    Colliders:
+    - LatLon:
+        x: 52.3483
+        y: 5.175605
+      _radius: 172.747
+      _radiusInSphereUnits: 0.013557291
+    IsSurrounded: 0
+  - Id: NP
+    Colliders:
+    - LatLon:
+        x: 28.858366
+        y: 82.1615
+      _radius: 240
+      _radiusInSphereUnits: 0.018835347
+    - LatLon:
+        x: 27.568348
+        y: 86
+      _radius: 240
+      _radiusInSphereUnits: 0.018835347
+    IsSurrounded: 0
+  - Id: NZ
+    Colliders:
+    - LatLon:
+        x: -41.63884
+        y: 173.50797
+      _radius: 282.155
+      _radiusInSphereUnits: 0.022143697
+    - LatLon:
+        x: -38.895985
+        y: 177.16759
+      _radius: 211.657
+      _radiusInSphereUnits: 0.01661097
+    - LatLon:
+        x: -45.02384
+        y: 168.98105
+      _radius: 268.97
+      _radiusInSphereUnits: 0.02110893
+    - LatLon:
+        x: -36.65034
+        y: 173.60541
+      _radius: 276.812
+      _radiusInSphereUnits: 0.021724377
+    IsSurrounded: 0
+  - Id: OM
+    Colliders:
+    - LatLon:
+        x: 18.44993
+        y: 53.82501
+      _radius: 283.849
+      _radiusInSphereUnits: 0.022276644
+    - LatLon:
+        x: 24.233213
+        y: 56.014336
+      _radius: 281.452
+      _radiusInSphereUnits: 0.022088526
+    - LatLon:
+        x: 19.672968
+        y: 56.81432
+      _radius: 242.321
+      _radiusInSphereUnits: 0.0190175
+    - LatLon:
+        x: 22.463783
+        y: 58.499046
+      _radius: 179.916
+      _radiusInSphereUnits: 0.014119918
+    IsSurrounded: 0
+  - Id: PA
+    Colliders:
+    - LatLon:
+        x: 8.377816
+        y: -78.711296
+      _radius: 198.927
+      _radiusInSphereUnits: 0.015611913
+    - LatLon:
+        x: 8.458868
+        y: -81.60478
+      _radius: 201.551
+      _radiusInSphereUnits: 0.015817845
+    IsSurrounded: 0
+  - Id: PH
+    Colliders:
+    - LatLon:
+        x: 17.392403
+        y: 121.2
+      _radius: 206.24
+      _radiusInSphereUnits: 0.016185842
+    - LatLon:
+        x: 9.881372
+        y: 119
+      _radius: 259.2
+      _radiusInSphereUnits: 0.020342177
+    - LatLon:
+        x: 7.7786436
+        y: 124.5
+      _radius: 291.18
+      _radiusInSphereUnits: 0.022851985
+    - LatLon:
+        x: 11.59143
+        y: 123
+      _radius: 274.474
+      _radiusInSphereUnits: 0.021540888
+    - LatLon:
+        x: 14
+        y: 121.153366
+      _radius: 217.517
+      _radiusInSphereUnits: 0.017070867
+    IsSurrounded: 0
+  - Id: PG
+    Colliders:
+    - LatLon:
+        x: -6.7860208
+        y: 146.85744
+      _radius: 271.337
+      _radiusInSphereUnits: 0.021294694
+    - LatLon:
+        x: -5.972408
+        y: 155.20132
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -4.217309
+        y: 142.83267
+      _radius: 295.586
+      _radiusInSphereUnits: 0.02319777
+    - LatLon:
+        x: -9.88833
+        y: 148.96854
+      _radius: 248.825
+      _radiusInSphereUnits: 0.019527938
+    - LatLon:
+        x: -5.527359
+        y: 150.64061
+      _radius: 279.84
+      _radiusInSphereUnits: 0.021962015
+    - LatLon:
+        x: -8.369585
+        y: 142.889
+      _radius: 223.937
+      _radiusInSphereUnits: 0.017574713
+    - LatLon:
+        x: -4.8
+        y: 152.6
+      _radius: 300.8
+      _radiusInSphereUnits: 0.023606969
+    IsSurrounded: 0
+  - Id: PL
+    Colliders:
+    - LatLon:
+        x: 51.947952
+        y: 15.884565
+      _radius: 231.476
+      _radiusInSphereUnits: 0.018166378
+    - LatLon:
+        x: 49.55472
+        y: 20.584667
+      _radius: 166.991
+      _radiusInSphereUnits: 0.013105556
+    - LatLon:
+        x: 52.385704
+        y: 23.212303
+      _radius: 236.534
+      _radiusInSphereUnits: 0.018563334
+    - LatLon:
+        x: 54.45569
+        y: 18.62786
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: KP
+    Colliders:
+    - LatLon:
+        x: 39.318924
+        y: 126.30767
+      _radius: 260.887
+      _radiusInSphereUnits: 0.020474572
+    - LatLon:
+        x: 41.846077
+        y: 128.84737
+      _radius: 189.553
+      _radiusInSphereUnits: 0.014876235
+    IsSurrounded: 0
+  - Id: PT
+    Colliders:
+    - LatLon:
+        x: 38.30787
+        y: -8.419229
+      _radius: 196.658
+      _radiusInSphereUnits: 0.015433841
+    - LatLon:
+        x: 40.86807
+        y: -7.858455
+      _radius: 178.017
+      _radiusInSphereUnits: 0.013970884
+    IsSurrounded: 0
+  - Id: PY
+    Colliders:
+    - LatLon:
+        x: -25.791023
+        y: -56.844345
+      _radius: 238.355
+      _radiusInSphereUnits: 0.018706247
+    - LatLon:
+        x: -21.827599
+        y: -60.907646
+      _radius: 290.052
+      _radiusInSphereUnits: 0.022763459
+    - LatLon:
+        x: -24.004704
+        y: -55.753403
+      _radius: 228.643
+      _radiusInSphereUnits: 0.017944044
+    - LatLon:
+        x: -20.710962
+        y: -58.99036
+      _radius: 213.126
+      _radiusInSphereUnits: 0.016726261
+    IsSurrounded: 0
+  - Id: PS
+    Colliders:
+    - LatLon:
+        x: 31.96529
+        y: 35.156803
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: QA
+    Colliders:
+    - LatLon:
+        x: 25.372358
+        y: 51.19944
+      _radius: 120
+      _radiusInSphereUnits: 0.009417674
+    IsSurrounded: 0
+  - Id: RO
+    Colliders:
+    - LatLon:
+        x: 45.983196
+        y: 27.075953
+      _radius: 287.038
+      _radiusInSphereUnits: 0.022526918
+    - LatLon:
+        x: 46.101006
+        y: 22.847908
+      _radius: 283.548
+      _radiusInSphereUnits: 0.022253022
+    IsSurrounded: 0
+  - Id: RW
+    Colliders:
+    - LatLon:
+        x: -2.0181148
+        y: 29.761993
+      _radius: 170
+      _radiusInSphereUnits: 0.013341704
+    IsSurrounded: 0
+  - Id: SS
+    Colliders:
+    - LatLon:
+        x: 4.1827393
+        y: 32.72702
+      _radius: 239.378
+      _radiusInSphereUnits: 0.018786533
+    - LatLon:
+        x: 8.7267885
+        y: 25.629917
+      _radius: 230.558
+      _radiusInSphereUnits: 0.018094333
+    - LatLon:
+        x: 7.5042677
+        y: 34.561485
+      _radius: 296.128
+      _radiusInSphereUnits: 0.023240307
+    - LatLon:
+        x: 10.992143
+        y: 32.958008
+      _radius: 182.939
+      _radiusInSphereUnits: 0.0143571645
+    - LatLon:
+        x: 5.3663216
+        y: 28.083452
+      _radius: 275.197
+      _radiusInSphereUnits: 0.02159763
+    - LatLon:
+        x: 9.719736
+        y: 29.593206
+      _radius: 208.102
+      _radiusInSphereUnits: 0.016331973
+    IsSurrounded: 0
+  - Id: SN
+    Colliders:
+    - LatLon:
+        x: 15.852881
+        y: -15.068222
+      _radius: 197.429
+      _radiusInSphereUnits: 0.015494349
+    - LatLon:
+        x: 13.728793
+        y: -12.528676
+      _radius: 239.892
+      _radiusInSphereUnits: 0.018826872
+    - LatLon:
+        x: 14.02449
+        y: -15.951371
+      _radius: 241.73
+      _radiusInSphereUnits: 0.01897112
+    IsSurrounded: 0
+  - Id: SB
+    Colliders:
+    - LatLon:
+        x: -7.566325
+        y: 157.71333
+      _radius: 217.79
+      _radiusInSphereUnits: 0.017092293
+    - LatLon:
+        x: -9.418584
+        y: 161.01932
+      _radius: 317.2
+      _radiusInSphereUnits: 0.024894051
+    IsSurrounded: 0
+  - Id: SL
+    Colliders:
+    - LatLon:
+        x: 8.461165
+        y: -11.630735
+      _radius: 201.89
+      _radiusInSphereUnits: 0.015844451
+    IsSurrounded: 0
+  - Id: SV
+    Colliders:
+    - LatLon:
+        x: 13.77922
+        y: -88.90952
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SO
+    Colliders:
+    - LatLon:
+        x: 3
+        y: 45.33
+      _radius: 280
+      _radiusInSphereUnits: 0.021974573
+    - LatLon:
+        x: 10.51
+        y: 45.2
+      _radius: 250
+      _radiusInSphereUnits: 0.019620154
+    - LatLon:
+        x: -0.23096302
+        y: 42.735134
+      _radius: 270.905
+      _radiusInSphereUnits: 0.02126079
+    - LatLon:
+        x: 10.631331
+        y: 49.86
+      _radius: 322.1
+      _radiusInSphereUnits: 0.025278607
+    - LatLon:
+        x: 6.9
+        y: 47.76
+      _radius: 350
+      _radiusInSphereUnits: 0.027468216
+    IsSurrounded: 0
+  - Id: RS
+    Colliders:
+    - LatLon:
+        x: 44.2338
+        y: 20.687416
+      _radius: 240
+      _radiusInSphereUnits: 0.018835347
+    IsSurrounded: 0
+  - Id: SR
+    Colliders:
+    - LatLon:
+        x: 3.4810524
+        y: -55.80425
+      _radius: 228.25
+      _radiusInSphereUnits: 0.0179132
+    - LatLon:
+        x: 4.9142528
+        y: -56.001373
+      _radius: 270.158
+      _radiusInSphereUnits: 0.021202166
+    IsSurrounded: 0
+  - Id: SK
+    Colliders:
+    - LatLon:
+        x: 48.825016
+        y: 19.71906
+      _radius: 244.154
+      _radiusInSphereUnits: 0.019161357
+    IsSurrounded: 0
+  - Id: SI
+    Colliders:
+    - LatLon:
+        x: 46.05039
+        y: 15.139935
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SE
+    Colliders:
+    - LatLon:
+        x: 60.770313
+        y: 17.338482
+      _radius: 259.477
+      _radiusInSphereUnits: 0.020363914
+    - LatLon:
+        x: 59.658146
+        y: 12.68
+      _radius: 264.578
+      _radiusInSphereUnits: 0.020764245
+    - LatLon:
+        x: 64.69174
+        y: 18.5
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    - LatLon:
+        x: 57
+        y: 14.581282
+      _radius: 252.3
+      _radiusInSphereUnits: 0.01980066
+    - LatLon:
+        x: 67.2
+        y: 20.1
+      _radius: 285.45
+      _radiusInSphereUnits: 0.022402292
+    IsSurrounded: 0
+  - Id: SZ
+    Colliders:
+    - LatLon:
+        x: -26.460451
+        y: 31.434431
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SY
+    Colliders:
+    - LatLon:
+        x: 34.613228
+        y: 36.87509
+      _radius: 249.764
+      _radiusInSphereUnits: 0.019601634
+    - LatLon:
+        x: 36.527687
+        y: 40.304707
+      _radius: 223.13
+      _radiusInSphereUnits: 0.01751138
+    IsSurrounded: 0
+  - Id: TG
+    Colliders:
+    - LatLon:
+        x: 7.17
+        y: 1.178099
+      _radius: 170
+      _radiusInSphereUnits: 0.013341704
+    - LatLon:
+        x: 9.693611
+        y: 0.83
+      _radius: 172.294
+      _radiusInSphereUnits: 0.013521739
+    IsSurrounded: 0
+  - Id: TH
+    Colliders:
+    - LatLon:
+        x: 9.325144
+        y: 98.98133
+      _radius: 201.216
+      _radiusInSphereUnits: 0.015791556
+    - LatLon:
+        x: 18.375536
+        y: 102.38886
+      _radius: 175.9
+      _radiusInSphereUnits: 0.013804739
+    - LatLon:
+        x: 14.9
+        y: 99.5
+      _radius: 216.3
+      _radiusInSphereUnits: 0.016975358
+    - LatLon:
+        x: 15.3
+        y: 104.07242
+      _radius: 254.8
+      _radiusInSphereUnits: 0.019996861
+    - LatLon:
+        x: 6.7906594
+        y: 100.83042
+      _radius: 176.7
+      _radiusInSphereUnits: 0.013867524
+    - LatLon:
+        x: 12.1
+        y: 100.6
+      _radius: 254.8
+      _radiusInSphereUnits: 0.019996861
+    - LatLon:
+        x: 19.30533
+        y: 98.96239
+      _radius: 226.171
+      _radiusInSphereUnits: 0.01775004
+    IsSurrounded: 0
+  - Id: TJ
+    Colliders:
+    - LatLon:
+        x: 39.10096
+        y: 69.248314
+      _radius: 247.882
+      _radiusInSphereUnits: 0.019453932
+    - LatLon:
+        x: 37.98897
+        y: 73.14425
+      _radius: 183.411
+      _radiusInSphereUnits: 0.014394208
+    IsSurrounded: 0
+  - Id: TM
+    Colliders:
+    - LatLon:
+        x: 37.85802
+        y: 64.64934
+      _radius: 241.247
+      _radiusInSphereUnits: 0.018933212
+    - LatLon:
+        x: 41.052086
+        y: 54.744263
+      _radius: 252.068
+      _radiusInSphereUnits: 0.019782452
+    - LatLon:
+        x: 41.161087
+        y: 60.080395
+      _radius: 223.463
+      _radiusInSphereUnits: 0.017537514
+    - LatLon:
+        x: 37.76227
+        y: 56.08583
+      _radius: 231.964
+      _radiusInSphereUnits: 0.018204678
+    - LatLon:
+        x: 36.56307
+        y: 61.16714
+      _radius: 248.341
+      _radiusInSphereUnits: 0.019489955
+    IsSurrounded: 0
+  - Id: TL
+    Colliders:
+    - LatLon:
+        x: -8.8583
+        y: 126.19787
+      _radius: 151.583
+      _radiusInSphereUnits: 0.011896326
+    IsSurrounded: 0
+  - Id: TT
+    Colliders:
+    - LatLon:
+        x: 10.486206
+        y: -61.4225
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: TN
+    Colliders:
+    - LatLon:
+        x: 35.920723
+        y: 9.584924
+      _radius: 228.477
+      _radiusInSphereUnits: 0.017931016
+    - LatLon:
+        x: 32.63624
+        y: 9.257742
+      _radius: 286.874
+      _radiusInSphereUnits: 0.022514047
+    IsSurrounded: 0
+  - Id: TR
+    Colliders:
+    - LatLon:
+        x: 40.13176
+        y: 27.39853
+      _radius: 295.412
+      _radiusInSphereUnits: 0.023184115
+    - LatLon:
+        x: 37.181465
+        y: 42.722923
+      _radius: 224.633
+      _radiusInSphereUnits: 0.017629337
+    - LatLon:
+        x: 41.223434
+        y: 38.64328
+      _radius: 158.76
+      _radiusInSphereUnits: 0.012459582
+    - LatLon:
+        x: 36.51549
+        y: 36.774734
+      _radius: 262.687
+      _radiusInSphereUnits: 0.020615838
+    - LatLon:
+        x: 40.673145
+        y: 43.174034
+      _radius: 200.955
+      _radiusInSphereUnits: 0.015771072
+    - LatLon:
+        x: 36.928123
+        y: 29.778963
+      _radius: 269.73
+      _radiusInSphereUnits: 0.021168577
+    - LatLon:
+        x: 41.612865
+        y: 33.15682
+      _radius: 179.257
+      _radiusInSphereUnits: 0.0140682
+    IsSurrounded: 0
+  - Id: TW
+    Colliders:
+    - LatLon:
+        x: 23.667522
+        y: 121.121056
+      _radius: 287.8
+      _radiusInSphereUnits: 0.02258672
+    IsSurrounded: 0
+  - Id: TZ
+    Colliders:
+    - LatLon:
+        x: -1.0426979
+        y: 32.969395
+      _radius: 157.287
+      _radiusInSphereUnits: 0.01234398
+    - LatLon:
+        x: -11.397669
+        y: 36.493774
+      _radius: 233.029
+      _radiusInSphereUnits: 0.01828826
+    - LatLon:
+        x: -5.786403
+        y: 29.769999
+      _radius: 170.268
+      _radiusInSphereUnits: 0.013362737
+    - LatLon:
+        x: -4.9653234
+        y: 38.569344
+      _radius: 245.67
+      _radiusInSphereUnits: 0.019280333
+    - LatLon:
+        x: -8.99395
+        y: 39.4955
+      _radius: 214.778
+      _radiusInSphereUnits: 0.01685591
+    - LatLon:
+        x: -2.5504608
+        y: 30.44309
+      _radius: 179.938
+      _radiusInSphereUnits: 0.014121645
+    - LatLon:
+        x: -9.245395
+        y: 32.510002
+      _radius: 221.304
+      _radiusInSphereUnits: 0.017368075
+    IsSurrounded: 0
+  - Id: UG
+    Colliders:
+    - LatLon:
+        x: 2.9199543
+        y: 32.236755
+      _radius: 284.68
+      _radiusInSphereUnits: 0.02234186
+    - LatLon:
+        x: 1.305109
+        y: 34.191418
+      _radius: 260.3
+      _radiusInSphereUnits: 0.020428503
+    - LatLon:
+        x: -0.300523
+        y: 30.601707
+      _radius: 191.918
+      _radiusInSphereUnits: 0.015061842
+    IsSurrounded: 0
+  - Id: UA
+    Colliders:
+    - LatLon:
+        x: 48
+        y: 27
+      _radius: 281.8
+      _radiusInSphereUnits: 0.022115836
+    - LatLon:
+        x: 47.7
+        y: 34
+      _radius: 390.5
+      _radiusInSphereUnits: 0.03064668
+    IsSurrounded: 0
+  - Id: UY
+    Colliders:
+    - LatLon:
+        x: -32.299835
+        y: -57.27704
+      _radius: 231.294
+      _radiusInSphereUnits: 0.018152095
+    - LatLon:
+        x: -33.34997
+        y: -55.01961
+      _radius: 222.35
+      _radiusInSphereUnits: 0.017450165
+    IsSurrounded: 0
+  - Id: UZ
+    Colliders:
+    - LatLon:
+        x: 42.480934
+        y: 66.443344
+      _radius: 210.656
+      _radiusInSphereUnits: 0.016532414
+    - LatLon:
+        x: 42.46769
+        y: 61.307114
+      _radius: 282.09
+      _radiusInSphereUnits: 0.022138596
+    - LatLon:
+        x: 40.813053
+        y: 70.65765
+      _radius: 217.824
+      _radiusInSphereUnits: 0.017094962
+    - LatLon:
+        x: 39.020103
+        y: 66.043396
+      _radius: 296.833
+      _radiusInSphereUnits: 0.023295637
+    - LatLon:
+        x: 43.453053
+        y: 57.329086
+      _radius: 276.06
+      _radiusInSphereUnits: 0.021665359
+    IsSurrounded: 0
+  - Id: VN
+    Colliders:
+    - LatLon:
+        x: 12.411824
+        y: 108.3
+      _radius: 216.2
+      _radiusInSphereUnits: 0.016967509
+    - LatLon:
+        x: 21.841171
+        y: 104.9
+      _radius: 280.3
+      _radiusInSphereUnits: 0.021998115
+    - LatLon:
+        x: 18.661625
+        y: 106
+      _radius: 223.6
+      _radiusInSphereUnits: 0.017548267
+    - LatLon:
+        x: 10.045761
+        y: 105.71704
+      _radius: 234.9
+      _radiusInSphereUnits: 0.018435096
+    - LatLon:
+        x: 15.6
+        y: 107.8
+      _radius: 231
+      _radiusInSphereUnits: 0.018129023
+    IsSurrounded: 0
+  - Id: VU
+    Colliders:
+    - LatLon:
+        x: -18.350086
+        y: 169.0788
+      _radius: 231.1
+      _radiusInSphereUnits: 0.01813687
+    - LatLon:
+        x: -15.031441
+        y: 167.65395
+      _radius: 215.88
+      _radiusInSphereUnits: 0.016942395
+    IsSurrounded: 0
+  - Id: YE
+    Colliders:
+    - LatLon:
+        x: 17.112082
+        y: 51.58626
+      _radius: 270.368
+      _radiusInSphereUnits: 0.021218648
+    - LatLon:
+        x: 13.697331
+        y: 44.47589
+      _radius: 179.301
+      _radiusInSphereUnits: 0.014071653
+    - LatLon:
+        x: 18.050995
+        y: 47.166664
+      _radius: 260.881
+      _radiusInSphereUnits: 0.020474102
+    - LatLon:
+        x: 16.170439
+        y: 43.385326
+      _radius: 168.611
+      _radiusInSphereUnits: 0.013232694
+    - LatLon:
+        x: 14.073742
+        y: 48.145824
+      _radius: 181.822
+      _radiusInSphereUnits: 0.014269503
+    IsSurrounded: 0
+  - Id: ZM
+    Colliders:
+    - LatLon:
+        x: -15.62704
+        y: 29.323692
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -12.336673
+        y: 23.843098
+      _radius: 276.582
+      _radiusInSphereUnits: 0.021706326
+    - LatLon:
+        x: -9.193144
+        y: 30.604624
+      _radius: 268.093
+      _radiusInSphereUnits: 0.021040102
+    - LatLon:
+        x: -16.682827
+        y: 22.960852
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -11.81937
+        y: 33.222706
+      _radius: 251.596
+      _radiusInSphereUnits: 0.019745408
+    - LatLon:
+        x: -17.316849
+        y: 26.140297
+      _radius: 176.767
+      _radiusInSphereUnits: 0.013872783
+    - LatLon:
+        x: -12.4682045
+        y: 28.176153
+      _radius: 203.726
+      _radiusInSphereUnits: 0.015988542
+    IsSurrounded: 0
+  - Id: ZW
+    Colliders:
+    - LatLon:
+        x: -19.542364
+        y: 32.547424
+      _radius: 188.252
+      _radiusInSphereUnits: 0.0147741325
+    - LatLon:
+        x: -18.036446
+        y: 26.532066
+      _radius: 165.561
+      _radiusInSphereUnits: 0.012993329
+    - LatLon:
+        x: -16.585653
+        y: 30.657772
+      _radius: 252.389
+      _radiusInSphereUnits: 0.019807644
+    - LatLon:
+        x: -21.315966
+        y: 29.243958
+      _radius: 228.448
+      _radiusInSphereUnits: 0.01792874
+    IsSurrounded: 0
+  - Id: AD
+    Colliders:
+    - LatLon:
+        x: 42.525066
+        y: 1.586342
+      _radius: 92.5
+      _radiusInSphereUnits: 0.007259457
+    IsSurrounded: 0
+  - Id: AG
+    Colliders:
+    - LatLon:
+        x: 17.358465
+        y: -61.787464
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: BH
+    Colliders:
+    - LatLon:
+        x: 26.018007
+        y: 50.533894
+      _radius: 110
+      _radiusInSphereUnits: 0.008632868
+    IsSurrounded: 0
+  - Id: BB
+    Colliders:
+    - LatLon:
+        x: 13.200934
+        y: -59.560863
+      _radius: 120
+      _radiusInSphereUnits: 0.009417674
+    IsSurrounded: 0
+  - Id: KM
+    Colliders:
+    - LatLon:
+        x: -11.879937
+        y: 43.894012
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: CV
+    Colliders:
+    - LatLon:
+        x: 16.18296
+        y: -24.161896
+      _radius: 315
+      _radiusInSphereUnits: 0.024721393
+    IsSurrounded: 0
+  - Id: DM
+    Colliders:
+    - LatLon:
+        x: 15.417832
+        y: -61.415924
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: FM
+    Colliders:
+    - LatLon:
+        x: 5.3211083
+        y: 162.97539
+      _radius: 214.3
+      _radiusInSphereUnits: 0.016818397
+    - LatLon:
+        x: 9.500454
+        y: 139.1
+      _radius: 311.9
+      _radiusInSphereUnits: 0.024478104
+    - LatLon:
+        x: 7.400702
+        y: 151.74289
+      _radius: 422.7
+      _radiusInSphereUnits: 0.03317376
+    - LatLon:
+        x: 6.8854213
+        y: 158.23
+      _radius: 363.1
+      _radiusInSphereUnits: 0.028496312
+    - LatLon:
+        x: 7.7
+        y: 144.4
+      _radius: 366.9
+      _radiusInSphereUnits: 0.028794536
+    IsSurrounded: 0
+  - Id: GD
+    Colliders:
+    - LatLon:
+        x: 12.26905
+        y: -61.609283
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: KI
+    Colliders:
+    - LatLon:
+        x: 2.8258934
+        y: -158.2778
+      _radius: 445.2
+      _radiusInSphereUnits: 0.034939572
+    - LatLon:
+        x: 1.7608095
+        y: 173.44186
+      _radius: 219.1
+      _radiusInSphereUnits: 0.017195104
+    - LatLon:
+        x: -1.6
+        y: -176.7
+      _radius: 591
+      _radiusInSphereUnits: 0.046382044
+    - LatLon:
+        x: -11.423314
+        y: -151.80208
+      _radius: 555.6
+      _radiusInSphereUnits: 0.043603826
+    - LatLon:
+        x: -1.6234674
+        y: 175.6224
+      _radius: 286.74
+      _radiusInSphereUnits: 0.02250353
+    - LatLon:
+        x: -4.8336725
+        y: -155.42337
+      _radius: 522.9
+      _radiusInSphereUnits: 0.041037515
+    - LatLon:
+        x: -2.3
+        y: -165.4
+      _radius: 616.5
+      _radiusInSphereUnits: 0.0483833
+    IsSurrounded: 0
+  - Id: KN
+    Colliders:
+    - LatLon:
+        x: 17.24968
+        y: -62.700367
+      _radius: 50
+      _radiusInSphereUnits: 0.003924031
+    IsSurrounded: 0
+  - Id: LC
+    Colliders:
+    - LatLon:
+        x: 13.913906
+        y: -60.92746
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: LI
+    Colliders:
+    - LatLon:
+        x: 47.15527
+        y: 9.535516
+      _radius: 68.9
+      _radiusInSphereUnits: 0.0054073143
+    IsSurrounded: 0
+  - Id: MC
+    Colliders:
+    - LatLon:
+        x: 43.733044
+        y: 7.4016023
+      _radius: 169.9
+      _radiusInSphereUnits: 0.013333856
+    IsSurrounded: 0
+  - Id: MV
+    Colliders:
+    - LatLon:
+        x: 4.5
+        y: 73.37
+      _radius: 317.16
+      _radiusInSphereUnits: 0.024890913
+    IsSurrounded: 0
+  - Id: MH
+    Colliders:
+    - LatLon:
+        x: 7.1405907
+        y: 170.24748
+      _radius: 263.5
+      _radiusInSphereUnits: 0.020679642
+    - LatLon:
+        x: 10.5
+        y: 167.4
+      _radius: 243.5
+      _radiusInSphereUnits: 0.01911003
+    IsSurrounded: 0
+  - Id: MT
+    Colliders:
+    - LatLon:
+        x: 35.955185
+        y: 14.375377
+      _radius: 203.7
+      _radiusInSphereUnits: 0.0159865
+    IsSurrounded: 0
+  - Id: MU
+    Colliders:
+    - LatLon:
+        x: -20.250544
+        y: 57.52292
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -10.365208
+        y: 56.5525
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -19.701937
+        y: 63.415028
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -15.3
+        y: 59.5
+      _radius: 489.2
+      _radiusInSphereUnits: 0.03839272
+    IsSurrounded: 0
+  - Id: NR
+    Colliders:
+    - LatLon:
+        x: -0.521132
+        y: 166.93306
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: PW
+    Colliders:
+    - LatLon:
+        x: 7.490542
+        y: 134.43468
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 3.0391502
+        y: 131.16159
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SG
+    Colliders:
+    - LatLon:
+        x: 1.3412946
+        y: 103.82553
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SM
+    Colliders:
+    - LatLon:
+        x: 43.944473
+        y: 12.439352
+      _radius: 120
+      _radiusInSphereUnits: 0.009417674
+    IsSurrounded: 0
+  - Id: ST
+    Colliders:
+    - LatLon:
+        x: 0.8634096
+        y: 6.9825544
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: SC
+    Colliders:
+    - LatLon:
+        x: -5.753273
+        y: 55.912437
+      _radius: 310.1
+      _radiusInSphereUnits: 0.02433684
+    - LatLon:
+        x: -8.8
+        y: 47
+      _radius: 235.5
+      _radiusInSphereUnits: 0.018482184
+    - LatLon:
+        x: -7.4
+        y: 50.9
+      _radius: 296.15
+      _radiusInSphereUnits: 0.023242034
+    IsSurrounded: 0
+  - Id: TO
+    Colliders:
+    - LatLon:
+        x: -15.587823
+        y: -175.64944
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -20.010756
+        y: -174.43832
+      _radius: 202.161
+      _radiusInSphereUnits: 0.015865719
+    - LatLon:
+        x: -17.5
+        y: -174.8
+      _radius: 153.9
+      _radiusInSphereUnits: 0.012078166
+    IsSurrounded: 0
+  - Id: VC
+    Colliders:
+    - LatLon:
+        x: 13.18362
+        y: -61.18523
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: WS
+    Colliders:
+    - LatLon:
+        x: -13.786065
+        y: -172.11166
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: GF
+    Colliders:
+    - LatLon:
+        x: 3.9180882
+        y: -53.535145
+      _radius: 255.548
+      _radiusInSphereUnits: 0.020055564
+    IsSurrounded: 0
+  - Id: VA
+    Colliders:
+    - LatLon:
+        x: 41.882328
+        y: 12.452476
+      _radius: 72.6
+      _radiusInSphereUnits: 0.0056976927
+    IsSurrounded: 0
+  - Id: TV
+    Colliders:
+    - LatLon:
+        x: -6.5
+        y: 176.9
+      _radius: 260.4
+      _radiusInSphereUnits: 0.020436352
+    - LatLon:
+        x: -9.097092
+        y: 179.07254
+      _radius: 221.382
+      _radiusInSphereUnits: 0.017374195
+    IsSurrounded: 0
+  - Id: CL
+    Colliders:
+    - LatLon:
+        x: -19.5
+        y: -69.1
+      _radius: 281.3
+      _radiusInSphereUnits: 0.022076596
+    - LatLon:
+        x: -24.1
+        y: -68.8
+      _radius: 340.8
+      _radiusInSphereUnits: 0.026746193
+    - LatLon:
+        x: -29.2
+        y: -69.8
+      _radius: 280
+      _radiusInSphereUnits: 0.021974573
+    - LatLon:
+        x: -33.5
+        y: -70.9
+      _radius: 280
+      _radiusInSphereUnits: 0.021974573
+    - LatLon:
+        x: -33.5
+        y: -70.9
+      _radius: 280
+      _radiusInSphereUnits: 0.021974573
+    - LatLon:
+        x: -37.5
+        y: -71.9
+      _radius: 280
+      _radiusInSphereUnits: 0.021974573
+    - LatLon:
+        x: -41.8
+        y: -71.9
+      _radius: 317
+      _radiusInSphereUnits: 0.024878355
+    - LatLon:
+        x: -46
+        y: -73.1
+      _radius: 317
+      _radiusInSphereUnits: 0.024878355
+    - LatLon:
+        x: -53.2
+        y: -71
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    IsSurrounded: 0
+  - Id: DK
+    Colliders:
+    - LatLon:
+        x: 56
+        y: 10.4
+      _radius: 220
+      _radiusInSphereUnits: 0.017265735
+    IsSurrounded: 0
+  - Id: ID
+    Colliders:
+    - LatLon:
+        x: -3.8
+        y: 119.4
+      _radius: 800
+      _radiusInSphereUnits: 0.06278449
+    - LatLon:
+        x: -1.4
+        y: 127.82
+      _radius: 600
+      _radiusInSphereUnits: 0.04708837
+    - LatLon:
+        x: -3.31
+        y: 134.39
+      _radius: 600
+      _radiusInSphereUnits: 0.04708837
+    - LatLon:
+        x: -3.31
+        y: 110.6
+      _radius: 600
+      _radiusInSphereUnits: 0.04708837
+    IsSurrounded: 0
+  - Id: NO
+    Colliders:
+    - LatLon:
+        x: 63.6
+        y: 11.2
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 65.5
+        y: 13.35
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 67.4
+        y: 16.3
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 69.3
+        y: 20.5
+      _radius: 235.2
+      _radiusInSphereUnits: 0.01845864
+    - LatLon:
+        x: 70.4
+        y: 27.3
+      _radius: 250.3
+      _radiusInSphereUnits: 0.019643698
+    IsSurrounded: 0
+  - Id: VE
+    Colliders:
+    - LatLon:
+        x: 8.9
+        y: -69.7
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 6.2
+        y: -65.8
+      _radius: 443.27
+      _radiusInSphereUnits: 0.034788102
+    IsSurrounded: 0
+  - Id: CA
+    Colliders:
+    - LatLon:
+        x: 58.9
+        y: -81.7
+      _radius: 847.6
+      _radiusInSphereUnits: 0.06652017
+    IsSurrounded: 0
+  - Id: AI
+    Colliders:
+    - LatLon:
+        x: 18.5
+        y: -62.75
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: AS
+    Colliders:
+    - LatLon:
+        x: -14.3
+        y: -170.1
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: AW
+    Colliders:
+    - LatLon:
+        x: 12.5
+        y: -70
+      _radius: 50
+      _radiusInSphereUnits: 0.003924031
+    IsSurrounded: 0
+  - Id: AX
+    Colliders:
+    - LatLon:
+        x: 60.1
+        y: 20.2
+      _radius: 65
+      _radiusInSphereUnits: 0.00510124
+    IsSurrounded: 0
+  - Id: BL
+    Colliders:
+    - LatLon:
+        x: 17.902777
+        y: -62.5
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: BM
+    Colliders:
+    - LatLon:
+        x: 32.318413
+        y: -64.76925
+      _radius: 70
+      _radiusInSphereUnits: 0.005493643
+    IsSurrounded: 0
+  - Id: BQ
+    Colliders:
+    - LatLon:
+        x: 12.172082
+        y: -68.3085
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: BV
+    Colliders:
+    - LatLon:
+        x: -54.420624
+        y: 3.3600688
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: CC
+    Colliders:
+    - LatLon:
+        x: -12.076082
+        y: 96.83804
+      _radius: 75
+      _radiusInSphereUnits: 0.005886046
+    IsSurrounded: 0
+  - Id: CK
+    Colliders:
+    - LatLon:
+        x: -20.255701
+        y: -158.8172
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: CW
+    Colliders:
+    - LatLon:
+        x: 12.215615
+        y: -68.95829
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: CX
+    Colliders:
+    - LatLon:
+        x: -10.491752
+        y: 105.62275
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: FK
+    Colliders:
+    - LatLon:
+        x: -51.70611
+        y: -59.431725
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: FO
+    Colliders:
+    - LatLon:
+        x: 62.12743
+        y: -6.804493
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: GG
+    Colliders:
+    - LatLon:
+        x: 49.471985
+        y: -2.5857048
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: GI
+    Colliders:
+    - LatLon:
+        x: 36.13194
+        y: -5.350511
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: GL
+    Colliders:
+    - LatLon:
+        x: 77.6
+        y: -43.228535
+      _radius: 500
+      _radiusInSphereUnits: 0.039240308
+    - LatLon:
+        x: 67.4
+        y: -44
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 70.8
+        y: -30.1
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 61.4
+        y: -45.3
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: GP
+    Colliders:
+    - LatLon:
+        x: 16.161907
+        y: -61.2786
+      _radius: 45
+      _radiusInSphereUnits: 0.0035316276
+    IsSurrounded: 0
+  - Id: GS
+    Colliders:
+    - LatLon:
+        x: -58.024868
+        y: -26.914267
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -54.428005
+        y: -36.956673
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: -55.9
+        y: -32.1
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: GU
+    Colliders:
+    - LatLon:
+        x: 13.452428
+        y: 144.784
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: HM
+    Colliders:
+    - LatLon:
+        x: -53.09097
+        y: 73.50435
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: IM
+    Colliders:
+    - LatLon:
+        x: 54.232613
+        y: -4.5578084
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: IO
+    Colliders:
+    - LatLon:
+        x: -7.3220935
+        y: 72.448784
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: JE
+    Colliders:
+    - LatLon:
+        x: 49.21843
+        y: -2.1302962
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: KY
+    Colliders:
+    - LatLon:
+        x: 19.57769
+        y: -80.36436
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: MF
+    Colliders:
+    - LatLon:
+        x: 18.25
+        y: -63.5
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: MO
+    Colliders:
+    - LatLon:
+        x: 22.1
+        y: 113.2
+      _radius: 80
+      _radiusInSphereUnits: 0.006278449
+    IsSurrounded: 0
+  - Id: MP
+    Colliders:
+    - LatLon:
+        x: 17.635843
+        y: 145.78339
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    IsSurrounded: 0
+  - Id: MQ
+    Colliders:
+    - LatLon:
+        x: 14.646535
+        y: -61.020912
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: MS
+    Colliders:
+    - LatLon:
+        x: 16.744947
+        y: -62.184296
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: NC
+    Colliders:
+    - LatLon:
+        x: -21.248045
+        y: 165.55632
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: NF
+    Colliders:
+    - LatLon:
+        x: -29.033205
+        y: 167.95052
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: NU
+    Colliders:
+    - LatLon:
+        x: -19.062794
+        y: -169.86635
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: PF
+    Colliders:
+    - LatLon:
+        x: -16.636738
+        y: -144.15263
+      _radius: 500
+      _radiusInSphereUnits: 0.039240308
+    - LatLon:
+        x: -8.866879
+        y: -139.67
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: -22.466976
+        y: -151.37358
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: -23.11408
+        y: -134.98495
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: -27.595102
+        y: -144.31606
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: PM
+    Colliders:
+    - LatLon:
+        x: 46.868736
+        y: -56.266068
+      _radius: 75
+      _radiusInSphereUnits: 0.005886046
+    IsSurrounded: 0
+  - Id: PN
+    Colliders:
+    - LatLon:
+        x: -24.372179
+        y: -128.31761
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: PR
+    Colliders:
+    - LatLon:
+        x: 18.25352
+        y: -66.43783
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: RE
+    Colliders:
+    - LatLon:
+        x: -21.12507
+        y: 55.518215
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: SH
+    Colliders:
+    - LatLon:
+        x: -38.73286
+        y: -11.140754
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: -15.95878
+        y: -5.7205186
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: -7.9303894
+        y: -14.356484
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    IsSurrounded: 0
+  - Id: SJ
+    Colliders:
+    - LatLon:
+        x: 78.70496
+        y: 17.538988
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+  - Id: SX
+    Colliders:
+    - LatLon:
+        x: 17.5
+        y: -63.5
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: TC
+    Colliders:
+    - LatLon:
+        x: 21.697748
+        y: -71.7935
+      _radius: 75
+      _radiusInSphereUnits: 0.005886046
+    IsSurrounded: 0
+  - Id: TK
+    Colliders:
+    - LatLon:
+        x: -9.036951
+        y: -171.84602
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+  - Id: UM
+    Colliders:
+    - LatLon:
+        x: 16.729137
+        y: -169.53386
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 28.206379
+        y: -177.3782
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 9.6
+        y: -162.37589
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 22.51517
+        y: -173.29277
+      _radius: 300
+      _radiusInSphereUnits: 0.023544185
+    - LatLon:
+        x: 19.289385
+        y: 166.63138
+      _radius: 400
+      _radiusInSphereUnits: 0.031392246
+    - LatLon:
+        x: 23.958109
+        y: 174.37129
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 19.103952
+        y: 176.97578
+      _radius: 600
+      _radiusInSphereUnits: 0.04708837
+    IsSurrounded: 0
+  - Id: VG
+    Colliders:
+    - LatLon:
+        x: 18.540026
+        y: -64.44813
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: VI
+    Colliders:
+    - LatLon:
+        x: 17.5
+        y: -64.799
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+  - Id: WF
+    Colliders:
+    - LatLon:
+        x: -13.777477
+        y: -177.13539
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: YT
+    Colliders:
+    - LatLon:
+        x: -12.804713
+        y: 45.21105
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+  - Id: HK
+    Colliders:
+    - LatLon:
+        x: 22.581976
+        y: 114.38663
+      _radius: 80
+      _radiusInSphereUnits: 0.006278449
+    IsSurrounded: 0
+  ProvinceColliders:
+  - Id: 44d4695d-7544-470a-8b1a-03488d547628
+    Colliders:
+    - LatLon:
+        x: 20.7
+        y: -158.25
+      _radius: 700
+      _radiusInSphereUnits: 0.05493643
+    - LatLon:
+        x: 20.7
+        y: -158.25
+      _radius: 700
+      _radiusInSphereUnits: 0.05493643
+    IsSurrounded: 0
+    Name: Hawaii
+  - Id: 7ab483aa-92f4-4594-93a2-9d69d6c2adf3
+    Colliders:
+    - LatLon:
+        x: 39.745705
+        y: -89.268875
+      _radius: 448.114
+      _radiusInSphereUnits: 0.035168264
+    - LatLon:
+        x: 39.745705
+        y: -89.268875
+      _radius: 448.114
+      _radiusInSphereUnits: 0.035168264
+    - LatLon:
+        x: 39.745705
+        y: -89.268875
+      _radius: 448.114
+      _radiusInSphereUnits: 0.035168264
+    - LatLon:
+        x: 39.745705
+        y: -89.268875
+      _radius: 448.114
+      _radiusInSphereUnits: 0.035168264
+    - LatLon:
+        x: 39.745705
+        y: -89.268875
+      _radius: 448.114
+      _radiusInSphereUnits: 0.035168264
+    IsSurrounded: 0
+    Name: Illinois
+  - Id: a909a72b-350d-4110-978f-fd615d84b091
+    Colliders:
+    - LatLon:
+        x: 38.499954
+        y: -98.3319
+      _radius: 401.73026
+      _radiusInSphereUnits: 0.031528037
+    - LatLon:
+        x: 38.499954
+        y: -98.3319
+      _radius: 401.73026
+      _radiusInSphereUnits: 0.031528037
+    - LatLon:
+        x: 38.499954
+        y: -98.3319
+      _radius: 401.73026
+      _radiusInSphereUnits: 0.031528037
+    IsSurrounded: 0
+    Name: Kansas
+  - Id: 5e17d442-7288-49aa-ae30-08973a1737b1
+    Colliders:
+    - LatLon:
+        x: 28.058338
+        y: -83.82509
+      _radius: 798.20624
+      _radiusInSphereUnits: 0.062643714
+    - LatLon:
+        x: 28.058338
+        y: -83.82509
+      _radius: 798.20624
+      _radiusInSphereUnits: 0.062643714
+    - LatLon:
+        x: 28.058338
+        y: -83.82509
+      _radius: 798.20624
+      _radiusInSphereUnits: 0.062643714
+    - LatLon:
+        x: 28.058338
+        y: -83.82509
+      _radius: 798.20624
+      _radiusInSphereUnits: 0.062643714
+    IsSurrounded: 0
+    Name: Florida
+  - Id: 23120603B60396852211
+    Colliders:
+    - LatLon:
+        x: 42.29128
+        y: 13.903086
+      _radius: 135.5
+      _radiusInSphereUnits: 0.010634123
+    - LatLon:
+        x: 42.29128
+        y: 13.903086
+      _radius: 135.5
+      _radiusInSphereUnits: 0.010634123
+    IsSurrounded: 0
+    Name: Abruzzo
+  - Id: 10402087B20892132820961
+    Colliders:
+    - LatLon:
+        x: 52.519012
+        y: 13.404737
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 52.519012
+        y: 13.404737
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 1
+    Name: Berlin
+  - Id: 10402087B44391416804171
+    Colliders:
+    - LatLon:
+        x: 53.10467
+        y: 8.80755
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 53.10467
+        y: 8.80755
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 1
+    Name: Bremen
+  - Id: a74fcf4b-963b-4c7d-b9a2-881ec0ce0409
+    Colliders:
+    - LatLon:
+        x: 59.1
+        y: -3
+      _radius: 50
+      _radiusInSphereUnits: 0.003924031
+    - LatLon:
+        x: 59.1
+        y: -3
+      _radius: 50
+      _radiusInSphereUnits: 0.003924031
+    IsSurrounded: 0
+    Name: Orkney Islands
+  - Id: 43563684B97104103456250
+    Colliders:
+    - LatLon:
+        x: 22.1
+        y: 113.5
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 22.1
+        y: 113.5
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+    Name: Macau
+  - Id: 1811400B77692474244036
+    Colliders:
+    - LatLon:
+        x: 30.7
+        y: 76.8
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 30.7
+        y: 76.8
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 1
+    Name: Chandigarh
+  - Id: f4f28e27-e749-4637-9955-08f2ca755e71
+    Colliders:
+    - LatLon:
+        x: 60.4
+        y: -1.1
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 60.4
+        y: -1.1
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+    Name: Shetland Islands
+  - Id: 1811400B81659894240990
+    Colliders:
+    - LatLon:
+        x: 11.9
+        y: 79.8
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 11.9
+        y: 79.8
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 1
+    Name: Puducherry
+  - Id: 1811400B21325138943523
+    Colliders:
+    - LatLon:
+        x: 11.9
+        y: 92.7
+      _radius: 175.33
+      _radiusInSphereUnits: 0.013760006
+    - LatLon:
+        x: 7.1
+        y: 93.19
+      _radius: 172.1
+      _radiusInSphereUnits: 0.013506514
+    - LatLon:
+        x: 7.1
+        y: 93.19
+      _radius: 172.1
+      _radiusInSphereUnits: 0.013506514
+    IsSurrounded: 0
+    Name: Andaman and Nicobar Islands
+  - Id: 25490228B48808997991554
+    Colliders:
+    - LatLon:
+        x: 35.89
+        y: -5.31
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 35.89
+        y: -5.31
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+    Name: Ceuta
+  - Id: 25490228B18225280299410
+    Colliders:
+    - LatLon:
+        x: 35.29
+        y: -2.95
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    - LatLon:
+        x: 35.29
+        y: -2.95
+      _radius: 40
+      _radiusInSphereUnits: 0.0031392246
+    IsSurrounded: 0
+    Name: Melilla
+  - Id: 25490228B84620027724461
+    Colliders:
+    - LatLon:
+        x: 28.49
+        y: -15.94
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    - LatLon:
+        x: 28.49
+        y: -15.94
+      _radius: 200
+      _radiusInSphereUnits: 0.015696123
+    IsSurrounded: 0
+    Name: Canary Islands
+  - Id: 1811400B55669546485086
+    Colliders:
+    - LatLon:
+        x: 10.975774
+        y: 72.85031
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    - LatLon:
+        x: 10.975774
+        y: 72.85031
+      _radius: 150
+      _radiusInSphereUnits: 0.011772092
+    IsSurrounded: 0
+    Name: Lakshadweep
+  - Id: 703721df-5cce-4f1f-adb8-3805d3280608
+    Colliders:
+    - LatLon:
+        x: 39.527843
+        y: 25.705055
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: 38.338387
+        y: 26.753176
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: 38.338387
+        y: 26.753176
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+    Name: North Aegean
+  - Id: dc31288e-793a-4650-8d3d-6bd1cbb4fd78
+    Colliders:
+    - LatLon:
+        x: 35.719353
+        y: 27.678383
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: 37.042442
+        y: 25.015785
+      _radius: 87.62
+      _radiusInSphereUnits: 0.006876472
+    - LatLon:
+        x: 36.401276
+        y: 26.252092
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: 36.401276
+        y: 26.252092
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+    Name: South Aegean
+  - Id: 60696c28-8540-42af-8ede-5b62ab71f296
+    Colliders:
+    - LatLon:
+        x: 37.896538
+        y: 20.371891
+      _radius: 60
+      _radiusInSphereUnits: 0.004708837
+    - LatLon:
+        x: 39.45434
+        y: 19.374907
+      _radius: 60
+      _radiusInSphereUnits: 0.004708837
+    - LatLon:
+        x: 38.54056
+        y: 20.169916
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    - LatLon:
+        x: 38.54056
+        y: 20.169916
+      _radius: 100
+      _radiusInSphereUnits: 0.007848062
+    IsSurrounded: 0
+    Name: Ionian Islands
+  - Id: cec4a759-b937-449f-81d4-c5af820d53e4
+    Colliders:
+    - LatLon:
+        x: 39.17606
+        y: 23.670818
+      _radius: 60
+      _radiusInSphereUnits: 0.004708837
+    - LatLon:
+        x: 39.17606
+        y: 23.670818
+      _radius: 60
+      _radiusInSphereUnits: 0.004708837
+    IsSurrounded: 0
+    Name: Thessaly
+  - Id: 4c4580d0-7605-40a6-aa91-a9bf750f86ce
+    Colliders:
+    - LatLon:
+        x: 40.32145
+        y: 24.30013
+      _radius: 35
+      _radiusInSphereUnits: 0.0027468216
+    - LatLon:
+        x: 40.32145
+        y: 24.30013
+      _radius: 35
+      _radiusInSphereUnits: 0.0027468216
+    IsSurrounded: 0
+    Name: Athos
+  ShowLowResColliders: 1
+  ShowCurrentActiveLowResColliders: 1
+  LowResProvincesFilter: []
+  LowResCountriesFilter: []
+  ShowProvinceColliders: 1

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-itunes-app" content="app-id=1599500931">
+    <meta name="theme-color" content="#6496DC">
+    <title>World Capitals Quiz - Find Capital Cities on the Globe | JordGlobe</title>
+    <!-- SEO - Generated from seo-config.ts -->
+    <meta name="description" content="Can you locate world capitals on a 3D globe? Test your knowledge of capital cities in this interactive geography quiz game.">
+    <link rel="canonical" href="https://jordglobe.com/capitals-quiz">
+    <!-- Open Graph -->
+    <meta property="og:title" content="World Capitals Quiz - Find Capital Cities">
+    <meta property="og:description" content="Can you locate world capitals on a 3D globe? Test your knowledge in this interactive quiz.">
+    <meta property="og:image" content="https://jordglobe.com/og-image.png">
+    <meta property="og:url" content="https://jordglobe.com/capitals-quiz">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="World Capitals Quiz - Find Capital Cities">
+    <meta name="twitter:description" content="Can you locate world capitals on a 3D globe? Test your knowledge in this interactive quiz.">
+    <meta name="twitter:image" content="https://jordglobe.com/og-image.png">
+    <!-- /SEO -->
+    <style>
+        html, body { height: 100%; }
+        body { margin: 0; overflow: hidden; background-color: #6496DC; }
+        body.placing-mode { cursor: none; }
+        #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+    </style>
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script type="module">
+        import { initMobile } from '/src/shared/ui/mobile-init.ts';
+        import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        import { EUROPEAN_CAPITALS } from '/src/capitals/capitals-data.ts';
+        initMobile();
+
+        startQuizGame({
+            title: 'Loading Capitals Quiz',
+            questions: EUROPEAN_CAPITALS.map(capital => ({
+                present: 'text',
+                answer: 'location-alternatives',
+                lat: capital.lat,
+                lng: capital.lon,
+                prompt: capital.name,
+            })),
+            onGameComplete: (score, total) => {
+                alert(`Capitals Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+            }
+        });
+    </script>
+</body>
+
+</html>
