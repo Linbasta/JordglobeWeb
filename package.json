@@ -15,6 +15,8 @@
     ]
   },
   "scripts": {
+    "dev": "pnpm dev:site & pnpm dev:games",
+    "dev:all": "pnpm dev:site & pnpm dev:games",
     "dev:games": "pnpm --filter @jordglobe/games dev",
     "dev:site": "pnpm --filter @jordglobe/site dev",
     "build:games": "pnpm --filter @jordglobe/games build",
