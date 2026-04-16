@@ -4,6 +4,16 @@
   "private": true,
   "description": "JordGlobe monorepo - geography learning platform",
   "type": "module",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@parcel/watcher",
+      "better-sqlite3",
+      "esbuild",
+      "protobufjs",
+      "sharp"
+    ]
+  },
   "scripts": {
     "dev:games": "pnpm --filter @jordglobe/games dev",
     "dev:site": "pnpm --filter @jordglobe/site dev",
