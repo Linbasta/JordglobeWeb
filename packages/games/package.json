@@ -75,6 +75,7 @@
     "express-basic-auth": "^1.2.1",
     "express-static-gzip": "^3.0.0",
     "firebase": "^12.11.0",
+    "javascript-obfuscator": "^4.2.2",
     "qrcode": "^1.5.4",
     "ws": "^8.18.3"
   }

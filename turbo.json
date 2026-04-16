@@ -1,0 +1,56 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "@jordglobe/games#build:eurovision-embedded": {
+      "inputs": [
+        "src/**",
+        "public/**",
+        "scripts/**",
+        "seo-config.ts",
+        "package.json",
+        "tsconfig.json",
+        "vite.config.*",
+        "eurovision.html",
+        "$TURBO_ROOT$/shared/games-seo.json"
+      ],
+      "outputs": [
+        "dist-eurovision-embedded/**",
+        "dist/**"
+      ],
+      "env": ["BASE_PATH", "GAMES_SEO_CONFIG_PATH", "NODE_ENV"]
+    },
+    "@jordglobe/site#build": {
+      "inputs": [
+        "src/**",
+        "public/**",
+        "astro.config.mjs",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": ["dist/**"],
+      "env": ["NODE_ENV"]
+    },
+    "@jordglobe/site#deploy:stage": {
+      "dependsOn": [
+        "@jordglobe/site#build",
+        "@jordglobe/games#build:eurovision-embedded"
+      ],
+      "cache": false
+    },
+    "@jordglobe/site#deploy:prod": {
+      "dependsOn": [
+        "@jordglobe/site#build",
+        "@jordglobe/games#build:eurovision-embedded"
+      ],
+      "cache": false
+    },
+    "@jordglobe/site#preview": {
+      "dependsOn": [
+        "@jordglobe/site#build",
+        "@jordglobe/games#build:eurovision-embedded"
+      ],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

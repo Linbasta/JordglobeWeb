@@ -23,9 +23,10 @@ resolve_build_dir() {
   echo "${!var_name:-${!default_var:-}}"
 }
 
-echo "==> Building main site"
-cd "$SITE_ROOT"
-npm run build
+if [[ ! -d "$BUILD_DIR" ]]; then
+  echo "ERROR: $BUILD_DIR missing. Run 'pnpm deploy:$TARGET' from the repo root (turbo orchestrates the builds)." >&2
+  exit 1
+fi
 
 echo "==> Copying game builds"
 for game in "${GAMES[@]}"; do

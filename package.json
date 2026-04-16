@@ -4,6 +4,7 @@
   "private": true,
   "description": "JordGlobe monorepo - geography learning platform",
   "type": "module",
+  "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@firebase/util",
@@ -20,13 +21,21 @@
     "dev:games": "pnpm --filter @jordglobe/games dev",
     "dev:site": "pnpm --filter @jordglobe/site dev",
     "build:games": "pnpm --filter @jordglobe/games build",
-    "build:site": "pnpm --filter @jordglobe/site build",
-    "build:eurovision-embedded": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json pnpm --filter @jordglobe/games build:eurovision-embedded",
-    "deploy:stage": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site deploy:stage",
-    "deploy:prod": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site deploy:prod",
-    "preview": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site preview"
+    "build:site": "turbo run build --filter=@jordglobe/site",
+    "build:eurovision-embedded": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run build:eurovision-embedded --filter=@jordglobe/games",
+    "deploy:stage": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run deploy:stage --filter=@jordglobe/site",
+    "deploy:prod": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run deploy:prod --filter=@jordglobe/site",
+    "preview": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run preview --filter=@jordglobe/site"
   },
-  "keywords": ["geography", "quiz", "learning", "globe"],
+  "keywords": [
+    "geography",
+    "quiz",
+    "learning",
+    "globe"
+  ],
   "author": "",
-  "license": "PRIVATE"
+  "license": "PRIVATE",
+  "devDependencies": {
+    "turbo": "^2.9.6"
+  }
 }
