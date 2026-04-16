@@ -23,7 +23,8 @@
     "build:site": "pnpm --filter @jordglobe/site build",
     "build:eurovision-embedded": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json pnpm --filter @jordglobe/games build:eurovision-embedded",
     "deploy:stage": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site deploy:stage",
-    "deploy:prod": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site deploy:prod"
+    "deploy:prod": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site deploy:prod",
+    "preview": "pnpm build:eurovision-embedded && pnpm --filter @jordglobe/site preview"
   },
   "keywords": ["geography", "quiz", "learning", "globe"],
   "author": "",
