@@ -6,8 +6,8 @@ This is the marketing/landing website for JordGlobe, a geography learning app. B
 
 ## Architecture
 
-### Games (Separate Repository)
-Games are built in a separate project (`../BabylonTest`) using Babylon.js and copied into the site during deployment.
+### Games (Monorepo Package)
+Games are built in the sibling package (`../games`) using Babylon.js and copied into the site during deployment.
 
 **Current games:**
 - `eurovision` - Eurovision 2026 Quiz
@@ -17,7 +17,7 @@ Games are built in a separate project (`../BabylonTest`) using Babylon.js and co
 1. `npm run build` - Builds only the Astro site
 2. `./scripts/deploy.sh <target>` - Full deployment:
    - Builds Astro site
-   - Copies game builds from `../BabylonTest/dist-*-embedded/` into `dist/games/`
+   - Copies game builds from `../games/dist-*-embedded/` into `dist/games/`
    - Deploys to Firebase Hosting
 
 **Deploy targets:**
@@ -27,7 +27,7 @@ Games are built in a separate project (`../BabylonTest`) using Babylon.js and co
 
 ### Adding a New Game
 
-1. Build the game in BabylonTest with output to `dist-<gamename>-embedded/`
+1. Build the game in `packages/games` with output to `dist-<gamename>-embedded/`
 2. Add game to `GAMES` array in `scripts/deploy.sh`
 3. Add default build path: `<GAMENAME>_BUILD_DIR_DEFAULT="..."`
 4. Add game data to `src/config/en/gamesData.json.ts` (and sv version)

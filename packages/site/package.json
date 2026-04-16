@@ -1,7 +1,8 @@
 {
-	"name": "nova",
+	"name": "@jordglobe/site",
 	"type": "module",
-	"version": "3.0.0",
+	"version": "1.0.0",
+	"description": "JordGlobe marketing website - Astro + Firebase Hosting",
 	"scripts": {
 		"dev": "astro dev --host",
 		"start": "astro dev --host",

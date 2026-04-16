@@ -7,8 +7,8 @@
  * The inject-seo.ts script reads this config and injects
  * the meta tags into HTML files during build.
  *
- * GAME PAGES: SEO for game pages (eurovision, etc.) is loaded from an
- * external JSON file in JordglobeSite to maintain a single source of truth.
+ * GAME PAGES: SEO for game pages (eurovision, etc.) is loaded from the
+ * shared games-seo.json at ../../shared/games-seo.json (single source of truth).
  * Set GAMES_SEO_CONFIG_PATH env variable to point to the JSON file.
  */
 

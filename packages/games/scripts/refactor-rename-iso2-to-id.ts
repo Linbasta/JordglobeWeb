@@ -70,7 +70,7 @@ async function main() {
     // Show just the count and a few examples
     console.log(`  ${changedFiles.length} files updated`);
     changedFiles.slice(0, 10).forEach(sf => {
-        const relativePath = sf.getFilePath().replace(/^.*\/BabylonTest\//, '');
+        const relativePath = sf.getFilePath().replace(/^.*\/games\//, '');
         console.log(`  - ${relativePath}`);
     });
     if (changedFiles.length > 10) {

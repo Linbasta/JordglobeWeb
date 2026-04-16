@@ -1,5 +1,5 @@
 // Import shared SEO config (single source of truth)
-import gamesSeoConfig from "../games-seo.json";
+import gamesSeoConfig from "../../../../../shared/games-seo.json";
 
 // Derive game listing data from SEO config (Swedish locale)
 const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => ({

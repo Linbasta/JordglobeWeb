@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$comment": "Single source of truth for game SEO. Used by both JordglobeSite and BabylonTest.",
+  "$comment": "Single source of truth for game SEO. Used by both packages/site and packages/games.",
   "siteUrl": "https://jordglobe.com",
   "siteName": "JordGlobe - the ultimate geography game",
   "defaultImage": "/og-image.png",

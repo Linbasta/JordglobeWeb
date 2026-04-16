@@ -14,7 +14,7 @@ BUILD_DIR="$SITE_ROOT/dist"
 # containing index.html). Override per game with <NAME>_BUILD_DIR, e.g.:
 #   EUROVISION_BUILD_DIR=/abs/path ./scripts/deploy.sh stage
 GAMES=("eurovision")
-EUROVISION_BUILD_DIR_DEFAULT="$SITE_ROOT/../BabylonTest/dist-eurovision-embedded"
+EUROVISION_BUILD_DIR_DEFAULT="$SITE_ROOT/../games/dist-eurovision-embedded"
 
 resolve_build_dir() {
   local game="$1"

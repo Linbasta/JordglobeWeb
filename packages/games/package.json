@@ -1,7 +1,7 @@
 {
-  "name": "babylon-earth-globe",
+  "name": "@jordglobe/games",
   "version": "1.0.0",
-  "description": "Babylon.js Earth Globe with country borders",
+  "description": "JordGlobe geography quiz games - Babylon.js globe engine",
   "type": "module",
   "scripts": {
     "inject-console": "python3 scripts/inject-console-logger.py",

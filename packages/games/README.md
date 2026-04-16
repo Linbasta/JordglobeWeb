@@ -1,6 +1,6 @@
-# Babylon.js Earth Globe
+# JordGlobe Games
 
-An interactive 3D globe built with Babylon.js and TypeScript, featuring country borders and neighbor detection.
+Interactive 3D geography quiz games built with Babylon.js and TypeScript.
 
 ## Features
 
@@ -110,7 +110,7 @@ npm test
 ## Project Structure
 
 ```
-BabylonTest/
+packages/games/
 ├── src/
 │   ├── main.ts              # Main application code
 │   └── types/
