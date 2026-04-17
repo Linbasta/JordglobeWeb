@@ -47,6 +47,19 @@ export default defineConfig({
   appType: 'mpa',
   plugins: [
     {
+      name: 'inject-console-logger-dev',
+      apply: 'serve',
+      transformIndexHtml() {
+        return [
+          {
+            tag: 'script',
+            attrs: { type: 'module', src: '/shared/consoleLogger.ts' },
+            injectTo: 'body-prepend',
+          },
+        ];
+      },
+    },
+    {
       name: 'routes-plugin',
       configureServer(server) {
         // Generate landing page on startup

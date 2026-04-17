@@ -81,9 +81,7 @@
         <div class="log-line">Ready to test. Click Step 1 to begin.</div>
     </div>
 
-        <!-- Console logger - streams browser console to file for Claude -->
-    <script type="module" src="/shared/consoleLogger.ts"></script>
-    <script type="module">
+        <script type="module">
         import { EarthGlobe } from './src/earth-globe/index.ts';
         import { initPinManager, enterPlacingMode, onPlacingModeChange } from './src/shared/managers/pin-manager.ts';
         import { PinUI } from './src/shared/ui/pin-ui.ts';

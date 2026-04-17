@@ -24,6 +24,7 @@
     "build:site": "turbo run build --filter=@jordglobe/site",
     "build:eurovision-embedded": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run build:eurovision-embedded --filter=@jordglobe/games",
     "deploy:stage": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run deploy:stage --filter=@jordglobe/site",
+    "deploy:games:stage": "pnpm --filter @jordglobe/games deploy:stage",
     "deploy:prod": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run deploy:prod --filter=@jordglobe/site",
     "preview": "GAMES_SEO_CONFIG_PATH=$PWD/shared/games-seo.json turbo run preview --filter=@jordglobe/site"
   },
