@@ -17,7 +17,7 @@
         "dist-eurovision-embedded/**",
         "dist/**"
       ],
-      "env": ["BASE_PATH", "GAMES_SEO_CONFIG_PATH", "NODE_ENV"]
+      "env": ["BASE_PATH", "NODE_ENV"]
     },
     "@jordglobe/site#build": {
       "inputs": [

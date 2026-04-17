@@ -9,10 +9,11 @@
  *
  * GAME PAGES: SEO for game pages (eurovision, etc.) is loaded from the
  * shared games-seo.json at ../../shared/games-seo.json (single source of truth).
- * Set GAMES_SEO_CONFIG_PATH env variable to point to the JSON file.
  */
 
-import { existsSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
 export interface PageSEO {
     title: string;
@@ -64,52 +65,26 @@ interface ExternalGameSEO {
 }
 
 function loadGameSEO(): Record<string, PageSEO> {
-    const configPath = process.env.GAMES_SEO_CONFIG_PATH;
+    const configPath = resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        '../../shared/games-seo.json'
+    );
+    const config: ExternalGameSEO = JSON.parse(readFileSync(configPath, 'utf-8'));
+    const gameSEO: Record<string, PageSEO> = {};
 
-    if (!configPath) {
-        console.log('ℹ GAMES_SEO_CONFIG_PATH not set, using fallback game SEO');
-        return getFallbackGameSEO();
+    for (const [gameId, game] of Object.entries(config.games)) {
+        const locale = game.en;
+        gameSEO[`${gameId}.html`] = {
+            title: locale.title,
+            description: locale.description,
+            ogTitle: locale.ogTitle,
+            ogDescription: locale.ogDescription,
+            baseUrlOverride: game.baseUrlOverride,
+        };
     }
 
-    if (!existsSync(configPath)) {
-        console.warn(`⚠ Games SEO config not found at ${configPath}, using fallback`);
-        return getFallbackGameSEO();
-    }
-
-    try {
-        const config: ExternalGameSEO = JSON.parse(readFileSync(configPath, 'utf-8'));
-        const gameSEO: Record<string, PageSEO> = {};
-
-        for (const [gameId, game] of Object.entries(config.games)) {
-            const locale = game.en; // Use English for now
-            gameSEO[`${gameId}.html`] = {
-                title: locale.title,
-                description: locale.description,
-                ogTitle: locale.ogTitle,
-                ogDescription: locale.ogDescription,
-                baseUrlOverride: game.baseUrlOverride,
-            };
-        }
-
-        console.log(`✓ Loaded game SEO from ${configPath}`);
-        return gameSEO;
-    } catch (e) {
-        console.error(`✗ Failed to load game SEO from ${configPath}:`, e);
-        return getFallbackGameSEO();
-    }
-}
-
-// Fallback SEO for development without external config
-function getFallbackGameSEO(): Record<string, PageSEO> {
-    return {
-        'eurovision.html': {
-            title: 'Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe',
-            description: 'Watch Eurovision Song Contest 2026 entries and guess which country each performance is from on an interactive 3D globe. Test your Eurovision knowledge!',
-            ogTitle: 'Eurovision 2026 Quiz - Guess the Country from the Song',
-            ogDescription: 'Watch Eurovision 2026 performances and guess which country each one is from in this interactive 3D globe quiz.',
-            baseUrlOverride: 'https://jordglobe.com/games/eurovision',
-        },
-    };
+    console.log(`✓ Loaded game SEO from ${configPath}`);
+    return gameSEO;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
