@@ -36,6 +36,7 @@
   "author": "",
   "license": "PRIVATE",
   "devDependencies": {
-    "turbo": "^2.9.6"
+    "turbo": "^2.9.6",
+    "wrangler": "^4"
   }
 }

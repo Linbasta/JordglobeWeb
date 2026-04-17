@@ -52,6 +52,9 @@ done
 if [[ "$TARGET" == "preview" ]]; then
   echo "==> Starting Firebase Hosting emulator (respects firebase.json rewrites)"
   firebase emulators:start --only hosting:stage
+elif [[ "$TARGET" == "stage" ]]; then
+  echo "==> Deploying to Cloudflare Pages (staging)"
+  pnpm wrangler pages deploy "$BUILD_DIR" --project-name=jordglobe-staging
 else
   echo "==> Deploying to Firebase Hosting ($TARGET)"
   firebase deploy --only "hosting:$TARGET"
