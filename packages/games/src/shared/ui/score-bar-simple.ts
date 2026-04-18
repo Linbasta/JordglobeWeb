@@ -6,9 +6,11 @@
 
 import { PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
 import { getPersonalBest } from './result-overlay'
+import { createSettingsButton } from './settings-menu'
 import { asset } from '../asset-path'
 
 // ── DOM elements ──
+let wrapper: HTMLDivElement | null = null
 let root: HTMLDivElement | null = null
 let questionEl: HTMLSpanElement | null = null
 let scoreEl: HTMLSpanElement | null = null
@@ -45,12 +47,20 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
         if (pb) personalBestMs = pb.elapsedMs
     }
 
-    root = document.createElement('div')
     const isPortrait = window.innerHeight > window.innerWidth
     const width = isPortrait ? PANEL_WIDTH_PORTRAIT : PANEL_WIDTH_LANDSCAPE
-    root.style.cssText =
+
+    wrapper = document.createElement('div')
+    wrapper.style.cssText =
         `position:absolute;top:${BAR_TOP + bannerOffsetPx}px;left:50%;transform:translateX(-50%);` +
-        `width:${width};height:${BAR_HEIGHT}px;z-index:100;` +
+        `z-index:100;display:flex;align-items:center;gap:6px;` +
+        `max-width:calc(100vw - 8px);`
+
+    const settingsBtn = createSettingsButton('scorebar-left')
+
+    root = document.createElement('div')
+    root.style.cssText =
+        `width:${width};max-width:calc(100vw - ${BAR_HEIGHT + 14}px);height:${BAR_HEIGHT}px;` +
         `display:flex;align-items:center;justify-content:space-between;` +
         `box-sizing:border-box;` +
         `border-style:solid;border-width:${FRAME_BORDER}px;` +
@@ -100,7 +110,9 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
     root.appendChild(scoreEl)
     root.appendChild(rightGroup)
 
-    document.body.appendChild(root)
+    wrapper.appendChild(settingsBtn)
+    wrapper.appendChild(root)
+    document.body.appendChild(wrapper)
 }
 
 export function updateSimpleScoreBar(score: number, turnsLeft: number, total: number, elapsedMs: number): void {
@@ -115,10 +127,11 @@ export function updateSimpleScoreBar(score: number, turnsLeft: number, total: nu
 }
 
 export function disposeSimpleScoreBar(): void {
-    if (root) {
-        root.remove()
-        root = null
+    if (wrapper) {
+        wrapper.remove()
+        wrapper = null
     }
+    root = null
     questionEl = scoreEl = timeEl = pbEl = null
     totalQuestions = 0
     personalBestMs = null
@@ -127,7 +140,7 @@ export function disposeSimpleScoreBar(): void {
 /** Set banner offset (call when Android app banner visibility changes) */
 export function setSimpleScoreBarBannerOffset(offsetPx: number): void {
     bannerOffsetPx = offsetPx
-    if (root) {
-        root.style.top = `${BAR_TOP + bannerOffsetPx}px`
+    if (wrapper) {
+        wrapper.style.top = `${BAR_TOP + bannerOffsetPx}px`
     }
 }
