@@ -6,6 +6,7 @@
  */
 
 import { asset } from '../asset-path'
+import { getAvailableLocales, getLocale, setLocale, t } from '../i18n/i18n'
 
 const MORE_GAMES_URL = 'https://jordglobe.com/games/'
 
@@ -39,10 +40,15 @@ function injectStyles(): void {
         .sm-close:hover { background:rgba(255,255,255,0.1);color:#fff; }
         .sm-close svg { width:18px;height:18px;fill:currentColor; }
         .sm-title { font-size:24px;font-weight:bold;color:#fff;margin-bottom:20px;text-shadow:0 2px 8px rgba(0,0,0,0.3); }
-        .sm-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,0.12); }
+        .sm-row { display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,0.12);gap:12px; }
         .sm-row:first-of-type { border-top:none; }
         .sm-label { font-size:15px;color:#a0c4e0;font-weight:bold; }
         .sm-value { font-size:15px;color:#fff; }
+        .sm-lang-group { display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end; }
+        .sm-lang-btn { padding:6px 12px;background:transparent;border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:#a0c4e0;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;transition:background 0.15s,color 0.15s,border-color 0.15s; }
+        .sm-lang-btn:hover { background:rgba(255,255,255,0.08);color:#fff; }
+        .sm-lang-btn.active { background:#2a7fff;border-color:#2a7fff;color:#fff; }
+        .sm-lang-btn.active:hover { background:#3d8fff; }
         .sm-more-btn { display:block;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
         .sm-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
         .sm-more-btn:active { transform:scale(0.98); }
@@ -84,16 +90,15 @@ export function showSettingsMenu(): void {
     card.className = 'sm-card'
     card.innerHTML = `
         <button class="sm-close" aria-label="Close settings">${CLOSE_ICON}</button>
-        <div class="sm-title">Settings</div>
-        <div class="sm-row">
-            <span class="sm-label">Language</span>
-            <span class="sm-value">English</span>
-        </div>
-        <a class="sm-more-btn" href="${MORE_GAMES_URL}">More Games</a>
+        <div class="sm-title">${t('settings.title')}</div>
+        ${renderLanguageRow()}
+        <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}</a>
     `
 
     backdrop.appendChild(card)
     document.body.appendChild(backdrop)
+
+    wireLanguageButtons(card)
 
     const closeBtn = card.querySelector('.sm-close') as HTMLButtonElement
     closeBtn.addEventListener('click', hideSettingsMenu)
@@ -115,6 +120,32 @@ export function showSettingsMenu(): void {
             c.style.transform = 'scale(1)'
             c.style.opacity = '1'
         }
+    })
+}
+
+function renderLanguageRow(): string {
+    const locales = getAvailableLocales()
+    if (locales.length < 2) return ''
+    const active = getLocale()
+    const buttons = locales.map(loc => {
+        const cls = 'sm-lang-btn' + (loc.code === active ? ' active' : '')
+        return `<button type="button" class="${cls}" data-locale="${loc.code}">${loc.label}</button>`
+    }).join('')
+    return `
+        <div class="sm-row">
+            <span class="sm-label">${t('settings.language')}</span>
+            <div class="sm-lang-group">${buttons}</div>
+        </div>
+    `
+}
+
+function wireLanguageButtons(card: HTMLElement): void {
+    const active = getLocale()
+    card.querySelectorAll<HTMLButtonElement>('.sm-lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const code = btn.dataset.locale
+            if (code && code !== active) setLocale(code)
+        })
     })
 }
 

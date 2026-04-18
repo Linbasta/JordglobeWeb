@@ -26,6 +26,7 @@ import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
 import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
 import { togglePerfOverlay } from '../shared/dev/perf-overlay';
 import { showPinTutorial, resetPinTutorial, dismissPinTutorial } from '../shared/ui/pin-tutorial';
+import { getCountryName } from '../shared/i18n/i18n';
 
 export interface SoloGameOptions extends BaseGameOptions {
     onReady?: (controller: SoloGameController) => void;
@@ -190,7 +191,7 @@ export class SoloGameController extends BaseGameController {
 
             // Update hover label (this should still work even when selection is disabled)
             if (country) {
-                this.hoverCountryLabel?.show(country.name);
+                this.hoverCountryLabel?.show(getCountryName(country.id));
             } else {
                 this.hoverCountryLabel?.hide();
             }
@@ -240,7 +241,7 @@ export class SoloGameController extends BaseGameController {
 
                 // Update hover label
                 if (country) {
-                    this.hoverCountryLabel?.show(country.name);
+                    this.hoverCountryLabel?.show(getCountryName(country.id));
                 } else {
                     this.hoverCountryLabel?.hide();
                 }

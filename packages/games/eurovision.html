@@ -39,8 +39,13 @@
 
 
     <script type="module">
+        import { EUROVISION_I18N } from './eurovision.i18n.ts';
+        import { t, initI18n } from '/src/shared/i18n/i18n.ts';
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+
+        // Initialize i18n BEFORE any t() call or question assembly
+        initI18n(EUROVISION_I18N);
         initMobile();
 
         // Preload sprite images when browser is idle (not blocking initial load)
@@ -52,7 +57,7 @@
         function showStartButton() {
             return new Promise(resolve => {
                 const btn = document.createElement('button');
-                btn.textContent = 'Start Eurovision Quiz';
+                btn.textContent = t('start.button');
                 btn.style.cssText =
                     'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;' +
                     'padding:16px 56px;font-size:24px;font-weight:700;font-family:Arial,sans-serif;' +
@@ -132,7 +137,7 @@
                 answer: 'country',
                 countryISO2: iso2,
                 youtubeId: COMPILATION_VIDEO_ID,
-                prompt: 'This entry is from which country?',
+                prompt: t('question.prompt'),
                 startTime: songStart + SONG_OFFSET,
                 endTime: songStart + SONG_OFFSET + clipLen,
                 hideBottom: true,  // Hide country name overlay in compilation
@@ -140,7 +145,7 @@
         });
 
         startQuizGame({
-            title: 'Loading Eurovision Quiz',
+            i18n: EUROVISION_I18N,
             questions: EUROVISION_QUESTIONS,
             scoreBarType: 'simple',
             showHoverLabel: true,
@@ -164,10 +169,10 @@
                 } catch (e) {
                     console.warn('Failed to submit record:', e);
                 }
-                const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Eurovision Lover', 'Devoted Fan', 'Eurovision God'];
+                const spriteNames = [0, 1, 2, 3, 4, 5].map(i => t(`sprite.${i}`));
                 showResultOverlay({
                     score, total, elapsedMs, results,
-                    quizTitle: 'Eurovision Quiz',
+                    quizTitle: t('quiz.title'),
                     shareUrl: 'https://eurovision.jordglobe.com/',
                     shareEmoji: '🎵',
                     spritePath: `${import.meta.env.BASE_URL}eurovision/`,

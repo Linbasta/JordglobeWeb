@@ -5,6 +5,7 @@
 import { startConfetti, stopConfetti } from './confetti'
 import { generateShareMessage } from './share-message'
 import { asset } from '../asset-path'
+import { t } from '../i18n/i18n'
 
 let backdrop: HTMLDivElement | null = null
 
@@ -39,10 +40,10 @@ function formatTime(ms: number): string {
 
 function getMessage(score: number, total: number): string {
     const pct = score / total
-    if (pct === 1) return 'Congratulations!'
-    if (pct >= 0.8) return 'Well played!'
-    if (pct >= 0.5) return 'Not bad!'
-    return 'Better luck next time!'
+    if (pct === 1) return t('result.message.perfect')
+    if (pct >= 0.8) return t('result.message.great')
+    if (pct >= 0.5) return t('result.message.ok')
+    return t('result.message.poor')
 }
 
 function copyToClipboard(text: string): void {
@@ -122,29 +123,29 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         : ''
 
     card.innerHTML = `
-        <div class="ro-title">${isPerfect ? 'Perfect!' : 'Congrats!'}</div>
+        <div class="ro-title">${isPerfect ? t('result.title.perfect') : t('result.title.default')}</div>
         <div class="ro-stats">
             <div class="ro-stat">
-                <div class="ro-stat-label">Result</div>
+                <div class="ro-stat-label">${t('result.stat.score')}</div>
                 <div class="ro-stat-value ro-score-value">0/${total}</div>
             </div>
             ${spriteHtml}
             <div class="ro-stat">
-                <div class="ro-stat-label">Time</div>
+                <div class="ro-stat-label">${t('result.stat.time')}</div>
                 <div class="ro-stat-value">${formatTime(elapsedMs)}</div>
             </div>
         </div>
-        ${isNewRecord ? '<div class="ro-record">🏆 NEW WORLD RECORD 🏆</div>' : ''}
-        ${!isNewRecord && isPersonalBest ? '<div class="ro-personal-best">⭐ PERSONAL BEST ⭐</div>' : ''}
+        ${isNewRecord ? `<div class="ro-record">${t('result.badge.worldRecord')}</div>` : ''}
+        ${!isNewRecord && isPersonalBest ? `<div class="ro-personal-best">${t('result.badge.personalBest')}</div>` : ''}
         <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
         <div class="ro-share">
-            <div class="ro-share-text">Can your friends beat your score?</div>
-            <button class="ro-share-btn">${COPY_ICON} Copy challenge link</button>
+            <div class="ro-share-text">${t('result.share.prompt')}</div>
+            <button class="ro-share-btn">${COPY_ICON} ${t('result.share.copy')}</button>
             <div class="ro-store-links">
                 <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="ro-store-badge"></a>
                 <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="ro-store-badge"></a>
             </div>
-            ${onRetry ? '<button class="ro-retry-btn">Play again</button>' : ''}
+            ${onRetry ? `<button class="ro-retry-btn">${t('result.retry')}</button>` : ''}
         </div>
     `
 
@@ -202,10 +203,10 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         const customSquares = formatShareSquares ? formatShareSquares(results) : undefined
         const msg = generateShareMessage(quizTitle, score, total, elapsedMs, results, shareUrl, shareEmoji, customSquares)
         copyToClipboard(msg)
-        shareBtn.innerHTML = `${CHECK_ICON} Copied!`
+        shareBtn.innerHTML = `${CHECK_ICON} ${t('result.share.copied')}`
         shareBtn.classList.add('copied')
         setTimeout(() => {
-            shareBtn.innerHTML = `${COPY_ICON} Copy challenge link`
+            shareBtn.innerHTML = `${COPY_ICON} ${t('result.share.copy')}`
             shareBtn.classList.remove('copied')
         }, 2000)
     })

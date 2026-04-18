@@ -2,6 +2,8 @@
  * Wordle-style share message generator for quiz results
  */
 
+import { t } from '../i18n/i18n'
+
 export function generateShareMessage(
     title: string,
     score: number,
@@ -21,5 +23,5 @@ export function generateShareMessage(
 
     const emojiSuffix = emoji ? ` ${emoji}` : ''
 
-    return `🌍 ${title}${emojiSuffix}\n${score}/${total} ⏱️ ${timeStr}\n\n${squares}\n\nCan you beat my score?\n${url}`
+    return `🌍 ${title}${emojiSuffix}\n${score}/${total} ⏱️ ${timeStr}\n\n${squares}\n\n${t('share.tagline')}\n${url}`
 }

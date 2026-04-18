@@ -8,6 +8,9 @@
 
 import type { Question } from '../shared/quiz/quiz-types'
 import type { ScoreBarType } from '../shared/quiz/quiz-ui-adapter'
+import type { QuizTranslations } from '../shared/i18n/types'
+import { initI18n, t } from '../shared/i18n/i18n'
+import { mountLanguageSwitcher } from '../shared/ui/language-switcher'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
 import { preloadQuizImages } from '../shared/ui/image-preloader'
 import { showMobileAppAd } from '../shared/ui/mobile-app-ad'
@@ -34,13 +37,22 @@ export interface QuizGameConfig {
     analyticsGame?: string
     /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
     analyticsGameId?: string
+    /** Translation bundle. Declaring >1 availableLocales mounts the language switcher. */
+    i18n?: QuizTranslations
 }
 
 export async function startQuizGame(config: QuizGameConfig): Promise<void> {
     const canvasId = config.canvasId ?? 'renderCanvas'
 
+    // 0. Initialize i18n so t() is usable everywhere downstream.
+    // Safe to call even if the quiz page already called initI18n at module top.
+    initI18n(config.i18n)
+
     // 1. Loading screen (must exist before controller constructor queries it)
-    createLoadingScreen(config.title ?? 'Loading Quiz')
+    createLoadingScreen(config.title ?? t('loading.title'))
+
+    // Mount language switcher (no-op when <2 available locales)
+    mountLanguageSwitcher()
 
     // 2. Mobile app ad (desktop only)
     showMobileAppAd()

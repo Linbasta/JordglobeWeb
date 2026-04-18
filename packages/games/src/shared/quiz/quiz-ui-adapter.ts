@@ -10,6 +10,7 @@
 import type { EarthGlobeAPI } from '../../earth-globe/types'
 import type { CountryLabelUI } from '../ui/country-label-ui'
 import type { Question } from './quiz-types'
+import { getCountryName } from '../i18n/i18n'
 import { StepOp } from './quiz-types'
 import {
     startQuiz,
@@ -128,7 +129,7 @@ export class QuizUIAdapter {
                     if (!country) return
                     const x = window.innerWidth / 2
                     const y = window.innerHeight / 2
-                    this.hoverLabel.showAtScreenPos(country.name, x, y)
+                    this.hoverLabel.showAtScreenPos(getCountryName(country.id), x, y)
                 },
                 onHideReveal: () => {
                     this.hoverLabel?.hide()
