@@ -55,6 +55,10 @@ const ALLOW_LIST = [
     'eurovision/5.png',
     'eurovision/6.png',
 
+    // Mobile-app-ad banner (shown during gameplay on desktop)
+    'eurovision/blue_gradient.png',
+    'eurovision/4_phones.png',
+
     // Globe runtime data (DEFAULT_ASSETS in src/earth-globe/constants.ts)
     'countries-enriched.bin',
     'segments.json',
@@ -78,7 +82,6 @@ const ALLOW_LIST = [
     'BlueButton.png',
 
     // Always-shown UI from start-quiz-game + mobile-init
-    'phone-icon.svg',
     'qr-download.png',
     'AppIcon.png',
 

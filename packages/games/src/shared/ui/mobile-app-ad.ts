@@ -1,98 +1,107 @@
 /**
- * Mobile App Ad — shows QR code ad for desktop users during solo games
+ * Mobile App Ad — shows a download banner for desktop users during solo games
  *
  * Only visible on desktop. Positioned in bottom-right corner.
- * Horizontal layout: QR code left, text right.
+ * Banner layout: blue-gradient background, QR code on the left, four phones
+ * overflowing the top edge on the right, "Download the app now!" at bottom.
  */
 
 import { asset } from '../asset-path'
 
-// ── DOM element ──
 let adContainer: HTMLDivElement | null = null
 let resizeHandler: (() => void) | null = null
 
-// ── Constants ──
-const QR_SIZE = 70
 const AD_MARGIN = 16
-const BG_COLOR = '#4a6fa5'  // Blue matching app theme
-const MIN_ASPECT_RATIO = 1.2  // Hide ad when narrower than this (e.g. portrait)
+const BANNER_WIDTH = 480
+const BANNER_HEIGHT = 160
+const QR_SIZE = 120
+const PHONES_WIDTH = 300
+const PHONES_OVERFLOW_TOP = 25
+const MIN_ASPECT_RATIO = 1.2
 
-/**
- * Detect if user is on a mobile device
- */
+// Scale the banner to the viewport. Below these reference dimensions the banner
+// shrinks proportionally (anchored to its bottom-right corner) so it stops
+// colliding with the pin UI or the bottom score bar on smaller windows.
+const SCALE_REF_WIDTH = 1800
+const SCALE_REF_HEIGHT = 1100
+const MIN_SCALE = 0.35
+
 function isMobile(): boolean {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
-/**
- * Show the mobile app ad (desktop only)
- */
 export function showMobileAppAd(): void {
-    // Don't show on mobile devices
     if (isMobile()) return
-
-    // Don't create duplicate
     if (adContainer) return
 
     adContainer = document.createElement('div')
     adContainer.style.cssText =
         `position:fixed;bottom:${AD_MARGIN}px;right:${AD_MARGIN}px;` +
-        `background:${BG_COLOR};` +
+        `width:${BANNER_WIDTH}px;height:${BANNER_HEIGHT}px;` +
+        `background:url('${asset('eurovision/blue_gradient.png')}') center/cover no-repeat;` +
         'border-radius:12px;' +
-        'padding:10px;' +
-        'display:flex;align-items:center;gap:12px;' +
         'z-index:100;' +
         'font-family:Arial,sans-serif;' +
-        'box-shadow:0 4px 12px rgba(0,0,0,0.25);'
+        'box-shadow:0 4px 12px rgba(0,0,0,0.25);' +
+        'overflow:visible;' +
+        'transform-origin:bottom right;'
 
-    // QR code container (left side)
-    const qrContainer = document.createElement('div')
-    qrContainer.style.cssText =
+    const qrImg = document.createElement('img')
+    qrImg.src = asset('qr-download.png')
+    qrImg.alt = 'Download'
+    qrImg.width = QR_SIZE
+    qrImg.height = QR_SIZE
+    qrImg.style.cssText =
+        'position:absolute;left:18px;top:50%;transform:translateY(-50%);' +
         `width:${QR_SIZE}px;height:${QR_SIZE}px;` +
-        'background:#fff;' +
-        'border-radius:6px;' +
-        'display:flex;align-items:center;justify-content:center;' +
-        'flex-shrink:0;'
+        'background:#fff;border-radius:8px;padding:6px;box-sizing:border-box;' +
+        'display:block;z-index:2;'
 
-    // Static pre-generated QR code
-    insertQRCode(qrContainer)
+    const phones = document.createElement('img')
+    phones.src = asset('eurovision/4_phones.png')
+    phones.alt = ''
+    phones.style.cssText =
+        `position:absolute;right:6px;top:-${PHONES_OVERFLOW_TOP}px;` +
+        `width:${PHONES_WIDTH}px;height:auto;pointer-events:none;z-index:1;`
 
-    // Phone icon (center)
-    const phoneIcon = document.createElement('img')
-    phoneIcon.src = asset('phone-icon.svg')
-    phoneIcon.alt = ''
-    phoneIcon.style.cssText = 'width:64px;height:64px;flex-shrink:0;'
+    const text = document.createElement('div')
+    text.style.cssText =
+        `position:absolute;bottom:10px;left:${QR_SIZE + 28}px;right:12px;` +
+        'color:#fff;font-size:18px;font-weight:800;' +
+        'text-transform:uppercase;text-align:center;' +
+        'letter-spacing:0.5px;line-height:1;white-space:nowrap;' +
+        'text-shadow:0 2px 4px rgba(0,0,0,0.35);z-index:2;'
+    text.textContent = 'Download the app now!'
 
-    // Text section (right side)
-    const mainText = document.createElement('div')
-    mainText.style.cssText =
-        'color:#fff;font-size:13px;font-weight:bold;text-transform:uppercase;' +
-        'line-height:1.2;'
-    mainText.innerHTML = 'More fun<br>in the app!'
-
-    adContainer.appendChild(qrContainer)
-    adContainer.appendChild(phoneIcon)
-    adContainer.appendChild(mainText)
+    adContainer.appendChild(qrImg)
+    adContainer.appendChild(phones)
+    adContainer.appendChild(text)
     document.body.appendChild(adContainer)
 
-    // Handle aspect ratio changes
     resizeHandler = () => updateVisibility()
     window.addEventListener('resize', resizeHandler)
     updateVisibility()
 }
 
-/**
- * Update ad visibility based on aspect ratio
- */
 function updateVisibility(): void {
     if (!adContainer) return
     const aspectRatio = window.innerWidth / window.innerHeight
-    adContainer.style.display = aspectRatio >= MIN_ASPECT_RATIO ? 'flex' : 'none'
+    if (aspectRatio < MIN_ASPECT_RATIO) {
+        adContainer.style.display = 'none'
+        return
+    }
+    adContainer.style.display = 'block'
+    const scale = Math.max(
+        MIN_SCALE,
+        Math.min(
+            1,
+            window.innerWidth / SCALE_REF_WIDTH,
+            window.innerHeight / SCALE_REF_HEIGHT,
+        ),
+    )
+    adContainer.style.transform = `scale(${scale})`
 }
 
-/**
- * Hide the mobile app ad
- */
 export function hideMobileAppAd(): void {
     if (resizeHandler) {
         window.removeEventListener('resize', resizeHandler)
@@ -102,15 +111,4 @@ export function hideMobileAppAd(): void {
         adContainer.remove()
         adContainer = null
     }
-}
-
-function insertQRCode(container: HTMLElement): void {
-    const img = document.createElement('img')
-    img.src = asset('qr-download.png')
-    img.alt = 'Download'
-    img.width = QR_SIZE
-    img.height = QR_SIZE
-    img.style.cssText = 'display:block;'
-    container.innerHTML = ''
-    container.appendChild(img)
 }
