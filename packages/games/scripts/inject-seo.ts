@@ -24,7 +24,7 @@ function generateMetaTags(page: string, seo: PageSEO): string {
         ? '/'
         : (page === 'index.html' ? '/' : `/${page.replace('.html', '')}`);
     const fullUrl = `${baseUrl}${pagePath}`;
-    const imageUrl = `${baseUrl}${seoConfig.defaultImage}`;
+    const imageUrl = `${baseUrl}${seo.image ?? seoConfig.defaultImage}`;
 
     const ogTitle = seo.ogTitle || seo.title;
     const ogDescription = seo.ogDescription || seo.description;

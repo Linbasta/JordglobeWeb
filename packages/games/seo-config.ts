@@ -23,6 +23,8 @@ export interface PageSEO {
     ogDescription?: string;
     twitterTitle?: string;
     twitterDescription?: string;
+    // Per-page OG/Twitter image path. Falls back to seoConfig.defaultImage.
+    image?: string;
     /**
      * Override the base URL for canonical / og:url / twitter:url and og:image.
      * Use for pages hosted on a different domain than seoConfig.baseUrl.
@@ -79,6 +81,7 @@ function loadGameSEO(): Record<string, PageSEO> {
             description: locale.description,
             ogTitle: locale.ogTitle,
             ogDescription: locale.ogDescription,
+            image: game.image,
             baseUrlOverride: game.baseUrlOverride,
         };
     }

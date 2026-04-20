@@ -12,7 +12,7 @@
   "games": {
     "eurovision": {
       "baseUrlOverride": "https://jordglobe.com/games/eurovision",
-      "image": "/og-image.png",
+      "image": "/og-eurovision.jpg",
       "genre": "Music Quiz",
       "en": {
         "title": "Eurovision Quiz - Guess Songs from Eurovision 2026 | JordGlobe",
