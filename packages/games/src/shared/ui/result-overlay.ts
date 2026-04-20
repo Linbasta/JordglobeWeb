@@ -283,7 +283,8 @@ export function setPersonalBest(quizId: string, score: number, total: number, el
  *
  * Scoring logic:
  * 1. Higher score always wins
- * 2. If same score, faster time wins
+ * 2. On tie, time only matters once you've hit 100% — matching a sub-perfect
+ *    score faster is not a PB.
  */
 export function checkAndUpdatePersonalBest(quizId: string, score: number, total: number, elapsedMs: number): boolean {
     const existing = getPersonalBest(quizId)
@@ -300,8 +301,8 @@ export function checkAndUpdatePersonalBest(quizId: string, score: number, total:
         return true
     }
 
-    // Same score, faster time wins
-    if (score === existing.score && elapsedMs < existing.elapsedMs) {
+    // Perfect-score tie: faster time wins
+    if (score === existing.score && score === total && elapsedMs < existing.elapsedMs) {
         setPersonalBest(quizId, score, total, elapsedMs)
         return true
     }

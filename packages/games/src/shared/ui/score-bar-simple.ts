@@ -5,7 +5,7 @@
  */
 
 import { PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
-import { getPersonalBest } from './result-overlay'
+import { getPersonalBest, type PersonalBestRecord } from './result-overlay'
 import { createSettingsButton } from './settings-menu'
 import { asset } from '../asset-path'
 
@@ -26,7 +26,7 @@ const FRAME_BORDER = 10
 // ── State ──
 let totalQuestions = 0
 let bannerOffsetPx = 0
-let personalBestMs: number | null = null
+let personalBest: PersonalBestRecord | null = null
 
 function formatTime(ms: number): string {
     const totalSeconds = Math.floor(ms / 1000)
@@ -41,10 +41,9 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
     totalQuestions = total
 
     // Load personal best if quizId provided
-    personalBestMs = null
+    personalBest = null
     if (quizId) {
-        const pb = getPersonalBest(quizId)
-        if (pb) personalBestMs = pb.elapsedMs
+        personalBest = getPersonalBest(quizId)
     }
 
     const isPortrait = window.innerHeight > window.innerWidth
@@ -90,11 +89,14 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
     const rightGroup = document.createElement('span')
     rightGroup.style.cssText = lh
 
-    // Personal best display (only if we have one)
-    if (personalBestMs !== null) {
+    // Personal best display: score count until 100%, then time
+    if (personalBest !== null) {
         pbEl = document.createElement('span')
         pbEl.style.cssText = `opacity:0.6;font-size:14px;`
-        pbEl.textContent = `PB ${formatTime(personalBestMs)}`
+        const isPerfect = personalBest.score === personalBest.total
+        pbEl.textContent = isPerfect
+            ? `PB ${formatTime(personalBest.elapsedMs)}`
+            : `PB ${personalBest.score}/${personalBest.total}`
         rightGroup.appendChild(pbEl)
     }
 
@@ -134,7 +136,7 @@ export function disposeSimpleScoreBar(): void {
     root = null
     questionEl = scoreEl = timeEl = pbEl = null
     totalQuestions = 0
-    personalBestMs = null
+    personalBest = null
 }
 
 /** Set banner offset (call when Android app banner visibility changes) */
