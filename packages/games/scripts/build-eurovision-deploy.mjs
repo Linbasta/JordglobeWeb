@@ -92,7 +92,17 @@ const ALLOW_LIST = [
     // SEO: og:image (sitemap.xml and robots.txt are written inline below
     // since the eurovision deploy lives on its own subdomain and shouldn't
     // share the jordglobe.com sitemap.)
-    'og-image.png',
+    'og-eurovision.jpg',
+
+    // Answer SFX (preloaded by src/shared/sfx/sfx-player.ts)
+    'sfx/correct_1.ogg',
+    'sfx/correct_2.ogg',
+    'sfx/correct_3.ogg',
+    'sfx/correct_4.ogg',
+    'sfx/correct_5.ogg',
+    'sfx/correct_6.ogg',
+    'sfx/correct_7.ogg',
+    'sfx/incorrect.ogg',
 ];
 
 // Files matched by glob (the hashed bundle filename varies per build).
