@@ -59,6 +59,10 @@ const ALLOW_LIST = [
     'eurovision/blue_gradient.png',
     'eurovision/4_phones.png',
 
+    // Start panel (showStartPanel in eurovision.html)
+    'green_btn.png',
+    'eurovision/eurovison_play_image.png',
+
     // Globe runtime data (DEFAULT_ASSETS in src/earth-globe/constants.ts)
     'countries-enriched.bin',
     'segments.json',

@@ -43,6 +43,7 @@
         import { t, initI18n } from '/src/shared/i18n/i18n.ts';
         import { initMobile } from '/src/shared/ui/mobile-init.ts';
         import { startQuizGame } from '/src/solo/start-quiz-game.ts';
+        import { asset } from '/src/shared/asset-path.ts';
 
         // Initialize i18n BEFORE any t() call or question assembly
         initI18n(EUROVISION_I18N);
@@ -54,18 +55,72 @@
             for (let i = 1; i <= 6; i++) new Image().src = `${import.meta.env.BASE_URL}eurovision/${i}.png`;
         });
 
-        function showStartButton() {
+        function showStartPanel() {
             return new Promise(resolve => {
-                const btn = document.createElement('button');
-                btn.textContent = t('start.button');
-                btn.style.cssText =
-                    'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;' +
-                    'padding:16px 56px;font-size:24px;font-weight:700;font-family:Arial,sans-serif;' +
-                    'color:#fff;background:linear-gradient(90deg,#E91E63,#9C27B0);' +
-                    'border:none;border-radius:8px;cursor:pointer;' +
-                    'box-shadow:0 4px 16px rgba(156,39,176,0.4);';
-                btn.onclick = () => { btn.remove(); resolve(); };
-                document.body.appendChild(btn);
+                const SCALE_REF_WIDTH = 1800;
+                const SCALE_REF_HEIGHT = 1100;
+                const MIN_SCALE = 0.35;
+
+                const root = document.createElement('div');
+                root.style.cssText =
+                    'position:fixed;top:50%;left:50%;z-index:500;' +
+                    'transform-origin:center center;' +
+                    'filter:drop-shadow(0 10px 24px rgba(0,0,0,0.35));' +
+                    'font-family:Arial,sans-serif;';
+
+                const deco = document.createElement('img');
+                deco.src = asset('eurovision/eurovison_play_image.png');
+                deco.alt = '';
+                deco.style.cssText =
+                    'position:absolute;left:50%;top:-195px;transform:translateX(-50%);' +
+                    'width:520px;height:auto;pointer-events:none;display:block;';
+
+                const card = document.createElement('div');
+                card.style.cssText =
+                    'position:relative;width:620px;height:240px;border-radius:20px;' +
+                    'background:linear-gradient(90deg,#7a4bd0,#e86bb5);' +
+                    'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+                    'gap:18px;padding:28px 20px;box-sizing:border-box;overflow:visible;';
+
+                const title = document.createElement('div');
+                title.textContent = t('start.title');
+                title.style.cssText =
+                    'color:#fff;font-size:32px;font-weight:800;letter-spacing:0.5px;' +
+                    'text-shadow:0 2px 4px rgba(0,0,0,0.25);';
+
+                const play = document.createElement('button');
+                play.textContent = t('start.playButton');
+                play.style.cssText =
+                    'width:280px;height:112px;border:none;background:transparent;' +
+                    `background-image:url('${asset('green_btn.png')}');` +
+                    'background-size:contain;background-repeat:no-repeat;background-position:center;' +
+                    'color:#fff;font-size:28px;font-weight:800;font-family:inherit;' +
+                    'text-shadow:0 2px 3px rgba(0,0,0,0.35);' +
+                    'cursor:pointer;padding:0;line-height:1;';
+
+                function onResize() {
+                    const s = Math.max(MIN_SCALE, Math.min(
+                        1,
+                        window.innerWidth / SCALE_REF_WIDTH,
+                        window.innerHeight / SCALE_REF_HEIGHT,
+                    ));
+                    root.style.transform = `translate(-50%,-50%) scale(${s})`;
+                }
+
+                play.onclick = () => {
+                    window.removeEventListener('resize', onResize);
+                    root.remove();
+                    resolve();
+                };
+
+                card.appendChild(title);
+                card.appendChild(play);
+                root.appendChild(deco);
+                root.appendChild(card);
+                document.body.appendChild(root);
+
+                window.addEventListener('resize', onResize);
+                onResize();
             });
         }
 
@@ -152,7 +207,7 @@
             quizId: 'eurovision',
             analyticsGame: 'Eurovision',
             analyticsGameId: 'eurovision_2026',
-            onReady: () => showStartButton(),
+            onReady: () => showStartPanel(),
             onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
                 // Dynamic imports - only load when game ends
                 const [{ showResultOverlay }, { getQuestions }] = await Promise.all([

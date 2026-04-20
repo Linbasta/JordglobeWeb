@@ -64,6 +64,12 @@ const normal = position.normalizeToNew();
 
 Watch for: `scale()`, `add()`, `subtract()`, `multiply()` - use `*ToNew()` or `*InPlace` variants.
 
+## Asset Paths
+
+Always resolve local assets through `asset()` from `src/shared/asset-path.ts` (TS/JS) or `${import.meta.env.BASE_URL}file.png` (inline HTML scripts). Never hardcode `/file.png` — embedded deploys prefix `BASE_URL` (e.g. `/games/eurovision/`) and raw slashes 404.
+
+Every new file under `public/` that a quiz references must also be added to `ALLOW_LIST` in `scripts/build-eurovision-deploy.mjs`, or the Eurovision standalone/embedded build will silently drop it.
+
 ## Naming Conventions
 
 | Type | Convention | Example |

@@ -9,7 +9,8 @@ export const EUROVISION_I18N: QuizTranslations = {
     strings: {
         en: {
             'loading.title':    'Loading Eurovision Quiz',
-            'start.button':     'Start Eurovision Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Play',
             'quiz.title':       'Eurovision Quiz',
             'question.prompt':  'This entry is from which country?',
             'sprite.0':         'Nul Points',
@@ -21,7 +22,8 @@ export const EUROVISION_I18N: QuizTranslations = {
         },
         sv: {
             'loading.title':    'Laddar Eurovision-quizet',
-            'start.button':     'Starta Eurovision-quizet',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Spela',
             'quiz.title':       'Eurovision-quiz',
             'question.prompt':  'Från vilket land kommer detta bidrag?',
             'sprite.0':         'Noll poäng',
