@@ -74,7 +74,7 @@ function removeOldAssets(pageName) {
 // Build each entry
 // ---------------------------------------------------------------------------
 const plugins = buildPlugins(rootDir);
-let isFirst = !existsSync(join(distDir, 'assets'));
+let isFirst = true;
 
 for (const name of targets) {
   const entry = entryPoints.find(e => e.name === name);

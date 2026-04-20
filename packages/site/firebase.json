@@ -25,6 +25,10 @@
                 "destination": "/duel/index.html"
             },
             {
+                "source": "/games/eurovision/sv{,/**}",
+                "destination": "/games/eurovision/sv/index.html"
+            },
+            {
                 "source": "/games/eurovision/**",
                 "destination": "/games/eurovision/index.html"
             },
@@ -100,6 +104,10 @@
             {
                 "source": "/duel",
                 "destination": "/duel/index.html"
+            },
+            {
+                "source": "/games/eurovision/sv{,/**}",
+                "destination": "/games/eurovision/sv/index.html"
             },
             {
                 "source": "/games/eurovision/**",

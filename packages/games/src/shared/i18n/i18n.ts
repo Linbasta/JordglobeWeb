@@ -59,6 +59,11 @@ function resolveLocale(bundle: QuizTranslations): string {
     const stored = safeRead(STORAGE_KEY)
     if (stored && codes.includes(stored)) return stored
 
+    // <html lang="…"> set by per-locale pre-rendered HTML (e.g. /games/eurovision/sv/).
+    // Stronger signal than navigator language because it reflects the server's URL routing.
+    const fromHtml = matchHtmlLangLocale(codes)
+    if (fromHtml) return fromHtml
+
     const fromPath = matchPathLocale(codes)
     if (fromPath) return fromPath
 
@@ -70,6 +75,14 @@ function resolveLocale(bundle: QuizTranslations): string {
 
 function safeRead(key: string): string | null {
     try { return localStorage.getItem(key) } catch { return null }
+}
+
+function matchHtmlLangLocale(codes: string[]): string | null {
+    const lang = document.documentElement.lang
+    if (!lang) return null
+    if (codes.includes(lang)) return lang
+    const primary = lang.split('-')[0]
+    return codes.includes(primary) ? primary : null
 }
 
 function matchPathLocale(codes: string[]): string | null {

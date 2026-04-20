@@ -60,6 +60,7 @@ export default defineConfig({
 			// Add them here so they appear in the sitemap
 			customPages: [
 				'https://jordglobe.com/games/eurovision/',
+				'https://jordglobe.com/games/eurovision/sv/',
 			],
 		}),
 		compress({
