@@ -1,6 +1,7 @@
+import { asset } from '../asset-path'
+
 const CORRECT_SFX_COUNT = 7
 const MAX_CONCURRENT = 3
-const SFX_BASE = '/sfx'
 
 let ctx: AudioContext | null = null
 const correctBuffers: (AudioBuffer | null)[] = new Array(CORRECT_SFX_COUNT).fill(null)
@@ -26,9 +27,9 @@ async function loadBuffer(url: string): Promise<AudioBuffer> {
 async function preloadAll() {
     await Promise.all([
         ...Array.from({ length: CORRECT_SFX_COUNT }, (_, i) =>
-            loadBuffer(`${SFX_BASE}/correct_${i + 1}.ogg`).then(b => { correctBuffers[i] = b })
+            loadBuffer(asset(`sfx/correct_${i + 1}.ogg`)).then(b => { correctBuffers[i] = b })
         ),
-        loadBuffer(`${SFX_BASE}/incorrect.ogg`).then(b => { incorrectBuffer = b }),
+        loadBuffer(asset('sfx/incorrect.ogg')).then(b => { incorrectBuffer = b }),
     ])
 }
 
