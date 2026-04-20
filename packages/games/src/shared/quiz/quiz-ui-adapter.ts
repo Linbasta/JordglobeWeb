@@ -33,6 +33,7 @@ import {
     logGameSessionEnd,
     logAnswer,
 } from '../analytics'
+import { playCorrectSfx, playIncorrectSfx } from '../sfx/sfx-player'
 
 /**
  * Quiz configuration
@@ -135,6 +136,8 @@ export class QuizUIAdapter {
                     this.hoverLabel?.hide()
                 },
                 onAnswer: (data) => {
+                    if (data.correct) playCorrectSfx()
+                    else playIncorrectSfx()
                     // Log answer to analytics (only if configured)
                     if (this.analyticsGame && this.analyticsGameId) {
                         const timeMs = performance.now() - this.lastQuestionStartTime

@@ -47,9 +47,6 @@ interface Particle {
 let particles: Particle[] = []
 let barContainer: HTMLDivElement | null = null
 
-// ── Audio ──
-let audioCtx: AudioContext | null = null
-
 // ── Constants ──
 const BAR_WIDTH_PORTRAIT = 95  // vw — nearly full width in portrait
 const BAR_WIDTH_LANDSCAPE = 50 // vw — max half in landscape
@@ -206,10 +203,6 @@ export function updateScoreBar(score: number, turnsLeft: number, total: number):
         prevPercent = curPercent
         curPercent = newPercent
         startFillAnimation(prevPercent, curPercent)
-
-        if (curPercent > prevPercent) {
-            playScoreTone(curPercent)
-        }
     }
 }
 
@@ -338,58 +331,6 @@ function triggerWin(): void {
         glowEl.style.display = 'block'
         glowEl.style.animation = `scoreBarGlow 1.5s ease-in-out infinite`
     }
-
-    playWinTone()
-}
-
-// ── Audio ──
-
-function getAudioCtx(): AudioContext {
-    if (!audioCtx) audioCtx = new AudioContext()
-    return audioCtx
-}
-
-function playScoreTone(percent: number): void {
-    try {
-        const ctx = getAudioCtx()
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain)
-        gain.connect(ctx.destination)
-
-        // Rising pitch: 400Hz at 0% → 800Hz at 100%
-        osc.frequency.value = 400 + 400 * percent
-        osc.type = 'sine'
-        gain.gain.setValueAtTime(0.08, ctx.currentTime)
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1)
-
-        osc.start(ctx.currentTime)
-        osc.stop(ctx.currentTime + 0.1)
-    } catch { /* audio not available */ }
-}
-
-function playWinTone(): void {
-    try {
-        const ctx = getAudioCtx()
-        const now = ctx.currentTime
-
-        // Three-note ascending chord
-        const notes = [523.25, 659.25, 783.99] // C5, E5, G5
-        for (let i = 0; i < notes.length; i++) {
-            const osc = ctx.createOscillator()
-            const gain = ctx.createGain()
-            osc.connect(gain)
-            gain.connect(ctx.destination)
-            osc.frequency.value = notes[i]
-            osc.type = 'sine'
-            const t = now + i * 0.08
-            gain.gain.setValueAtTime(0, t)
-            gain.gain.linearRampToValueAtTime(0.1, t + 0.02)
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
-            osc.start(t)
-            osc.stop(t + 0.3)
-        }
-    } catch { /* audio not available */ }
 }
 
 // ── Particles ──
