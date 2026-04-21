@@ -20,7 +20,7 @@ fi
 # ../games/dist/ contains all published games' HTML + shared _astro chunks +
 # public-prod assets, all namespaced under /games/ via astro.config.mjs base.
 if [[ ! -d "$GAMES_DIST" ]]; then
-  echo "ERROR: $GAMES_DIST missing. Run 'pnpm --filter @jordglobe/games build:astro' first." >&2
+  echo "ERROR: $GAMES_DIST missing. Run 'pnpm build:games' first." >&2
   exit 1
 fi
 if [[ ! -f "$GAMES_DIST/eurovision/index.html" ]]; then

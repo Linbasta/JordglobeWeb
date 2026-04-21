@@ -12,12 +12,13 @@ Geography learning platform with interactive 3D globe quizzes.
 ## Commands
 
 ```bash
-pnpm dev:site         # Dev site (port 4321)
-pnpm dev:games        # Dev games (port 4818)
-pnpm dev:party-server # Dev multiplayer server (port 3003)
-pnpm preview          # Build & preview full site
-pnpm deploy:stage     # Deploy to staging
-pnpm deploy:prod      # Deploy to production
+pnpm dev:site    # Dev site (port 4321)
+pnpm dev:games   # Dev games (port 4818)
+pnpm dev:party   # Dev multiplayer server (port 3003)
+pnpm dev:logs    # Browser console log server (port 9999)
+pnpm preview     # Build & preview full site
+pnpm deploy:stage
+pnpm deploy:prod
 ```
 
 See package-specific CLAUDE.md files for details.

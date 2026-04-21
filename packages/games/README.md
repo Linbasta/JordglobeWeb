@@ -30,7 +30,7 @@ The app runs at **http://localhost:4818/games/**
 ### Build for Production
 
 ```bash
-pnpm build:astro
+pnpm build:games
 ```
 
 Output in `dist/`. The build script (`scripts/build-prod.sh`) automatically excludes dev pages.

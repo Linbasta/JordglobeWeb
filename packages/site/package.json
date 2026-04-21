@@ -5,15 +5,13 @@
 	"description": "JordGlobe marketing website - Astro + Firebase Hosting",
 	"scripts": {
 		"dev": "astro dev --host",
-		"start": "astro dev --host",
 		"build": "astro build",
 		"preview": "./scripts/deploy.sh preview",
-		"astro": "astro",
-		"config-i18n": "node ./scripts/config-i18n.js",
-		"remove-keystatic": "node ./scripts/remove-keystatic.js",
 		"format": "prettier -w \"**/*\" --ignore-unknown --cache",
 		"deploy:stage": "./scripts/deploy.sh stage",
-		"deploy:prod": "./scripts/deploy.sh prod"
+		"deploy:prod": "./scripts/deploy.sh prod",
+		"config-i18n": "node ./scripts/config-i18n.js",
+		"remove-keystatic": "node ./scripts/remove-keystatic.js"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^5.0.3",

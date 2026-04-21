@@ -15,7 +15,7 @@ Serves all game pages with hot reload at http://localhost:4818/games/
 For multiplayer games, run in a separate terminal:
 
 ```bash
-pnpm dev:party-server
+pnpm dev:party
 ```
 
 ### Log Server (Port 9999)
@@ -23,7 +23,7 @@ pnpm dev:party-server
 Captures browser console logs to `browser-console.log`:
 
 ```bash
-npm run log-server
+pnpm dev:logs
 ```
 
 ## Accessing Games
@@ -54,5 +54,5 @@ This builds both `@jordglobe/site` and `@jordglobe/games`, merges them, and star
 
 ## Logs
 
-- **Browser Console**: `browser-console.log` (when log-server is running)
+- **Browser Console**: `browser-console.log` (when `pnpm dev:logs` is running)
 - **Build output**: Terminal

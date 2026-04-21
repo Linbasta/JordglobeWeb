@@ -46,8 +46,8 @@ Write simple, direct code (Handmade Philosophy). Prefer:
 | Server | Port | Package | Command |
 |--------|------|---------|---------|
 | Astro Dev | 4818 | games | `pnpm dev:games` |
-| Party Server | 3003 | party-server | `pnpm dev:party-server` |
-| Browser Console | 9999 | games | `npm run log-server` |
+| Party Server | 3003 | party-server | `pnpm dev:party` |
+| Browser Console | 9999 | games | `pnpm dev:logs` |
 
 The WebSocket party server is in `packages/party-server/` (separate package).
 

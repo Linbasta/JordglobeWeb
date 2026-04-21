@@ -17,18 +17,16 @@
   },
   "scripts": {
     "dev": "pnpm dev:site & pnpm dev:games",
-    "dev:all": "pnpm dev:site & pnpm dev:games",
-    "dev:games": "pnpm --filter @jordglobe/games dev",
     "dev:site": "pnpm --filter @jordglobe/site dev",
-    "dev:party-server": "pnpm --filter @jordglobe/party-server dev",
-    "log-server": "pnpm --filter @jordglobe/games log-server",
-    "build:games": "pnpm --filter @jordglobe/games build",
+    "dev:games": "pnpm --filter @jordglobe/games dev",
+    "dev:party": "pnpm --filter @jordglobe/party-server dev",
+    "dev:logs": "pnpm --filter @jordglobe/games log-server",
+    "build": "turbo run build",
     "build:site": "turbo run build --filter=@jordglobe/site",
-    "build:games:astro": "turbo run build:astro --filter=@jordglobe/games",
+    "build:games": "turbo run build --filter=@jordglobe/games",
+    "preview": "turbo run preview --filter=@jordglobe/site",
     "deploy:stage": "turbo run deploy:stage --filter=@jordglobe/site",
-    "deploy:games:stage": "pnpm --filter @jordglobe/games deploy:stage",
-    "deploy:prod": "turbo run deploy:prod --filter=@jordglobe/site",
-    "preview": "turbo run preview --filter=@jordglobe/site"
+    "deploy:prod": "turbo run deploy:prod --filter=@jordglobe/site"
   },
   "keywords": [
     "geography",

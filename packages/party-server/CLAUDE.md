@@ -13,7 +13,7 @@ Static Client (Firebase Hosting)  <-->  Party Server (Cloud Run)
 
 ```bash
 # From monorepo root
-pnpm dev:party-server
+pnpm dev:party
 
 # Or from this directory
 npm run dev
