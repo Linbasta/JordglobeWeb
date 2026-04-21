@@ -207,6 +207,10 @@ export class AnimationTexture {
      * Call this after modifying altitude, state, or blend values
      */
     update(): void {
+        // Guard against disposed texture
+        const context = this.texture.getContext() as CanvasRenderingContext2D | null;
+        if (!context) return;
+
         // Update buffer from data arrays
         for (let i = 0; i < this.entriesUsed; i++) {
             const pixelIndex = i * 4;
@@ -217,7 +221,6 @@ export class AnimationTexture {
         }
 
         // Update texture from buffer
-        const context = this.texture.getContext() as CanvasRenderingContext2D;
         const imageData = context.createImageData(ANIMATION_TEXTURE_WIDTH, 1);
         imageData.data.set(this.buffer);
         context.putImageData(imageData, 0, 0);
