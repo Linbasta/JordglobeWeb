@@ -1,0 +1,242 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Party Pick Test - Step by Step</title>
+    </head>
+    <body>
+        <canvas id="renderCanvas"></canvas>
+
+        <div id="controls">
+            <h3 style="margin: 0 0 10px 0;">Divide & Conquer Test</h3>
+            <button id="step1">Step 1: Test EarthGlobe Pick</button>
+            <button id="step2" disabled>Step 2: Add PinManager</button>
+            <button id="step3" disabled>Step 3: Add GUI Texture</button>
+            <button id="step4" disabled>Step 4: Add PinUI</button>
+            <button id="testPick">🔍 Test Pick Now</button>
+        </div>
+
+        <div id="log">
+            <div class="log-line">Ready to test. Click Step 1 to begin.</div>
+        </div>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        font-family: monospace;
+        color: white;
+    }
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    #controls {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        border-radius: 5px;
+        z-index: 1000;
+    }
+    button {
+        display: block;
+        margin: 5px 0;
+        padding: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        background: #333;
+        color: white;
+        border: 1px solid #666;
+        border-radius: 3px;
+    }
+    button:hover {
+        background: #555;
+    }
+    #log {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 10px;
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-size: 12px;
+        z-index: 1000;
+    }
+    .log-line {
+        margin: 2px 0;
+    }
+    .log-error {
+        color: #ff6b6b;
+    }
+    .log-success {
+        color: #51cf66;
+    }
+</style>
+
+<script>
+    import { EarthGlobe } from '../earth-globe/index.ts';
+    import { initPinManager, enterPlacingMode, onPlacingModeChange } from '../shared/managers/pin-manager.ts';
+    import { PinUI } from '../shared/ui/pin-ui.ts';
+    import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture';
+
+    const logDiv = document.getElementById('log')!;
+    let logCounter = 0;
+
+    function log(message: string, isError = false, isSuccess = false) {
+        logCounter++;
+        const line = document.createElement('div');
+        line.className = 'log-line' + (isError ? ' log-error' : '') + (isSuccess ? ' log-success' : '');
+        line.textContent = `[${logCounter}] ${message}`;
+        logDiv.appendChild(line);
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(message);
+    }
+
+    let globe: any = null;
+    let advancedTexture: any = null;
+    let pinUI: any = null;
+    let currentStep = 0;
+
+    function testPick() {
+        if (!globe) {
+            log('❌ No globe created yet!', true);
+            return;
+        }
+
+        const scene = globe.getScene();
+        const canvas = globe.getCanvas();
+        const earthSphere = globe.getEarthSphere();
+        const engine = globe.getEngine();
+
+        log('📍 Testing pick at canvas center...');
+        const rect = canvas.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        log(`Canvas rect: ${rect.left}, ${rect.top}, ${rect.width}x${rect.height}`);
+        log(`Canvas.width: ${canvas.width}, Canvas.height: ${canvas.height}`);
+        log(`Engine render width: ${engine.getRenderWidth()}, height: ${engine.getRenderHeight()}`);
+        log(`Testing at: ${centerX}, ${centerY}`);
+        log(`EarthSphere isPickable: ${earthSphere.isPickable}`);
+        log(`EarthSphere isEnabled: ${earthSphere.isEnabled()}`);
+        log(`EarthSphere isVisible: ${earthSphere.isVisible}`);
+        log(`Scene meshes count: ${scene.meshes.length}`);
+
+        const canvasX = rect.width / 2;
+        const canvasY = rect.height / 2;
+
+        log(`Trying pick with canvas-relative coords: ${canvasX}, ${canvasY}`);
+
+        const pickAny = scene.pick(canvasX, canvasY);
+        log(`Pick (no filter) - hit: ${pickAny.hit}, mesh: ${pickAny.pickedMesh?.name || 'none'}`, !pickAny.hit, pickAny.hit);
+
+        const pickEarth = scene.pick(canvasX, canvasY, (mesh: any) => mesh === earthSphere);
+        log(`Pick (earthSphere filter) - hit: ${pickEarth.hit}`, !pickEarth.hit, pickEarth.hit);
+
+        if (pickEarth.hit) {
+            log('✅ PICK WORKS! Scene picking is functional.', false, true);
+        } else {
+            log('❌ PICK FAILED! This is the problem.', true);
+        }
+    }
+
+    document.getElementById('step1')!.addEventListener('click', () => {
+        log('🚀 STEP 1: Creating EarthGlobe only...');
+
+        globe = new EarthGlobe({
+            canvasId: 'renderCanvas',
+            onReady: (globeInstance: any) => {
+                log('✅ EarthGlobe ready', false, true);
+                log('Canvas ID: ' + globeInstance.getCanvas().id);
+                log('Scene meshes count: ' + globeInstance.getScene().meshes.length);
+
+                currentStep = 1;
+                (document.getElementById('step2') as HTMLButtonElement).disabled = false;
+
+                setTimeout(() => testPick(), 500);
+            },
+        });
+    });
+
+    document.getElementById('step2')!.addEventListener('click', async () => {
+        log('🚀 STEP 2: Adding PinManager...');
+
+        await initPinManager(
+            globe.getScene(),
+            globe.getCamera(),
+            globe.getCanvas(),
+            globe.getCountryPicker(),
+            globe.getEarthSphere(),
+            (material: any) => globe.createUnlitMaterial(material),
+            (countryIndex: any) => globe.getCountryAltitude(countryIndex),
+        );
+
+        log('✅ PinManager initialized', false, true);
+        currentStep = 2;
+        (document.getElementById('step3') as HTMLButtonElement).disabled = false;
+
+        setTimeout(() => testPick(), 500);
+    });
+
+    document.getElementById('step3')!.addEventListener('click', () => {
+        log('🚀 STEP 3: Adding GUI Texture...');
+
+        advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, globe.getScene());
+        advancedTexture.background = '';
+
+        log('✅ AdvancedDynamicTexture created', false, true);
+        log('GUI background: "' + advancedTexture.background + '"');
+        currentStep = 3;
+        (document.getElementById('step4') as HTMLButtonElement).disabled = false;
+
+        setTimeout(() => testPick(), 500);
+    });
+
+    document.getElementById('step4')!.addEventListener('click', () => {
+        log('🚀 STEP 4: Adding PinUI...');
+
+        pinUI = new PinUI(advancedTexture);
+        pinUI.create({
+            onPinButtonPress: () => {
+                log('Pin button pressed!');
+                enterPlacingMode();
+            },
+        });
+
+        log('✅ PinUI created', false, true);
+        currentStep = 4;
+
+        onPlacingModeChange((isPlacing: boolean) => {
+            if (pinUI) {
+                pinUI.setPinButtonVisible(!isPlacing);
+            }
+        });
+
+        log('🎉 ALL STEPS COMPLETE! This is exactly like PartyGameController.');
+
+        setTimeout(() => testPick(), 500);
+    });
+
+    document.getElementById('testPick')!.addEventListener('click', testPick);
+
+    document.getElementById('renderCanvas')!.addEventListener('pointermove', (e: PointerEvent) => {
+        const w = window as any;
+        if (w.lastLogTime && Date.now() - w.lastLogTime < 1000) return;
+        w.lastLogTime = Date.now();
+        console.log('[pointermove]', e.clientX, e.clientY);
+    });
+</script>

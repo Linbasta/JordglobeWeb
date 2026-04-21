@@ -1,0 +1,56 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test: Wide Framing Bug</title>
+    </head>
+    <body>
+        <canvas id="renderCanvas"></canvas>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+    body.placing-mode {
+        cursor: none;
+    }
+    #renderCanvas {
+        width: 100%;
+        height: 100vh;
+        touch-action: none;
+    }
+</style>
+
+<script>
+    import { startQuizGame } from '../solo/start-quiz-game.ts';
+
+    // Load ALL capitals from locations.json — stress test for wide framing
+    const resp = await fetch('/games/locations.json');
+    const locationsMap = await resp.json();
+    const entries = Object.values(locationsMap) as Array<{ lat: number; lng: number; name: string }>;
+    console.log(`Loaded ${entries.length} locations — building questions`);
+
+    const questions = entries.map((loc) => ({
+        present: 'text',
+        answer: 'location-alternatives',
+        lat: loc.lat,
+        lng: loc.lng,
+        prompt: loc.name,
+    }));
+
+    startQuizGame({
+        title: `Wide Framing Test (${questions.length} capitals)`,
+        questions,
+        shuffle: false,
+        onGameComplete: (score: number, total: number) => {
+            alert(`Done! ${score}/${total}`);
+        },
+    });
+</script>

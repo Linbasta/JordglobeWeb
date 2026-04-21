@@ -10,6 +10,8 @@ import keystatic from "@keystatic/astro";
 import netlify from "@astrojs/netlify";
 import icon from "astro-icon";
 
+import gameUrls from "./src/data/game-urls.json" with { type: "json" };
+
 // https://astro.build/config
 export default defineConfig({
 	site: "https://jordglobe.com",
@@ -56,12 +58,10 @@ export default defineConfig({
 				!page.includes('/medal') &&
 				!page.includes('/duel') &&
 				!page.includes('/elements'),
-			// Game pages are built separately and copied during deploy
-			// Add them here so they appear in the sitemap
-			customPages: [
-				'https://jordglobe.com/games/eurovision/',
-				'https://jordglobe.com/games/eurovision/sv/',
-			],
+			// Game pages are built separately and copied during deploy.
+			// URLs are generated from packages/games/src/games/manifests.ts
+			// via scripts/generate-game-urls.ts (runs as prebuild).
+			customPages: gameUrls,
 		}),
 		compress({
 			HTML: true,

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add *)",
+      "Read(//Users/oloflandin/Library/**)",
+      "Read(//Users/oloflandin/.nvm/versions/**)",
+      "Bash(command -v corepack)",
+      "Bash(ls /Users/oloflandin/Programming/JordglobeWeb/README*)",
+      "Bash(pnpm exec *)",
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(node *)",
+      "Bash(npx tsx *)",
+      "Bash(npx tsc *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "WebSearch",
+      "Bash(awk -F/ '{print $2}')"
+    ]
+  }
+}

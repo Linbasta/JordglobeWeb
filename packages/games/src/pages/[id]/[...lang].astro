@@ -1,0 +1,33 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { manifests } from '../../games/manifests';
+import GameLayout from '../../layouts/GameLayout.astro';
+
+const gameRootModules = import.meta.glob<{ default: any }>(
+    '../../games/*/GameRoot.astro',
+    { eager: true },
+);
+
+export const getStaticPaths = (() => {
+    return manifests
+        .filter((m) => import.meta.env.DEV || m.published)
+        .flatMap((m) => {
+            const defaultLocale = m.i18n.defaultLocale;
+            return Object.keys(m.locales).map((lang) => ({
+                params: {
+                    id: m.id,
+                    lang: lang === defaultLocale ? undefined : lang,
+                },
+                props: { manifestId: m.id, lang },
+            }));
+        });
+}) satisfies GetStaticPaths;
+
+const { manifestId, lang } = Astro.props;
+const manifest = manifests.find((m) => m.id === manifestId)!;
+const GameRoot = gameRootModules[`../../games/${manifestId}/GameRoot.astro`].default;
+---
+
+<GameLayout manifest={manifest} lang={lang}>
+    <GameRoot />
+</GameLayout>

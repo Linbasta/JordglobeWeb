@@ -1,0 +1,3537 @@
+[
+  {
+    "id": "AD",
+    "colliders": [
+      {
+        "lat": 42.525066,
+        "lon": 1.586342,
+        "radiusDeg": 0.8309
+      }
+    ]
+  },
+  {
+    "id": "AE",
+    "colliders": [
+      {
+        "lat": 24.564074,
+        "lon": 54.035778,
+        "radiusDeg": 2.542
+      }
+    ]
+  },
+  {
+    "id": "AF",
+    "colliders": [
+      {
+        "lat": 30.326805,
+        "lon": 63.62785,
+        "radiusDeg": 2.6051
+      },
+      {
+        "lat": 37.33583,
+        "lon": 72.33139,
+        "radiusDeg": 2.4624
+      },
+      {
+        "lat": 33.74818,
+        "lon": 62.06774,
+        "radiusDeg": 2.4973
+      },
+      {
+        "lat": 36.62708,
+        "lon": 66.589584,
+        "radiusDeg": 2.3196
+      },
+      {
+        "lat": 32.871883,
+        "lon": 69.04784,
+        "radiusDeg": 2.4149
+      }
+    ]
+  },
+  {
+    "id": "AG",
+    "colliders": [
+      {
+        "lat": 17.358465,
+        "lon": -61.787464,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "AI",
+    "colliders": [
+      {
+        "lat": 18.5,
+        "lon": -62.75,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "AL",
+    "colliders": [
+      {
+        "lat": 41.1,
+        "lon": 20.5,
+        "radiusDeg": 1.6149
+      }
+    ]
+  },
+  {
+    "id": "AM",
+    "colliders": [
+      {
+        "lat": 39.980045,
+        "lon": 45.04423,
+        "radiusDeg": 1.6639
+      }
+    ]
+  },
+  {
+    "id": "AS",
+    "colliders": [
+      {
+        "lat": -14.3,
+        "lon": -170.1,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "AT",
+    "colliders": [
+      {
+        "lat": 47.8,
+        "lon": 15,
+        "radiusDeg": 2.4964
+      },
+      {
+        "lat": 47.4,
+        "lon": 12.1,
+        "radiusDeg": 2.3365
+      }
+    ]
+  },
+  {
+    "id": "AW",
+    "colliders": [
+      {
+        "lat": 12.5,
+        "lon": -70,
+        "radiusDeg": 0.4492
+      }
+    ]
+  },
+  {
+    "id": "AX",
+    "colliders": [
+      {
+        "lat": 60.1,
+        "lon": 20.2,
+        "radiusDeg": 0.5839
+      }
+    ]
+  },
+  {
+    "id": "AZ",
+    "colliders": [
+      {
+        "lat": 40.216366,
+        "lon": 47.57565,
+        "radiusDeg": 2.5555
+      }
+    ]
+  },
+  {
+    "id": "BA",
+    "colliders": [
+      {
+        "lat": 44.2,
+        "lon": 17.665127,
+        "radiusDeg": 1.617
+      }
+    ]
+  },
+  {
+    "id": "BB",
+    "colliders": [
+      {
+        "lat": 13.200934,
+        "lon": -59.560863,
+        "radiusDeg": 1.078
+      }
+    ]
+  },
+  {
+    "id": "BD",
+    "colliders": [
+      {
+        "lat": 24.731539,
+        "lon": 89.09345,
+        "radiusDeg": 2.6249
+      },
+      {
+        "lat": 22.858984,
+        "lon": 91.30899,
+        "radiusDeg": 2.5309
+      }
+    ]
+  },
+  {
+    "id": "BE",
+    "colliders": [
+      {
+        "lat": 50.7,
+        "lon": 4.3152866,
+        "radiusDeg": 1.4373
+      }
+    ]
+  },
+  {
+    "id": "BF",
+    "colliders": [
+      {
+        "lat": 11.485684,
+        "lon": -3.70091,
+        "radiusDeg": 2.4006
+      },
+      {
+        "lat": 14.254892,
+        "lon": -1.3644073,
+        "radiusDeg": 2.144
+      },
+      {
+        "lat": 11.833282,
+        "lon": 0.4868751,
+        "radiusDeg": 2.064
+      }
+    ]
+  },
+  {
+    "id": "BG",
+    "colliders": [
+      {
+        "lat": 42.9,
+        "lon": 26.2,
+        "radiusDeg": 2.0528
+      },
+      {
+        "lat": 42.9,
+        "lon": 24.2,
+        "radiusDeg": 2.0528
+      }
+    ]
+  },
+  {
+    "id": "BH",
+    "colliders": [
+      {
+        "lat": 26.018007,
+        "lon": 50.533894,
+        "radiusDeg": 0.9881
+      }
+    ]
+  },
+  {
+    "id": "BI",
+    "colliders": [
+      {
+        "lat": -3.4544315,
+        "lon": 29.904846,
+        "radiusDeg": 1.5217
+      }
+    ]
+  },
+  {
+    "id": "BJ",
+    "colliders": [
+      {
+        "lat": 7.845404,
+        "lon": 2.3,
+        "radiusDeg": 1.984
+      },
+      {
+        "lat": 10.7,
+        "lon": 2.4,
+        "radiusDeg": 1.8927
+      }
+    ]
+  },
+  {
+    "id": "BL",
+    "colliders": [
+      {
+        "lat": 17.902777,
+        "lon": -62.5,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "BM",
+    "colliders": [
+      {
+        "lat": 32.318413,
+        "lon": -64.76925,
+        "radiusDeg": 0.6288
+      }
+    ]
+  },
+  {
+    "id": "BN",
+    "colliders": [
+      {
+        "lat": 4.765957,
+        "lon": 114.99505,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "BO",
+    "colliders": [
+      {
+        "lat": -16.9,
+        "lon": -63.8,
+        "radiusDeg": 7.4641
+      },
+      {
+        "lat": -16.9,
+        "lon": -63.8,
+        "radiusDeg": 7.4641
+      }
+    ]
+  },
+  {
+    "id": "BQ",
+    "colliders": [
+      {
+        "lat": 12.172082,
+        "lon": -68.3085,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "BS",
+    "colliders": [
+      {
+        "lat": 25.2,
+        "lon": -77.9,
+        "radiusDeg": 2.2458
+      }
+    ]
+  },
+  {
+    "id": "BT",
+    "colliders": [
+      {
+        "lat": 27.368208,
+        "lon": 90.5,
+        "radiusDeg": 1.7355
+      }
+    ]
+  },
+  {
+    "id": "BV",
+    "colliders": [
+      {
+        "lat": -54.420624,
+        "lon": 3.3600688,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "BW",
+    "colliders": [
+      {
+        "lat": -20.44,
+        "lon": 23.61,
+        "radiusDeg": 3.2407
+      },
+      {
+        "lat": -22.9,
+        "lon": 27.4,
+        "radiusDeg": 2.8728
+      },
+      {
+        "lat": -24,
+        "lon": 21.8,
+        "radiusDeg": 2.9743
+      }
+    ]
+  },
+  {
+    "id": "BY",
+    "colliders": [
+      {
+        "lat": 55,
+        "lon": 28.8,
+        "radiusDeg": 1.9871
+      },
+      {
+        "lat": 52.796703,
+        "lon": 25.5,
+        "radiusDeg": 2.1142
+      },
+      {
+        "lat": 52.506386,
+        "lon": 30,
+        "radiusDeg": 1.9718
+      }
+    ]
+  },
+  {
+    "id": "BZ",
+    "colliders": [
+      {
+        "lat": 17.218102,
+        "lon": -88.76457,
+        "radiusDeg": 1.6247
+      }
+    ]
+  },
+  {
+    "id": "CA",
+    "colliders": [
+      {
+        "lat": 58.9,
+        "lon": -81.7,
+        "radiusDeg": 7.6141
+      }
+    ]
+  },
+  {
+    "id": "CC",
+    "colliders": [
+      {
+        "lat": -12.076082,
+        "lon": 96.83804,
+        "radiusDeg": 0.6737
+      }
+    ]
+  },
+  {
+    "id": "CF",
+    "colliders": [
+      {
+        "lat": 8.227544,
+        "lon": 17.669573,
+        "radiusDeg": 2.534
+      },
+      {
+        "lat": 5.6495733,
+        "lon": 25.224993,
+        "radiusDeg": 2.6257
+      },
+      {
+        "lat": 9.229123,
+        "lon": 22.912035,
+        "radiusDeg": 2.1851
+      },
+      {
+        "lat": 4.1117563,
+        "lon": 20.647272,
+        "radiusDeg": 2.3422
+      },
+      {
+        "lat": 4.4632297,
+        "lon": 15.797897,
+        "radiusDeg": 2.4168
+      }
+    ]
+  },
+  {
+    "id": "CG",
+    "colliders": [
+      {
+        "lat": 1.5037135,
+        "lon": 17.433767,
+        "radiusDeg": 2.5222
+      },
+      {
+        "lat": -3.8277774,
+        "lon": 13.021015,
+        "radiusDeg": 2.1245
+      },
+      {
+        "lat": 0.96693367,
+        "lon": 13.94245,
+        "radiusDeg": 1.8908
+      },
+      {
+        "lat": -2.6118782,
+        "lon": 15.704133,
+        "radiusDeg": 1.9677
+      }
+    ]
+  },
+  {
+    "id": "CH",
+    "colliders": [
+      {
+        "lat": 46.631424,
+        "lon": 8.232656,
+        "radiusDeg": 1.6069
+      }
+    ]
+  },
+  {
+    "id": "CI",
+    "colliders": [
+      {
+        "lat": 6.6957774,
+        "lon": -3.5969627,
+        "radiusDeg": 2.3903
+      },
+      {
+        "lat": 9.903515,
+        "lon": -4.839001,
+        "radiusDeg": 2.3977
+      },
+      {
+        "lat": 5.8758926,
+        "lon": -7.173087,
+        "radiusDeg": 1.8258
+      },
+      {
+        "lat": 8.857505,
+        "lon": -8.192518,
+        "radiusDeg": 1.5783
+      }
+    ]
+  },
+  {
+    "id": "CK",
+    "colliders": [
+      {
+        "lat": -20.255701,
+        "lon": -158.8172,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "CL",
+    "colliders": [
+      {
+        "lat": -19.5,
+        "lon": -69.1,
+        "radiusDeg": 2.5269
+      },
+      {
+        "lat": -24.1,
+        "lon": -68.8,
+        "radiusDeg": 3.0614
+      },
+      {
+        "lat": -29.2,
+        "lon": -69.8,
+        "radiusDeg": 2.5153
+      },
+      {
+        "lat": -33.5,
+        "lon": -70.9,
+        "radiusDeg": 2.5153
+      },
+      {
+        "lat": -33.5,
+        "lon": -70.9,
+        "radiusDeg": 2.5153
+      },
+      {
+        "lat": -37.5,
+        "lon": -71.9,
+        "radiusDeg": 2.5153
+      },
+      {
+        "lat": -41.8,
+        "lon": -71.9,
+        "radiusDeg": 2.8476
+      },
+      {
+        "lat": -46,
+        "lon": -73.1,
+        "radiusDeg": 2.8476
+      },
+      {
+        "lat": -53.2,
+        "lon": -71,
+        "radiusDeg": 3.5932
+      }
+    ]
+  },
+  {
+    "id": "CM",
+    "colliders": [
+      {
+        "lat": 7.384144,
+        "lon": 10.726018,
+        "radiusDeg": 1.808
+      },
+      {
+        "lat": 11.777481,
+        "lon": 14.185093,
+        "radiusDeg": 1.4228
+      },
+      {
+        "lat": 3.2426324,
+        "lon": 14.316622,
+        "radiusDeg": 2.5205
+      },
+      {
+        "lat": 8.303221,
+        "lon": 14.241183,
+        "radiusDeg": 2.61
+      },
+      {
+        "lat": 3.907535,
+        "lon": 10.254599,
+        "radiusDeg": 2.5892
+      }
+    ]
+  },
+  {
+    "id": "CR",
+    "colliders": [
+      {
+        "lat": 9.572454,
+        "lon": -84.45375,
+        "radiusDeg": 2.0096
+      }
+    ]
+  },
+  {
+    "id": "CU",
+    "colliders": [
+      {
+        "lat": 22.3,
+        "lon": -79.37803,
+        "radiusDeg": 1.7173
+      },
+      {
+        "lat": 22.9,
+        "lon": -83.18968,
+        "radiusDeg": 1.783
+      },
+      {
+        "lat": 20.4,
+        "lon": -75.5,
+        "radiusDeg": 1.6367
+      },
+      {
+        "lat": 20.1,
+        "lon": -76.5,
+        "radiusDeg": 1.7947
+      }
+    ]
+  },
+  {
+    "id": "CV",
+    "colliders": [
+      {
+        "lat": 16.18296,
+        "lon": -24.161896,
+        "radiusDeg": 2.8297
+      }
+    ]
+  },
+  {
+    "id": "CW",
+    "colliders": [
+      {
+        "lat": 12.215615,
+        "lon": -68.95829,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "CX",
+    "colliders": [
+      {
+        "lat": -10.491752,
+        "lon": 105.62275,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "CY",
+    "colliders": [
+      {
+        "lat": 35.43429,
+        "lon": 33.416573,
+        "radiusDeg": 2.3318
+      }
+    ]
+  },
+  {
+    "id": "CZ",
+    "colliders": [
+      {
+        "lat": 49.92776,
+        "lon": 15.546628,
+        "radiusDeg": 2.3882
+      }
+    ]
+  },
+  {
+    "id": "DE",
+    "colliders": [
+      {
+        "lat": 53.33986,
+        "lon": 8.89649,
+        "radiusDeg": 2.0683
+      },
+      {
+        "lat": 52.652073,
+        "lon": 13.44239,
+        "radiusDeg": 2.2199
+      },
+      {
+        "lat": 48.307106,
+        "lon": 11.575309,
+        "radiusDeg": 1.801
+      },
+      {
+        "lat": 49.779003,
+        "lon": 7.15298,
+        "radiusDeg": 2.4617
+      }
+    ]
+  },
+  {
+    "id": "DJ",
+    "colliders": [
+      {
+        "lat": 11.891231,
+        "lon": 42.4184,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "DK",
+    "colliders": [
+      {
+        "lat": 56,
+        "lon": 10.4,
+        "radiusDeg": 1.9763
+      }
+    ]
+  },
+  {
+    "id": "DM",
+    "colliders": [
+      {
+        "lat": 15.417832,
+        "lon": -61.415924,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "DO",
+    "colliders": [
+      {
+        "lat": 18.806255,
+        "lon": -70.140335,
+        "radiusDeg": 2.0172
+      }
+    ]
+  },
+  {
+    "id": "EC",
+    "colliders": [
+      {
+        "lat": -3.244064,
+        "lon": -79.571396,
+        "radiusDeg": 2.0243
+      },
+      {
+        "lat": -0.83086574,
+        "lon": -77.057175,
+        "radiusDeg": 2.3682
+      },
+      {
+        "lat": 0.1628557,
+        "lon": -79.89446,
+        "radiusDeg": 1.7016
+      }
+    ]
+  },
+  {
+    "id": "EE",
+    "colliders": [
+      {
+        "lat": 58.8,
+        "lon": 26.1,
+        "radiusDeg": 1.5909
+      }
+    ]
+  },
+  {
+    "id": "EG",
+    "colliders": [
+      {
+        "lat": 31.427969,
+        "lon": 32.62083,
+        "radiusDeg": 1.5369
+      },
+      {
+        "lat": 22.032196,
+        "lon": 30.96,
+        "radiusDeg": 1.7963
+      },
+      {
+        "lat": 30.454987,
+        "lon": 25.747663,
+        "radiusDeg": 1.4275
+      },
+      {
+        "lat": 27.9198,
+        "lon": 34.27495,
+        "radiusDeg": 2.0016
+      },
+      {
+        "lat": 23.876038,
+        "lon": 24.999998,
+        "radiusDeg": 1.8418
+      },
+      {
+        "lat": 31.441149,
+        "lon": 28.776325,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 23.834011,
+        "lon": 35.67005,
+        "radiusDeg": 2.2129
+      }
+    ]
+  },
+  {
+    "id": "ER",
+    "colliders": [
+      {
+        "lat": 13.628389,
+        "lon": 41.553722,
+        "radiusDeg": 2.04
+      },
+      {
+        "lat": 16.00744,
+        "lon": 37.828182,
+        "radiusDeg": 2.2741
+      }
+    ]
+  },
+  {
+    "id": "ES",
+    "colliders": [
+      {
+        "lat": 41.90064,
+        "lon": 1.6348839,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 41.756435,
+        "lon": -7.7475677,
+        "radiusDeg": 1.8408
+      },
+      {
+        "lat": 37.73981,
+        "lon": -5.3552914,
+        "radiusDeg": 2.2633
+      },
+      {
+        "lat": 38.44722,
+        "lon": -1.0198805,
+        "radiusDeg": 2.0091
+      },
+      {
+        "lat": 43.35305,
+        "lon": -3.4573288,
+        "radiusDeg": 1.516
+      }
+    ]
+  },
+  {
+    "id": "ET",
+    "colliders": [
+      {
+        "lat": 13.851739,
+        "lon": 39.596165,
+        "radiusDeg": 2.1472
+      },
+      {
+        "lat": 4.982554,
+        "lon": 36.07655,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 6.488015,
+        "lon": 45.725147,
+        "radiusDeg": 2.6536
+      },
+      {
+        "lat": 11.039325,
+        "lon": 42.84425,
+        "radiusDeg": 2.2513
+      },
+      {
+        "lat": 8.098972,
+        "lon": 34.334316,
+        "radiusDeg": 1.6915
+      },
+      {
+        "lat": 12.543133,
+        "lon": 35.34348,
+        "radiusDeg": 2.4332
+      },
+      {
+        "lat": 3.92986,
+        "lon": 40.445293,
+        "radiusDeg": 2.5921
+      }
+    ]
+  },
+  {
+    "id": "FI",
+    "colliders": [
+      {
+        "lat": 65.782936,
+        "lon": 24.481974,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 63.824787,
+        "lon": 30.214378,
+        "radiusDeg": 2.1575
+      },
+      {
+        "lat": 61.866413,
+        "lon": 22.65622,
+        "radiusDeg": 1.9648
+      },
+      {
+        "lat": 68.4209,
+        "lon": 27.833319,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 68.902954,
+        "lon": 22.690638,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 60.31675,
+        "lon": 26.28331,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "FJ",
+    "colliders": [
+      {
+        "lat": -17.11046,
+        "lon": 178.69072,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": -16.282812,
+        "lon": -179.89665,
+        "radiusDeg": 1.5271
+      }
+    ]
+  },
+  {
+    "id": "FK",
+    "colliders": [
+      {
+        "lat": -51.70611,
+        "lon": -59.431725,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "FM",
+    "colliders": [
+      {
+        "lat": 5.3211083,
+        "lon": 162.97539,
+        "radiusDeg": 1.9251
+      },
+      {
+        "lat": 9.500454,
+        "lon": 139.1,
+        "radiusDeg": 2.8018
+      },
+      {
+        "lat": 7.400702,
+        "lon": 151.74289,
+        "radiusDeg": 3.7972
+      },
+      {
+        "lat": 6.8854213,
+        "lon": 158.23,
+        "radiusDeg": 3.2618
+      },
+      {
+        "lat": 7.7,
+        "lon": 144.4,
+        "radiusDeg": 3.2959
+      }
+    ]
+  },
+  {
+    "id": "FO",
+    "colliders": [
+      {
+        "lat": 62.12743,
+        "lon": -6.804493,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "FR",
+    "colliders": [
+      {
+        "lat": 43.28751,
+        "lon": 0.5988056,
+        "radiusDeg": 1.8854
+      },
+      {
+        "lat": 47.818935,
+        "lon": -2.562074,
+        "radiusDeg": 2.3946
+      },
+      {
+        "lat": 41.91,
+        "lon": 9.6,
+        "radiusDeg": 1.307
+      },
+      {
+        "lat": 50.102646,
+        "lon": 3.0689914,
+        "radiusDeg": 1.3789
+      },
+      {
+        "lat": 47.76104,
+        "lon": 6.557832,
+        "radiusDeg": 1.9529
+      }
+    ]
+  },
+  {
+    "id": "GA",
+    "colliders": [
+      {
+        "lat": -0.949161,
+        "lon": 9.948209,
+        "radiusDeg": 2.4348
+      },
+      {
+        "lat": -2.2640727,
+        "lon": 12.705095,
+        "radiusDeg": 2.3999
+      },
+      {
+        "lat": 1.1718581,
+        "lon": 12.577905,
+        "radiusDeg": 1.9066
+      }
+    ]
+  },
+  {
+    "id": "GB",
+    "colliders": [
+      {
+        "lat": 55.913677,
+        "lon": -4.765724,
+        "radiusDeg": 2.4636
+      },
+      {
+        "lat": -51.663937,
+        "lon": -59.475002,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 51.68984,
+        "lon": -4.2692413,
+        "radiusDeg": 2.0706
+      },
+      {
+        "lat": 52.81936,
+        "lon": -0.06894803,
+        "radiusDeg": 2.3337
+      }
+    ]
+  },
+  {
+    "id": "GD",
+    "colliders": [
+      {
+        "lat": 12.26905,
+        "lon": -61.609283,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "GE",
+    "colliders": [
+      {
+        "lat": 41.815933,
+        "lon": 45.091858,
+        "radiusDeg": 1.463
+      },
+      {
+        "lat": 42.55802,
+        "lon": 41.287277,
+        "radiusDeg": 1.572
+      }
+    ]
+  },
+  {
+    "id": "GF",
+    "colliders": [
+      {
+        "lat": 3.9180882,
+        "lon": -53.535145,
+        "radiusDeg": 2.2956
+      }
+    ]
+  },
+  {
+    "id": "GG",
+    "colliders": [
+      {
+        "lat": 49.471985,
+        "lon": -2.5857048,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "GH",
+    "colliders": [
+      {
+        "lat": 9.649998,
+        "lon": -1.1141901,
+        "radiusDeg": 2.6949
+      },
+      {
+        "lat": 6.471978,
+        "lon": -1.1378793,
+        "radiusDeg": 2.6949
+      }
+    ]
+  },
+  {
+    "id": "GI",
+    "colliders": [
+      {
+        "lat": 36.13194,
+        "lon": -5.350511,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "GL",
+    "colliders": [
+      {
+        "lat": 77.6,
+        "lon": -43.228535,
+        "radiusDeg": 4.4916
+      },
+      {
+        "lat": 67.4,
+        "lon": -44,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 70.8,
+        "lon": -30.1,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 61.4,
+        "lon": -45.3,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "GM",
+    "colliders": [
+      {
+        "lat": 13.346535,
+        "lon": -15.343245,
+        "radiusDeg": 1.6396
+      }
+    ]
+  },
+  {
+    "id": "GN",
+    "colliders": [
+      {
+        "lat": 9.010023,
+        "lon": -9.258956,
+        "radiusDeg": 2.0146
+      },
+      {
+        "lat": 10.841541,
+        "lon": -13.214668,
+        "radiusDeg": 2.1066
+      },
+      {
+        "lat": 11.455956,
+        "lon": -9.99684,
+        "radiusDeg": 2.0897
+      }
+    ]
+  },
+  {
+    "id": "GP",
+    "colliders": [
+      {
+        "lat": 16.161907,
+        "lon": -61.2786,
+        "radiusDeg": 0.4042
+      }
+    ]
+  },
+  {
+    "id": "GQ",
+    "colliders": [
+      {
+        "lat": 1.6541473,
+        "lon": 10.32374,
+        "radiusDeg": 1.3811
+      }
+    ]
+  },
+  {
+    "id": "GR",
+    "colliders": [
+      {
+        "lat": 39.539974,
+        "lon": 22.123693,
+        "radiusDeg": 2.3348
+      },
+      {
+        "lat": 36.119736,
+        "lon": 23.980015,
+        "radiusDeg": 2.1013
+      },
+      {
+        "lat": 40.900845,
+        "lon": 25.198854,
+        "radiusDeg": 1.4161
+      }
+    ]
+  },
+  {
+    "id": "GS",
+    "colliders": [
+      {
+        "lat": -58.024868,
+        "lon": -26.914267,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -54.428005,
+        "lon": -36.956673,
+        "radiusDeg": 0.8983
+      },
+      {
+        "lat": -55.9,
+        "lon": -32.1,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "GT",
+    "colliders": [
+      {
+        "lat": 15.992462,
+        "lon": -90.468735,
+        "radiusDeg": 2.4708
+      }
+    ]
+  },
+  {
+    "id": "GU",
+    "colliders": [
+      {
+        "lat": 13.452428,
+        "lon": 144.784,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "GW",
+    "colliders": [
+      {
+        "lat": 12.295114,
+        "lon": -15.174918,
+        "radiusDeg": 1.568
+      }
+    ]
+  },
+  {
+    "id": "GY",
+    "colliders": [
+      {
+        "lat": 3.1927342,
+        "lon": -58.15508,
+        "radiusDeg": 2.4808
+      },
+      {
+        "lat": 6.2781286,
+        "lon": -59.27988,
+        "radiusDeg": 2.6165
+      }
+    ]
+  },
+  {
+    "id": "HK",
+    "colliders": [
+      {
+        "lat": 22.581976,
+        "lon": 114.38663,
+        "radiusDeg": 0.7186
+      }
+    ]
+  },
+  {
+    "id": "HK",
+    "colliders": [
+      {
+        "lat": 22.581976,
+        "lon": 114.38663,
+        "radiusDeg": 0.7186
+      }
+    ]
+  },
+  {
+    "id": "HM",
+    "colliders": [
+      {
+        "lat": -53.09097,
+        "lon": 73.50435,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "HN",
+    "colliders": [
+      {
+        "lat": 14.441301,
+        "lon": -87.76308,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 15.212912,
+        "lon": -84.8415,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "HR",
+    "colliders": [
+      {
+        "lat": 44.2952,
+        "lon": 18.169788,
+        "radiusDeg": 1.9016
+      },
+      {
+        "lat": 45.28803,
+        "lon": 15.46987,
+        "radiusDeg": 1.6213
+      }
+    ]
+  },
+  {
+    "id": "HT",
+    "colliders": [
+      {
+        "lat": 18.903936,
+        "lon": -73.00905,
+        "radiusDeg": 1.6776
+      }
+    ]
+  },
+  {
+    "id": "HU",
+    "colliders": [
+      {
+        "lat": 47.41512,
+        "lon": 19.456415,
+        "radiusDeg": 2.4347
+      }
+    ]
+  },
+  {
+    "id": "ID",
+    "colliders": [
+      {
+        "lat": -3.8,
+        "lon": 119.4,
+        "radiusDeg": 7.1865
+      },
+      {
+        "lat": -1.4,
+        "lon": 127.82,
+        "radiusDeg": 5.3899
+      },
+      {
+        "lat": -3.31,
+        "lon": 134.39,
+        "radiusDeg": 5.3899
+      },
+      {
+        "lat": -3.31,
+        "lon": 110.6,
+        "radiusDeg": 5.3899
+      }
+    ]
+  },
+  {
+    "id": "IE",
+    "colliders": [
+      {
+        "lat": 53.099693,
+        "lon": -8.196916,
+        "radiusDeg": 2.1159
+      }
+    ]
+  },
+  {
+    "id": "IL",
+    "colliders": [
+      {
+        "lat": 31.433056,
+        "lon": 35.371853,
+        "radiusDeg": 2.6426
+      }
+    ]
+  },
+  {
+    "id": "IM",
+    "colliders": [
+      {
+        "lat": 54.232613,
+        "lon": -4.5578084,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "IO",
+    "colliders": [
+      {
+        "lat": -7.3220935,
+        "lon": 72.448784,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "IQ",
+    "colliders": [
+      {
+        "lat": 30.518538,
+        "lon": 46.459503,
+        "radiusDeg": 2.6716
+      },
+      {
+        "lat": 36.446808,
+        "lon": 43.07833,
+        "radiusDeg": 1.585
+      },
+      {
+        "lat": 32.59921,
+        "lon": 40.532307,
+        "radiusDeg": 1.9812
+      },
+      {
+        "lat": 34.543636,
+        "lon": 45.764988,
+        "radiusDeg": 1.7473
+      }
+    ]
+  },
+  {
+    "id": "IS",
+    "colliders": [
+      {
+        "lat": 65.2,
+        "lon": -18.967958,
+        "radiusDeg": 2.6949
+      }
+    ]
+  },
+  {
+    "id": "IT",
+    "colliders": [
+      {
+        "lat": 45.00419,
+        "lon": 8.1,
+        "radiusDeg": 1.8906
+      },
+      {
+        "lat": 43.3,
+        "lon": 11.64,
+        "radiusDeg": 2.0787
+      },
+      {
+        "lat": 40.119877,
+        "lon": 9,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": 39.5,
+        "lon": 14.6,
+        "radiusDeg": 3.1441
+      },
+      {
+        "lat": 45.9,
+        "lon": 12.068645,
+        "radiusDeg": 1.6969
+      }
+    ]
+  },
+  {
+    "id": "JE",
+    "colliders": [
+      {
+        "lat": 49.21843,
+        "lon": -2.1302962,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "JM",
+    "colliders": [
+      {
+        "lat": 18.082468,
+        "lon": -77.268684,
+        "radiusDeg": 1.8709
+      }
+    ]
+  },
+  {
+    "id": "JO",
+    "colliders": [
+      {
+        "lat": 31.73521,
+        "lon": 38.14796,
+        "radiusDeg": 1.9671
+      },
+      {
+        "lat": 30.98234,
+        "lon": 35.750515,
+        "radiusDeg": 2.019
+      }
+    ]
+  },
+  {
+    "id": "JP",
+    "colliders": [
+      {
+        "lat": 41.3058,
+        "lon": 141.09834,
+        "radiusDeg": 2.3719
+      },
+      {
+        "lat": 34.31397,
+        "lon": 134.1848,
+        "radiusDeg": 1.8831
+      },
+      {
+        "lat": 36.43745,
+        "lon": 139.08853,
+        "radiusDeg": 2.5709
+      },
+      {
+        "lat": 44.1611,
+        "lon": 143.56693,
+        "radiusDeg": 2.0173
+      },
+      {
+        "lat": 32.5,
+        "lon": 131.3,
+        "radiusDeg": 2.0029
+      }
+    ]
+  },
+  {
+    "id": "KE",
+    "colliders": [
+      {
+        "lat": 4.217864,
+        "lon": 35.439495,
+        "radiusDeg": 1.5774
+      },
+      {
+        "lat": -2.541804,
+        "lon": 39.62077,
+        "radiusDeg": 2.3706
+      },
+      {
+        "lat": 0.4244103,
+        "lon": 34.554302,
+        "radiusDeg": 1.7837
+      },
+      {
+        "lat": 3.7628102,
+        "lon": 39.988003,
+        "radiusDeg": 2.0358
+      }
+    ]
+  },
+  {
+    "id": "KG",
+    "colliders": [
+      {
+        "lat": 41.128193,
+        "lon": 70.8035,
+        "radiusDeg": 2.0316
+      },
+      {
+        "lat": 42.410053,
+        "lon": 78.89012,
+        "radiusDeg": 1.6682
+      },
+      {
+        "lat": 41.31917,
+        "lon": 74.772514,
+        "radiusDeg": 2.2251
+      }
+    ]
+  },
+  {
+    "id": "KH",
+    "colliders": [
+      {
+        "lat": 12.473543,
+        "lon": 103.94147,
+        "radiusDeg": 2.6437
+      },
+      {
+        "lat": 12.975491,
+        "lon": 105.73836,
+        "radiusDeg": 2.412
+      }
+    ]
+  },
+  {
+    "id": "KI",
+    "colliders": [
+      {
+        "lat": 2.8258934,
+        "lon": -158.2778,
+        "radiusDeg": 3.9993
+      },
+      {
+        "lat": 1.7608095,
+        "lon": 173.44186,
+        "radiusDeg": 1.9682
+      },
+      {
+        "lat": -1.6,
+        "lon": -176.7,
+        "radiusDeg": 5.309
+      },
+      {
+        "lat": -11.423314,
+        "lon": -151.80208,
+        "radiusDeg": 4.991
+      },
+      {
+        "lat": -1.6234674,
+        "lon": 175.6224,
+        "radiusDeg": 2.5758
+      },
+      {
+        "lat": -4.8336725,
+        "lon": -155.42337,
+        "radiusDeg": 4.6973
+      },
+      {
+        "lat": -2.3,
+        "lon": -165.4,
+        "radiusDeg": 5.5381
+      }
+    ]
+  },
+  {
+    "id": "KM",
+    "colliders": [
+      {
+        "lat": -11.879937,
+        "lon": 43.894012,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "KN",
+    "colliders": [
+      {
+        "lat": 17.24968,
+        "lon": -62.700367,
+        "radiusDeg": 0.4492
+      }
+    ]
+  },
+  {
+    "id": "KP",
+    "colliders": [
+      {
+        "lat": 39.318924,
+        "lon": 126.30767,
+        "radiusDeg": 2.3436
+      },
+      {
+        "lat": 41.846077,
+        "lon": 128.84737,
+        "radiusDeg": 1.7028
+      }
+    ]
+  },
+  {
+    "id": "KR",
+    "colliders": [
+      {
+        "lat": 36.548454,
+        "lon": 127.41773,
+        "radiusDeg": 2.7668
+      }
+    ]
+  },
+  {
+    "id": "KW",
+    "colliders": [
+      {
+        "lat": 29.13514,
+        "lon": 47.571976,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "KY",
+    "colliders": [
+      {
+        "lat": 19.57769,
+        "lon": -80.36436,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "LA",
+    "colliders": [
+      {
+        "lat": 15.716201,
+        "lon": 106.31545,
+        "radiusDeg": 2.6294
+      },
+      {
+        "lat": 18.981672,
+        "lon": 102.92228,
+        "radiusDeg": 2.4668
+      },
+      {
+        "lat": 20.943188,
+        "lon": 101.52842,
+        "radiusDeg": 1.8074
+      }
+    ]
+  },
+  {
+    "id": "LB",
+    "colliders": [
+      {
+        "lat": 33.888245,
+        "lon": 35.787125,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "LC",
+    "colliders": [
+      {
+        "lat": 13.913906,
+        "lon": -60.92746,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "LI",
+    "colliders": [
+      {
+        "lat": 47.15527,
+        "lon": 9.535516,
+        "radiusDeg": 0.6189
+      }
+    ]
+  },
+  {
+    "id": "LK",
+    "colliders": [
+      {
+        "lat": 7.909972,
+        "lon": 81,
+        "radiusDeg": 2.4012
+      }
+    ]
+  },
+  {
+    "id": "LR",
+    "colliders": [
+      {
+        "lat": 7.244746,
+        "lon": -9.939039,
+        "radiusDeg": 1.7598
+      },
+      {
+        "lat": 5.5224257,
+        "lon": -8.512167,
+        "radiusDeg": 1.6639
+      }
+    ]
+  },
+  {
+    "id": "LS",
+    "colliders": [
+      {
+        "lat": -29.558887,
+        "lon": 28.162212,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "LT",
+    "colliders": [
+      {
+        "lat": 55.640793,
+        "lon": 23.82204,
+        "radiusDeg": 1.8045
+      }
+    ]
+  },
+  {
+    "id": "LU",
+    "colliders": [
+      {
+        "lat": 49.81076,
+        "lon": 5.96445,
+        "radiusDeg": 0.8085
+      }
+    ]
+  },
+  {
+    "id": "LV",
+    "colliders": [
+      {
+        "lat": 56.285297,
+        "lon": 24.613466,
+        "radiusDeg": 2.228
+      }
+    ]
+  },
+  {
+    "id": "MC",
+    "colliders": [
+      {
+        "lat": 43.733044,
+        "lon": 7.4016023,
+        "radiusDeg": 1.5262
+      }
+    ]
+  },
+  {
+    "id": "MD",
+    "colliders": [
+      {
+        "lat": 47.37016,
+        "lon": 28.321999,
+        "radiusDeg": 1.776
+      }
+    ]
+  },
+  {
+    "id": "ME",
+    "colliders": [
+      {
+        "lat": 42.738224,
+        "lon": 19.3949,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "MF",
+    "colliders": [
+      {
+        "lat": 18.25,
+        "lon": -63.5,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "MG",
+    "colliders": [
+      {
+        "lat": -16.350689,
+        "lon": 49.826527,
+        "radiusDeg": 1.8926
+      },
+      {
+        "lat": -23.853333,
+        "lon": 45.220707,
+        "radiusDeg": 2.2663
+      },
+      {
+        "lat": -20.18893,
+        "lon": 43.648582,
+        "radiusDeg": 1.9419
+      },
+      {
+        "lat": -21.444742,
+        "lon": 48.29476,
+        "radiusDeg": 2.4362
+      },
+      {
+        "lat": -16.304829,
+        "lon": 45.42263,
+        "radiusDeg": 1.8185
+      },
+      {
+        "lat": -13.388053,
+        "lon": 48.57969,
+        "radiusDeg": 1.7095
+      }
+    ]
+  },
+  {
+    "id": "MH",
+    "colliders": [
+      {
+        "lat": 7.1405907,
+        "lon": 170.24748,
+        "radiusDeg": 2.367
+      },
+      {
+        "lat": 10.5,
+        "lon": 167.4,
+        "radiusDeg": 2.1874
+      }
+    ]
+  },
+  {
+    "id": "MK",
+    "colliders": [
+      {
+        "lat": 41.588646,
+        "lon": 21.715816,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "MM",
+    "colliders": [
+      {
+        "lat": 16.648258,
+        "lon": 98.1143,
+        "radiusDeg": 2.2128
+      },
+      {
+        "lat": 25.09848,
+        "lon": 96.70994,
+        "radiusDeg": 2.4458
+      },
+      {
+        "lat": 11.896225,
+        "lon": 98.82565,
+        "radiusDeg": 2.2282
+      },
+      {
+        "lat": 21.998907,
+        "lon": 93.20173,
+        "radiusDeg": 2.279
+      },
+      {
+        "lat": 17.74615,
+        "lon": 94.516304,
+        "radiusDeg": 2.3696
+      },
+      {
+        "lat": 27.002018,
+        "lon": 97.76806,
+        "radiusDeg": 1.731
+      },
+      {
+        "lat": 21.316015,
+        "lon": 99.32668,
+        "radiusDeg": 2.1545
+      }
+    ]
+  },
+  {
+    "id": "MO",
+    "colliders": [
+      {
+        "lat": 22.1,
+        "lon": 113.2,
+        "radiusDeg": 0.7186
+      }
+    ]
+  },
+  {
+    "id": "MP",
+    "colliders": [
+      {
+        "lat": 17.635843,
+        "lon": 145.78339,
+        "radiusDeg": 2.6949
+      }
+    ]
+  },
+  {
+    "id": "MQ",
+    "colliders": [
+      {
+        "lat": 14.646535,
+        "lon": -61.020912,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "MS",
+    "colliders": [
+      {
+        "lat": 16.744947,
+        "lon": -62.184296,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "MT",
+    "colliders": [
+      {
+        "lat": 35.955185,
+        "lon": 14.375377,
+        "radiusDeg": 1.8299
+      }
+    ]
+  },
+  {
+    "id": "MU",
+    "colliders": [
+      {
+        "lat": -20.250544,
+        "lon": 57.52292,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -10.365208,
+        "lon": 56.5525,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -19.701937,
+        "lon": 63.415028,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -15.3,
+        "lon": 59.5,
+        "radiusDeg": 4.3945
+      }
+    ]
+  },
+  {
+    "id": "MV",
+    "colliders": [
+      {
+        "lat": 4.5,
+        "lon": 73.37,
+        "radiusDeg": 2.8491
+      }
+    ]
+  },
+  {
+    "id": "MW",
+    "colliders": [
+      {
+        "lat": -15.171692,
+        "lon": 33.96658,
+        "radiusDeg": 2.098
+      },
+      {
+        "lat": -10.991923,
+        "lon": 33.035587,
+        "radiusDeg": 2.0221
+      }
+    ]
+  },
+  {
+    "id": "MY",
+    "colliders": [
+      {
+        "lat": 2.929689,
+        "lon": 103.18365,
+        "radiusDeg": 2.0647
+      },
+      {
+        "lat": 3.4462304,
+        "lon": 115.020485,
+        "radiusDeg": 2.4375
+      },
+      {
+        "lat": 1.6135958,
+        "lon": 111.73455,
+        "radiusDeg": 2.4377
+      },
+      {
+        "lat": 5.4363885,
+        "lon": 101.338776,
+        "radiusDeg": 1.8429
+      },
+      {
+        "lat": 5.7001386,
+        "lon": 117.69573,
+        "radiusDeg": 1.7727
+      }
+    ]
+  },
+  {
+    "id": "NA",
+    "colliders": [
+      {
+        "lat": -17.718641,
+        "lon": 23.6,
+        "radiusDeg": 1.9359
+      },
+      {
+        "lat": -18.1,
+        "lon": 20.8,
+        "radiusDeg": 2.1676
+      }
+    ]
+  },
+  {
+    "id": "NC",
+    "colliders": [
+      {
+        "lat": -21.248045,
+        "lon": 165.55632,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "NF",
+    "colliders": [
+      {
+        "lat": -29.033205,
+        "lon": 167.95052,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "NI",
+    "colliders": [
+      {
+        "lat": 13.141775,
+        "lon": -85.0241,
+        "radiusDeg": 2.6017
+      }
+    ]
+  },
+  {
+    "id": "NL",
+    "colliders": [
+      {
+        "lat": 52.3483,
+        "lon": 5.175605,
+        "radiusDeg": 1.5518
+      }
+    ]
+  },
+  {
+    "id": "NO",
+    "colliders": [
+      {
+        "lat": 63.6,
+        "lon": 11.2,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 65.5,
+        "lon": 13.35,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 67.4,
+        "lon": 16.3,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 69.3,
+        "lon": 20.5,
+        "radiusDeg": 2.1128
+      },
+      {
+        "lat": 70.4,
+        "lon": 27.3,
+        "radiusDeg": 2.2485
+      }
+    ]
+  },
+  {
+    "id": "NP",
+    "colliders": [
+      {
+        "lat": 28.858366,
+        "lon": 82.1615,
+        "radiusDeg": 2.1559
+      },
+      {
+        "lat": 27.568348,
+        "lon": 86,
+        "radiusDeg": 2.1559
+      }
+    ]
+  },
+  {
+    "id": "NR",
+    "colliders": [
+      {
+        "lat": -0.521132,
+        "lon": 166.93306,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "NU",
+    "colliders": [
+      {
+        "lat": -19.062794,
+        "lon": -169.86635,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "NZ",
+    "colliders": [
+      {
+        "lat": -41.63884,
+        "lon": 173.50797,
+        "radiusDeg": 2.5346
+      },
+      {
+        "lat": -38.895985,
+        "lon": 177.16759,
+        "radiusDeg": 1.9013
+      },
+      {
+        "lat": -45.02384,
+        "lon": 168.98105,
+        "radiusDeg": 2.4162
+      },
+      {
+        "lat": -36.65034,
+        "lon": 173.60541,
+        "radiusDeg": 2.4866
+      }
+    ]
+  },
+  {
+    "id": "OM",
+    "colliders": [
+      {
+        "lat": 18.44993,
+        "lon": 53.82501,
+        "radiusDeg": 2.5498
+      },
+      {
+        "lat": 24.233213,
+        "lon": 56.014336,
+        "radiusDeg": 2.5283
+      },
+      {
+        "lat": 19.672968,
+        "lon": 56.81432,
+        "radiusDeg": 2.1768
+      },
+      {
+        "lat": 22.463783,
+        "lon": 58.499046,
+        "radiusDeg": 1.6162
+      }
+    ]
+  },
+  {
+    "id": "PA",
+    "colliders": [
+      {
+        "lat": 8.377816,
+        "lon": -78.711296,
+        "radiusDeg": 1.787
+      },
+      {
+        "lat": 8.458868,
+        "lon": -81.60478,
+        "radiusDeg": 1.8106
+      }
+    ]
+  },
+  {
+    "id": "PF",
+    "colliders": [
+      {
+        "lat": -16.636738,
+        "lon": -144.15263,
+        "radiusDeg": 4.4916
+      },
+      {
+        "lat": -8.866879,
+        "lon": -139.67,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -22.466976,
+        "lon": -151.37358,
+        "radiusDeg": 0.8983
+      },
+      {
+        "lat": -23.11408,
+        "lon": -134.98495,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": -27.595102,
+        "lon": -144.31606,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "PG",
+    "colliders": [
+      {
+        "lat": -6.7860208,
+        "lon": 146.85744,
+        "radiusDeg": 2.4375
+      },
+      {
+        "lat": -5.972408,
+        "lon": 155.20132,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -4.217309,
+        "lon": 142.83267,
+        "radiusDeg": 2.6553
+      },
+      {
+        "lat": -9.88833,
+        "lon": 148.96854,
+        "radiusDeg": 2.2352
+      },
+      {
+        "lat": -5.527359,
+        "lon": 150.64061,
+        "radiusDeg": 2.5138
+      },
+      {
+        "lat": -8.369585,
+        "lon": 142.889,
+        "radiusDeg": 2.0117
+      },
+      {
+        "lat": -4.8,
+        "lon": 152.6,
+        "radiusDeg": 2.7021
+      }
+    ]
+  },
+  {
+    "id": "PH",
+    "colliders": [
+      {
+        "lat": 17.392403,
+        "lon": 121.2,
+        "radiusDeg": 1.8527
+      },
+      {
+        "lat": 9.881372,
+        "lon": 119,
+        "radiusDeg": 2.3284
+      },
+      {
+        "lat": 7.7786436,
+        "lon": 124.5,
+        "radiusDeg": 2.6157
+      },
+      {
+        "lat": 11.59143,
+        "lon": 123,
+        "radiusDeg": 2.4656
+      },
+      {
+        "lat": 14,
+        "lon": 121.153366,
+        "radiusDeg": 1.954
+      }
+    ]
+  },
+  {
+    "id": "PL",
+    "colliders": [
+      {
+        "lat": 51.947952,
+        "lon": 15.884565,
+        "radiusDeg": 2.0794
+      },
+      {
+        "lat": 49.55472,
+        "lon": 20.584667,
+        "radiusDeg": 1.5001
+      },
+      {
+        "lat": 52.385704,
+        "lon": 23.212303,
+        "radiusDeg": 2.1248
+      },
+      {
+        "lat": 54.45569,
+        "lon": 18.62786,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "PM",
+    "colliders": [
+      {
+        "lat": 46.868736,
+        "lon": -56.266068,
+        "radiusDeg": 0.6737
+      }
+    ]
+  },
+  {
+    "id": "PN",
+    "colliders": [
+      {
+        "lat": -24.372179,
+        "lon": -128.31761,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "PR",
+    "colliders": [
+      {
+        "lat": 18.25352,
+        "lon": -66.43783,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "PS",
+    "colliders": [
+      {
+        "lat": 31.96529,
+        "lon": 35.156803,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "PT",
+    "colliders": [
+      {
+        "lat": 38.30787,
+        "lon": -8.419229,
+        "radiusDeg": 1.7666
+      },
+      {
+        "lat": 40.86807,
+        "lon": -7.858455,
+        "radiusDeg": 1.5991
+      }
+    ]
+  },
+  {
+    "id": "PW",
+    "colliders": [
+      {
+        "lat": 7.490542,
+        "lon": 134.43468,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 3.0391502,
+        "lon": 131.16159,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "PY",
+    "colliders": [
+      {
+        "lat": -25.791023,
+        "lon": -56.844345,
+        "radiusDeg": 2.1412
+      },
+      {
+        "lat": -21.827599,
+        "lon": -60.907646,
+        "radiusDeg": 2.6056
+      },
+      {
+        "lat": -24.004704,
+        "lon": -55.753403,
+        "radiusDeg": 2.0539
+      },
+      {
+        "lat": -20.710962,
+        "lon": -58.99036,
+        "radiusDeg": 1.9145
+      }
+    ]
+  },
+  {
+    "id": "QA",
+    "colliders": [
+      {
+        "lat": 25.372358,
+        "lon": 51.19944,
+        "radiusDeg": 1.078
+      }
+    ]
+  },
+  {
+    "id": "RE",
+    "colliders": [
+      {
+        "lat": -21.12507,
+        "lon": 55.518215,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "RO",
+    "colliders": [
+      {
+        "lat": 45.983196,
+        "lon": 27.075953,
+        "radiusDeg": 2.5785
+      },
+      {
+        "lat": 46.101006,
+        "lon": 22.847908,
+        "radiusDeg": 2.5471
+      }
+    ]
+  },
+  {
+    "id": "RS",
+    "colliders": [
+      {
+        "lat": 44.2338,
+        "lon": 20.687416,
+        "radiusDeg": 2.1559
+      }
+    ]
+  },
+  {
+    "id": "RW",
+    "colliders": [
+      {
+        "lat": -2.0181148,
+        "lon": 29.761993,
+        "radiusDeg": 1.5271
+      }
+    ]
+  },
+  {
+    "id": "SB",
+    "colliders": [
+      {
+        "lat": -7.566325,
+        "lon": 157.71333,
+        "radiusDeg": 1.9564
+      },
+      {
+        "lat": -9.418584,
+        "lon": 161.01932,
+        "radiusDeg": 2.8494
+      }
+    ]
+  },
+  {
+    "id": "SC",
+    "colliders": [
+      {
+        "lat": -5.753273,
+        "lon": 55.912437,
+        "radiusDeg": 2.7857
+      },
+      {
+        "lat": -8.8,
+        "lon": 47,
+        "radiusDeg": 2.1155
+      },
+      {
+        "lat": -7.4,
+        "lon": 50.9,
+        "radiusDeg": 2.6603
+      }
+    ]
+  },
+  {
+    "id": "SE",
+    "colliders": [
+      {
+        "lat": 60.770313,
+        "lon": 17.338482,
+        "radiusDeg": 2.3309
+      },
+      {
+        "lat": 59.658146,
+        "lon": 12.68,
+        "radiusDeg": 2.3767
+      },
+      {
+        "lat": 64.69174,
+        "lon": 18.5,
+        "radiusDeg": 2.6949
+      },
+      {
+        "lat": 57,
+        "lon": 14.581282,
+        "radiusDeg": 2.2664
+      },
+      {
+        "lat": 67.2,
+        "lon": 20.1,
+        "radiusDeg": 2.5642
+      }
+    ]
+  },
+  {
+    "id": "SG",
+    "colliders": [
+      {
+        "lat": 1.3412946,
+        "lon": 103.82553,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "SH",
+    "colliders": [
+      {
+        "lat": -38.73286,
+        "lon": -11.140754,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": -15.95878,
+        "lon": -5.7205186,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": -7.9303894,
+        "lon": -14.356484,
+        "radiusDeg": 3.5932
+      }
+    ]
+  },
+  {
+    "id": "SI",
+    "colliders": [
+      {
+        "lat": 46.05039,
+        "lon": 15.139935,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "SJ",
+    "colliders": [
+      {
+        "lat": 78.70496,
+        "lon": 17.538988,
+        "radiusDeg": 1.7966
+      }
+    ]
+  },
+  {
+    "id": "SK",
+    "colliders": [
+      {
+        "lat": 48.825016,
+        "lon": 19.71906,
+        "radiusDeg": 2.1933
+      }
+    ]
+  },
+  {
+    "id": "SL",
+    "colliders": [
+      {
+        "lat": 8.461165,
+        "lon": -11.630735,
+        "radiusDeg": 1.8136
+      }
+    ]
+  },
+  {
+    "id": "SM",
+    "colliders": [
+      {
+        "lat": 43.944473,
+        "lon": 12.439352,
+        "radiusDeg": 1.078
+      }
+    ]
+  },
+  {
+    "id": "SN",
+    "colliders": [
+      {
+        "lat": 15.852881,
+        "lon": -15.068222,
+        "radiusDeg": 1.7735
+      },
+      {
+        "lat": 13.728793,
+        "lon": -12.528676,
+        "radiusDeg": 2.155
+      },
+      {
+        "lat": 14.02449,
+        "lon": -15.951371,
+        "radiusDeg": 2.1715
+      }
+    ]
+  },
+  {
+    "id": "SO",
+    "colliders": [
+      {
+        "lat": 3,
+        "lon": 45.33,
+        "radiusDeg": 2.5153
+      },
+      {
+        "lat": 10.51,
+        "lon": 45.2,
+        "radiusDeg": 2.2458
+      },
+      {
+        "lat": -0.23096302,
+        "lon": 42.735134,
+        "radiusDeg": 2.4336
+      },
+      {
+        "lat": 10.631331,
+        "lon": 49.86,
+        "radiusDeg": 2.8935
+      },
+      {
+        "lat": 6.9,
+        "lon": 47.76,
+        "radiusDeg": 3.1441
+      }
+    ]
+  },
+  {
+    "id": "SR",
+    "colliders": [
+      {
+        "lat": 3.4810524,
+        "lon": -55.80425,
+        "radiusDeg": 2.0504
+      },
+      {
+        "lat": 4.9142528,
+        "lon": -56.001373,
+        "radiusDeg": 2.4269
+      }
+    ]
+  },
+  {
+    "id": "SS",
+    "colliders": [
+      {
+        "lat": 4.1827393,
+        "lon": 32.72702,
+        "radiusDeg": 2.1504
+      },
+      {
+        "lat": 8.7267885,
+        "lon": 25.629917,
+        "radiusDeg": 2.0711
+      },
+      {
+        "lat": 7.5042677,
+        "lon": 34.561485,
+        "radiusDeg": 2.6602
+      },
+      {
+        "lat": 10.992143,
+        "lon": 32.958008,
+        "radiusDeg": 1.6434
+      },
+      {
+        "lat": 5.3663216,
+        "lon": 28.083452,
+        "radiusDeg": 2.4721
+      },
+      {
+        "lat": 9.719736,
+        "lon": 29.593206,
+        "radiusDeg": 1.8694
+      }
+    ]
+  },
+  {
+    "id": "ST",
+    "colliders": [
+      {
+        "lat": 0.8634096,
+        "lon": 6.9825544,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "SV",
+    "colliders": [
+      {
+        "lat": 13.77922,
+        "lon": -88.90952,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "SX",
+    "colliders": [
+      {
+        "lat": 17.5,
+        "lon": -63.5,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "SY",
+    "colliders": [
+      {
+        "lat": 34.613228,
+        "lon": 36.87509,
+        "radiusDeg": 2.2437
+      },
+      {
+        "lat": 36.527687,
+        "lon": 40.304707,
+        "radiusDeg": 2.0044
+      }
+    ]
+  },
+  {
+    "id": "SZ",
+    "colliders": [
+      {
+        "lat": -26.460451,
+        "lon": 31.434431,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "TC",
+    "colliders": [
+      {
+        "lat": 21.697748,
+        "lon": -71.7935,
+        "radiusDeg": 0.6737
+      }
+    ]
+  },
+  {
+    "id": "TF",
+    "colliders": [
+      {
+        "lat": -49.294456,
+        "lon": 69.5985,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "TG",
+    "colliders": [
+      {
+        "lat": 7.17,
+        "lon": 1.178099,
+        "radiusDeg": 1.5271
+      },
+      {
+        "lat": 9.693611,
+        "lon": 0.83,
+        "radiusDeg": 1.5477
+      }
+    ]
+  },
+  {
+    "id": "TH",
+    "colliders": [
+      {
+        "lat": 9.325144,
+        "lon": 98.98133,
+        "radiusDeg": 1.8075
+      },
+      {
+        "lat": 18.375536,
+        "lon": 102.38886,
+        "radiusDeg": 1.5801
+      },
+      {
+        "lat": 14.9,
+        "lon": 99.5,
+        "radiusDeg": 1.943
+      },
+      {
+        "lat": 15.3,
+        "lon": 104.07242,
+        "radiusDeg": 2.2889
+      },
+      {
+        "lat": 6.7906594,
+        "lon": 100.83042,
+        "radiusDeg": 1.5873
+      },
+      {
+        "lat": 12.1,
+        "lon": 100.6,
+        "radiusDeg": 2.2889
+      },
+      {
+        "lat": 19.30533,
+        "lon": 98.96239,
+        "radiusDeg": 2.0317
+      }
+    ]
+  },
+  {
+    "id": "TJ",
+    "colliders": [
+      {
+        "lat": 39.10096,
+        "lon": 69.248314,
+        "radiusDeg": 2.2268
+      },
+      {
+        "lat": 37.98897,
+        "lon": 73.14425,
+        "radiusDeg": 1.6476
+      }
+    ]
+  },
+  {
+    "id": "TK",
+    "colliders": [
+      {
+        "lat": -9.036951,
+        "lon": -171.84602,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "TL",
+    "colliders": [
+      {
+        "lat": -8.8583,
+        "lon": 126.19787,
+        "radiusDeg": 1.3617
+      }
+    ]
+  },
+  {
+    "id": "TM",
+    "colliders": [
+      {
+        "lat": 37.85802,
+        "lon": 64.64934,
+        "radiusDeg": 2.1671
+      },
+      {
+        "lat": 41.052086,
+        "lon": 54.744263,
+        "radiusDeg": 2.2644
+      },
+      {
+        "lat": 41.161087,
+        "lon": 60.080395,
+        "radiusDeg": 2.0074
+      },
+      {
+        "lat": 37.76227,
+        "lon": 56.08583,
+        "radiusDeg": 2.0838
+      },
+      {
+        "lat": 36.56307,
+        "lon": 61.16714,
+        "radiusDeg": 2.2309
+      }
+    ]
+  },
+  {
+    "id": "TN",
+    "colliders": [
+      {
+        "lat": 35.920723,
+        "lon": 9.584924,
+        "radiusDeg": 2.0524
+      },
+      {
+        "lat": 32.63624,
+        "lon": 9.257742,
+        "radiusDeg": 2.577
+      }
+    ]
+  },
+  {
+    "id": "TO",
+    "colliders": [
+      {
+        "lat": -15.587823,
+        "lon": -175.64944,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -20.010756,
+        "lon": -174.43832,
+        "radiusDeg": 1.816
+      },
+      {
+        "lat": -17.5,
+        "lon": -174.8,
+        "radiusDeg": 1.3825
+      }
+    ]
+  },
+  {
+    "id": "TR",
+    "colliders": [
+      {
+        "lat": 40.13176,
+        "lon": 27.39853,
+        "radiusDeg": 2.6537
+      },
+      {
+        "lat": 37.181465,
+        "lon": 42.722923,
+        "radiusDeg": 2.0179
+      },
+      {
+        "lat": 41.223434,
+        "lon": 38.64328,
+        "radiusDeg": 1.4262
+      },
+      {
+        "lat": 36.51549,
+        "lon": 36.774734,
+        "radiusDeg": 2.3597
+      },
+      {
+        "lat": 40.673145,
+        "lon": 43.174034,
+        "radiusDeg": 1.8052
+      },
+      {
+        "lat": 36.928123,
+        "lon": 29.778963,
+        "radiusDeg": 2.423
+      },
+      {
+        "lat": 41.612865,
+        "lon": 33.15682,
+        "radiusDeg": 1.6103
+      }
+    ]
+  },
+  {
+    "id": "TT",
+    "colliders": [
+      {
+        "lat": 10.486206,
+        "lon": -61.4225,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "TV",
+    "colliders": [
+      {
+        "lat": -6.5,
+        "lon": 176.9,
+        "radiusDeg": 2.3392
+      },
+      {
+        "lat": -9.097092,
+        "lon": 179.07254,
+        "radiusDeg": 1.9887
+      }
+    ]
+  },
+  {
+    "id": "TW",
+    "colliders": [
+      {
+        "lat": 23.667522,
+        "lon": 121.121056,
+        "radiusDeg": 2.5853
+      }
+    ]
+  },
+  {
+    "id": "TZ",
+    "colliders": [
+      {
+        "lat": -1.0426979,
+        "lon": 32.969395,
+        "radiusDeg": 1.4129
+      },
+      {
+        "lat": -11.397669,
+        "lon": 36.493774,
+        "radiusDeg": 2.0933
+      },
+      {
+        "lat": -5.786403,
+        "lon": 29.769999,
+        "radiusDeg": 1.5295
+      },
+      {
+        "lat": -4.9653234,
+        "lon": 38.569344,
+        "radiusDeg": 2.2069
+      },
+      {
+        "lat": -8.99395,
+        "lon": 39.4955,
+        "radiusDeg": 1.9294
+      },
+      {
+        "lat": -2.5504608,
+        "lon": 30.44309,
+        "radiusDeg": 1.6164
+      },
+      {
+        "lat": -9.245395,
+        "lon": 32.510002,
+        "radiusDeg": 1.988
+      }
+    ]
+  },
+  {
+    "id": "UA",
+    "colliders": [
+      {
+        "lat": 48,
+        "lon": 27,
+        "radiusDeg": 2.5314
+      },
+      {
+        "lat": 47.7,
+        "lon": 34,
+        "radiusDeg": 3.5079
+      }
+    ]
+  },
+  {
+    "id": "UG",
+    "colliders": [
+      {
+        "lat": 2.9199543,
+        "lon": 32.236755,
+        "radiusDeg": 2.5573
+      },
+      {
+        "lat": 1.305109,
+        "lon": 34.191418,
+        "radiusDeg": 2.3383
+      },
+      {
+        "lat": -0.300523,
+        "lon": 30.601707,
+        "radiusDeg": 1.724
+      }
+    ]
+  },
+  {
+    "id": "UM",
+    "colliders": [
+      {
+        "lat": 16.729137,
+        "lon": -169.53386,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 28.206379,
+        "lon": -177.3782,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 9.6,
+        "lon": -162.37589,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 22.51517,
+        "lon": -173.29277,
+        "radiusDeg": 2.6949
+      },
+      {
+        "lat": 19.289385,
+        "lon": 166.63138,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 23.958109,
+        "lon": 174.37129,
+        "radiusDeg": 1.7966
+      },
+      {
+        "lat": 19.103952,
+        "lon": 176.97578,
+        "radiusDeg": 5.3899
+      }
+    ]
+  },
+  {
+    "id": "UY",
+    "colliders": [
+      {
+        "lat": -32.299835,
+        "lon": -57.27704,
+        "radiusDeg": 2.0777
+      },
+      {
+        "lat": -33.34997,
+        "lon": -55.01961,
+        "radiusDeg": 1.9974
+      }
+    ]
+  },
+  {
+    "id": "UZ",
+    "colliders": [
+      {
+        "lat": 42.480934,
+        "lon": 66.443344,
+        "radiusDeg": 1.8923
+      },
+      {
+        "lat": 42.46769,
+        "lon": 61.307114,
+        "radiusDeg": 2.534
+      },
+      {
+        "lat": 40.813053,
+        "lon": 70.65765,
+        "radiusDeg": 1.9567
+      },
+      {
+        "lat": 39.020103,
+        "lon": 66.043396,
+        "radiusDeg": 2.6665
+      },
+      {
+        "lat": 43.453053,
+        "lon": 57.329086,
+        "radiusDeg": 2.4799
+      }
+    ]
+  },
+  {
+    "id": "VA",
+    "colliders": [
+      {
+        "lat": 41.882328,
+        "lon": 12.452476,
+        "radiusDeg": 0.6522
+      }
+    ]
+  },
+  {
+    "id": "VC",
+    "colliders": [
+      {
+        "lat": 13.18362,
+        "lon": -61.18523,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "VE",
+    "colliders": [
+      {
+        "lat": 8.9,
+        "lon": -69.7,
+        "radiusDeg": 3.5932
+      },
+      {
+        "lat": 6.2,
+        "lon": -65.8,
+        "radiusDeg": 3.9819
+      }
+    ]
+  },
+  {
+    "id": "VG",
+    "colliders": [
+      {
+        "lat": 18.540026,
+        "lon": -64.44813,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "VI",
+    "colliders": [
+      {
+        "lat": 17.5,
+        "lon": -64.799,
+        "radiusDeg": 0.3593
+      }
+    ]
+  },
+  {
+    "id": "VN",
+    "colliders": [
+      {
+        "lat": 12.411824,
+        "lon": 108.3,
+        "radiusDeg": 1.9421
+      },
+      {
+        "lat": 21.841171,
+        "lon": 104.9,
+        "radiusDeg": 2.518
+      },
+      {
+        "lat": 18.661625,
+        "lon": 106,
+        "radiusDeg": 2.0086
+      },
+      {
+        "lat": 10.045761,
+        "lon": 105.71704,
+        "radiusDeg": 2.1101
+      },
+      {
+        "lat": 15.6,
+        "lon": 107.8,
+        "radiusDeg": 2.0751
+      }
+    ]
+  },
+  {
+    "id": "VU",
+    "colliders": [
+      {
+        "lat": -18.350086,
+        "lon": 169.0788,
+        "radiusDeg": 2.076
+      },
+      {
+        "lat": -15.031441,
+        "lon": 167.65395,
+        "radiusDeg": 1.9393
+      }
+    ]
+  },
+  {
+    "id": "WF",
+    "colliders": [
+      {
+        "lat": -13.777477,
+        "lon": -177.13539,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "WS",
+    "colliders": [
+      {
+        "lat": -13.786065,
+        "lon": -172.11166,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "XK",
+    "colliders": [
+      {
+        "lat": 42.68463,
+        "lon": 20.922874,
+        "radiusDeg": 1.3475
+      }
+    ]
+  },
+  {
+    "id": "YE",
+    "colliders": [
+      {
+        "lat": 17.112082,
+        "lon": 51.58626,
+        "radiusDeg": 2.4287
+      },
+      {
+        "lat": 13.697331,
+        "lon": 44.47589,
+        "radiusDeg": 1.6107
+      },
+      {
+        "lat": 18.050995,
+        "lon": 47.166664,
+        "radiusDeg": 2.3435
+      },
+      {
+        "lat": 16.170439,
+        "lon": 43.385326,
+        "radiusDeg": 1.5147
+      },
+      {
+        "lat": 14.073742,
+        "lon": 48.145824,
+        "radiusDeg": 1.6333
+      }
+    ]
+  },
+  {
+    "id": "YT",
+    "colliders": [
+      {
+        "lat": -12.804713,
+        "lon": 45.21105,
+        "radiusDeg": 0.8983
+      }
+    ]
+  },
+  {
+    "id": "ZM",
+    "colliders": [
+      {
+        "lat": -15.62704,
+        "lon": 29.323692,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -12.336673,
+        "lon": 23.843098,
+        "radiusDeg": 2.4846
+      },
+      {
+        "lat": -9.193144,
+        "lon": 30.604624,
+        "radiusDeg": 2.4083
+      },
+      {
+        "lat": -16.682827,
+        "lon": 22.960852,
+        "radiusDeg": 1.3475
+      },
+      {
+        "lat": -11.81937,
+        "lon": 33.222706,
+        "radiusDeg": 2.2601
+      },
+      {
+        "lat": -17.316849,
+        "lon": 26.140297,
+        "radiusDeg": 1.5879
+      },
+      {
+        "lat": -12.4682045,
+        "lon": 28.176153,
+        "radiusDeg": 1.8301
+      }
+    ]
+  },
+  {
+    "id": "ZW",
+    "colliders": [
+      {
+        "lat": -19.542364,
+        "lon": 32.547424,
+        "radiusDeg": 1.6911
+      },
+      {
+        "lat": -18.036446,
+        "lon": 26.532066,
+        "radiusDeg": 1.4873
+      },
+      {
+        "lat": -16.585653,
+        "lon": 30.657772,
+        "radiusDeg": 2.2672
+      },
+      {
+        "lat": -21.315966,
+        "lon": 29.243958,
+        "radiusDeg": 2.0522
+      }
+    ]
+  }
+]

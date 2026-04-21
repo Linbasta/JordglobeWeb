@@ -1,0 +1,231 @@
+---
+import { manifests as gameManifests } from '../games/manifests';
+import { manifests as experimentManifests } from '../experiments/manifests';
+
+const isDev = import.meta.env.DEV;
+const base = import.meta.env.BASE_URL;
+
+type LinkItem = { name: string; url: string; description?: string };
+
+function gameUrl(id: string) {
+    return `${base}${id}/`;
+}
+
+function experimentUrl(id: string) {
+    return `${base}experiments/${id}/`;
+}
+
+const devTestModules = import.meta.glob('../dev-tests/*.astro');
+
+function discoverTestPages(): LinkItem[] {
+    return Object.keys(devTestModules)
+        .map((p) => p.match(/([^/]+)\.astro$/)![1])
+        .sort()
+        .map((slug) => ({ name: slug, url: `${base}dev/test/${slug}/` }));
+}
+
+const games: LinkItem[] = gameManifests
+    .filter((m) => isDev || m.published)
+    .map((m) => {
+        const defaultLocale = m.i18n.defaultLocale;
+        const seo = m.locales[defaultLocale];
+        return {
+            name: m.id,
+            url: gameUrl(m.id),
+            description: seo?.ogTitle ?? '',
+        };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+const experiments: LinkItem[] = isDev
+    ? experimentManifests
+          .map((m) => {
+              const defaultLocale = m.i18n.defaultLocale;
+              const seo = m.locales[defaultLocale];
+              return {
+                  name: m.id,
+                  url: experimentUrl(m.id),
+                  description: seo?.ogTitle ?? '',
+              };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+    : [];
+
+const testPages: LinkItem[] = isDev ? discoverTestPages() : [];
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JordGlobe - Project Home</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: auto;
+                overflow-y: auto;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                max-width: 900px;
+                width: 100%;
+                margin: 0 auto;
+                padding: 40px;
+            }
+            h1 {
+                color: #667eea;
+                font-size: 3rem;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+            .subtitle {
+                color: #666;
+                text-align: center;
+                margin-bottom: 40px;
+                font-size: 1.1rem;
+            }
+            .section {
+                margin-bottom: 40px;
+            }
+            .section h2 {
+                color: #333;
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #667eea;
+            }
+            .section-empty {
+                color: #999;
+                font-style: italic;
+                padding: 8px 0;
+            }
+            .links-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 15px;
+            }
+            .link-card {
+                display: block;
+                padding: 20px;
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                border-radius: 10px;
+                text-decoration: none;
+                color: #333;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+            .link-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                border-color: #667eea;
+            }
+            .link-card.primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+            .link-card.primary:hover {
+                border-color: white;
+            }
+            .link-card.experiment {
+                background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            }
+            .link-title {
+                font-size: 1.3rem;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+            .link-description {
+                font-size: 0.9rem;
+                opacity: 0.8;
+            }
+            .footer {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #e0e0e0;
+                color: #999;
+                font-size: 0.9rem;
+            }
+            @media (max-width: 600px) {
+                h1 { font-size: 2rem; }
+                .container { padding: 25px; }
+                .links-grid { grid-template-columns: 1fr; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>JordGlobe</h1>
+            <p class="subtitle">Interactive Earth Globe with Babylon.js</p>
+
+            <div class="section">
+                <h2>Games</h2>
+                {games.length === 0 ? (
+                    <div class="section-empty">No games migrated yet.</div>
+                ) : (
+                    <div class="links-grid">
+                        {games.map((g) => (
+                            <a href={g.url} class="link-card primary">
+                                <div class="link-title">{g.name}</div>
+                                {g.description && <div class="link-description">{g.description}</div>}
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {isDev && (
+                <div class="section">
+                    <h2>Experiments (dev only)</h2>
+                    {experiments.length === 0 ? (
+                        <div class="section-empty">No experiments yet.</div>
+                    ) : (
+                        <div class="links-grid">
+                            {experiments.map((x) => (
+                                <a href={x.url} class="link-card experiment">
+                                    <div class="link-title">{x.name}</div>
+                                    {x.description && <div class="link-description">{x.description}</div>}
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {isDev && (
+                <div class="section">
+                    <h2>Test pages (dev only)</h2>
+                    {testPages.length === 0 ? (
+                        <div class="section-empty">Drop an HTML file or folder into <code>public-dev/</code> to see it here.</div>
+                    ) : (
+                        <div class="links-grid">
+                            {testPages.map((t) => (
+                                <a href={t.url} class="link-card">
+                                    <div class="link-title">{t.name}</div>
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <div class="footer">
+                {isDev ? 'Development Server' : 'JordGlobe Games'}
+            </div>
+        </div>
+    </body>
+</html>

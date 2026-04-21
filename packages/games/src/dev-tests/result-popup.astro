@@ -1,0 +1,261 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test: Result Popup</title>
+    </head>
+    <body>
+        <div id="controls">
+            <div class="section-label">Manual Tests</div>
+            <button data-action="show" data-args="10,10,83000">Perfect: 10/10, 1:23</button>
+            <button data-action="show" data-args="8,10,102000">Good: 8/10, 1:42</button>
+            <button data-action="show" data-args="5,10,145000">Mid: 5/10, 2:25</button>
+            <button data-action="show" data-args="2,10,200000">Bad: 2/10, 3:20</button>
+            <button data-action="show" data-args="35,35,312000">Perfect 35: 35/35, 5:12</button>
+            <button data-action="show" data-args="1,35,400000">Bad 35: 1/35, 6:40</button>
+            <button data-action="show-record" data-args="10,10,83000">World Record!</button>
+            <button data-action="show-pb" data-args="8,10,90000">Personal Best!</button>
+
+            <div class="section-label">Personal Best (localStorage)</div>
+            <div id="pb-status">Loading...</div>
+            <button class="pb-test" data-action="test-pb" data-args="5,10,120000">Play: 5/10, 2:00</button>
+            <button class="pb-test" data-action="test-pb" data-args="7,10,100000">Play: 7/10, 1:40</button>
+            <button class="pb-test" data-action="test-pb" data-args="8,10,90000">Play: 8/10, 1:30</button>
+            <button class="pb-test" data-action="test-pb" data-args="8,10,70000">Play: 8/10, 1:10 (faster)</button>
+            <button class="danger" data-action="clear-pb">Clear Personal Best</button>
+
+            <div class="section-label">Score Bar Preview</div>
+            <button data-action="toggle-score-bar">Toggle Score Bar</button>
+        </div>
+    </body>
+</html>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background: #0a1628;
+        font-family: 'Arial', sans-serif;
+    }
+
+    #controls {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 300;
+        max-width: 280px;
+    }
+
+    #controls button {
+        padding: 8px 16px;
+        font-family: monospace;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+    }
+    #controls button:hover {
+        background: rgba(60, 60, 60, 0.9);
+    }
+
+    .section-label {
+        color: #7eb8e0;
+        font-size: 11px;
+        font-family: monospace;
+        margin-top: 8px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    #pb-status {
+        color: #7cf6ff;
+        font-size: 12px;
+        font-family: monospace;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+        line-height: 1.4;
+    }
+
+    button.danger {
+        background: rgba(180, 50, 50, 0.8);
+        border-color: #a33;
+    }
+    button.danger:hover {
+        background: rgba(200, 60, 60, 0.9);
+    }
+
+    button.pb-test {
+        background: rgba(50, 100, 150, 0.8);
+        border-color: #4a8;
+    }
+    button.pb-test:hover {
+        background: rgba(60, 120, 170, 0.9);
+    }
+</style>
+
+<script>
+    import {
+        showResultOverlay,
+        hideResultOverlay,
+        getPersonalBest,
+        checkAndUpdatePersonalBest,
+        clearPersonalBest,
+    } from '../shared/ui/result-overlay.ts';
+    import {
+        createSimpleScoreBar,
+        updateSimpleScoreBar,
+        disposeSimpleScoreBar,
+    } from '../shared/ui/score-bar-simple.ts';
+    import sprite1 from '../games/eurovision/assets/1.png?url';
+    import sprite2 from '../games/eurovision/assets/2.png?url';
+    import sprite3 from '../games/eurovision/assets/3.png?url';
+    import sprite4 from '../games/eurovision/assets/4.png?url';
+    import sprite5 from '../games/eurovision/assets/5.png?url';
+    import sprite6 from '../games/eurovision/assets/6.png?url';
+    const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
+
+    const QUIZ_ID = 'test-quiz';
+    let scoreBarVisible = false;
+    let scoreBarTimer: any = null;
+
+    function randomResults(score: number, total: number) {
+        const arr = Array(score).fill(true).concat(Array(total - score).fill(false));
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function formatTime(ms: number) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function updatePBStatus() {
+        const pb = getPersonalBest(QUIZ_ID);
+        const statusEl = document.getElementById('pb-status')!;
+        if (pb) {
+            statusEl.textContent = `Current PB: ${pb.score}/${pb.total} in ${formatTime(pb.elapsedMs)}`;
+        } else {
+            statusEl.textContent = 'No personal best yet';
+        }
+    }
+
+    const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Eurovision Lover', 'Devoted Fan', 'Eurovision God'];
+
+    function show(score: number, total: number, elapsedMs: number, opts: any = {}) {
+        showResultOverlay({
+            score,
+            total,
+            elapsedMs,
+            results: randomResults(score, total),
+            quizTitle: 'Eurovision Quiz',
+            shareUrl: 'https://jordglobe.com/eurovision',
+            shareEmoji: '🎵',
+            sprites: SPRITE_URLS,
+            spriteNames,
+            getMessage: (s: number, t: number) =>
+                spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
+            isNewRecord: opts.isNewRecord || false,
+            isPersonalBest: opts.isPersonalBest || false,
+            onRetry: () => hideResultOverlay(),
+        });
+    }
+
+    function testWithPB(score: number, total: number, elapsedMs: number) {
+        const isPersonalBest = checkAndUpdatePersonalBest(QUIZ_ID, score, total, elapsedMs);
+        updatePBStatus();
+        console.log(`Score: ${score}/${total}, Time: ${formatTime(elapsedMs)}, Personal Best: ${isPersonalBest}`);
+
+        showResultOverlay({
+            score,
+            total,
+            elapsedMs,
+            results: randomResults(score, total),
+            quizTitle: 'Eurovision Quiz',
+            shareUrl: 'https://jordglobe.com/eurovision',
+            shareEmoji: '🎵',
+            sprites: SPRITE_URLS,
+            spriteNames,
+            getMessage: (s: number, t: number) =>
+                spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
+            isPersonalBest,
+            onRetry: () => hideResultOverlay(),
+        });
+    }
+
+    function clearPB() {
+        clearPersonalBest(QUIZ_ID);
+        updatePBStatus();
+        console.log('Personal best cleared');
+    }
+
+    function toggleScoreBar() {
+        if (scoreBarVisible) {
+            disposeSimpleScoreBar();
+            if (scoreBarTimer) {
+                clearInterval(scoreBarTimer);
+                scoreBarTimer = null;
+            }
+            scoreBarVisible = false;
+            console.log('Score bar hidden');
+        } else {
+            createSimpleScoreBar(10, 10, QUIZ_ID);
+            let elapsed = 0;
+            let score = 0;
+            scoreBarTimer = setInterval(() => {
+                elapsed += 1000;
+                if (Math.random() < 0.3 && score < 10) score++;
+                updateSimpleScoreBar(score, 10 - score, 10, elapsed);
+            }, 1000);
+            scoreBarVisible = true;
+            console.log('Score bar shown with PB:', getPersonalBest(QUIZ_ID));
+        }
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('#controls button[data-action]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const action = btn.dataset.action!;
+            const args = (btn.dataset.args || '').split(',').map((s) => parseInt(s, 10));
+            switch (action) {
+                case 'show':
+                    show(args[0], args[1], args[2]);
+                    break;
+                case 'show-record':
+                    show(args[0], args[1], args[2], { isNewRecord: true });
+                    break;
+                case 'show-pb':
+                    show(args[0], args[1], args[2], { isPersonalBest: true });
+                    break;
+                case 'test-pb':
+                    testWithPB(args[0], args[1], args[2]);
+                    break;
+                case 'clear-pb':
+                    clearPB();
+                    break;
+                case 'toggle-score-bar':
+                    toggleScoreBar();
+                    break;
+            }
+        });
+    });
+
+    updatePBStatus();
+    show(8, 10, 102000);
+</script>

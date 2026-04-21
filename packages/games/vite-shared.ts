@@ -14,7 +14,6 @@ export const entryPoints = [
   { name: 'country-game', file: 'country-game.html' },
   { name: 'medals', file: 'medals.html' },
   { name: 'video-quiz', file: 'video-quiz.html' },
-  { name: 'eurovision', file: 'eurovision.html' },
   { name: 'minigames', file: 'minigames.html' },
 ];
 
@@ -31,7 +30,7 @@ export const terserConfig = {
 };
 
 const userChunkNames = [
-  'eurovision', 'host', 'party', 'bot-panel',
+  'host', 'party', 'bot-panel',
   'country-quiz', 'capitals-quiz', 'country-game',
   'medals', 'video-quiz', 'minigames', 'flag-quiz', 'image-quiz',
   'base-game-controller', 'solo-game-controller', 'start-quiz-game',

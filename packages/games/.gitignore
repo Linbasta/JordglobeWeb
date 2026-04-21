@@ -21,6 +21,9 @@ Thumbs.db
 # Vite
 .vite/
 
+# Astro
+.astro/
+
 # Playwright
 test-results/
 

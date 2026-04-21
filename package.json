@@ -22,7 +22,7 @@
     "dev:site": "pnpm --filter @jordglobe/site dev",
     "build:games": "pnpm --filter @jordglobe/games build",
     "build:site": "turbo run build --filter=@jordglobe/site",
-    "build:eurovision-embedded": "turbo run build:eurovision-embedded --filter=@jordglobe/games",
+    "build:games:astro": "turbo run build:astro --filter=@jordglobe/games",
     "deploy:stage": "turbo run deploy:stage --filter=@jordglobe/site",
     "deploy:games:stage": "pnpm --filter @jordglobe/games deploy:stage",
     "deploy:prod": "turbo run deploy:prod --filter=@jordglobe/site",
