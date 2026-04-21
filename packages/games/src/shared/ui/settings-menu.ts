@@ -14,6 +14,8 @@ const COG_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12
 
 const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>'
 
+const EXIT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h12v4h-2V5H5v14h8v-2h2v4H3V3z"/><path d="M11 11h8.5l-2.3-2.3 1.4-1.4 4.4 4.4c.3.3.3.8 0 1.1l-4.4 4.4-1.4-1.4 2.3-2.3H11v-2.5z"/></svg>'
+
 // ── Styles ──
 
 const STYLE_ID = 'settings-menu-styles'
@@ -49,9 +51,10 @@ function injectStyles(): void {
         .sm-lang-btn:hover { background:rgba(255,255,255,0.08);color:#fff; }
         .sm-lang-btn.active { background:#2a7fff;border-color:#2a7fff;color:#fff; }
         .sm-lang-btn.active:hover { background:#3d8fff; }
-        .sm-more-btn { display:block;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
+        .sm-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
         .sm-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
         .sm-more-btn:active { transform:scale(0.98); }
+        .sm-more-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
     `
     document.head.appendChild(style)
 }
@@ -92,7 +95,7 @@ export function showSettingsMenu(): void {
         <button class="sm-close" aria-label="Close settings">${CLOSE_ICON}</button>
         <div class="sm-title">${t('settings.title')}</div>
         ${renderLanguageRow()}
-        <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}</a>
+        <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
     `
 
     backdrop.appendChild(card)
