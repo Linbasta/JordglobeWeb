@@ -1,0 +1,559 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Parameter Sweep Testing</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📊 Parameter Sweep Testing</h1>
+
+            <div class="info-box">
+                <strong>Purpose:</strong> Systematically test camera framing parameters one at a time to find optimal values. The canvas is hidden - this page runs automated tests and displays results in a table.
+            </div>
+
+            <div class="control-panel">
+                <h2>Test Configuration</h2>
+
+                <div class="control-group">
+                    <label>Parameter to Test:</label>
+                    <select id="parameterSelect">
+                        <option value="alphaRange">Alpha Range (±degrees)</option>
+                        <option value="betaRange">Beta Range (±degrees)</option>
+                        <option value="coarseGrid">Coarse Grid Size</option>
+                        <option value="fineGrid">Fine Grid Size</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Test Values (comma-separated):</label>
+                    <input type="text" id="testValues" value="15, 10, 5, 3, 1" placeholder="e.g., 15, 10, 5, 3, 1" />
+                </div>
+
+                <div class="control-group">
+                    <label>Fixed Parameters:</label>
+                    <div style="margin-top: 10px;">
+                        <label style="display: inline-block; width: 200px;">Coarse Grid Size:</label>
+                        <input type="number" id="fixedCoarse" value="10" style="width: 100px; display: inline-block;" />
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <label style="display: inline-block; width: 200px;">Fine Grid Size:</label>
+                        <input type="number" id="fixedFine" value="8" style="width: 100px; display: inline-block;" />
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <label style="display: inline-block; width: 200px;">Alpha Range (±degrees):</label>
+                        <input type="number" id="fixedAlpha" value="15" style="width: 100px; display: inline-block;" />
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <label style="display: inline-block; width: 200px;">Beta Range (±degrees):</label>
+                        <input type="number" id="fixedBeta" value="30" style="width: 100px; display: inline-block;" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Test Countries:</label>
+                    <input type="text" id="testCountries" value="Russia, Algeria, Belgium" readonly />
+                </div>
+
+                <div class="control-group">
+                    <button id="runButton" disabled>▶ Run Tests</button>
+                    <button class="secondary" id="exportButton" disabled>📥 Export CSV</button>
+                    <button class="secondary" id="clearButton">🗑 Clear Results</button>
+                </div>
+
+                <div id="progressDiv" class="progress hidden"></div>
+            </div>
+
+            <div class="results-container">
+                <h2>Results</h2>
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Parameter Value</th>
+                            <th>Russia Error</th>
+                            <th>Algeria Error</th>
+                            <th>Belgium Error</th>
+                            <th>Avg Error</th>
+                            <th>All Converged</th>
+                            <th>Avg Time (ms)</th>
+                            <th>Avg Iterations</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #666;">No tests run yet. Click "Run Tests" to begin.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <canvas id="renderCanvas"></canvas>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Courier New', monospace;
+        background: #1e1e1e;
+        color: #d4d4d4;
+    }
+
+    h1 {
+        color: #4caf50;
+        margin-bottom: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .control-panel {
+        background: #252526;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #3e3e42;
+    }
+
+    .control-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #9cdcfe;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        background: #3c3c3c;
+        border: 1px solid #555;
+        color: #d4d4d4;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 14px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        font-family: 'Courier New', monospace;
+    }
+
+    button:hover {
+        background: #45a049;
+    }
+
+    button:disabled {
+        background: #555;
+        cursor: not-allowed;
+    }
+
+    button.secondary {
+        background: #2196f3;
+    }
+
+    button.secondary:hover {
+        background: #0b7dda;
+    }
+
+    .results-container {
+        background: #252526;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #3e3e42;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #3e3e42;
+    }
+
+    th {
+        background: #1e1e1e;
+        color: #4caf50;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+    }
+
+    tr:hover {
+        background: #2a2d2e;
+    }
+
+    .status-running {
+        color: #ffa500;
+    }
+
+    .status-complete {
+        color: #4caf50;
+    }
+
+    .status-failed {
+        color: #f44336;
+    }
+
+    .error-good {
+        color: #4caf50;
+        font-weight: bold;
+    }
+
+    .error-ok {
+        color: #ffc107;
+    }
+
+    .error-bad {
+        color: #f44336;
+    }
+
+    .progress {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #9cdcfe;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .info-box {
+        background: #1e1e1e;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        border-left: 4px solid #4caf50;
+        font-size: 13px;
+    }
+
+    .info-box strong {
+        color: #4caf50;
+    }
+
+    canvas {
+        display: none;
+    }
+</style>
+
+<script>
+    import { SoloGameController } from '../solo/solo-game-controller.ts';
+    import { frameCountry } from '../shared/animation/camera-utils.ts';
+
+    let game: any = null;
+    let testResults: any[] = [];
+    let isRunning = false;
+
+    const paramSelect = document.getElementById('parameterSelect') as HTMLSelectElement;
+    const testValuesInput = document.getElementById('testValues') as HTMLInputElement;
+    const runButton = document.getElementById('runButton') as HTMLButtonElement;
+    const exportButton = document.getElementById('exportButton') as HTMLButtonElement;
+    const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
+    const progressDiv = document.getElementById('progressDiv')!;
+    const resultsBody = document.getElementById('resultsBody')!;
+
+    const fixedCoarse = document.getElementById('fixedCoarse') as HTMLInputElement;
+    const fixedFine = document.getElementById('fixedFine') as HTMLInputElement;
+    const fixedAlpha = document.getElementById('fixedAlpha') as HTMLInputElement;
+    const fixedBeta = document.getElementById('fixedBeta') as HTMLInputElement;
+
+    async function init() {
+        game = new SoloGameController('renderCanvas', {
+            showCountryLabel: false,
+            showHoverLabel: false,
+            onReady: async () => {
+                console.log('Parameter sweep test ready!');
+                runButton.disabled = false;
+            },
+        });
+    }
+
+    function parseTestValues() {
+        const str = testValuesInput.value.trim();
+        return str.split(',').map((v) => parseFloat(v.trim())).filter((v) => !isNaN(v));
+    }
+
+    function getGridConfig(paramType: string, paramValue: number) {
+        const config: any = {
+            coarseGridSize: parseInt(fixedCoarse.value),
+            fineGridSize: parseInt(fixedFine.value),
+            alphaRangeDegrees: parseInt(fixedAlpha.value),
+            betaRangeDegrees: parseInt(fixedBeta.value),
+        };
+
+        switch (paramType) {
+            case 'alphaRange':
+                config.alphaRangeDegrees = paramValue;
+                break;
+            case 'betaRange':
+                config.betaRangeDegrees = paramValue;
+                break;
+            case 'coarseGrid':
+                config.coarseGridSize = paramValue;
+                break;
+            case 'fineGrid':
+                config.fineGridSize = paramValue;
+                break;
+        }
+
+        return config;
+    }
+
+    function formatParamValue(paramType: string, value: number) {
+        switch (paramType) {
+            case 'alphaRange':
+            case 'betaRange':
+                return `±${value}°`;
+            case 'coarseGrid':
+            case 'fineGrid':
+                return `${value}×${value}×${value}`;
+            default:
+                return String(value);
+        }
+    }
+
+    async function testCountry(countryName: string, gridConfig: any) {
+        const globe = game.getGlobe();
+        const countries = globe.getAllCountries();
+        const country = countries.find((c: any) => c.name === countryName);
+
+        if (!country) {
+            throw new Error(`Country not found: ${countryName}`);
+        }
+
+        const allPolygons = globe.getCountryPicker().getAllPolygons();
+        const polygons = allPolygons.filter((p: any) => p.countryIndex === country.index);
+
+        const viewport = { x: 0.25, y: 0, width: 0.5, height: 0.4 };
+
+        const stats = await frameCountry(
+            game.getGlobe().getCamera(),
+            game.getGlobe(),
+            polygons,
+            countryName,
+            1000,
+            0.8,
+            viewport,
+            100,
+            gridConfig,
+        );
+
+        return stats;
+    }
+
+    async function runTests() {
+        if (isRunning) return;
+        isRunning = true;
+
+        runButton.disabled = true;
+        exportButton.disabled = true;
+        progressDiv.classList.remove('hidden');
+        testResults = [];
+
+        const paramType = paramSelect.value;
+        const testValues = parseTestValues();
+        const countries = ['Russia', 'Algeria', 'Belgium'];
+
+        console.log(`\n=== Starting Parameter Sweep: ${paramType} ===`);
+        console.log(`Test values: ${testValues.join(', ')}`);
+
+        resultsBody.innerHTML = '';
+
+        for (let i = 0; i < testValues.length; i++) {
+            const paramValue = testValues[i];
+            const gridConfig = getGridConfig(paramType, paramValue);
+
+            progressDiv.innerHTML = `Testing ${formatParamValue(paramType, paramValue)}... (${i + 1}/${testValues.length})`;
+
+            const result: any = {
+                paramValue: paramValue,
+                paramDisplay: formatParamValue(paramType, paramValue),
+                countries: {},
+            };
+
+            for (const countryName of countries) {
+                progressDiv.innerHTML = `Testing ${formatParamValue(paramType, paramValue)}: ${countryName}... (${i + 1}/${testValues.length})`;
+
+                try {
+                    const stats = await testCountry(countryName, gridConfig);
+                    result.countries[countryName] = stats;
+
+                    await new Promise((resolve) => setTimeout(resolve, 100));
+                } catch (error) {
+                    console.error(`Error testing ${countryName}:`, error);
+                    result.countries[countryName] = {
+                        converged: false,
+                        finalError: 1.0,
+                        iterations: 0,
+                        solveTime: 0,
+                    };
+                }
+            }
+
+            const errors = countries.map((c) => result.countries[c].finalError * 100);
+            const times = countries.map((c) => result.countries[c].solveTime);
+            const iterations = countries.map((c) => result.countries[c].iterations);
+            const allConverged = countries.every((c) => result.countries[c].converged);
+
+            result.avgError = errors.reduce((a: number, b: number) => a + b, 0) / errors.length;
+            result.avgTime = times.reduce((a: number, b: number) => a + b, 0) / times.length;
+            result.avgIterations = Math.round(iterations.reduce((a: number, b: number) => a + b, 0) / iterations.length);
+            result.allConverged = allConverged;
+
+            testResults.push(result);
+            updateResultsTable();
+        }
+
+        progressDiv.innerHTML = `✓ Tests complete! Tested ${testValues.length} values.`;
+        runButton.disabled = false;
+        exportButton.disabled = false;
+        isRunning = false;
+
+        console.log(`=== Parameter Sweep Complete ===\n`);
+    }
+
+    function updateResultsTable() {
+        resultsBody.innerHTML = '';
+
+        for (const result of testResults) {
+            const row = document.createElement('tr');
+
+            const paramCell = document.createElement('td');
+            paramCell.textContent = result.paramDisplay;
+            paramCell.style.fontWeight = 'bold';
+            row.appendChild(paramCell);
+
+            ['Russia', 'Algeria', 'Belgium'].forEach((country) => {
+                const cell = document.createElement('td');
+                const stats = result.countries[country];
+                const errorPct = (stats.finalError * 100).toFixed(2);
+
+                if (stats.converged) {
+                    cell.textContent = `${errorPct}%`;
+                    cell.className =
+                        stats.finalError < 0.01 ? 'error-good' : stats.finalError < 0.02 ? 'error-ok' : 'error-bad';
+                } else {
+                    cell.textContent = '✗ Failed';
+                    cell.className = 'status-failed';
+                }
+
+                row.appendChild(cell);
+            });
+
+            const avgCell = document.createElement('td');
+            avgCell.textContent = `${result.avgError.toFixed(2)}%`;
+            avgCell.style.fontWeight = 'bold';
+            avgCell.className = result.avgError < 1 ? 'error-good' : result.avgError < 2 ? 'error-ok' : 'error-bad';
+            row.appendChild(avgCell);
+
+            const convergedCell = document.createElement('td');
+            convergedCell.textContent = result.allConverged ? '✓ Yes' : '✗ No';
+            convergedCell.className = result.allConverged ? 'status-complete' : 'status-failed';
+            row.appendChild(convergedCell);
+
+            const timeCell = document.createElement('td');
+            timeCell.textContent = result.avgTime.toFixed(1);
+            row.appendChild(timeCell);
+
+            const iterCell = document.createElement('td');
+            iterCell.textContent = result.avgIterations.toLocaleString();
+            row.appendChild(iterCell);
+
+            resultsBody.appendChild(row);
+        }
+    }
+
+    function exportCSV() {
+        if (testResults.length === 0) return;
+
+        const paramType = paramSelect.value;
+        const headers = [
+            'Parameter Value',
+            'Russia Error (%)',
+            'Algeria Error (%)',
+            'Belgium Error (%)',
+            'Avg Error (%)',
+            'All Converged',
+            'Avg Time (ms)',
+            'Avg Iterations',
+        ];
+
+        const rows = testResults.map((r) => [
+            r.paramDisplay,
+            (r.countries.Russia.finalError * 100).toFixed(2),
+            (r.countries.Algeria.finalError * 100).toFixed(2),
+            (r.countries.Belgium.finalError * 100).toFixed(2),
+            r.avgError.toFixed(2),
+            r.allConverged ? 'Yes' : 'No',
+            r.avgTime.toFixed(1),
+            r.avgIterations,
+        ]);
+
+        const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `parameter-sweep-${paramType}-${Date.now()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function clearResults() {
+        testResults = [];
+        resultsBody.innerHTML =
+            '<tr><td colspan="8" style="text-align: center; color: #666;">No tests run yet. Click "Run Tests" to begin.</td></tr>';
+        exportButton.disabled = true;
+        progressDiv.innerHTML = '';
+        progressDiv.classList.add('hidden');
+    }
+
+    runButton.addEventListener('click', runTests);
+    exportButton.addEventListener('click', exportCSV);
+    clearButton.addEventListener('click', clearResults);
+
+    paramSelect.addEventListener('change', () => {
+        const param = paramSelect.value;
+        switch (param) {
+            case 'alphaRange':
+                testValuesInput.value = '15, 10, 5, 3, 1';
+                break;
+            case 'betaRange':
+                testValuesInput.value = '30, 20, 15, 10, 5';
+                break;
+            case 'coarseGrid':
+                testValuesInput.value = '25, 20, 15, 10, 8';
+                break;
+            case 'fineGrid':
+                testValuesInput.value = '20, 15, 12, 10, 8';
+                break;
+        }
+    });
+
+    init();
+</script>

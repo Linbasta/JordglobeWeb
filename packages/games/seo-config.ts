@@ -115,51 +115,6 @@ export const seoConfig: SEOConfig = {
         // Quiz Games (loaded from external config)
         // ─────────────────────────────────────────────────────────────
         ...gameSEO,
-
-        'country-quiz.html': {
-            title: 'Country Quiz - Find Countries on the Globe | JordGlobe',
-            description: 'Can you find countries on a 3D globe? Test your geography skills by locating countries around the world in this interactive quiz game.',
-            ogTitle: 'Country Quiz - Find Countries on the Globe',
-            ogDescription: 'Can you find countries on a 3D globe? Test your geography skills in this interactive quiz.',
-        },
-
-        'capitals-quiz.html': {
-            title: 'World Capitals Quiz - Find Capital Cities on the Globe | JordGlobe',
-            description: 'Can you locate world capitals on a 3D globe? Test your knowledge of capital cities in this interactive geography quiz game.',
-            ogTitle: 'World Capitals Quiz - Find Capital Cities',
-            ogDescription: 'Can you locate world capitals on a 3D globe? Test your knowledge in this interactive quiz.',
-        },
-
-        'flag-quiz.html': {
-            title: 'Flag Quiz - Match Flags to Countries on the Globe | JordGlobe',
-            description: 'Can you match flags to their countries on a 3D globe? Learn world flags while testing your geography knowledge in this fun quiz game.',
-            ogTitle: 'Flag Quiz - Match Flags to Countries',
-            ogDescription: 'Can you match flags to their countries on a 3D globe? Test your knowledge in this quiz.',
-        },
-
-        'us-states-quiz.html': {
-            title: 'US States Quiz - Find All 50 States on the Globe | JordGlobe',
-            description: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge in this interactive quiz game.',
-            ogTitle: 'US States Quiz - Find All 50 States',
-            ogDescription: 'Can you find all 50 US states on a 3D globe? Test your American geography knowledge.',
-        },
-
-        // ─────────────────────────────────────────────────────────────
-        // Browse Pages
-        // ─────────────────────────────────────────────────────────────
-        'medals.html': {
-            title: 'Geography Medals - Master Countries & Earn Achievements | JordGlobe',
-            description: 'Earn bronze, silver, and gold medals by mastering countries on the 3D globe. Track your progress and become a geography expert.',
-            ogTitle: 'Geography Medals - Earn Achievements',
-            ogDescription: 'Earn bronze, silver, and gold medals by mastering countries on the 3D globe.',
-        },
-
-        'minigames.html': {
-            title: 'Geography Minigames - Quick Geography Challenges | JordGlobe',
-            description: 'Play quick geography minigames and challenges. Test your knowledge with bite-sized quizzes on the interactive 3D globe.',
-            ogTitle: 'Geography Minigames - Quick Challenges',
-            ogDescription: 'Play quick geography minigames and challenges on the interactive 3D globe.',
-        },
     },
 };
 

@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (() => {
+    if (!import.meta.env.DEV) return [];
+    const modules = import.meta.glob('../../../dev-tests/*.astro');
+    return Object.keys(modules).map((p) => {
+        const slug = p.match(/([^/]+)\.astro$/)![1];
+        return { params: { slug }, props: { slug } };
+    });
+}) satisfies GetStaticPaths;
+
+const testModules = import.meta.glob<{ default: any }>(
+    '../../../dev-tests/*.astro',
+    { eager: true },
+);
+
+const { slug } = Astro.props as { slug: string };
+const TestPage = testModules[`../../../dev-tests/${slug}.astro`].default;
+---
+
+<TestPage />

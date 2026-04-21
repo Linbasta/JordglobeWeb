@@ -1,0 +1,233 @@
+<canvas id="renderCanvas"></canvas>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<script>
+    import { EUROVISION_I18N } from './i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+
+    import sprite1 from './assets/1.png?url';
+    import sprite2 from './assets/2.png?url';
+    import sprite3 from './assets/3.png?url';
+    import sprite4 from './assets/4.png?url';
+    import sprite5 from './assets/5.png?url';
+    import sprite6 from './assets/6.png?url';
+    import avatarTripletsUrl from './assets/eurovision_avatar_triplets.png?url';
+    import greenBtnUrl from './assets/green_btn.png?url';
+
+    const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
+
+    // Apply Eurovision-specific body styles (avoid CSS global leakage)
+    document.body.style.backgroundColor = '#6496dc';
+
+    initI18n(EUROVISION_I18N);
+    initMobile();
+
+    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    idleCallback(() => {
+        for (const url of SPRITE_URLS) new Image().src = url;
+    });
+
+    function showStartPanel(): Promise<void> {
+        return new Promise((resolve) => {
+            const SCALE_REF_WIDTH = 1800;
+            const SCALE_REF_HEIGHT = 1100;
+            const MIN_SCALE = 0.35;
+
+            const root = document.createElement('div');
+            root.style.cssText =
+                'position:fixed;top:50%;left:50%;z-index:500;' +
+                'transform-origin:center center;' +
+                'filter:drop-shadow(0 10px 24px rgba(0,0,0,0.35));' +
+                'font-family:Arial,sans-serif;';
+
+            const deco = document.createElement('img');
+            deco.src = avatarTripletsUrl;
+            deco.alt = '';
+            deco.style.cssText =
+                'position:absolute;left:50%;top:-195px;transform:translateX(-50%);' +
+                'width:520px;height:auto;pointer-events:none;display:block;';
+
+            const card = document.createElement('div');
+            card.style.cssText =
+                'position:relative;width:620px;height:240px;border-radius:20px;' +
+                'background:linear-gradient(90deg,#7a4bd0,#e86bb5);' +
+                'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+                'gap:18px;padding:28px 20px;box-sizing:border-box;overflow:visible;';
+
+            const title = document.createElement('div');
+            title.textContent = t('start.title');
+            title.style.cssText =
+                'color:#fff;font-size:32px;font-weight:800;letter-spacing:0.5px;' +
+                'text-shadow:0 2px 4px rgba(0,0,0,0.25);';
+
+            const play = document.createElement('button');
+            play.textContent = t('start.playButton');
+            play.style.cssText =
+                'width:280px;height:112px;border:none;background:transparent;' +
+                `background-image:url('${greenBtnUrl}');` +
+                'background-size:contain;background-repeat:no-repeat;background-position:center;' +
+                'color:#fff;font-size:28px;font-weight:800;font-family:inherit;' +
+                'text-shadow:0 2px 3px rgba(0,0,0,0.35);' +
+                'cursor:pointer;padding:0;line-height:1;';
+
+            function onResize() {
+                const s = Math.max(
+                    MIN_SCALE,
+                    Math.min(
+                        1,
+                        window.innerWidth / SCALE_REF_WIDTH,
+                        window.innerHeight / SCALE_REF_HEIGHT,
+                    ),
+                );
+                root.style.transform = `translate(-50%,-50%) scale(${s})`;
+            }
+
+            play.onclick = () => {
+                window.removeEventListener('resize', onResize);
+                root.remove();
+                resolve();
+            };
+
+            card.appendChild(title);
+            card.appendChild(play);
+            root.appendChild(deco);
+            root.appendChild(card);
+            document.body.appendChild(root);
+
+            window.addEventListener('resize', onResize);
+            onResize();
+        });
+    }
+
+    function iso2ToFlag(iso2: string): string {
+        return [...iso2]
+            .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+            .join('');
+    }
+
+    const COMPILATION_VIDEO_ID = '1jnR-m5u5yQ';
+    const SONG_OFFSET = 5;
+    const CLIP_DURATION = 22;
+
+    function parseTime(timeStr: string): number {
+        const [min, sec] = timeStr.split(':').map(Number);
+        return min * 60 + sec;
+    }
+
+    const EUROVISION_ENTRIES: Array<[string, string, string, number?]> = [
+        ['00:01', 'AL', 'Albania'],
+        ['00:31', 'AM', 'Armenia'],
+        ['01:00', 'AU', 'Australia'],
+        ['01:29', 'AT', 'Austria'],
+        ['01:58', 'AZ', 'Azerbaijan'],
+        ['02:25', 'BE', 'Belgium'],
+        ['02:53', 'BG', 'Bulgaria'],
+        ['03:24', 'HR', 'Croatia'],
+        ['03:55', 'CY', 'Cyprus'],
+        ['04:24', 'CZ', 'Czech Republic'],
+        ['04:56', 'DK', 'Denmark'],
+        ['05:26', 'EE', 'Estonia'],
+        ['05:54', 'FI', 'Finland'],
+        ['06:26', 'FR', 'France'],
+        ['06:55', 'GE', 'Georgia'],
+        ['07:24', 'DE', 'Germany'],
+        ['07:56', 'GR', 'Greece'],
+        ['08:28', 'IL', 'Israel'],
+        ['08:59', 'IT', 'Italy'],
+        ['09:28', 'LV', 'Latvia'],
+        ['09:57', 'LT', 'Lithuania'],
+        ['10:29', 'LU', 'Luxembourg'],
+        ['11:03', 'MT', 'Malta'],
+        ['11:32', 'MD', 'Moldova'],
+        ['12:01', 'ME', 'Montenegro'],
+        ['12:31', 'NO', 'Norway'],
+        ['13:00', 'PL', 'Poland'],
+        ['13:30', 'PT', 'Portugal'],
+        ['13:58', 'RO', 'Romania'],
+        ['14:29', 'SM', 'San Marino'],
+        ['14:59', 'RS', 'Serbia'],
+        ['15:29', 'SE', 'Sweden'],
+        ['15:59', 'CH', 'Switzerland'],
+        ['16:28', 'UA', 'Ukraine'],
+        ['17:00', 'GB', 'United Kingdom'],
+    ];
+
+    const EUROVISION_QUESTIONS = EUROVISION_ENTRIES.map(
+        ([timeStr, iso2, countryName, duration]) => {
+            const songStart = parseTime(timeStr);
+            const clipLen = duration ?? CLIP_DURATION;
+            return {
+                present: 'video' as const,
+                answer: 'country' as const,
+                countryISO2: iso2,
+                youtubeId: COMPILATION_VIDEO_ID,
+                prompt: t('question.prompt'),
+                startTime: songStart + SONG_OFFSET,
+                endTime: songStart + SONG_OFFSET + clipLen,
+                hideBottom: true,
+            };
+        },
+    );
+
+    startQuizGame({
+        i18n: EUROVISION_I18N,
+        questions: EUROVISION_QUESTIONS,
+        scoreBarType: 'simple',
+        showHoverLabel: true,
+        quizId: 'eurovision',
+        analyticsGame: 'Eurovision',
+        analyticsGameId: 'eurovision_2026',
+        onReady: () => showStartPanel(),
+        onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
+            const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
+                import('../../shared/ui/result-overlay.ts'),
+                import('../../shared/quiz/quiz-runner.ts'),
+            ]);
+
+            let isNewRecord = false;
+            try {
+                const { postRecord } = await import('../../shared/firestore-records.ts');
+                const data = await postRecord('eurovision', score, total, elapsedMs);
+                isNewRecord = data.isNewRecord;
+            } catch (e) {
+                console.warn('Failed to submit record:', e);
+            }
+            const spriteNames = [0, 1, 2, 3, 4, 5].map((i) => t(`sprite.${i}`));
+            showResultOverlay({
+                score,
+                total,
+                elapsedMs,
+                results,
+                quizTitle: t('quiz.title'),
+                shareUrl: 'https://eurovision.jordglobe.com/',
+                shareEmoji: '🎵',
+                sprites: SPRITE_URLS,
+                spriteNames,
+                getMessage: (s, t) =>
+                    s === t
+                        ? spriteNames[5]
+                        : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
+                formatShareSquares: (results) => {
+                    const qs = getQuestions();
+                    return results
+                        .map((correct, i) =>
+                            correct ? iso2ToFlag(qs[i].countryISO2) : '🟥',
+                        )
+                        .join('');
+                },
+                isNewRecord,
+                isPersonalBest,
+                onRetry: () => window.location.reload(),
+            });
+        },
+    });
+</script>

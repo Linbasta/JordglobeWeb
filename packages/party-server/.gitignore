@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# SQLite database files
+data/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store

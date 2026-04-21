@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "Bash(npx tsc:*)",
+      "Read(//Users/oloflandin/Programming/JordglobeWeb/**)",
+      "Read(//Users/oloflandin/Programming/JordglobeWeb/packages/party-server/**)",
+      "Bash(curl:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

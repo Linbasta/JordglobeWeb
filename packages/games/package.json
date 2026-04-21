@@ -4,19 +4,13 @@
   "description": "JordGlobe geography quiz games - Babylon.js globe engine",
   "type": "module",
   "scripts": {
-    "inject-seo": "tsx scripts/inject-seo.ts",
-    "dev": "node scripts/log-server.mjs & node --watch server/index.mjs & vite --host",
-    "frontend": "vite --host",
-    "game-server": "node --watch server/index.mjs",
+    "dev": "node scripts/check-log-server.mjs && astro dev",
+    "build": "./scripts/build-prod.sh",
+    "build:astro": "./scripts/build-prod.sh",
+    "preview": "astro preview",
     "log-server": "node scripts/log-server.mjs",
-    "server": "node --watch server/index.mjs",
-    "start": "node server/production.mjs",
     "generate-qr": "tsx scripts/generate-qr.ts",
     "generate-countries-bin": "tsx scripts/generate-countries-bin.ts",
-    "build": "NODE_ENV=production npm run generate-qr && tsc && npx tsx scripts/build-inlined.mjs",
-    "build:legacy": "NODE_ENV=production npm run generate-qr && tsc && vite build",
-    "build:production": "npm run build",
-    "preview": "npm run build -- --all && vite preview",
     "test": "echo \"No unit tests configured\"",
     "test:segments": "tsx scripts/test-segment-loader.ts",
     "test:quiz-runner": "tsx scripts/test-quiz-runner.ts",
@@ -43,36 +37,23 @@
     "generate-medal-menu": "tsx scripts/generate-medal-menu.ts",
     "test:e2e": "npx playwright test",
     "test:e2e:headed": "npx playwright test --headed",
-    "validate:seo": "tsx scripts/validate-seo.ts",
-    "deploy:stage": "npm run build && pnpm wrangler pages deploy dist --project-name=jordglobe-games-staging",
-    "build:eurovision-deploy": "node scripts/build-eurovision-deploy.mjs",
-    "build:eurovision-embedded": "BASE_PATH=/games/eurovision/ node scripts/build-eurovision-deploy.mjs",
-    "deploy:firebase": "npm run build:eurovision-deploy && firebase deploy --only hosting"
+    "deploy:stage": "npm run build && pnpm wrangler pages deploy dist --project-name=jordglobe-games-staging"
   },
   "devDependencies": {
     "@babylonjs/inspector": "^7.54.3",
     "@playwright/test": "^1.58.2",
     "@types/node": "^20.0.0",
     "@types/qrcode": "^1.5.6",
-    "rollup-obfuscator": "^4.1.1",
-    "terser": "^5.46.1",
+    "astro": "^6.1.7",
     "ts-morph": "^27.0.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.3.0",
-    "vite": "^5.0.0",
-    "vite-plugin-compression": "^0.5.1"
+    "typescript": "^5.3.0"
   },
   "dependencies": {
     "@babylonjs/core": "^7.0.0",
     "@babylonjs/gui": "^7.54.3",
     "@babylonjs/loaders": "^7.54.3",
-    "better-sqlite3": "^12.8.0",
-    "express": "^4.18.2",
-    "express-basic-auth": "^1.2.1",
-    "express-static-gzip": "^3.0.0",
     "firebase": "^12.11.0",
-    "javascript-obfuscator": "^4.2.2",
-    "qrcode": "^1.5.4",
-    "ws": "^8.18.3"
+    "qrcode": "^1.5.4"
   }
 }

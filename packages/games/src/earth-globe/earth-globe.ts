@@ -22,6 +22,9 @@ import { PatchedArcRotatePointersInput } from './patched-arc-rotate-input';
 import '@babylonjs/loaders/glTF';
 import '@babylonjs/core/Materials/PBR/pbrMaterial';
 import '@babylonjs/core/Culling/ray';  // Required for scene.pick() to work!
+import '@babylonjs/core/Shaders/layer.fragment';  // Required for GUI Image/Rectangle controls
+import '@babylonjs/core/Shaders/layer.vertex';
+import '@babylonjs/core/Misc/rgbdTextureTools';  // Required for RGBD texture decoding
 
 // Module imports
 import {

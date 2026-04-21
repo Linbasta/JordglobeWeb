@@ -1,31 +1,27 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "@jordglobe/games#build:eurovision-embedded": {
+    "@jordglobe/games#build:astro": {
       "inputs": [
         "src/**",
-        "public/**",
+        "public-prod/**",
         "scripts/**",
-        "seo-config.ts",
+        "astro.config.mjs",
         "package.json",
-        "tsconfig.json",
-        "vite.config.*",
-        "eurovision.html",
-        "$TURBO_ROOT$/shared/games-seo.json"
+        "tsconfig.json"
       ],
-      "outputs": [
-        "dist-eurovision-embedded/**",
-        "dist/**"
-      ],
-      "env": ["BASE_PATH", "NODE_ENV"]
+      "outputs": ["dist/**"],
+      "env": ["NODE_ENV"]
     },
     "@jordglobe/site#build": {
       "inputs": [
         "src/**",
         "public/**",
+        "scripts/**",
         "astro.config.mjs",
         "tsconfig.json",
-        "package.json"
+        "package.json",
+        "$TURBO_ROOT$/packages/games/src/games/**"
       ],
       "outputs": ["dist/**"],
       "env": ["NODE_ENV"]
@@ -33,21 +29,21 @@
     "@jordglobe/site#deploy:stage": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:eurovision-embedded"
+        "@jordglobe/games#build:astro"
       ],
       "cache": false
     },
     "@jordglobe/site#deploy:prod": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:eurovision-embedded"
+        "@jordglobe/games#build:astro"
       ],
       "cache": false
     },
     "@jordglobe/site#preview": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:eurovision-embedded"
+        "@jordglobe/games#build:astro"
       ],
       "cache": false,
       "persistent": true

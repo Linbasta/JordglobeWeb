@@ -1,0 +1,231 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Camera Animation Test</title>
+    </head>
+    <body>
+        <canvas id="renderCanvas"></canvas>
+        <div id="viewportOverlay"></div>
+
+        <div id="controls">
+            <h2>Camera Animation Test</h2>
+
+            <div class="control-group">
+                <label>Select Country:</label>
+                <select id="countrySelect">
+                    <option value="">-- Select a country --</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Target Radius (zoom): <span id="radiusValue">5.0</span></label>
+                <input type="range" id="radiusSlider" min="3" max="15" step="0.1" value="5.0" />
+            </div>
+
+            <div class="control-group">
+                <label>Duration (ms): <span id="durationValue">1000</span></label>
+                <input type="range" id="durationSlider" min="100" max="3000" step="100" value="1000" />
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="useViewportRegion" /> Use Viewport Region
+                </label>
+                <div class="value-display">Country always centered horizontally</div>
+            </div>
+
+            <div id="viewportRegionControls" style="display: none;">
+                <div class="control-group">
+                    <label>Region Y (top): <span id="regionYValue">0.00</span></label>
+                    <input type="range" id="regionYSlider" min="0" max="1" step="0.01" value="0" />
+                </div>
+
+                <div class="control-group">
+                    <label>Region Width: <span id="regionWidthValue">0.50</span></label>
+                    <input type="range" id="regionWidthSlider" min="0.1" max="1" step="0.01" value="0.5" />
+                </div>
+
+                <div class="control-group">
+                    <label>Region Height: <span id="regionHeightValue">0.80</span></label>
+                    <input type="range" id="regionHeightSlider" min="0.1" max="1" step="0.01" value="0.8" />
+                </div>
+
+                <div class="control-group">
+                    <label>Performance Mode:</label>
+                    <select id="performanceMode">
+                        <option value="quality">Quality (20×20 + 15×15) ~11k checks</option>
+                        <option value="balanced" selected>Balanced (10×10 + 8×8) ~1.5k checks</option>
+                        <option value="fast">Fast (8×8 + 6×6) ~728 checks</option>
+                        <option value="ultra">Ultra Fast (6×6 + 5×5) ~341 checks</option>
+                        <option value="custom">Custom...</option>
+                    </select>
+                </div>
+
+                <div id="customGridControls" style="display: none;">
+                    <div class="control-group">
+                        <label>Coarse Grid Size: <span id="coarseGridValue">10</span></label>
+                        <input type="range" id="coarseGridSlider" min="4" max="20" step="1" value="10" />
+                        <div class="value-display">Checks: <span id="coarseChecks">1,000</span></div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Fine Grid Size: <span id="fineGridValue">8</span></label>
+                        <input type="range" id="fineGridSlider" min="3" max="15" step="1" value="8" />
+                        <div class="value-display">Checks: <span id="fineChecks">512</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="animateBtn">Animate to Country (Manual Zoom)</button>
+            <button id="frameBtn" class="secondary">Frame Country (Auto Zoom)</button>
+            <button id="resetBtn" class="secondary">Reset Camera</button>
+            <button id="logStateBtn" style="background: #4CAF50; margin-top: 10px;">📸 Frame is Good! (Log State)</button>
+
+            <div class="value-display">
+                Click on globe or use dropdown to select country
+            </div>
+        </div>
+
+        <div id="info">
+            <div><strong>Current Camera:</strong></div>
+            <div>Radius: <span id="currentRadius">-</span></div>
+            <div>Alpha: <span id="currentAlpha">-</span></div>
+            <div>Beta: <span id="currentBeta">-</span></div>
+            <div style="margin-top: 10px;"><strong>Target:</strong></div>
+            <div>Country: <span id="targetCountry">-</span></div>
+            <div>Lat/Lon: <span id="targetLatLon">-</span></div>
+            <div style="margin-top: 10px;"><strong>Performance:</strong></div>
+            <div>Grid: <span id="gridSizes">-</span></div>
+            <div>Checks: <span id="convergenceIterations">-</span></div>
+            <div>Center Error: <span id="convergenceError" style="font-weight: bold;">-</span></div>
+            <div>Solve time: <span id="convergenceSolveTime">-</span></div>
+            <div>Status: <span id="convergenceStatus">-</span></div>
+        </div>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background: #000;
+    }
+
+    #renderCanvas {
+        width: 100%;
+        height: 100vh;
+        display: block;
+    }
+
+    #controls {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        min-width: 300px;
+        max-width: 400px;
+        z-index: 100;
+    }
+
+    h2 {
+        margin: 0 0 15px 0;
+        font-size: 18px;
+    }
+
+    .control-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #ccc;
+    }
+
+    input[type='range'] {
+        width: 100%;
+    }
+
+    input[type='number'] {
+        width: 100%;
+        padding: 5px;
+        font-size: 14px;
+    }
+
+    select {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+
+    button:hover {
+        background: #45a049;
+    }
+
+    button.secondary {
+        background: #2196f3;
+    }
+
+    button.secondary:hover {
+        background: #0b7dda;
+    }
+
+    .value-display {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 3px;
+    }
+
+    #info {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    #info div {
+        margin: 3px 0;
+    }
+
+    #viewportOverlay {
+        position: fixed;
+        border: 2px dashed #4caf50;
+        pointer-events: none;
+        z-index: 50;
+        display: none;
+        background: rgba(76, 175, 80, 0.1);
+    }
+</style>
+
+<script>
+    import '../tests/test-camera-animation.ts';
+</script>

@@ -2,14 +2,14 @@
 
 ## CRITICAL: Quiz vs Test Page
 
-**Quiz/Game**: Uses pin placement UI, established presentation components, `/src/solo/start-quiz-game.ts`. See `capitals-quiz.html`, `country-quiz.html`.
+**Quiz/Game**: Uses pin placement UI, established presentation components, `/src/solo/start-quiz-game.ts`.
 
 **Test Page**: One-off pages for testing functionality. Any UI/interaction is fine.
 
 **Rules:**
 - NEVER create a quiz with direct click interaction (that's a test page)
 - ALWAYS use pin placement UI for quizzes
-- Check existing quiz files FIRST before creating new ones
+- Check existing game files FIRST before creating new ones
 
 ## CRITICAL: Wait for User Verification
 
@@ -39,17 +39,17 @@ Write simple, direct code (Handmade Philosophy). Prefer:
 - Avoid abstraction layers
 - Data-oriented design
 
-## Server Architecture
+## Development Servers
 
 **Claude must NEVER start/stop/restart servers.** User manages servers manually.
 
-| Server | Port | Log File |
-|--------|------|----------|
-| Vite Dev | 4817 | stdout |
-| WebSocket Game | 3003 | `game-server.log` |
-| Browser Console | 9999 | `browser-console.log` |
+| Server | Port | Package | Command |
+|--------|------|---------|---------|
+| Astro Dev | 4818 | games | `pnpm dev:games` |
+| Party Server | 3003 | party-server | `pnpm dev:party-server` |
+| Browser Console | 9999 | games | `npm run log-server` |
 
-All start with `npm run dev`. HMR auto-reloads on file changes.
+The WebSocket party server is in `packages/party-server/` (separate package).
 
 ## Babylon.js Pitfalls
 
@@ -64,11 +64,54 @@ const normal = position.normalizeToNew();
 
 Watch for: `scale()`, `add()`, `subtract()`, `multiply()` - use `*ToNew()` or `*InPlace` variants.
 
-## Asset Paths
+## File Layout & Dev/Prod Separation
 
-Always resolve local assets through `asset()` from `src/shared/asset-path.ts` (TS/JS) or `${import.meta.env.BASE_URL}file.png` (inline HTML scripts). Never hardcode `/file.png` — embedded deploys prefix `BASE_URL` (e.g. `/games/eurovision/`) and raw slashes 404.
+Dev/prod separation is **structural** — files ship based on where they live, not runtime flags.
 
-Every new file under `public/` that a quiz references must also be added to `ALLOW_LIST` in `scripts/build-eurovision-deploy.mjs`, or the Eurovision standalone/embedded build will silently drop it.
+### 1. `public-prod/` — ships to production
+
+Configured as Astro's `publicDir`. Everything here is served at `/games/*` and gets rsynced into the site's deploy.
+
+- `public-prod/[gameid]/*` — per-game assets (OG images, runtime data).
+- `public-prod/*` at root — shared statics (favicons, globe runtime, shared UI).
+
+### 2. `src/games/[id]/` — production games
+
+- `manifest.ts` — `id`, `published`, `image`, `i18n`, `locales`. `published: true` is the prod gate.
+- `GameRoot.astro` — canvas + bootstrap script.
+- `assets/` — `?url`-imported files (hashed, tracked, tree-shaken).
+
+### 3. `src/experiments/[id]/` — WIP games (dev-only)
+
+Same structure as `src/games/`, but `getStaticPaths` returns `[]` in prod builds. Served at `/games/experiments/[id]/` during dev.
+
+### 4. `src/dev-tests/[name].astro` — test pages (dev-only)
+
+One `.astro` per test page. Enumerated by `src/pages/dev/test/[slug].astro`. Served at `/games/dev/test/[name]/` during dev. `getStaticPaths` returns `[]` in prod builds.
+
+### 5. `public-dev/` — dev-only assets
+
+Mounted at `/games/dev/` during `astro dev` via middleware. Invisible to `astro build`.
+
+## Production Build
+
+The production build uses `scripts/build-prod.sh` which:
+1. Moves dev pages (`src/pages/dev/`, `src/pages/experiments/`, `src/pages/[...devindex].astro`) out temporarily
+2. Runs `astro build` (only production games remain)
+3. Restores dev pages after build
+
+This ensures no dev code leaks to production.
+
+## Promotion Convention — Co-located Relative Paths
+
+**Rule:** A page/feature and its assets live in the same folder, referenced with **relative paths**.
+
+```html
+<img src="./chart.png">                     <!-- correct - survives moves -->
+<img src="/games/dev/my-feature/chart.png"> <!-- wrong - breaks on promotion -->
+```
+
+Promoting a feature = moving its folder. URL prefix changes, but internal paths stay the same.
 
 ## Naming Conventions
 

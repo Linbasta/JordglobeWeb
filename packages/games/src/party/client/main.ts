@@ -356,16 +356,25 @@ window.addEventListener('DOMContentLoaded', async () => {
         waitingScreen.hide();
 
         const gameScreen = document.getElementById('gameScreen');
+        const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+
         if (gameScreen) {
             gameScreen.classList.add('active');
         }
 
         setupFullscreenButton();
 
-        // Create the party game controller
-        controller = new PartyGameController('renderCanvas', {
+        // Wait for browser to complete layout before creating the controller.
+        // Without this delay, the canvas reports 300x150 (default HTML size) instead
+        // of the actual CSS-styled dimensions, causing a black screen.
+        requestAnimationFrame(() => {
+            const rect = canvas?.getBoundingClientRect();
+            console.log('[DEBUG] Canvas dimensions after layout:', rect?.width, 'x', rect?.height);
+
+            // Create the party game controller
+            controller = new PartyGameController('renderCanvas', {
             onReady: () => {
-                console.log('[PartyClient] Controller ready, wiring up callbacks');
+                console.log('[PartyClient] Controller ready');
 
                 // Wire up pin placement to answer submission
                 onPinPlaced((country, latLon) => {
@@ -409,7 +418,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         createFinalResultsOverlay();
 
         // Hide "Watch the host screen!" overlay when user interacts with globe
-        const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+        // Note: 'canvas' was already declared above
         if (canvas) {
             let hasInteracted = false;
 
@@ -429,6 +438,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             // Hide on zoom (wheel)
             canvas.addEventListener('wheel', hideWatchHostOverlay);
         }
+        }); // end requestAnimationFrame
     });
 
     // Handle question from server

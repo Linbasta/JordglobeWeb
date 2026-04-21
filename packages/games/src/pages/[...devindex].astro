@@ -1,0 +1,228 @@
+---
+import { manifests as gameManifests } from '../games/manifests';
+import { manifests as experimentManifests } from '../experiments/manifests';
+
+// This page is dev-only; in production the site package owns /games/.
+export function getStaticPaths() {
+    return import.meta.env.DEV ? [{ params: { devindex: undefined } }] : [];
+}
+
+const isDev = import.meta.env.DEV;
+const base = import.meta.env.BASE_URL;
+
+const games = gameManifests
+    .filter((m) => isDev || m.published)
+    .map((m) => {
+        const locale = m.locales[m.i18n.defaultLocale];
+        return { id: m.id, url: `${base}${m.id}/`, title: locale?.ogTitle || m.id };
+    })
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+const experiments = isDev
+    ? experimentManifests
+          .map((m) => {
+              const locale = m.locales[m.i18n.defaultLocale];
+              return { id: m.id, url: `${base}experiments/${m.id}/`, title: locale?.ogTitle || m.id };
+          })
+          .sort((a, b) => a.id.localeCompare(b.id))
+    : [];
+
+const devTestModules = import.meta.glob('../dev-tests/*.astro');
+const testPages = isDev
+    ? Object.keys(devTestModules)
+          .map((p) => p.match(/([^/]+)\.astro$/)![1])
+          .sort()
+          .map((slug) => ({ id: slug, url: `${base}dev/test/${slug}/` }))
+    : [];
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JordGlobe - Games</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                color: #e0e0e0;
+                line-height: 1.6;
+                min-height: 100vh;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 4rem 2rem;
+            }
+            header {
+                text-align: center;
+                margin-bottom: 4rem;
+            }
+            h1 {
+                font-size: 3rem;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                margin-bottom: 0.5rem;
+                background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .tagline {
+                font-size: 1.2rem;
+                color: #888;
+            }
+            section {
+                margin-bottom: 3rem;
+            }
+            h2 {
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: #667eea;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            h2::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(90deg, rgba(102,126,234,0.3) 0%, transparent 100%);
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                gap: 1rem;
+            }
+            .card {
+                display: block;
+                padding: 1.25rem 1.5rem;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid rgba(255,255,255,0.06);
+                border-radius: 12px;
+                color: #e0e0e0;
+                text-decoration: none;
+                transition: all 0.2s ease;
+            }
+            .card:hover {
+                background: rgba(102, 126, 234, 0.1);
+                border-color: rgba(102, 126, 234, 0.3);
+                transform: translateY(-2px);
+            }
+            .card-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+            .card-id {
+                font-size: 0.8rem;
+                color: #666;
+                font-family: 'SF Mono', Monaco, monospace;
+            }
+            .card.experiment {
+                border-color: rgba(245, 158, 11, 0.15);
+            }
+            .card.experiment:hover {
+                background: rgba(245, 158, 11, 0.1);
+                border-color: rgba(245, 158, 11, 0.3);
+            }
+            .card.test {
+                border-color: rgba(107, 114, 128, 0.15);
+            }
+            .card.test:hover {
+                background: rgba(107, 114, 128, 0.1);
+                border-color: rgba(107, 114, 128, 0.3);
+            }
+            .card.test .card-title {
+                font-family: 'SF Mono', Monaco, monospace;
+                font-size: 0.95rem;
+            }
+            .badge {
+                display: inline-block;
+                padding: 0.2rem 0.5rem;
+                font-size: 0.65rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                border-radius: 4px;
+                margin-left: 0.5rem;
+                vertical-align: middle;
+            }
+            .badge.dev {
+                background: rgba(245, 158, 11, 0.2);
+                color: #f59e0b;
+            }
+            footer {
+                text-align: center;
+                padding-top: 3rem;
+                color: #444;
+                font-size: 0.85rem;
+            }
+            @media (max-width: 600px) {
+                .container { padding: 2rem 1rem; }
+                h1 { font-size: 2rem; }
+                .grid { grid-template-columns: 1fr; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>JordGlobe</h1>
+                <p class="tagline">Interactive geography games</p>
+            </header>
+
+            <section>
+                <h2>Games</h2>
+                <div class="grid">
+                    {games.map((g) => (
+                        <a href={g.url} class="card">
+                            <div class="card-title">{g.title}</div>
+                            <div class="card-id">{g.id}</div>
+                        </a>
+                    ))}
+                </div>
+            </section>
+
+            {isDev && experiments.length > 0 && (
+                <section>
+                    <h2>Experiments <span class="badge dev">Dev</span></h2>
+                    <div class="grid">
+                        {experiments.map((x) => (
+                            <a href={x.url} class="card experiment">
+                                <div class="card-title">{x.title}</div>
+                                <div class="card-id">{x.id}</div>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {isDev && testPages.length > 0 && (
+                <section>
+                    <h2>Test Pages <span class="badge dev">Dev</span></h2>
+                    <div class="grid">
+                        {testPages.map((t) => (
+                            <a href={t.url} class="card test">
+                                <div class="card-title">{t.id}</div>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <footer>
+                {isDev ? 'Development Server' : 'JordGlobe'}
+            </footer>
+        </div>
+    </body>
+</html>

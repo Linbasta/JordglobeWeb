@@ -7,32 +7,29 @@ This is the marketing/landing website for JordGlobe, a geography learning app. B
 ## Architecture
 
 ### Games (Monorepo Package)
-Games are built in the sibling package (`../games`) using Babylon.js and copied into the site during deployment.
 
-**Current games:**
-- `eurovision` - Eurovision 2026 Quiz
+Games are built by `@jordglobe/games` (Astro, base `/games/`) and copied into this site at deploy time.
 
 ### Build & Deploy Process
 
-1. `npm run build` - Builds only the Astro site
-2. `./scripts/deploy.sh <target>` - Full deployment:
-   - Builds Astro site
-   - Copies game builds from `../games/dist-*-embedded/` into `dist/games/`
-   - Deploys to Firebase Hosting
-
-**Deploy targets:**
-- `prod` - Production deployment
-- `stage` - Staging deployment
-- `preview` - Local Firebase emulator
+- `pnpm preview` (from repo root) — builds both packages via turbo, rsyncs games' `dist/` into `site/dist/games/`, starts Firebase emulator.
+- `pnpm deploy:stage` / `pnpm deploy:prod` (from repo root) — same build + rsync, deploys to target.
+- `scripts/deploy.sh <target>` — the workhorse; builds site, rsyncs (no `--delete`, preserves site's own `dist/games/index.html` landing), deploys.
 
 ### Adding a New Game
 
-1. Build the game in `packages/games` with output to `dist-<gamename>-embedded/`
-2. Add game to `GAMES` array in `scripts/deploy.sh`
-3. Add default build path: `<GAMENAME>_BUILD_DIR_DEFAULT="..."`
-4. Add game data to `src/config/en/gamesData.json.ts` (and sv version)
-5. Add game URL to sitemap in `astro.config.mjs` (customPages)
-6. Add Firebase rewrite in `firebase.json` if needed
+1. In `packages/games/src/games/[id]/`: add `manifest.ts` (id, `published: true`, `image` filename, i18n, locales), `GameRoot.astro`, `assets/`.
+2. Add manifest to `packages/games/src/games/manifests.ts`.
+3. Drop assets at stable URLs into `packages/games/public-prod/[id]/`.
+4. Rebuild. Sitemap `customPages` + SEO + game card all auto-derive.
+
+No edits to `astro.config.mjs`, `firebase.json`, `deploy.sh`, or `src/config/*/gamesData.json.ts`.
+
+### Promotion convention
+
+Assets used by a game (or dev page, or Astro page) **live in the same folder** as the HTML/code that references them, and are referenced via **relative paths** (`./chart.png`, never `/games/[id]/chart.png`). Promoting a feature = moving its folder. URL prefix changes (`/dev/foo/` → `/games/foo/`); paths inside the HTML do not. See `packages/games/CLAUDE.md` for the full three-bucket model (`public-prod/`, `public-dev/`, `src/games/`).
+
+**SEO card on `/games/`:** `src/config/{en,sv}/gamesData.json.ts` still reads `shared/games-seo.json` — untouched legacy path. Migrating it to read from `@jordglobe/games` manifests is a separate follow-up.
 
 ## Key Files
 

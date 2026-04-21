@@ -1,41 +1,58 @@
-# Running JordGlobe
+# Running JordGlobe Games
 
-## Development - 3 Servers Required
+## Development
 
-Run these in **separate terminal tabs/windows**:
+### Games Dev Server (Port 4818)
 
-### Terminal 1 - Frontend Dev Server (Port 4817)
 ```bash
-npm run frontend
+pnpm dev:games
 ```
-Serves web pages with hot reload.
 
-### Terminal 2 - Game Server (Port 3003)
+Serves all game pages with hot reload at http://localhost:4818/games/
+
+### Party Server (Port 3003)
+
+For multiplayer games, run in a separate terminal:
+
 ```bash
-npm run game-server
+pnpm dev:party-server
 ```
-Handles multiplayer game logic via WebSockets.
 
-### Terminal 3 - Log Server (Port 9999)
+### Log Server (Port 9999)
+
+Captures browser console logs to `browser-console.log`:
+
 ```bash
 npm run log-server
 ```
-Captures browser console logs to `browser-console.log`.
 
-## Quick Start (All in one)
+## Accessing Games
+
+### Production Games
+- http://localhost:4818/games/eurovision/
+
+### Experiments (dev-only)
+- http://localhost:4818/games/experiments/party/
+- http://localhost:4818/games/experiments/host/
+- http://localhost:4818/games/experiments/country-quiz/
+- http://localhost:4818/games/experiments/capitals-quiz/
+
+### Test Pages (dev-only)
+- http://localhost:4818/games/dev/test/bot-panel/
+- http://localhost:4818/games/dev/test/camera-animation/
+- (and other test pages in `src/dev-tests/`)
+
+## Production Build & Preview
+
+Build and preview the full site (from repo root):
+
 ```bash
-npm run dev
+pnpm preview
 ```
-Starts all 3 servers in one terminal (harder to see individual logs).
 
-## Accessing the Game
-
-- **Host Display**: http://localhost:4817/host.html
-- **Mobile Players**: http://localhost:4817/party
-- **Bot Panel** (testing): http://localhost:4817/bot-panel.html
+This builds both `@jordglobe/site` and `@jordglobe/games`, merges them, and starts a Firebase emulator.
 
 ## Logs
 
-- **Game Server**: `game-server.log`
-- **Browser Console**: `browser-console.log`
-- **Frontend**: Terminal output
+- **Browser Console**: `browser-console.log` (when log-server is running)
+- **Build output**: Terminal

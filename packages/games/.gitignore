@@ -4,6 +4,7 @@ node_modules/
 # Build output
 dist/
 dist-eurovision/
+.dev-pages-temp/
 
 # IDE
 .vscode/
@@ -20,6 +21,9 @@ Thumbs.db
 
 # Vite
 .vite/
+
+# Astro
+.astro/
 
 # Playwright
 test-results/

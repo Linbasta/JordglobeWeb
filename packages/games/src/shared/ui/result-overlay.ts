@@ -17,8 +17,8 @@ export interface ResultOverlayConfig {
     quizTitle: string
     shareUrl: string
     shareEmoji?: string
-    /** Path prefix for sprite images (e.g. '/eurovision/' expects /eurovision/1.png through /eurovision/6.png) */
-    spritePath?: string
+    /** Six sprite image URLs (index 0 = level 1 sprite, index 5 = perfect-score sprite). */
+    sprites?: string[]
     /** Names for each sprite level (index 0 = sprite 1, etc). Shown below the avatar. */
     spriteNames?: string[]
     /** Custom message function override. Called with (score, total) to produce the result message. */
@@ -68,7 +68,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbas
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, spritePath, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, isPersonalBest, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, sprites, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, isPersonalBest, onRetry } = config
     const isPerfect = score === total
     const SPRITE_COUNT = 6
 
@@ -118,8 +118,8 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
     const finalSpriteIndex = score === total
         ? SPRITE_COUNT
         : Math.max(1, Math.min(SPRITE_COUNT - 1, Math.ceil((score / total) * (SPRITE_COUNT - 1))))
-    const spriteHtml = spritePath
-        ? `<img class="ro-sprite" src="${spritePath}1.png" alt="">`
+    const spriteHtml = sprites
+        ? `<img class="ro-sprite" src="${sprites[0]}" alt="">`
         : ''
 
     card.innerHTML = `
@@ -151,10 +151,10 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
 
     // Count-up animation — duration ensures each sprite frame shows for at least 1s
     const scoreValueEl = card.querySelector('.ro-score-value') as HTMLElement
-    const spriteEl = spritePath ? card.querySelector('.ro-sprite') as HTMLImageElement : null
+    const spriteEl = sprites ? card.querySelector('.ro-sprite') as HTMLImageElement : null
     const messageEl = card.querySelector('.ro-message') as HTMLElement
     const MS_PER_FRAME = 400
-    const COUNT_UP_DURATION = spritePath ? finalSpriteIndex * MS_PER_FRAME : 1200
+    const COUNT_UP_DURATION = sprites ? finalSpriteIndex * MS_PER_FRAME : 1200
     const countUpStart = performance.now() + 400 // delay to let card animate in
 
     function countUpTick() {
@@ -169,13 +169,13 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         scoreValueEl.textContent = `${displayScore}/${total}`
 
         // Update sprite based on current display score
-        if (spriteEl && spritePath) {
+        if (spriteEl && sprites) {
             const spriteIdx = displayScore === total
                 ? SPRITE_COUNT
                 : displayScore === 0
                     ? 1
                     : Math.max(1, Math.min(SPRITE_COUNT - 1, Math.ceil((displayScore / total) * (SPRITE_COUNT - 1))))
-            spriteEl.src = `${spritePath}${spriteIdx}.png`
+            spriteEl.src = sprites[spriteIdx - 1]
             if (spriteNames && messageEl) messageEl.textContent = spriteNames[spriteIdx - 1]
         }
 

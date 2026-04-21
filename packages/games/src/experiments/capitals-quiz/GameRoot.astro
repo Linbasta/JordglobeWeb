@@ -1,0 +1,42 @@
+<canvas id="renderCanvas"></canvas>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+    body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #6496DC;
+    }
+    body.placing-mode {
+        cursor: none;
+    }
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<script>
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+    import { EUROPEAN_CAPITALS } from '../../capitals/capitals-data.ts';
+
+    initMobile();
+
+    startQuizGame({
+        title: 'Capitals Quiz',
+        questions: EUROPEAN_CAPITALS.map((capital) => ({
+            present: 'text',
+            answer: 'location-alternatives',
+            lat: capital.lat,
+            lng: capital.lon,
+            prompt: capital.name,
+        })),
+        onGameComplete: (score, total) => {
+            alert(`Capitals Quiz Complete!\n\nScore: ${score}/${total}\n\nReload page to play again!`);
+        },
+    });
+</script>

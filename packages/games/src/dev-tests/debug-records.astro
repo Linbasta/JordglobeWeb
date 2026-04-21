@@ -1,0 +1,163 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>World Records - Debug</title>
+    </head>
+    <body>
+        <h1>🏆 World Records</h1>
+        <p class="subtitle">Debug view of all quiz world records</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Quiz</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="records-body">
+                <tr><td colspan="4">Loading...</td></tr>
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button class="refresh-btn" onclick="loadRecords()">🔄 Refresh</button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div class="updated" id="updated"></div>
+    </body>
+</html>
+
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #1a1a2e;
+        color: #eee;
+        padding: 2rem;
+        margin: 0;
+    }
+    h1 { color: #ffd700; margin-bottom: 0.5rem; }
+    .subtitle { color: #888; margin-bottom: 2rem; }
+    table {
+        width: 100%;
+        max-width: 800px;
+        border-collapse: collapse;
+        background: #16213e;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #0f3460;
+    }
+    th { background: #0f3460; color: #ffd700; font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #1a2a4e; }
+    .score { font-weight: bold; color: #4ade80; }
+    .time { font-family: monospace; color: #60a5fa; }
+    .no-record { color: #666; font-style: italic; }
+    .actions { margin-top: 1.5rem; display: flex; gap: 1rem; }
+    button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: transform 0.1s, opacity 0.1s;
+    }
+    button:hover { transform: scale(1.02); }
+    button:active { transform: scale(0.98); }
+    .refresh-btn { background: #3b82f6; color: white; }
+    .reset-btn { background: #ef4444; color: white; }
+    .reset-btn:hover { opacity: 0.9; }
+    .status { margin-top: 1rem; padding: 0.75rem; border-radius: 6px; display: none; }
+    .status.success { display: block; background: #166534; color: #4ade80; }
+    .status.error { display: block; background: #7f1d1d; color: #fca5a5; }
+    .updated { color: #666; font-size: 0.875rem; margin-top: 1rem; }
+</style>
+
+<script is:inline>
+    function formatTime(ms) {
+        if (!ms) return '-';
+        const totalSeconds = ms / 1000;
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = (totalSeconds % 60).toFixed(1);
+        return `${minutes}:${seconds.padStart(4, '0')}`;
+    }
+
+    function formatQuizName(id) {
+        return id.charAt(0).toUpperCase() + id.slice(1);
+    }
+
+    async function loadRecords() {
+        const tbody = document.getElementById('records-body');
+        tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+        try {
+            const res = await fetch('/api/records');
+            const data = await res.json();
+            const records = data.records || [];
+
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="no-record">No records yet</td></tr>';
+            } else {
+                tbody.innerHTML = records.map((record) => `
+                    <tr>
+                        <td>${formatQuizName(record.quiz_id)}</td>
+                        <td class="score">${record.score}/${record.total}</td>
+                        <td class="time">${formatTime(record.elapsed_ms)}</td>
+                        <td>
+                            <button class="reset-btn" onclick="resetRecord('${record.quiz_id}')">Reset</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        } catch (e) {
+            tbody.innerHTML = '<tr><td colspan="4" class="no-record">Error loading records</td></tr>';
+        }
+
+        document.getElementById('updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+    }
+
+    async function resetRecord(quizId) {
+        if (!confirm(`Reset the world record for "${quizId}"? This cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/record/reset`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quiz_id: quizId }),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                showStatus(`Record for "${quizId}" has been reset.`, 'success');
+                loadRecords();
+            } else {
+                showStatus(data.error || 'Failed to reset record', 'error');
+            }
+        } catch (e) {
+            showStatus('Network error: ' + e.message, 'error');
+        }
+    }
+
+    function showStatus(message, type) {
+        const el = document.getElementById('status');
+        el.textContent = message;
+        el.className = 'status ' + type;
+        setTimeout(() => { el.className = 'status'; }, 3000);
+    }
+
+    loadRecords();
+</script>
