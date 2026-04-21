@@ -236,11 +236,17 @@ function getMedalData(medalId: number) {
     import { asset } from '../../shared/asset-path.ts';
     import type { Question } from '../../shared/quiz/quiz-types.ts';
     import type { LocationsData } from '../../medals/types.ts';
+    import { MEDALS_I18N } from './i18n.ts';
+    import { COUNTRY_NAMES } from '../../shared/i18n/country-names.ts';
+    import { initI18n, getLocale } from '../../shared/i18n/i18n.ts';
 
     // Apply medals-specific body styles (avoid CSS global leakage)
     document.body.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
     document.body.style.background = '#1a1a2e';
     document.body.style.color = '#e0e0e0';
+
+    // Initialize i18n early so getLocale() works for country names
+    initI18n(MEDALS_I18N);
 
     initMobile();
 
@@ -251,7 +257,6 @@ function getMedalData(medalId: number) {
 
     // Lazy-loaded data for quiz
     let locationsData: LocationsData | null = null;
-    let countryNames: Map<string, string> | null = null;
 
     // Toggle folders
     menuEl.querySelectorAll('.menu-header').forEach((header) => {
@@ -327,18 +332,15 @@ function getMedalData(medalId: number) {
         const slug = `${medalId}-${medalName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
         window.location.hash = slug;
 
-        // Load data if needed
-        if (!countryNames) {
-            const res = await fetch(asset('countries-enriched.json'));
-            const data: { iso2: string; name: string }[] = await res.json();
-            countryNames = new Map(data.map((c) => [c.iso2, c.name]));
-        }
+        // Get localized country names
+        const locale = getLocale();
+        const countryNames = COUNTRY_NAMES[locale] || COUNTRY_NAMES['en'];
 
         const questions: Question[] = [];
 
         if (type === 'countries') {
             for (const iso2 of questionIds) {
-                const name = countryNames.get(iso2);
+                const name = countryNames[iso2];
                 if (!name) continue;
                 questions.push({
                     present: 'text',
@@ -403,6 +405,8 @@ function getMedalData(medalId: number) {
             canvasId: 'medalsCanvas',
             title: medalName,
             questions,
+            scoreBarType: 'simple',
+            i18n: MEDALS_I18N,
             onGameComplete: (score, total, elapsedMs) => {
                 showEndGameOverlay(
                     score,
