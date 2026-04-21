@@ -53,7 +53,7 @@ export function showConsentBannerIfNeeded(onConsent?: (granted: boolean) => void
     `;
 
     const text = document.createElement('span');
-    text.textContent = 'We use cookies for analytics and embed YouTube videos.';
+    text.innerHTML = 'We use cookies for analytics and YouTube embeds. See our <a href="https://jordglobe.com/gdpr-web" target="_blank" rel="noopener noreferrer" style="color: #aaa; text-decoration: underline;">privacy policy</a>.';
     text.style.textAlign = 'center';
 
     const btnStyle = `
@@ -74,13 +74,6 @@ export function showConsentBannerIfNeeded(onConsent?: (granted: boolean) => void
     declineBtn.textContent = 'Decline';
     declineBtn.style.cssText = btnStyle + 'background: #666; color: #fff;';
 
-    const readMore = document.createElement('a');
-    readMore.textContent = 'Read more';
-    readMore.href = 'https://jordglobe.com/gdpr-web';
-    readMore.target = '_blank';
-    readMore.rel = 'noopener noreferrer';
-    readMore.style.cssText = 'color: #aaa; text-decoration: underline; font-size: 14px;';
-
     const handleChoice = (granted: boolean) => {
         localStorage.setItem(CONSENT_KEY, granted ? 'granted' : 'denied');
         banner.remove();
@@ -91,7 +84,6 @@ export function showConsentBannerIfNeeded(onConsent?: (granted: boolean) => void
     declineBtn.addEventListener('click', () => handleChoice(false));
 
     banner.appendChild(text);
-    banner.appendChild(readMore);
     banner.appendChild(acceptBtn);
     banner.appendChild(declineBtn);
     document.body.appendChild(banner);

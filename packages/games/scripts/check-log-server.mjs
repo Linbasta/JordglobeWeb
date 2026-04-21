@@ -20,8 +20,7 @@ socket.on('connect', () => {
 
 socket.on('error', () => {
     console.error('\x1b[31m%s\x1b[0m', '✗ Log server not running!');
-    console.error('  Start it first: npm run log-server');
-    console.error('  (or from root:  pnpm --filter @jordglobe/games log-server)\n');
+    console.error('  Start it first: pnpm dev:logs\n');
     process.exit(1);
 });
 
