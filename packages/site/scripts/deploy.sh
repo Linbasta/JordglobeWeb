@@ -23,8 +23,8 @@ if [[ ! -d "$GAMES_DIST" ]]; then
   echo "ERROR: $GAMES_DIST missing. Run 'pnpm build:games' first." >&2
   exit 1
 fi
-if [[ ! -f "$GAMES_DIST/eurovision/index.html" ]]; then
-  echo "ERROR: $GAMES_DIST/eurovision/index.html missing — games build did not produce eurovision." >&2
+if [[ ! -f "$GAMES_DIST/euro-music-quiz/index.html" ]]; then
+  echo "ERROR: $GAMES_DIST/euro-music-quiz/index.html missing — games build did not produce euro-music-quiz." >&2
   exit 1
 fi
 

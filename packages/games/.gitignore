@@ -3,7 +3,7 @@ node_modules/
 
 # Build output
 dist/
-dist-eurovision/
+dist-euro-music-quiz/
 .dev-pages-temp/
 
 # IDE

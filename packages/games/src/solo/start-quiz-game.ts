@@ -31,11 +31,11 @@ export interface QuizGameConfig {
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[], isPersonalBest: boolean) => void
     showHoverLabel?: boolean
     onReady?: () => void | Promise<void>
-    /** Quiz ID for personal best tracking (e.g., 'eurovision', 'country-quiz') */
+    /** Quiz ID for personal best tracking (e.g., 'euro-music-quiz', 'country-quiz') */
     quizId?: string
-    /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
+    /** Analytics: game type (e.g., 'EuroMusicQuiz', 'Daily', 'Medal') */
     analyticsGame?: string
-    /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
+    /** Analytics: game ID (e.g., 'euro-music-quiz_2026', 'daily_2026-04-10') */
     analyticsGameId?: string
     /** Translation bundle. Declaring >1 availableLocales mounts the language switcher. */
     i18n?: QuizTranslations

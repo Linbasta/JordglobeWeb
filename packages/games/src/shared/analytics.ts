@@ -7,7 +7,7 @@
  * Usage:
  *   import { initAnalytics, logGameSessionStart } from './analytics';
  *   initAnalytics();  // Call once to enable
- *   logGameSessionStart('Eurovision', 'eurovision_2025', sessionId);
+ *   logGameSessionStart('EuroMusicQuiz', 'euro-music-quiz_2025', sessionId);
  */
 
 import { Analytics, getAnalytics, logEvent } from 'firebase/analytics';

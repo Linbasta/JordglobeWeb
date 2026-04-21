@@ -38,7 +38,7 @@ export function showMobileAppAd(): void {
     adContainer.style.cssText =
         `position:fixed;bottom:${AD_MARGIN}px;right:${AD_MARGIN}px;` +
         `width:${BANNER_WIDTH}px;height:${BANNER_HEIGHT}px;` +
-        `background:url('${asset('eurovision/blue_gradient.png')}') center/cover no-repeat;` +
+        `background:url('${asset('euro-music-quiz/blue_gradient.png')}') center/cover no-repeat;` +
         'border-radius:12px;' +
         'z-index:100;' +
         'font-family:Arial,sans-serif;' +
@@ -58,7 +58,7 @@ export function showMobileAppAd(): void {
         'display:block;z-index:2;'
 
     const phones = document.createElement('img')
-    phones.src = asset('eurovision/4_phones.png')
+    phones.src = asset('euro-music-quiz/4_phones.png')
     phones.alt = ''
     phones.style.cssText =
         `position:absolute;right:6px;top:-${PHONES_OVERFLOW_TOP}px;` +

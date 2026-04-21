@@ -49,11 +49,11 @@ export interface QuizConfig {
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[]) => void
-    /** Quiz ID for personal best tracking (e.g., 'eurovision', 'country-quiz') */
+    /** Quiz ID for personal best tracking (e.g., 'euro-music-quiz', 'country-quiz') */
     quizId?: string
-    /** Analytics: game type (e.g., 'Eurovision', 'Daily', 'Medal') */
+    /** Analytics: game type (e.g., 'EuroMusicQuiz', 'Daily', 'Medal') */
     analyticsGame?: string
-    /** Analytics: game ID (e.g., 'eurovision_2026', 'daily_2026-04-10') */
+    /** Analytics: game ID (e.g., 'euro-music-quiz_2026', 'daily_2026-04-10') */
     analyticsGameId?: string
 }
 

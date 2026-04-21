@@ -1,14 +1,14 @@
 {
   "hosting": {
     "site": "jordglobegl-dev",
-    "public": "dist-eurovision",
+    "public": "dist-euro-music-quiz",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
     "rewrites": [
-      { "source": "/", "destination": "/eurovision.html" }
+      { "source": "/", "destination": "/euro-music-quiz.html" }
     ],
     "cleanUrls": false,
     "headers": [

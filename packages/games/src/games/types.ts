@@ -10,7 +10,7 @@ export type LocaleSeo = {
 export type GameManifest = {
     id: string;
     published: boolean;
-    /** OG image filename, relative to /games/[id]/ — e.g. 'og-eurovision.jpg' */
+    /** OG image filename, relative to /games/[id]/ — e.g. 'og-euro-music-quiz.jpg' */
     image: string;
     i18n: QuizTranslations;
     locales: Record<string, LocaleSeo>;

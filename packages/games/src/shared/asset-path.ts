@@ -5,7 +5,7 @@
  * build, but it does NOT touch plain string literals in JS source. Wrap any
  * hardcoded local-asset path in `asset(...)` so the same source works when
  * deployed standalone (base "/") or embedded under a subpath like
- * "/games/eurovision/".
+ * "/games/euro-music-quiz/".
  *
  * Accepts either leading-slash or bare forms:
  *   asset('/foo.png') and asset('foo.png') both resolve to BASE_URL + 'foo.png'.

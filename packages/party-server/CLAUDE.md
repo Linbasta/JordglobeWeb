@@ -89,5 +89,5 @@ src/
 ├── database.mjs    # SQLite persistence
 └── data/
     ├── cities.mjs  # City locations + distance calc
-    └── videos.mjs  # Eurovision video data
+    └── videos.mjs  # Euro Music Quiz video data
 ```

@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "@jordglobe/games#build:astro": {
+    "@jordglobe/games#build": {
       "inputs": [
         "src/**",
         "public-prod/**",
@@ -29,21 +29,21 @@
     "@jordglobe/site#deploy:stage": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:astro"
+        "@jordglobe/games#build"
       ],
       "cache": false
     },
     "@jordglobe/site#deploy:prod": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:astro"
+        "@jordglobe/games#build"
       ],
       "cache": false
     },
     "@jordglobe/site#preview": {
       "dependsOn": [
         "@jordglobe/site#build",
-        "@jordglobe/games#build:astro"
+        "@jordglobe/games#build"
       ],
       "cache": false,
       "persistent": true

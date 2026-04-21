@@ -9,7 +9,7 @@
 </style>
 
 <script>
-    import { EUROVISION_I18N } from './i18n.ts';
+    import { EURO_MUSIC_QUIZ_I18N } from './i18n.ts';
     import { t, initI18n } from '../../shared/i18n/i18n.ts';
     import { initMobile } from '../../shared/ui/mobile-init.ts';
     import { startQuizGame } from '../../solo/start-quiz-game.ts';
@@ -20,15 +20,15 @@
     import sprite4 from './assets/4.png?url';
     import sprite5 from './assets/5.png?url';
     import sprite6 from './assets/6.png?url';
-    import avatarTripletsUrl from './assets/eurovision_avatar_triplets.png?url';
+    import avatarTripletsUrl from './assets/euro-music-quiz_avatar_triplets.png?url';
     import greenBtnUrl from './assets/green_btn.png?url';
 
     const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
 
-    // Apply Eurovision-specific body styles (avoid CSS global leakage)
+    // Apply Euro Music Quiz-specific body styles (avoid CSS global leakage)
     document.body.style.backgroundColor = '#6496dc';
 
-    initI18n(EUROVISION_I18N);
+    initI18n(EURO_MUSIC_QUIZ_I18N);
     initMobile();
 
     const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
@@ -123,7 +123,7 @@
         return min * 60 + sec;
     }
 
-    const EUROVISION_ENTRIES: Array<[string, string, string, number?]> = [
+    const EURO_MUSIC_QUIZ_ENTRIES: Array<[string, string, string, number?]> = [
         ['00:01', 'AL', 'Albania'],
         ['00:31', 'AM', 'Armenia'],
         ['01:00', 'AU', 'Australia'],
@@ -161,7 +161,7 @@
         ['17:00', 'GB', 'United Kingdom'],
     ];
 
-    const EUROVISION_QUESTIONS = EUROVISION_ENTRIES.map(
+    const EURO_MUSIC_QUIZ_QUESTIONS = EURO_MUSIC_QUIZ_ENTRIES.map(
         ([timeStr, iso2, countryName, duration]) => {
             const songStart = parseTime(timeStr);
             const clipLen = duration ?? CLIP_DURATION;
@@ -179,13 +179,13 @@
     );
 
     startQuizGame({
-        i18n: EUROVISION_I18N,
-        questions: EUROVISION_QUESTIONS,
+        i18n: EURO_MUSIC_QUIZ_I18N,
+        questions: EURO_MUSIC_QUIZ_QUESTIONS,
         scoreBarType: 'simple',
         showHoverLabel: true,
-        quizId: 'eurovision',
-        analyticsGame: 'Eurovision',
-        analyticsGameId: 'eurovision_2026',
+        quizId: 'euro-music-quiz',
+        analyticsGame: 'EuroMusicQuiz',
+        analyticsGameId: 'euro-music-quiz_2026',
         onReady: () => showStartPanel(),
         onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
             const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
@@ -196,7 +196,7 @@
             let isNewRecord = false;
             try {
                 const { postRecord } = await import('../../shared/firestore-records.ts');
-                const data = await postRecord('eurovision', score, total, elapsedMs);
+                const data = await postRecord('euro-music-quiz', score, total, elapsedMs);
                 isNewRecord = data.isNewRecord;
             } catch (e) {
                 console.warn('Failed to submit record:', e);
@@ -208,7 +208,7 @@
                 elapsedMs,
                 results,
                 quizTitle: t('quiz.title'),
-                shareUrl: 'https://eurovision.jordglobe.com/',
+                shareUrl: 'https://jordglobe.com/games/euro-music-quiz/',
                 shareEmoji: '🎵',
                 sprites: SPRITE_URLS,
                 spriteNames,

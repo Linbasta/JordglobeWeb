@@ -7,7 +7,7 @@
  * The inject-seo.ts script reads this config and injects
  * the meta tags into HTML files during build.
  *
- * GAME PAGES: SEO for game pages (eurovision, etc.) is loaded from the
+ * GAME PAGES: SEO for game pages (euro-music-quiz, etc.) is loaded from the
  * shared games-seo.json at ../../shared/games-seo.json (single source of truth).
  */
 

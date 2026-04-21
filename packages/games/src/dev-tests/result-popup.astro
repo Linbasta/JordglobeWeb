@@ -119,12 +119,12 @@
         updateSimpleScoreBar,
         disposeSimpleScoreBar,
     } from '../shared/ui/score-bar-simple.ts';
-    import sprite1 from '../games/eurovision/assets/1.png?url';
-    import sprite2 from '../games/eurovision/assets/2.png?url';
-    import sprite3 from '../games/eurovision/assets/3.png?url';
-    import sprite4 from '../games/eurovision/assets/4.png?url';
-    import sprite5 from '../games/eurovision/assets/5.png?url';
-    import sprite6 from '../games/eurovision/assets/6.png?url';
+    import sprite1 from '../games/euro-music-quiz/assets/1.png?url';
+    import sprite2 from '../games/euro-music-quiz/assets/2.png?url';
+    import sprite3 from '../games/euro-music-quiz/assets/3.png?url';
+    import sprite4 from '../games/euro-music-quiz/assets/4.png?url';
+    import sprite5 from '../games/euro-music-quiz/assets/5.png?url';
+    import sprite6 from '../games/euro-music-quiz/assets/6.png?url';
     const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
 
     const QUIZ_ID = 'test-quiz';
@@ -157,7 +157,7 @@
         }
     }
 
-    const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Eurovision Lover', 'Devoted Fan', 'Eurovision God'];
+    const spriteNames = ['Nul Points', 'Mildly Aware', 'Semi-Curious', 'Music Lover', 'Devoted Fan', 'Music God'];
 
     function show(score: number, total: number, elapsedMs: number, opts: any = {}) {
         showResultOverlay({
@@ -165,8 +165,8 @@
             total,
             elapsedMs,
             results: randomResults(score, total),
-            quizTitle: 'Eurovision Quiz',
-            shareUrl: 'https://jordglobe.com/eurovision',
+            quizTitle: 'Euro Music Quiz',
+            shareUrl: 'https://jordglobe.com/games/euro-music-quiz',
             shareEmoji: '🎵',
             sprites: SPRITE_URLS,
             spriteNames,
@@ -188,8 +188,8 @@
             total,
             elapsedMs,
             results: randomResults(score, total),
-            quizTitle: 'Eurovision Quiz',
-            shareUrl: 'https://jordglobe.com/eurovision',
+            quizTitle: 'Euro Music Quiz',
+            shareUrl: 'https://jordglobe.com/games/euro-music-quiz',
             shareEmoji: '🎵',
             sprites: SPRITE_URLS,
             spriteNames,

@@ -39,7 +39,7 @@ pnpm dev           # Run both in parallel
 ```bash
 pnpm build:site                   # Build the Astro site
 pnpm build:games                  # Build the games
-pnpm build:eurovision-embedded    # Build the Eurovision game for site embedding
+pnpm build:euro-music-quiz-embedded  # Build the Euro Music Quiz for site embedding
 ```
 
 ## Deployment

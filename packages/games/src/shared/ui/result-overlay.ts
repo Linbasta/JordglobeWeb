@@ -252,7 +252,7 @@ const PB_PREFIX = 'pb_'
 
 /**
  * Get the stored personal best for a quiz
- * @param quizId Unique identifier for the quiz (e.g. 'eurovision', 'country-quiz')
+ * @param quizId Unique identifier for the quiz (e.g. 'euro-music-quiz', 'country-quiz')
  */
 export function getPersonalBest(quizId: string): PersonalBestRecord | null {
     try {

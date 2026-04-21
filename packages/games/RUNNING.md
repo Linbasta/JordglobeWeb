@@ -29,7 +29,7 @@ pnpm dev:logs
 ## Accessing Games
 
 ### Production Games
-- http://localhost:4818/games/eurovision/
+- http://localhost:4818/games/euro-music-quiz/
 
 ### Experiments (dev-only)
 - http://localhost:4818/games/experiments/party/

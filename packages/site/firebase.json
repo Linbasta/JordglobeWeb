@@ -25,16 +25,16 @@
                 "destination": "/duel/index.html"
             },
             {
-                "source": "/games/eurovision/sv{,/**}",
-                "destination": "/games/eurovision/sv/index.html"
+                "source": "/games/euro-music-quiz/sv{,/**}",
+                "destination": "/games/euro-music-quiz/sv/index.html"
             },
             {
-                "source": "/games/eurovision/**",
-                "destination": "/games/eurovision/index.html"
+                "source": "/games/euro-music-quiz/**",
+                "destination": "/games/euro-music-quiz/index.html"
             },
             {
-                "source": "/eurovision{,/**}",
-                "destination": "/games/eurovision/index.html"
+                "source": "/euro-music-quiz{,/**}",
+                "destination": "/games/euro-music-quiz/index.html"
             },
             {
                 "source": "**",
@@ -106,16 +106,16 @@
                 "destination": "/duel/index.html"
             },
             {
-                "source": "/games/eurovision/sv{,/**}",
-                "destination": "/games/eurovision/sv/index.html"
+                "source": "/games/euro-music-quiz/sv{,/**}",
+                "destination": "/games/euro-music-quiz/sv/index.html"
             },
             {
-                "source": "/games/eurovision/**",
-                "destination": "/games/eurovision/index.html"
+                "source": "/games/euro-music-quiz/**",
+                "destination": "/games/euro-music-quiz/index.html"
             },
             {
-                "source": "/eurovision{,/**}",
-                "destination": "/games/eurovision/index.html"
+                "source": "/euro-music-quiz{,/**}",
+                "destination": "/games/euro-music-quiz/index.html"
             },
             {
                 "source": "**",

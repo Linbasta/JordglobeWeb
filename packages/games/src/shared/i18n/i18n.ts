@@ -59,7 +59,7 @@ function resolveLocale(bundle: QuizTranslations): string {
     const stored = safeRead(STORAGE_KEY)
     if (stored && codes.includes(stored)) return stored
 
-    // <html lang="…"> set by per-locale pre-rendered HTML (e.g. /games/eurovision/sv/).
+    // <html lang="…"> set by per-locale pre-rendered HTML (e.g. /games/euro-music-quiz/sv/).
     // Stronger signal than navigator language because it reflects the server's URL routing.
     const fromHtml = matchHtmlLangLocale(codes)
     if (fromHtml) return fromHtml
