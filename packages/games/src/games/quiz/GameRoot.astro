@@ -9,6 +9,7 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
 <canvas
     id="quizCanvas"
     data-quiz={JSON.stringify(quiz)}
+    data-quiz-slug={quizSlug}
 ></canvas>
 
 <style>
@@ -24,7 +25,6 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
 
 <script>
     import { initMobile } from '../../shared/ui/mobile-init.ts';
-    import { showEndGameOverlay } from '../../shared/ui/end-game-overlay.ts';
     import { QUIZ_I18N } from './i18n.ts';
     import { initI18n } from '../../shared/i18n/i18n.ts';
     import { buildQuestions } from './build-questions.ts';
@@ -37,6 +37,7 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
 
     const canvas = document.getElementById('quizCanvas') as HTMLCanvasElement;
     const quiz: QuizDef = JSON.parse(canvas.dataset.quiz!);
+    const quizId = `quiz-${canvas.dataset.quizSlug!}`;
 
     async function startQuiz() {
         const questions = await buildQuestions(quiz);
@@ -48,14 +49,38 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
             questions,
             scoreBarType: 'simple',
             i18n: QUIZ_I18N,
-            onGameComplete: (score, total, elapsedMs) => {
-                showEndGameOverlay(
+            quizId,
+            onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
+                const [{ showResultOverlay }, { DEFAULT_SCORE_LEVEL_SPRITES, getDefaultTierNames }] = await Promise.all([
+                    import('../../shared/ui/result-overlay.ts'),
+                    import('../../shared/ui/default-score-levels.ts'),
+                ]);
+
+                let isNewRecord = false;
+                if (isPersonalBest) {
+                    try {
+                        const { postRecord } = await import('../../shared/firestore-records.ts');
+                        const data = await postRecord(quizId, score, total, elapsedMs);
+                        isNewRecord = data.isNewRecord;
+                    } catch (e) {
+                        console.warn('Failed to submit record:', e);
+                    }
+                }
+
+                const spriteNames = getDefaultTierNames();
+                showResultOverlay({
                     score,
                     total,
                     elapsedMs,
-                    () => startQuiz(),
-                    () => { window.history.back(); }
-                );
+                    results,
+                    quizTitle: quiz.name,
+                    shareUrl: window.location.href,
+                    sprites: DEFAULT_SCORE_LEVEL_SPRITES,
+                    spriteNames,
+                    isNewRecord,
+                    isPersonalBest,
+                    onRetry: () => startQuiz(),
+                });
             },
         });
     }

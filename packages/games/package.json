@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/check-log-server.mjs && astro dev",
-    "build": "./scripts/build-prod.sh",
+    "build": "npm run check:slugs && ./scripts/build-prod.sh",
+    "check:slugs": "tsx scripts/check-quiz-slugs.ts",
     "preview": "astro preview",
     "log-server": "node scripts/log-server.mjs",
 

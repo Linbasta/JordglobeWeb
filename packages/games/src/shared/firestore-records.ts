@@ -1,36 +1,68 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db, authReady } from './firebase';
 
-export async function getRecord(quizId: string): Promise<Record<string, unknown> | null> {
+type LeaderboardEntry = {
+    score: number;
+    total: number;
+    elapsed_ms: number;
+    created_at: string;
+};
+
+type LeaderboardDoc = {
+    date: string;
+    entries: LeaderboardEntry[];
+};
+
+async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | null> {
     await authReady;
-    const snap = await getDoc(doc(db, 'records', quizId));
-    return snap.exists() ? snap.data() : null;
+    const snap = await getDoc(doc(db, 'leaderboards', quizId));
+    return snap.exists() ? (snap.data() as LeaderboardDoc) : null;
 }
 
+/**
+ * Submit a play as a personal best. Caller is responsible for only invoking
+ * this when the score beats the user's previous PB — submissions are one-per-PB,
+ * not one-per-play.
+ *
+ * Returns whether the play is a new world record (beats current top-10 entry
+ * on /leaderboards/{quizId}). The leaderboard is materialised by a scheduled
+ * Cloud Function every 15 minutes, so WR detection compares against the
+ * *current* top entry at submit time — it will not see this play until the
+ * next CF run.
+ */
 export async function postRecord(
     quizId: string,
     score: number,
     total: number,
     elapsedMs: number,
-): Promise<{ isNewRecord: boolean; record: Record<string, unknown> | null }> {
+): Promise<{ isNewRecord: boolean; record: LeaderboardEntry | null }> {
     await authReady;
-    const current = await getRecord(quizId);
-    let isNewRecord = false;
-    if (!current) {
+
+    const scoreInt = Math.floor(score);
+    const totalInt = Math.floor(total);
+    const elapsedInt = Math.floor(elapsedMs);
+
+    await addDoc(collection(db, 'submissions'), {
+        quiz_id: quizId,
+        score: scoreInt,
+        total: totalInt,
+        elapsed_ms: elapsedInt,
+        created_at: serverTimestamp(),
+    });
+
+    const leaderboard = await getLeaderboard(quizId);
+    const top = leaderboard?.entries[0] ?? null;
+
+    let isNewRecord: boolean;
+    if (!top) {
         isNewRecord = true;
-    } else if (score > (current.score as number)) {
+    } else if (scoreInt > top.score) {
         isNewRecord = true;
-    } else if (score === (current.score as number) && elapsedMs < (current.elapsed_ms as number)) {
+    } else if (scoreInt === top.score && elapsedInt < top.elapsed_ms) {
         isNewRecord = true;
+    } else {
+        isNewRecord = false;
     }
-    if (isNewRecord) {
-        await setDoc(doc(db, 'records', quizId), {
-            score,
-            total,
-            elapsed_ms: elapsedMs,
-            created_at: new Date().toISOString(),
-        });
-    }
-    const record = await getRecord(quizId);
-    return { isNewRecord, record };
+
+    return { isNewRecord, record: top };
 }

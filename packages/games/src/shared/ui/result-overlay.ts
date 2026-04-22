@@ -17,9 +17,9 @@ export interface ResultOverlayConfig {
     quizTitle: string
     shareUrl: string
     shareEmoji?: string
-    /** Six sprite image URLs (index 0 = level 1 sprite, index 5 = perfect-score sprite). */
+    /** Sprite image URLs, one per tier. Last entry is the perfect-score sprite. */
     sprites?: string[]
-    /** Names for each sprite level (index 0 = sprite 1, etc). Shown below the avatar. */
+    /** Names for each sprite tier (index 0 = lowest tier). Shown below the avatar. */
     spriteNames?: string[]
     /** Custom message function override. Called with (score, total) to produce the result message. */
     getMessage?: (score: number, total: number) => string
@@ -70,7 +70,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
 
     const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, sprites, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, isPersonalBest, onRetry } = config
     const isPerfect = score === total
-    const SPRITE_COUNT = 6
+    const SPRITE_COUNT = sprites?.length ?? 0
 
     // Inject styles
     const styleId = 'result-overlay-styles'

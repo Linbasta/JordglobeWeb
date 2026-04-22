@@ -24,9 +24,14 @@
     "build": "turbo run build",
     "build:site": "turbo run build --filter=@jordglobe/site",
     "build:games": "turbo run build --filter=@jordglobe/games",
+    "build:functions": "npm --prefix packages/functions run build",
     "preview": "turbo run preview --filter=@jordglobe/site",
     "deploy:stage": "turbo run deploy:stage --filter=@jordglobe/site",
-    "deploy:prod": "turbo run deploy:prod --filter=@jordglobe/site"
+    "deploy:prod": "turbo run deploy:prod --filter=@jordglobe/site",
+    "deploy:functions": "npm --prefix packages/functions run deploy",
+    "deploy:rules": "npm --prefix packages/functions run deploy:rules",
+    "run:functions": "npm --prefix packages/functions run run:once",
+    "logs:functions": "npm --prefix packages/functions run logs"
   },
   "keywords": [
     "geography",

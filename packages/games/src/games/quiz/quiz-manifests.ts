@@ -3,7 +3,7 @@ import type { GameManifest } from '../types';
 import type { QuizDef } from '../../quiz/types';
 import { QUIZ_I18N } from './i18n';
 
-function toSlug(name: string): string {
+export function toSlug(name: string): string {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 

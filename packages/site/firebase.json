@@ -161,9 +161,9 @@
             }
         ]
     }],
-    "functions": {
-        "source": "functions"
-    },
+    "firestore": [
+        { "database": "webversion", "rules": "firestore.rules", "indexes": "firestore.indexes.json" }
+    ],
     "emulators": {
         "hosting": {
             "host": "0.0.0.0",
