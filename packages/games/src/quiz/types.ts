@@ -1,4 +1,4 @@
-export type Medal = {
+export type QuizDef = {
     id: number
     name: string
     type: 'countries' | 'locations' | 'capitals' | 'provinces' | 'flags'
@@ -7,11 +7,11 @@ export type Medal = {
 }
 
 export type MenuNode =
-    | { name: string; medalId: number }
+    | { name: string; quizId: number }
     | { name: string; children: MenuNode[] }
 
-export type MedalsData = {
-    medals: Medal[]
+export type QuizzesData = {
+    quizzes: QuizDef[]
     menu: MenuNode[]
 }
 

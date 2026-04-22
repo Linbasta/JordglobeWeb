@@ -1,5 +1,5 @@
 {
-  "medals": [
+  "quizzes": [
     {
       "id": 0,
       "name": "Africa Countries",
@@ -4569,23 +4569,23 @@
       "children": [
         {
           "name": "Countries",
-          "medalId": 64
+          "quizId": 64
         },
         {
           "name": "Capitals",
-          "medalId": 65
+          "quizId": 65
         },
         {
           "name": "Sights",
-          "medalId": 66
+          "quizId": 66
         },
         {
           "name": "Flags",
-          "medalId": 189
+          "quizId": 189
         },
         {
           "name": "10 Flags",
-          "medalId": 190
+          "quizId": 190
         }
       ]
     },
@@ -4597,27 +4597,27 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 0
+              "quizId": 0
             },
             {
               "name": "Capitals",
-              "medalId": 1
+              "quizId": 1
             },
             {
               "name": "Countries",
-              "medalId": 12
+              "quizId": 12
             },
             {
               "name": "Capitals",
-              "medalId": 13
+              "quizId": 13
             },
             {
               "name": "Flags",
-              "medalId": 158
+              "quizId": 158
             },
             {
               "name": "Flags",
-              "medalId": 164
+              "quizId": 164
             }
           ]
         },
@@ -4626,15 +4626,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 2
+              "quizId": 2
             },
             {
               "name": "Capitals",
-              "medalId": 3
+              "quizId": 3
             },
             {
               "name": "Flags",
-              "medalId": 159
+              "quizId": 159
             }
           ]
         },
@@ -4643,15 +4643,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 4
+              "quizId": 4
             },
             {
               "name": "Capitals",
-              "medalId": 5
+              "quizId": 5
             },
             {
               "name": "Flags",
-              "medalId": 160
+              "quizId": 160
             }
           ]
         },
@@ -4660,15 +4660,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 6
+              "quizId": 6
             },
             {
               "name": "Capitals",
-              "medalId": 7
+              "quizId": 7
             },
             {
               "name": "Flags",
-              "medalId": 161
+              "quizId": 161
             }
           ]
         },
@@ -4677,15 +4677,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 8
+              "quizId": 8
             },
             {
               "name": "Capitals",
-              "medalId": 9
+              "quizId": 9
             },
             {
               "name": "Flags",
-              "medalId": 162
+              "quizId": 162
             }
           ]
         },
@@ -4694,15 +4694,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 10
+              "quizId": 10
             },
             {
               "name": "Capitals",
-              "medalId": 11
+              "quizId": 11
             },
             {
               "name": "Flags",
-              "medalId": 163
+              "quizId": 163
             }
           ]
         }
@@ -4716,27 +4716,27 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 14
+              "quizId": 14
             },
             {
               "name": "Capitals",
-              "medalId": 15
+              "quizId": 15
             },
             {
               "name": "Countries",
-              "medalId": 26
+              "quizId": 26
             },
             {
               "name": "Capitals",
-              "medalId": 27
+              "quizId": 27
             },
             {
               "name": "Flags",
-              "medalId": 165
+              "quizId": 165
             },
             {
               "name": "Flags",
-              "medalId": 171
+              "quizId": 171
             }
           ]
         },
@@ -4745,15 +4745,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 16
+              "quizId": 16
             },
             {
               "name": "Capitals",
-              "medalId": 17
+              "quizId": 17
             },
             {
               "name": "Flags",
-              "medalId": 166
+              "quizId": 166
             }
           ]
         },
@@ -4762,15 +4762,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 18
+              "quizId": 18
             },
             {
               "name": "Capitals",
-              "medalId": 19
+              "quizId": 19
             },
             {
               "name": "Flags",
-              "medalId": 167
+              "quizId": 167
             }
           ]
         },
@@ -4779,15 +4779,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 20
+              "quizId": 20
             },
             {
               "name": "Capitals",
-              "medalId": 21
+              "quizId": 21
             },
             {
               "name": "Flags",
-              "medalId": 168
+              "quizId": 168
             }
           ]
         },
@@ -4796,15 +4796,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 22
+              "quizId": 22
             },
             {
               "name": "Capitals",
-              "medalId": 23
+              "quizId": 23
             },
             {
               "name": "Flags",
-              "medalId": 169
+              "quizId": 169
             }
           ]
         },
@@ -4813,15 +4813,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 24
+              "quizId": 24
             },
             {
               "name": "Capitals",
-              "medalId": 25
+              "quizId": 25
             },
             {
               "name": "Flags",
-              "medalId": 170
+              "quizId": 170
             }
           ]
         }
@@ -4835,35 +4835,35 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 28
+              "quizId": 28
             },
             {
               "name": "Capitals",
-              "medalId": 29
+              "quizId": 29
             },
             {
               "name": "Sights",
-              "medalId": 30
+              "quizId": 30
             },
             {
               "name": "Countries",
-              "medalId": 39
+              "quizId": 39
             },
             {
               "name": "Countries",
-              "medalId": 40
+              "quizId": 40
             },
             {
               "name": "Capitals",
-              "medalId": 41
+              "quizId": 41
             },
             {
               "name": "Flags",
-              "medalId": 172
+              "quizId": 172
             },
             {
               "name": "Flags",
-              "medalId": 177
+              "quizId": 177
             }
           ]
         },
@@ -4872,15 +4872,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 31
+              "quizId": 31
             },
             {
               "name": "Capitals",
-              "medalId": 32
+              "quizId": 32
             },
             {
               "name": "Flags",
-              "medalId": 173
+              "quizId": 173
             }
           ]
         },
@@ -4889,15 +4889,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 33
+              "quizId": 33
             },
             {
               "name": "Capitals",
-              "medalId": 34
+              "quizId": 34
             },
             {
               "name": "Flags",
-              "medalId": 174
+              "quizId": 174
             }
           ]
         },
@@ -4906,15 +4906,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 35
+              "quizId": 35
             },
             {
               "name": "Capitals",
-              "medalId": 36
+              "quizId": 36
             },
             {
               "name": "Flags",
-              "medalId": 175
+              "quizId": 175
             }
           ]
         },
@@ -4923,15 +4923,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 37
+              "quizId": 37
             },
             {
               "name": "Capitals",
-              "medalId": 38
+              "quizId": 38
             },
             {
               "name": "Flags",
-              "medalId": 176
+              "quizId": 176
             }
           ]
         }
@@ -4945,27 +4945,27 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 42
+              "quizId": 42
             },
             {
               "name": "Capitals",
-              "medalId": 43
+              "quizId": 43
             },
             {
               "name": "5 Countries",
-              "medalId": 48
+              "quizId": 48
             },
             {
               "name": "5 Capitals",
-              "medalId": 49
+              "quizId": 49
             },
             {
               "name": "Flags",
-              "medalId": 178
+              "quizId": 178
             },
             {
               "name": "5 Flags",
-              "medalId": 181
+              "quizId": 181
             }
           ]
         },
@@ -4974,15 +4974,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 44
+              "quizId": 44
             },
             {
               "name": "Capitals",
-              "medalId": 45
+              "quizId": 45
             },
             {
               "name": "Flags",
-              "medalId": 179
+              "quizId": 179
             }
           ]
         },
@@ -4991,23 +4991,23 @@
           "children": [
             {
               "name": "Carribean Countries",
-              "medalId": 46
+              "quizId": 46
             },
             {
               "name": "Carribean Capitals",
-              "medalId": 47
+              "quizId": 47
             },
             {
               "name": "Carribean dependent territories",
-              "medalId": 69
+              "quizId": 69
             },
             {
               "name": "Carribean Flags",
-              "medalId": 180
+              "quizId": 180
             },
             {
               "name": "Carribean dependent territories flags",
-              "medalId": 193
+              "quizId": 193
             }
           ]
         },
@@ -5016,27 +5016,27 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 50
+              "quizId": 50
             },
             {
               "name": "Capitals",
-              "medalId": 51
+              "quizId": 51
             },
             {
               "name": "5 Countries",
-              "medalId": 52
+              "quizId": 52
             },
             {
               "name": "5 Capitals",
-              "medalId": 53
+              "quizId": 53
             },
             {
               "name": "Flags",
-              "medalId": 182
+              "quizId": 182
             },
             {
               "name": "5 Flags",
-              "medalId": 183
+              "quizId": 183
             }
           ]
         }
@@ -5050,27 +5050,27 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 54
+              "quizId": 54
             },
             {
               "name": "Capitals",
-              "medalId": 55
+              "quizId": 55
             },
             {
               "name": "Countries",
-              "medalId": 62
+              "quizId": 62
             },
             {
               "name": "Capitals",
-              "medalId": 63
+              "quizId": 63
             },
             {
               "name": "Flags",
-              "medalId": 184
+              "quizId": 184
             },
             {
               "name": "Flags",
-              "medalId": 188
+              "quizId": 188
             }
           ]
         },
@@ -5079,15 +5079,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 56
+              "quizId": 56
             },
             {
               "name": "Capitals",
-              "medalId": 57
+              "quizId": 57
             },
             {
               "name": "Flags",
-              "medalId": 185
+              "quizId": 185
             }
           ]
         },
@@ -5096,15 +5096,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 58
+              "quizId": 58
             },
             {
               "name": "Capitals",
-              "medalId": 59
+              "quizId": 59
             },
             {
               "name": "Flags",
-              "medalId": 186
+              "quizId": 186
             }
           ]
         },
@@ -5113,15 +5113,15 @@
           "children": [
             {
               "name": "Countries",
-              "medalId": 60
+              "quizId": 60
             },
             {
               "name": "Capitals",
-              "medalId": 61
+              "quizId": 61
             },
             {
               "name": "Flags",
-              "medalId": 187
+              "quizId": 187
             }
           ]
         }
@@ -5135,7 +5135,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 146
+              "quizId": 146
             }
           ]
         },
@@ -5144,7 +5144,7 @@
           "children": [
             {
               "name": "States",
-              "medalId": 157
+              "quizId": 157
             }
           ]
         },
@@ -5153,7 +5153,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 139
+              "quizId": 139
             }
           ]
         },
@@ -5162,23 +5162,23 @@
           "children": [
             {
               "name": "5 States",
-              "medalId": 119
+              "quizId": 119
             },
             {
               "name": "Amazonia states",
-              "medalId": 120
+              "quizId": 120
             },
             {
               "name": "Nordeste states",
-              "medalId": 121
+              "quizId": 121
             },
             {
               "name": "Centro-Sul states",
-              "medalId": 122
+              "quizId": 122
             },
             {
               "name": "States",
-              "medalId": 129
+              "quizId": 129
             }
           ]
         },
@@ -5187,11 +5187,11 @@
           "children": [
             {
               "name": "5 Provinces",
-              "medalId": 109
+              "quizId": 109
             },
             {
               "name": "Provinces",
-              "medalId": 134
+              "quizId": 134
             }
           ]
         },
@@ -5200,35 +5200,35 @@
           "children": [
             {
               "name": "China 5 Provinces",
-              "medalId": 77
+              "quizId": 77
             },
             {
               "name": "North China Provinces",
-              "medalId": 78
+              "quizId": 78
             },
             {
               "name": "Northeast China Provinces",
-              "medalId": 79
+              "quizId": 79
             },
             {
               "name": "East China Provinces",
-              "medalId": 80
+              "quizId": 80
             },
             {
               "name": "South Central China Provinces",
-              "medalId": 81
+              "quizId": 81
             },
             {
               "name": "Southwest China Provinces",
-              "medalId": 82
+              "quizId": 82
             },
             {
               "name": "Northwestern China Provinces",
-              "medalId": 83
+              "quizId": 83
             },
             {
               "name": "Provinces",
-              "medalId": 138
+              "quizId": 138
             }
           ]
         },
@@ -5237,7 +5237,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 150
+              "quizId": 150
             }
           ]
         },
@@ -5246,7 +5246,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 156
+              "quizId": 156
             }
           ]
         },
@@ -5255,7 +5255,7 @@
           "children": [
             {
               "name": "Bundesländer",
-              "medalId": 108
+              "quizId": 108
             }
           ]
         },
@@ -5264,7 +5264,7 @@
           "children": [
             {
               "name": "Voivoideships",
-              "medalId": 106
+              "quizId": 106
             }
           ]
         },
@@ -5273,15 +5273,15 @@
           "children": [
             {
               "name": "Yorkshire & the Humber Counties",
-              "medalId": 94
+              "quizId": 94
             },
             {
               "name": "East Midlands Counties",
-              "medalId": 95
+              "quizId": 95
             },
             {
               "name": "West Midlands Counties",
-              "medalId": 96
+              "quizId": 96
             }
           ]
         },
@@ -5290,7 +5290,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 151
+              "quizId": 151
             }
           ]
         },
@@ -5299,11 +5299,11 @@
           "children": [
             {
               "name": "5 Provinces",
-              "medalId": 103
+              "quizId": 103
             },
             {
               "name": "Regions",
-              "medalId": 141
+              "quizId": 141
             }
           ]
         },
@@ -5312,7 +5312,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 127
+              "quizId": 127
             }
           ]
         },
@@ -5321,7 +5321,7 @@
           "children": [
             {
               "name": "States",
-              "medalId": 142
+              "quizId": 142
             }
           ]
         },
@@ -5330,7 +5330,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 140
+              "quizId": 140
             }
           ]
         },
@@ -5339,7 +5339,7 @@
           "children": [
             {
               "name": "counties",
-              "medalId": 124
+              "quizId": 124
             }
           ]
         },
@@ -5348,35 +5348,35 @@
           "children": [
             {
               "name": "5 Provinces",
-              "medalId": 84
+              "quizId": 84
             },
             {
               "name": "North India",
-              "medalId": 85
+              "quizId": 85
             },
             {
               "name": "Northeast India",
-              "medalId": 86
+              "quizId": 86
             },
             {
               "name": "East India",
-              "medalId": 87
+              "quizId": 87
             },
             {
               "name": "South India",
-              "medalId": 88
+              "quizId": 88
             },
             {
               "name": "Western India",
-              "medalId": 89
+              "quizId": 89
             },
             {
               "name": "Central India",
-              "medalId": 90
+              "quizId": 90
             },
             {
               "name": "States",
-              "medalId": 137
+              "quizId": 137
             }
           ]
         },
@@ -5385,23 +5385,23 @@
           "children": [
             {
               "name": "5 Regions",
-              "medalId": 110
+              "quizId": 110
             },
             {
               "name": "Northern Italy Regions",
-              "medalId": 111
+              "quizId": 111
             },
             {
               "name": "Central Italy Regions",
-              "medalId": 112
+              "quizId": 112
             },
             {
               "name": "South Italy Regions",
-              "medalId": 113
+              "quizId": 113
             },
             {
               "name": "Regions",
-              "medalId": 128
+              "quizId": 128
             }
           ]
         },
@@ -5410,7 +5410,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 132
+              "quizId": 132
             }
           ]
         },
@@ -5419,7 +5419,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 149
+              "quizId": 149
             }
           ]
         },
@@ -5428,27 +5428,27 @@
           "children": [
             {
               "name": "5 States",
-              "medalId": 114
+              "quizId": 114
             },
             {
               "name": "Northern States Mexico",
-              "medalId": 115
+              "quizId": 115
             },
             {
               "name": "Centerwest States Mexico",
-              "medalId": 116
+              "quizId": 116
             },
             {
               "name": "Centersouth States Mexico",
-              "medalId": 117
+              "quizId": 117
             },
             {
               "name": "South States Mexico",
-              "medalId": 118
+              "quizId": 118
             },
             {
               "name": "States",
-              "medalId": 131
+              "quizId": 131
             }
           ]
         },
@@ -5457,7 +5457,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 153
+              "quizId": 153
             }
           ]
         },
@@ -5466,7 +5466,7 @@
           "children": [
             {
               "name": "counties",
-              "medalId": 126
+              "quizId": 126
             }
           ]
         },
@@ -5475,7 +5475,7 @@
           "children": [
             {
               "name": "Counties",
-              "medalId": 102
+              "quizId": 102
             }
           ]
         },
@@ -5484,7 +5484,7 @@
           "children": [
             {
               "name": "Voivodeships",
-              "medalId": 155
+              "quizId": 155
             }
           ]
         },
@@ -5493,7 +5493,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 135
+              "quizId": 135
             }
           ]
         },
@@ -5502,7 +5502,7 @@
           "children": [
             {
               "name": "counties",
-              "medalId": 100
+              "quizId": 100
             }
           ]
         },
@@ -5511,7 +5511,7 @@
           "children": [
             {
               "name": "Regions",
-              "medalId": 143
+              "quizId": 143
             }
           ]
         },
@@ -5520,7 +5520,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 154
+              "quizId": 154
             }
           ]
         },
@@ -5529,11 +5529,11 @@
           "children": [
             {
               "name": "5 Autonomous communities",
-              "medalId": 104
+              "quizId": 104
             },
             {
               "name": "Autonomous communities",
-              "medalId": 136
+              "quizId": 136
             }
           ]
         },
@@ -5542,7 +5542,7 @@
           "children": [
             {
               "name": "counties",
-              "medalId": 125
+              "quizId": 125
             }
           ]
         },
@@ -5551,11 +5551,11 @@
           "children": [
             {
               "name": "Sweden 5 counties",
-              "medalId": 123
+              "quizId": 123
             },
             {
               "name": "Counties",
-              "medalId": 145
+              "quizId": 145
             }
           ]
         },
@@ -5564,7 +5564,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 130
+              "quizId": 130
             }
           ]
         },
@@ -5573,7 +5573,7 @@
           "children": [
             {
               "name": "Oblasts",
-              "medalId": 152
+              "quizId": 152
             }
           ]
         },
@@ -5582,31 +5582,31 @@
           "children": [
             {
               "name": "5 Counties",
-              "medalId": 91
+              "quizId": 91
             },
             {
               "name": "North East England Counties",
-              "medalId": 92
+              "quizId": 92
             },
             {
               "name": "North West England Counties",
-              "medalId": 93
+              "quizId": 93
             },
             {
               "name": "East of England Counties",
-              "medalId": 97
+              "quizId": 97
             },
             {
               "name": "South East England Counties",
-              "medalId": 98
+              "quizId": 98
             },
             {
               "name": "South West England Counties",
-              "medalId": 99
+              "quizId": 99
             },
             {
               "name": "Counties",
-              "medalId": 144
+              "quizId": 144
             }
           ]
         },
@@ -5615,27 +5615,27 @@
           "children": [
             {
               "name": "5 states",
-              "medalId": 72
+              "quizId": 72
             },
             {
               "name": "West",
-              "medalId": 73
+              "quizId": 73
             },
             {
               "name": "Midwest",
-              "medalId": 74
+              "quizId": 74
             },
             {
               "name": "Northeast",
-              "medalId": 75
+              "quizId": 75
             },
             {
               "name": "The South",
-              "medalId": 76
+              "quizId": 76
             },
             {
               "name": "States",
-              "medalId": 133
+              "quizId": 133
             }
           ]
         },
@@ -5644,7 +5644,7 @@
           "children": [
             {
               "name": "Preserved Counties",
-              "medalId": 101
+              "quizId": 101
             }
           ]
         },
@@ -5653,7 +5653,7 @@
           "children": [
             {
               "name": "Bundesländer",
-              "medalId": 107
+              "quizId": 107
             }
           ]
         },
@@ -5662,7 +5662,7 @@
           "children": [
             {
               "name": "Voidvodeships",
-              "medalId": 105
+              "quizId": 105
             }
           ]
         },
@@ -5671,7 +5671,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 148
+              "quizId": 148
             }
           ]
         },
@@ -5680,7 +5680,7 @@
           "children": [
             {
               "name": "Provinces",
-              "medalId": 147
+              "quizId": 147
             }
           ]
         }
@@ -5691,35 +5691,35 @@
       "children": [
         {
           "name": "Dependent territories",
-          "medalId": 67
+          "quizId": 67
         },
         {
           "name": "Atlantic dependent territories",
-          "medalId": 68
+          "quizId": 68
         },
         {
           "name": "Pacific dependent territories",
-          "medalId": 70
+          "quizId": 70
         },
         {
           "name": "Indian Ocean dependent territories",
-          "medalId": 71
+          "quizId": 71
         },
         {
           "name": "Dependent territories flags",
-          "medalId": 191
+          "quizId": 191
         },
         {
           "name": "Atlantic dependent territories flags",
-          "medalId": 192
+          "quizId": 192
         },
         {
           "name": "Pacific dependent territories flags",
-          "medalId": 194
+          "quizId": 194
         },
         {
           "name": "Indian Ocean dependent territories flags",
-          "medalId": 195
+          "quizId": 195
         }
       ]
     }

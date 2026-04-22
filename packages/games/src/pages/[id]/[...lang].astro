@@ -25,9 +25,12 @@ export const getStaticPaths = (() => {
 
 const { manifestId, lang } = Astro.props;
 const manifest = manifests.find((m) => m.id === manifestId)!;
-const GameRoot = gameRootModules[`../../games/${manifestId}/GameRoot.astro`].default;
+
+const modulePath = `../../games/${manifestId}/GameRoot.astro`;
+const quizFallbackPath = `../../games/quiz/GameRoot.astro`;
+const GameRoot = (gameRootModules[modulePath] ?? gameRootModules[quizFallbackPath]).default;
 ---
 
 <GameLayout manifest={manifest} lang={lang}>
-    <GameRoot />
+    <GameRoot quizSlug={manifestId} />
 </GameLayout>
