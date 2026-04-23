@@ -8,6 +8,7 @@ export interface EnvironmentConfig {
     isProduction: boolean;
     websocketUrl: string;
     baseUrl: string;
+    apiUrl: string;
 }
 
 /**
@@ -24,22 +25,26 @@ function detectEnvironment(): EnvironmentConfig {
 
     let websocketUrl: string;
     let baseUrl: string;
+    let apiUrl: string;
 
     if (isDevelopment) {
         // Development: separate WebSocket server on port 3003
         websocketUrl = `ws://${hostname}:3003`;
         baseUrl = `http://${hostname}:${port || 4817}`;
+        apiUrl = 'http://127.0.0.1:8000/graphql';
     } else {
         // Production: same server, WebSocket on same port (8080), use wss://
         websocketUrl = `wss://${hostname}`;
         baseUrl = `https://${hostname}`;
+        apiUrl = 'https://api.jordglobe.com/graphql';
     }
 
     return {
         isDevelopment,
         isProduction,
         websocketUrl,
-        baseUrl
+        baseUrl,
+        apiUrl,
     };
 }
 

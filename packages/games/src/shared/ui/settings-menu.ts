@@ -7,6 +7,8 @@
 
 import { asset } from '../asset-path'
 import { getAvailableLocales, getLocale, setLocale, t } from '../i18n/i18n'
+import { auth, isRealUser } from '../firebase'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 const MORE_GAMES_URL = 'https://jordglobe.com/games/'
 const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
@@ -81,6 +83,11 @@ function injectStyles(): void {
         .sm-share-btn svg { width:18px;height:18px;fill:currentColor;flex-shrink:0; }
         .sm-share-btn.copied { background:#22c55e;border-color:#22c55e;color:#fff; }
         .sm-share-btn.copied:hover { background:#22c55e; }
+        .sm-auth-banner { display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;margin-bottom:16px; }
+        .sm-auth-avatar { width:32px;height:32px;border-radius:50%;background:#2a7fff;color:#fff;font-size:14px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit; }
+        .sm-auth-email { flex:1;font-size:13px;color:#a0c4e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left; }
+        .sm-auth-link { font-size:13px;color:#7eb8e0;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;text-decoration:underline;flex-shrink:0;transition:color 0.15s; }
+        .sm-auth-link:hover { color:#fff; }
         .sm-store-links { display:flex;justify-content:center;gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.12); }
         .sm-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
         .sm-store-badge:hover { transform:scale(1.05);opacity:1; }
@@ -123,13 +130,18 @@ export function showSettingsMenu(): void {
     card.innerHTML = `
         <button class="sm-close" aria-label="Close settings">${CLOSE_ICON}</button>
         <div class="sm-title">${t('settings.title')}</div>
+        <div class="sm-auth-banner">
+            <div class="sm-auth-avatar"></div>
+            <span class="sm-auth-email"></span>
+            <button class="sm-auth-link" type="button"></button>
+        </div>
         ${renderLanguageRow()}
         <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
+        <button class="sm-share-btn">${SHARE_ICON}${t('settings.share')}</button>
         <div class="sm-store-links">
             <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="sm-store-badge"></a>
             <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="sm-store-badge"></a>
         </div>
-        <button class="sm-share-btn">${SHARE_ICON}${t('settings.share')}</button>
     `
 
     backdrop.appendChild(card)
@@ -137,6 +149,7 @@ export function showSettingsMenu(): void {
 
     wireLanguageButtons(card)
     wireShareButton(card)
+    wireAuthRow(card)
 
     const closeBtn = card.querySelector('.sm-close') as HTMLButtonElement
     closeBtn.addEventListener('click', hideSettingsMenu)
@@ -202,12 +215,49 @@ function wireShareButton(card: HTMLElement): void {
     })
 }
 
+function wireAuthRow(card: HTMLElement): void {
+    const avatarEl = card.querySelector('.sm-auth-avatar') as HTMLElement
+    const emailEl = card.querySelector('.sm-auth-email') as HTMLElement
+    const linkEl = card.querySelector('.sm-auth-link') as HTMLButtonElement
+
+    function update() {
+        const user = auth.currentUser
+        if (user && !user.isAnonymous) {
+            const email = user.email ?? user.uid
+            avatarEl.textContent = (email[0] ?? '?').toUpperCase()
+            avatarEl.style.background = '#2a7fff'
+            emailEl.textContent = email
+            linkEl.textContent = t('settings.signOut')
+            linkEl.onclick = () => signOut(auth)
+        } else {
+            avatarEl.textContent = '?'
+            avatarEl.style.background = '#555'
+            emailEl.textContent = t('settings.notSignedIn')
+            linkEl.textContent = t('settings.signIn')
+            linkEl.onclick = async () => {
+                hideSettingsMenu()
+                const { showLoginModal } = await import('./login-modal')
+                showLoginModal({
+                    onSuccess: () => showSettingsMenu(),
+                    onCancel: () => showSettingsMenu(),
+                })
+            }
+        }
+    }
+
+    update()
+    const unsub = onAuthStateChanged(auth, () => update())
+    ;(card as any)._authUnsub = unsub
+}
+
 export function hideSettingsMenu(): void {
     if (keyListener) {
         document.removeEventListener('keydown', keyListener)
         keyListener = null
     }
     if (backdrop) {
+        const card = backdrop.querySelector('.sm-card') as any
+        if (card?._authUnsub) card._authUnsub()
         backdrop.remove()
         backdrop = null
     }
