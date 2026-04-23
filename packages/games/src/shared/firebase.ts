@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: 'AIzaSyDkYOnZ1lUM0d8zcYh_NquDCwsSnsjOfHY',
     authDomain: 'geotest-319417.firebaseapp.com',
     databaseURL: 'https://geotest-319417-default-rtdb.europe-west1.firebasedatabase.app',
@@ -30,13 +30,17 @@ if (RECAPTCHA_SITE_KEY && location.hostname !== 'localhost') {
 export const db = getFirestore(app, 'webversion');
 export const auth = getAuth(app);
 
-// Sign in anonymously on load. Firestore rules require request.auth != null,
-// so callers must `await authReady` before any read/write.
+// Resolves once Firebase has determined the initial auth state (user may be null).
+// Callers must `await authReady` before checking auth.currentUser.
 export const authReady = new Promise<void>((resolve) => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) resolve();
-    });
-    signInAnonymously(auth).catch((err) => {
-        console.error('Anonymous sign-in failed:', err);
+    const unsub = onAuthStateChanged(auth, () => {
+        unsub();
+        resolve();
     });
 });
+
+/** True if the current user is signed in with a real provider (not anonymous). */
+export function isRealUser(): boolean {
+    const u = auth.currentUser;
+    return u !== null && !u.isAnonymous;
+}

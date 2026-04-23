@@ -9,7 +9,6 @@
     "check:slugs": "tsx scripts/check-quiz-slugs.ts",
     "preview": "astro preview",
     "log-server": "node scripts/log-server.mjs",
-
     "test": "echo \"No unit tests configured\"",
     "test:e2e": "npx playwright test",
     "test:e2e:headed": "npx playwright test --headed",
@@ -25,7 +24,6 @@
     "test:country-province-parity": "tsx scripts/test-country-province-parity.ts",
     "test:medal-integration": "tsx scripts/test-medal-integration.ts",
     "test:phase0": "npm run test:province-quiz-behavior && npm run test:province-segments && npm run test:country-province-parity && npm run test:medal-integration",
-
     "generate:qr": "tsx scripts/generate-qr.ts",
     "generate:borders": "node scripts/generate-borders.mjs",
     "generate:segments": "tsx scripts/generate-segments.ts",
@@ -34,7 +32,6 @@
     "generate:province-segments": "tsx scripts/generate-province-segments.ts",
     "generate:province-index": "tsx scripts/generate-province-index.ts",
     "generate:medal-menu": "tsx scripts/generate-medal-menu.ts",
-
     "data:enrich-countries": "tsx scripts/enrich-countries.ts",
     "data:convert-medals": "tsx scripts/convert-medals.ts",
     "data:convert-province-medals": "tsx scripts/convert-province-medals.ts",
@@ -56,6 +53,7 @@
     "@babylonjs/gui": "^7.54.3",
     "@babylonjs/loaders": "^7.54.3",
     "firebase": "^12.11.0",
+    "firebaseui": "^6.1.0",
     "qrcode": "^1.5.4"
   }
 }

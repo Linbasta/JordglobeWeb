@@ -1,0 +1,367 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Auth Flow - POC</title>
+    </head>
+    <body>
+        <!-- Step 1: FirebaseUI -->
+        <div id="step-auth" class="step">
+            <h1>Step 1: Sign In</h1>
+            <p class="subtitle">Authenticate with Firebase</p>
+            <div id="firebaseui-auth-container"></div>
+            <div id="auth-status" class="status"></div>
+        </div>
+
+        <!-- Step 2: Login check -->
+        <div id="step-login" class="step hidden">
+            <h1>Step 2: Check Account</h1>
+            <p class="subtitle">Calling userLogin mutation...</p>
+            <div class="spinner"></div>
+            <div id="login-status" class="status"></div>
+        </div>
+
+        <!-- Step 3: Username selection (only if no account) -->
+        <div id="step-username" class="step hidden">
+            <h1>Step 3: Choose Username</h1>
+            <p class="subtitle">No account found. Pick a username to create one.</p>
+
+            <input type="text" id="username" placeholder="Username" maxlength="20" />
+            <p class="hint">3-20 characters. Letters, digits, underscore, or hyphen.</p>
+            <div id="username-validation" class="validation"></div>
+            <button id="create-btn" onclick="createAccount()">Create Account</button>
+            <div id="create-status" class="status"></div>
+        </div>
+
+        <!-- Step 4: Done -->
+        <div id="step-done" class="step hidden">
+            <h1>Logged In</h1>
+            <div id="user-info"></div>
+            <button class="secondary" onclick="signOut()">Sign Out</button>
+        </div>
+
+        <!-- Debug panel -->
+        <details class="debug-panel">
+            <summary>Debug</summary>
+            <pre id="debug-log"></pre>
+        </details>
+    </body>
+</html>
+
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #1a1a2e;
+        color: #eee;
+        padding: 2rem;
+        margin: 0;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+    h1 { color: #ffd700; margin-bottom: 0.25rem; }
+    .subtitle { color: #888; margin-bottom: 1.5rem; }
+    .hint { color: #777; font-size: 0.85rem; margin: 0.25rem 0 0.75rem; }
+
+    .hidden { display: none !important; }
+
+    .step {
+        background: #16213e;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: #0f1629;
+        color: #eee;
+        font-size: 1rem;
+    }
+    input:focus { outline: none; border-color: #ffd700; }
+
+    button {
+        padding: 0.6rem 1.25rem;
+        border: none;
+        border-radius: 6px;
+        background: #ffd700;
+        color: #1a1a2e;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+    button:hover { background: #ffed4a; }
+    button.secondary {
+        background: #333;
+        color: #eee;
+    }
+    button.secondary:hover { background: #444; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status {
+        margin-top: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
+    }
+    .status:empty { display: none; }
+    .status.error { background: #3d1111; color: #ff6b6b; }
+    .status.success { background: #113d11; color: #6bff6b; }
+    .status.info { background: #11283d; color: #6bb3ff; }
+
+    .validation {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        min-height: 1.2em;
+    }
+    .validation.error { color: #ff6b6b; }
+    .validation.ok { color: #6bff6b; }
+
+    .spinner {
+        width: 28px; height: 28px;
+        border: 3px solid #333;
+        border-top-color: #ffd700;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        margin: 1rem 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .debug-panel {
+        margin-top: 2rem;
+        background: #111;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+        color: #999;
+    }
+    .debug-panel summary { cursor: pointer; color: #666; }
+    #debug-log {
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 0.75rem;
+        white-space: pre-wrap;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<script>
+    // FirebaseUI requires the compat SDK
+    import firebase from 'firebase/compat/app';
+    import 'firebase/compat/auth';
+    import * as firebaseui from 'firebaseui';
+    import 'firebaseui/dist/firebaseui.css';
+
+    const firebaseConfig = {
+        apiKey: 'AIzaSyDkYOnZ1lUM0d8zcYh_NquDCwsSnsjOfHY',
+        authDomain: 'geotest-319417.firebaseapp.com',
+        projectId: 'geotest-319417',
+        storageBucket: 'geotest-319417.appspot.com',
+        messagingSenderId: '572898739586',
+        appId: '1:572898739586:web:4cf0ac19a74a1e6b72bb9b',
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const API_URL = 'http://127.0.0.1:8000/graphql';
+
+    // --- DOM helpers ---
+    function $(id: string) { return document.getElementById(id)!; }
+    function showStep(id: string) {
+        document.querySelectorAll('.step').forEach(el => el.classList.add('hidden'));
+        $(id).classList.remove('hidden');
+    }
+    function setStatus(id: string, msg: string, type: 'error' | 'success' | 'info') {
+        const el = $(id);
+        el.textContent = msg;
+        el.className = `status ${type}`;
+    }
+    function log(msg: string) {
+        const el = $('debug-log');
+        const time = new Date().toLocaleTimeString();
+        el.textContent += `[${time}] ${msg}\n`;
+        el.scrollTop = el.scrollHeight;
+    }
+
+    // --- Username validation (client-side mirror of server rules) ---
+    const USERNAME_RE = /^[a-zA-Z0-9_-]{3,20}$/;
+
+    function validateUsername(value: string): string | null {
+        if (value.length < 3) return 'Too short (min 3 characters)';
+        if (value.length > 20) return 'Too long (max 20 characters)';
+        if (!USERNAME_RE.test(value)) return 'Only letters, digits, underscore, or hyphen';
+        return null;
+    }
+
+    $('username').addEventListener('input', () => {
+        const val = ($('username') as HTMLInputElement).value;
+        const err = validateUsername(val);
+        const vEl = $('username-validation');
+        if (!val) {
+            vEl.textContent = '';
+            vEl.className = 'validation';
+        } else if (err) {
+            vEl.textContent = err;
+            vEl.className = 'validation error';
+        } else {
+            vEl.textContent = 'Looks good';
+            vEl.className = 'validation ok';
+        }
+    });
+
+    // --- GraphQL helpers ---
+    async function graphql(query: string, variables: Record<string, unknown>, idToken: string) {
+        log(`POST ${API_URL}\n  ${JSON.stringify(variables)}`);
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`,
+                'X-Client-Version': '1.0.61',
+            },
+            body: JSON.stringify({ query, variables }),
+        });
+        const json = await res.json();
+        log(`Response: ${JSON.stringify(json)}`);
+        if (json.errors?.length) throw new GraphQLError(json.errors[0]);
+        return json.data;
+    }
+
+    class GraphQLError extends Error {
+        code: string;
+        constructor(err: { message: string; extensions?: { code?: string } }) {
+            super(err.message);
+            this.code = err.extensions?.code ?? 'UNKNOWN';
+        }
+    }
+
+    // --- Auth flow ---
+    let currentUser: firebase.User | null = null;
+
+    async function afterFirebaseAuth(user: firebase.User) {
+        currentUser = user;
+        log(`Firebase auth OK: uid=${user.uid}, provider=${user.providerData[0]?.providerId ?? 'unknown'}`);
+
+        showStep('step-login');
+        const idToken = await user.getIdToken();
+        log(`ID token obtained (${idToken.length} chars)`);
+
+        try {
+            const data = await graphql(
+                `mutation UserLogin($playerUserId: String!) { userLogin(playerUserId: $playerUserId) }`,
+                { playerUserId: user.uid },
+                idToken,
+            );
+            const result = data.userLogin;
+
+            if (result === true) {
+                setStatus('login-status', 'Account found!', 'success');
+                showDone(user);
+            } else {
+                setStatus('login-status', 'No account found. Please choose a username.', 'info');
+                showStep('step-username');
+            }
+        } catch (e: any) {
+            setStatus('login-status', `Error: ${e.message}`, 'error');
+            log(`userLogin error: ${e.message}`);
+        }
+    }
+
+    function showDone(user: firebase.User, username?: string) {
+        showStep('step-done');
+        $('user-info').innerHTML = [
+            `<p><strong>UID:</strong> ${user.uid}</p>`,
+            `<p><strong>Email:</strong> ${user.email ?? '(none)'}</p>`,
+            `<p><strong>Provider:</strong> ${user.providerData[0]?.providerId ?? 'unknown'}</p>`,
+            username ? `<p><strong>Username:</strong> ${username}</p>` : '',
+        ].join('');
+    }
+
+    // --- FirebaseUI ---
+    const uiConfig: firebaseui.auth.Config = {
+        signInOptions: [
+            {
+                provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                requireDisplayName: false,
+            },
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            {
+                provider: 'apple.com',
+            },
+        ],
+        signInFlow: 'popup',
+        callbacks: {
+            signInSuccessWithAuthResult(authResult: any) {
+                afterFirebaseAuth(authResult.user);
+                return false; // don't redirect
+            },
+            signInFailure(error: firebaseui.auth.AuthUIError) {
+                log(`FirebaseUI error: ${error.message}`);
+                setStatus('auth-status', error.message, 'error');
+            },
+        },
+    };
+
+    const ui = new firebaseui.auth.AuthUI(auth);
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+    // --- Create account ---
+    (window as any).createAccount = async () => {
+        if (!currentUser) return;
+        const username = ($('username') as HTMLInputElement).value.trim();
+        const err = validateUsername(username);
+        if (err) return setStatus('create-status', err, 'error');
+
+        const idToken = await currentUser.getIdToken();
+        const language = navigator.language.split('-')[0] || 'en';
+
+        try {
+            const data = await graphql(
+                `mutation UserCreate($playerUserId: String!, $language: String!, $username: String!) {
+                    userCreate(playerUserId: $playerUserId, language: $language, username: $username)
+                }`,
+                { playerUserId: currentUser.uid, language, username },
+                idToken,
+            );
+            if (data.userCreate) {
+                setStatus('create-status', 'Account created!', 'success');
+            } else {
+                setStatus('create-status', 'Account already existed (no writes).', 'info');
+            }
+            showDone(currentUser, username);
+        } catch (e: any) {
+            if (e instanceof GraphQLError) {
+                if (e.code === 'UsernameTakenError') {
+                    setStatus('create-status', `Username "${username}" is already taken.`, 'error');
+                } else if (e.code === 'InvalidUsernameError') {
+                    setStatus('create-status', `Invalid username: ${e.message}`, 'error');
+                } else {
+                    setStatus('create-status', e.message, 'error');
+                }
+            } else {
+                setStatus('create-status', e.message, 'error');
+            }
+            log(`userCreate error: ${e.message}`);
+        }
+    };
+
+    (window as any).signOut = async () => {
+        await auth.signOut();
+        currentUser = null;
+        showStep('step-auth');
+        setStatus('auth-status', '', 'info');
+        ui.start('#firebaseui-auth-container', uiConfig);
+        log('Signed out');
+    };
+</script>

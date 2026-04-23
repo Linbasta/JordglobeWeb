@@ -261,16 +261,6 @@ import greenBtnUrl from './assets/green_btn.png?url';
                 import('../../shared/quiz/quiz-runner.ts'),
             ]);
 
-            let isNewRecord = false;
-            if (isPersonalBest) {
-                try {
-                    const { postRecord } = await import('../../shared/firestore-records.ts');
-                    const data = await postRecord('euro-music-quiz', score, total, elapsedMs);
-                    isNewRecord = data.isNewRecord;
-                } catch (e) {
-                    console.warn('Failed to submit record:', e);
-                }
-            }
             const spriteNames = [0, 1, 2, 3, 4, 5].map((i) => t(`sprite.${i}`));
             showResultOverlay({
                 score,
@@ -294,8 +284,18 @@ import greenBtnUrl from './assets/green_btn.png?url';
                         )
                         .join('');
                 },
-                isNewRecord,
                 isPersonalBest,
+                onSeeRanking: async () => {
+                    const { showLeaderboardWithAuth } = await import('../../shared/ui/leaderboard-popup.ts');
+                    showLeaderboardWithAuth({
+                        quizId: 'euro-music-quiz',
+                        userScore: score,
+                        userTotal: total,
+                        userElapsedMs: elapsedMs,
+                        isPersonalBest,
+                        onClose: () => {},
+                    });
+                },
                 onRetry: () => window.location.reload(),
             });
         },

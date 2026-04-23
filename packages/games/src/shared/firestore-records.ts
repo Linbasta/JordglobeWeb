@@ -1,20 +1,21 @@
 import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db, authReady } from './firebase';
+import { db, authReady, isRealUser } from './firebase';
 
-type LeaderboardEntry = {
+export type LeaderboardEntry = {
     score: number;
     total: number;
     elapsed_ms: number;
     created_at: string;
 };
 
-type LeaderboardDoc = {
+export type LeaderboardDoc = {
     date: string;
     entries: LeaderboardEntry[];
 };
 
-async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | null> {
+export async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | null> {
     await authReady;
+    if (!isRealUser()) throw new Error('Authentication required to read leaderboard');
     const snap = await getDoc(doc(db, 'leaderboards', quizId));
     return snap.exists() ? (snap.data() as LeaderboardDoc) : null;
 }
@@ -23,6 +24,8 @@ async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | null> {
  * Submit a play as a personal best. Caller is responsible for only invoking
  * this when the score beats the user's previous PB — submissions are one-per-PB,
  * not one-per-play.
+ *
+ * Requires real (non-anonymous) Firebase authentication.
  *
  * Returns whether the play is a new world record (beats current top-10 entry
  * on /leaderboards/{quizId}). The leaderboard is materialised by a scheduled
@@ -37,6 +40,7 @@ export async function postRecord(
     elapsedMs: number,
 ): Promise<{ isNewRecord: boolean; record: LeaderboardEntry | null }> {
     await authReady;
+    if (!isRealUser()) throw new Error('Authentication required to submit scores');
 
     const scoreInt = Math.floor(score);
     const totalInt = Math.floor(total);

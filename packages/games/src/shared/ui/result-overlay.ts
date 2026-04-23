@@ -25,9 +25,10 @@ export interface ResultOverlayConfig {
     getMessage?: (score: number, total: number) => string
     /** Custom share squares formatter. If provided, replaces the default 🟩🟥 grid in the share message. */
     formatShareSquares?: (results: boolean[]) => string
-    isNewRecord?: boolean
     /** Display "Personal Best" banner when user beats their previous best score */
     isPersonalBest?: boolean
+    /** Called when user clicks "See Where You Rank" */
+    onSeeRanking?: () => void
     onRetry?: () => void
 }
 
@@ -68,7 +69,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbas
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
 
-    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, sprites, spriteNames, getMessage: customGetMessage, formatShareSquares, isNewRecord, isPersonalBest, onRetry } = config
+    const { score, total, elapsedMs, results, quizTitle, shareUrl, shareEmoji, sprites, spriteNames, getMessage: customGetMessage, formatShareSquares, isPersonalBest, onSeeRanking, onRetry } = config
     const isPerfect = score === total
     const SPRITE_COUNT = sprites?.length ?? 0
 
@@ -95,13 +96,14 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-share-btn svg { width:20px;height:20px;fill:#fff; }
             .ro-share-btn.copied { background:#22c55e; }
             .ro-share-btn.copied:hover { background:#22c55e; }
-            .ro-retry-btn { display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
+            .ro-ranking-btn { display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#ffd700 0%,#ffaa00 100%);border:none;border-radius:10px;color:#1a1a2e;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-bottom:20px;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(255,215,0,0.3); }
+            .ro-ranking-btn:hover { transform:scale(1.03);box-shadow:0 4px 16px rgba(255,215,0,0.4); }
+            .ro-ranking-btn:active { transform:scale(0.97); }
+            .ro-retry-btn { display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
             .ro-retry-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.03); }
             .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:16px; }
             .ro-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
             .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
-            .ro-record { font-size:20px;font-weight:bold;color:#ffd700;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 12px rgba(255,215,0,0.6);opacity:0;transition:opacity 0.5s ease-in; }
-            .ro-record.visible { opacity:1; }
             .ro-personal-best { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 10px rgba(124,246,255,0.5);opacity:0;transition:opacity 0.5s ease-in; }
             .ro-personal-best.visible { opacity:1; }
         `
@@ -135,9 +137,9 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
                 <div class="ro-stat-value">${formatTime(elapsedMs)}</div>
             </div>
         </div>
-        ${isNewRecord ? `<div class="ro-record">${t('result.badge.worldRecord')}</div>` : ''}
-        ${!isNewRecord && isPersonalBest ? `<div class="ro-personal-best">${t('result.badge.personalBest')}</div>` : ''}
+        ${isPersonalBest ? `<div class="ro-personal-best">${t('result.badge.personalBest')}</div>` : ''}
         <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
+        ${onSeeRanking ? `<button class="ro-ranking-btn">${t('result.seeRanking')}</button>` : ''}
         <div class="ro-share">
             <div class="ro-share-text">${t('result.share.prompt')}</div>
             <button class="ro-share-btn">${COPY_ICON} ${t('result.share.copy')}</button>
@@ -183,13 +185,10 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             requestAnimationFrame(countUpTick)
         } else {
             // Fire confetti when count-up finishes
-            const bursts = isNewRecord ? 10 : isPersonalBest ? 8 : isPerfect ? 6 : 2
+            const bursts = isPersonalBest ? 8 : isPerfect ? 6 : 2
             startConfetti(backdrop!, card, bursts)
-            // Reveal world record or personal best text
-            if (isNewRecord) {
-                const recordEl = card.querySelector('.ro-record')
-                if (recordEl) recordEl.classList.add('visible')
-            } else if (isPersonalBest) {
+            // Reveal personal best text
+            if (isPersonalBest) {
                 const pbEl = card.querySelector('.ro-personal-best')
                 if (pbEl) pbEl.classList.add('visible')
             }
@@ -210,6 +209,12 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             shareBtn.classList.remove('copied')
         }, 2000)
     })
+
+    // Ranking button
+    if (onSeeRanking) {
+        const rankingBtn = card.querySelector('.ro-ranking-btn') as HTMLButtonElement
+        rankingBtn.addEventListener('click', () => onSeeRanking())
+    }
 
     // Retry button
     if (onRetry) {

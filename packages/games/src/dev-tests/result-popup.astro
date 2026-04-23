@@ -9,6 +9,11 @@
         <title>Test: Result Popup</title>
     </head>
     <body>
+        <div id="auth-widget">
+            <div id="auth-state">Checking...</div>
+            <button id="auth-action"></button>
+        </div>
+
         <div id="controls">
             <div class="section-label">Manual Tests</div>
             <button data-action="show" data-args="10,10,83000">Perfect: 10/10, 1:23</button>
@@ -27,6 +32,11 @@
             <button class="pb-test" data-action="test-pb" data-args="8,10,90000">Play: 8/10, 1:30</button>
             <button class="pb-test" data-action="test-pb" data-args="8,10,70000">Play: 8/10, 1:10 (faster)</button>
             <button class="danger" data-action="clear-pb">Clear Personal Best</button>
+
+            <div class="section-label">Leaderboard Popup</div>
+            <button data-action="leaderboard" data-args="8,10,102000">Leaderboard: 8/10</button>
+            <button data-action="leaderboard" data-args="10,10,83000">Leaderboard: 10/10 (PB)</button>
+            <button data-action="leaderboard-fake" data-args="5,10,180000">Fake: full board, you outside top 10</button>
 
             <div class="section-label">Score Bar Preview</div>
             <button data-action="toggle-score-bar">Toggle Score Bar</button>
@@ -89,6 +99,39 @@
         line-height: 1.4;
     }
 
+    #auth-widget {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 500;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+    #auth-state {
+        font-family: monospace;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: rgba(0,0,0,0.8);
+        max-width: 220px;
+        word-break: break-all;
+    }
+    #auth-state.logged-in { color: #6bff6b; border: 1px solid #2a5a2a; }
+    #auth-state.logged-out { color: #ff6b6b; border: 1px solid #5a2a2a; }
+    #auth-action {
+        padding: 6px 14px;
+        font-family: monospace;
+        font-size: 12px;
+        cursor: pointer;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+    }
+    #auth-action:hover { background: rgba(60,60,60,0.9); }
+
     button.danger {
         background: rgba(180, 50, 50, 0.8);
         border-color: #a33;
@@ -114,6 +157,9 @@
         checkAndUpdatePersonalBest,
         clearPersonalBest,
     } from '../shared/ui/result-overlay.ts';
+    import { auth } from '../shared/firebase.ts';
+    import { onAuthStateChanged, signOut } from 'firebase/auth';
+    import { showLoginModal } from '../shared/ui/login-modal.ts';
     import {
         createSimpleScoreBar,
         updateSimpleScoreBar,
@@ -172,8 +218,18 @@
             spriteNames,
             getMessage: (s: number, t: number) =>
                 spriteNames[Math.max(0, Math.min(5, Math.ceil((s / t) * 6) - 1))],
-            isNewRecord: opts.isNewRecord || false,
             isPersonalBest: opts.isPersonalBest || false,
+            onSeeRanking: async () => {
+                const { showLeaderboardWithAuth } = await import('../shared/ui/leaderboard-popup.ts');
+                showLeaderboardWithAuth({
+                    quizId: 'test-quiz',
+                    userScore: score,
+                    userTotal: total,
+                    userElapsedMs: elapsedMs,
+                    isPersonalBest: opts.isPersonalBest || false,
+                    onClose: () => {},
+                });
+            },
             onRetry: () => hideResultOverlay(),
         });
     }
@@ -238,7 +294,7 @@
                     show(args[0], args[1], args[2]);
                     break;
                 case 'show-record':
-                    show(args[0], args[1], args[2], { isNewRecord: true });
+                    show(args[0], args[1], args[2], { isPersonalBest: true });
                     break;
                 case 'show-pb':
                     show(args[0], args[1], args[2], { isPersonalBest: true });
@@ -249,6 +305,36 @@
                 case 'clear-pb':
                     clearPB();
                     break;
+                case 'leaderboard':
+                    import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardWithAuth }) => {
+                        showLeaderboardWithAuth({
+                            quizId: 'test-quiz',
+                            userScore: args[0],
+                            userTotal: args[1],
+                            userElapsedMs: args[2],
+                            isPersonalBest: false,
+                            onClose: () => {},
+                        });
+                    });
+                    break;
+                case 'leaderboard-fake':
+                    import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardPopup, fillWithData }) => {
+                        const handle = showLeaderboardPopup(() => {});
+                        const fakeEntries = [
+                            { score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
+                            { score: 10, total: 10, elapsed_ms: 71000, created_at: '' },
+                            { score: 10, total: 10, elapsed_ms: 85000, created_at: '' },
+                            { score: 9, total: 10, elapsed_ms: 58000, created_at: '' },
+                            { score: 9, total: 10, elapsed_ms: 73000, created_at: '' },
+                            { score: 9, total: 10, elapsed_ms: 91000, created_at: '' },
+                            { score: 8, total: 10, elapsed_ms: 66000, created_at: '' },
+                            { score: 8, total: 10, elapsed_ms: 78000, created_at: '' },
+                            { score: 8, total: 10, elapsed_ms: 95000, created_at: '' },
+                            { score: 7, total: 10, elapsed_ms: 82000, created_at: '' },
+                        ];
+                        fillWithData(handle, fakeEntries, args[0], args[1], args[2]);
+                    });
+                    break;
                 case 'toggle-score-bar':
                     toggleScoreBar();
                     break;
@@ -258,4 +344,31 @@
 
     updatePBStatus();
     show(8, 10, 102000);
+
+    // --- Auth widget ---
+    const authStateEl = document.getElementById('auth-state')!;
+    const authActionBtn = document.getElementById('auth-action') as HTMLButtonElement;
+
+    function updateAuthWidget() {
+        const user = auth.currentUser;
+        if (user && !user.isAnonymous) {
+            authStateEl.textContent = `Logged in: ${user.email ?? user.uid}`;
+            authStateEl.className = 'logged-in';
+            authActionBtn.textContent = 'Sign out';
+            authActionBtn.onclick = () => signOut(auth);
+        } else {
+            authStateEl.textContent = user ? `Anonymous: ${user.uid}` : 'Not logged in';
+            authStateEl.className = 'logged-out';
+            authActionBtn.textContent = 'Sign in';
+            authActionBtn.onclick = () => {
+                showLoginModal({
+                    onSuccess: () => {},
+                    onCancel: () => {},
+                });
+            };
+        }
+    }
+
+    onAuthStateChanged(auth, () => updateAuthWidget());
+    updateAuthWidget();
 </script>

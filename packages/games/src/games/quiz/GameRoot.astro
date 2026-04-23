@@ -56,17 +56,6 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
                     import('../../shared/ui/default-score-levels.ts'),
                 ]);
 
-                let isNewRecord = false;
-                if (isPersonalBest) {
-                    try {
-                        const { postRecord } = await import('../../shared/firestore-records.ts');
-                        const data = await postRecord(quizId, score, total, elapsedMs);
-                        isNewRecord = data.isNewRecord;
-                    } catch (e) {
-                        console.warn('Failed to submit record:', e);
-                    }
-                }
-
                 const spriteNames = getDefaultTierNames();
                 showResultOverlay({
                     score,
@@ -77,8 +66,18 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
                     shareUrl: window.location.href,
                     sprites: DEFAULT_SCORE_LEVEL_SPRITES,
                     spriteNames,
-                    isNewRecord,
                     isPersonalBest,
+                    onSeeRanking: async () => {
+                        const { showLeaderboardWithAuth } = await import('../../shared/ui/leaderboard-popup.ts');
+                        showLeaderboardWithAuth({
+                            quizId,
+                            userScore: score,
+                            userTotal: total,
+                            userElapsedMs: elapsedMs,
+                            isPersonalBest,
+                            onClose: () => {},
+                        });
+                    },
                     onRetry: () => startQuiz(),
                 });
             },
