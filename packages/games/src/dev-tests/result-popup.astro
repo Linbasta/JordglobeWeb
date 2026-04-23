@@ -321,16 +321,16 @@
                     import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardPopup, fillWithData }) => {
                         const handle = showLeaderboardPopup(() => {});
                         const fakeEntries = [
-                            { score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
-                            { score: 10, total: 10, elapsed_ms: 71000, created_at: '' },
-                            { score: 10, total: 10, elapsed_ms: 85000, created_at: '' },
-                            { score: 9, total: 10, elapsed_ms: 58000, created_at: '' },
-                            { score: 9, total: 10, elapsed_ms: 73000, created_at: '' },
-                            { score: 9, total: 10, elapsed_ms: 91000, created_at: '' },
-                            { score: 8, total: 10, elapsed_ms: 66000, created_at: '' },
-                            { score: 8, total: 10, elapsed_ms: 78000, created_at: '' },
-                            { score: 8, total: 10, elapsed_ms: 95000, created_at: '' },
-                            { score: 7, total: 10, elapsed_ms: 82000, created_at: '' },
+                            { name: 'Alice', score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
+                            { name: 'Bob', score: 10, total: 10, elapsed_ms: 71000, created_at: '' },
+                            { name: 'Charlie', score: 10, total: 10, elapsed_ms: 85000, created_at: '' },
+                            { name: 'Diana', score: 9, total: 10, elapsed_ms: 58000, created_at: '' },
+                            { name: 'Eve', score: 9, total: 10, elapsed_ms: 73000, created_at: '' },
+                            { name: 'Frank', score: 9, total: 10, elapsed_ms: 91000, created_at: '' },
+                            { name: 'Grace', score: 8, total: 10, elapsed_ms: 66000, created_at: '' },
+                            { name: 'Hank', score: 8, total: 10, elapsed_ms: 78000, created_at: '' },
+                            { name: 'Ivy', score: 8, total: 10, elapsed_ms: 95000, created_at: '' },
+                            { name: 'Jack', score: 7, total: 10, elapsed_ms: 82000, created_at: '' },
                         ];
                         fillWithData(handle, fakeEntries, args[0], args[1], args[2]);
                     });

@@ -1,7 +1,8 @@
 import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db, authReady, isRealUser } from './firebase';
+import { db, auth, authReady, isRealUser } from './firebase';
 
 export type LeaderboardEntry = {
+    name: string;
     score: number;
     total: number;
     elapsed_ms: number;
@@ -47,6 +48,7 @@ export async function postRecord(
     const elapsedInt = Math.floor(elapsedMs);
 
     await addDoc(collection(db, 'submissions'), {
+        uid: auth.currentUser!.uid,
         quiz_id: quizId,
         score: scoreInt,
         total: totalInt,

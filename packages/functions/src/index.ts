@@ -4,11 +4,13 @@ import { FieldValue, Timestamp, getFirestore } from 'firebase-admin/firestore';
 
 if (!getApps().length) initializeApp();
 const db = getFirestore('webversion');
+const userDb = getFirestore('jordglobe');
 
 const TOP_N = 10;
 const BATCH_CHUNK = 400;
 
 type Entry = {
+    name: string;
     score: number;
     total: number;
     elapsed_ms: number;
@@ -26,6 +28,31 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         .where('created_at', '>=', Timestamp.fromDate(startUtc))
         .get();
 
+    // Collect unique UIDs to batch-fetch Usernames
+    const uidSet = new Set<string>();
+    for (const d of snap.docs) {
+        const uid = d.data().uid;
+        if (typeof uid === 'string') uidSet.add(uid);
+    }
+
+    // Look up Usernames from the jordglobe database
+    const uidToName = new Map<string, string>();
+    const uids = [...uidSet];
+    for (let i = 0; i < uids.length; i += 10) {
+        const batch = uids.slice(i, i + 10);
+        const userSnaps = await Promise.all(
+            batch.map(uid => userDb.collection('users').doc(uid).get()),
+        );
+        for (const userSnap of userSnaps) {
+            if (userSnap.exists) {
+                const Username = userSnap.data()?.Username;
+                if (typeof Username === 'string') {
+                    uidToName.set(userSnap.id, Username);
+                }
+            }
+        }
+    }
+
     const byQuiz = new Map<string, Entry[]>();
     for (const d of snap.docs) {
         const data = d.data();
@@ -33,7 +60,9 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         if (typeof quizId !== 'string') continue;
         const list = byQuiz.get(quizId) ?? [];
         const ts = data.created_at;
+        const uid = data.uid;
         list.push({
+            name: (typeof uid === 'string' && uidToName.get(uid)) || '',
             score: data.score,
             total: data.total,
             elapsed_ms: data.elapsed_ms,

@@ -10,7 +10,8 @@ service cloud.firestore {
             allow read: if false;
             allow create: if request.auth != null
                 && request.resource.data.keys().hasOnly(
-                    ['quiz_id', 'score', 'total', 'elapsed_ms', 'created_at'])
+                    ['uid', 'quiz_id', 'score', 'total', 'elapsed_ms', 'created_at'])
+                && request.resource.data.uid == request.auth.uid
                 && request.resource.data.quiz_id is string
                 && request.resource.data.score is int
                 && request.resource.data.total is int

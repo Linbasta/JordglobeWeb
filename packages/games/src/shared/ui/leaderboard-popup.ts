@@ -39,18 +39,20 @@ function formatTime(ms: number): string {
 
 const SKELETON_CELL = '<span class="lb-skeleton-bar"></span>'
 
-function setRowEntry(row: HTMLTableRowElement, rank: number, score: number, total: number, elapsedMs: number): void {
+function setRowEntry(row: HTMLTableRowElement, rank: number, name: string, score: number, total: number, elapsedMs: number): void {
     row.className = 'lb-row'
     row.cells[0].textContent = `${rank}`
-    row.cells[1].textContent = `${score}/${total}`
-    row.cells[2].textContent = formatTime(elapsedMs)
+    row.cells[1].textContent = name || '—'
+    row.cells[2].textContent = `${score}/${total}`
+    row.cells[3].textContent = formatTime(elapsedMs)
 }
 
 function setRowUser(row: HTMLTableRowElement, rank: number, score: number, total: number, elapsedMs: number): void {
     row.className = 'lb-row lb-you'
     row.cells[0].textContent = `${rank}`
-    row.cells[1].innerHTML = `${score}/${total} <span class="lb-you-tag">${t('leaderboard.you')}</span>`
-    row.cells[2].textContent = formatTime(elapsedMs)
+    row.cells[1].innerHTML = `<span class="lb-you-tag">${t('leaderboard.you')}</span>`
+    row.cells[2].textContent = `${score}/${total}`
+    row.cells[3].textContent = formatTime(elapsedMs)
 }
 
 function setRowEmpty(row: HTMLTableRowElement, rank: number): void {
@@ -58,6 +60,7 @@ function setRowEmpty(row: HTMLTableRowElement, rank: number): void {
     row.cells[0].textContent = `${rank}`
     row.cells[1].innerHTML = '&nbsp;'
     row.cells[2].innerHTML = '&nbsp;'
+    row.cells[3].innerHTML = '&nbsp;'
 }
 
 export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntry[], userScore: number, userTotal: number, userElapsedMs: number): void {
@@ -89,7 +92,7 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
             }
             if (entryIdx < entries.length) {
                 const e = entries[entryIdx]
-                setRowEntry(handle.rows[rowIdx], rowIdx + 1, e.score, e.total ?? userTotal, e.elapsed_ms)
+                setRowEntry(handle.rows[rowIdx], rowIdx + 1, e.name, e.score, e.total ?? userTotal, e.elapsed_ms)
                 entryIdx++
             } else {
                 setRowEmpty(handle.rows[rowIdx], rowIdx + 1)
@@ -105,7 +108,7 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
         for (let i = 0; i < ROW_COUNT; i++) {
             if (i < entries.length) {
                 const e = entries[i]
-                setRowEntry(handle.rows[i], i + 1, e.score, e.total ?? userTotal, e.elapsed_ms)
+                setRowEntry(handle.rows[i], i + 1, e.name, e.score, e.total ?? userTotal, e.elapsed_ms)
             } else {
                 setRowEmpty(handle.rows[i], i + 1)
             }
@@ -159,7 +162,7 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     table.className = 'lb-table'
 
     const thead = document.createElement('thead')
-    thead.innerHTML = `<tr><th>${t('leaderboard.rank')}</th><th>${t('leaderboard.score')}</th><th>${t('leaderboard.time')}</th></tr>`
+    thead.innerHTML = `<tr><th>${t('leaderboard.rank')}</th><th>${t('leaderboard.name')}</th><th>${t('leaderboard.score')}</th><th>${t('leaderboard.time')}</th></tr>`
     table.appendChild(thead)
 
     const tbody = document.createElement('tbody')
@@ -167,7 +170,7 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     for (let i = 0; i < ROW_COUNT; i++) {
         const tr = document.createElement('tr')
         tr.className = 'lb-row'
-        tr.innerHTML = `<td class="lb-rank">${i + 1}</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td>`
+        tr.innerHTML = `<td class="lb-rank">${i + 1}</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td>`
         tbody.appendChild(tr)
         rows.push(tr)
     }
@@ -175,12 +178,12 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     // Separator + user row
     const sepRow = document.createElement('tr')
     sepRow.className = 'lb-separator'
-    sepRow.innerHTML = '<td colspan="3"></td>'
+    sepRow.innerHTML = '<td colspan="4"></td>'
     tbody.appendChild(sepRow)
 
     const userRow = document.createElement('tr')
     userRow.className = 'lb-row'
-    userRow.innerHTML = `<td class="lb-rank">&nbsp;</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td>`
+    userRow.innerHTML = `<td class="lb-rank">&nbsp;</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td><td>${SKELETON_CELL}</td>`
     tbody.appendChild(userRow)
 
     table.appendChild(tbody)
