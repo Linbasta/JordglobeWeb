@@ -53,22 +53,39 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         }
     }
 
-    const byQuiz = new Map<string, Entry[]>();
+    // Per (quizId, uid), keep only the user's best submission so the
+    // leaderboard never shows the same person twice.
+    const byQuizByUid = new Map<string, Map<string, Entry>>();
     for (const d of snap.docs) {
         const data = d.data();
         const quizId = data.quiz_id;
         if (typeof quizId !== 'string') continue;
-        const list = byQuiz.get(quizId) ?? [];
-        const ts = data.created_at;
         const uid = data.uid;
-        list.push({
-            name: (typeof uid === 'string' && uidToName.get(uid)) || '',
+        if (typeof uid !== 'string') continue;
+        const name = uidToName.get(uid);
+        if (!name) continue;
+        const ts = data.created_at;
+        const candidate: Entry = {
+            name,
             score: data.score,
             total: data.total,
             elapsed_ms: data.elapsed_ms,
             created_at: ts instanceof Timestamp ? ts.toDate().toISOString() : '',
-        });
-        byQuiz.set(quizId, list);
+        };
+        const byUid = byQuizByUid.get(quizId) ?? new Map<string, Entry>();
+        const prev = byUid.get(uid);
+        if (!prev
+            || candidate.score > prev.score
+            || (candidate.score === prev.score && candidate.elapsed_ms < prev.elapsed_ms)
+        ) {
+            byUid.set(uid, candidate);
+        }
+        byQuizByUid.set(quizId, byUid);
+    }
+
+    const byQuiz = new Map<string, Entry[]>();
+    for (const [quizId, byUid] of byQuizByUid) {
+        byQuiz.set(quizId, [...byUid.values()]);
     }
 
     const quizIds = [...byQuiz.keys()];

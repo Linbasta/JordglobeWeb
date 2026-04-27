@@ -2,17 +2,23 @@ rules_version = '2';
 service cloud.firestore {
     match /databases/{database}/documents {
 
-        // Append-only PB log. Client writes only when the play is that user's
-        // personal best (gated via localStorage in the app); rule enforces
-        // payload shape and bounds. Reads are server-side only — the scheduled
-        // updateDailyLeaderboards Cloud Function uses the admin SDK.
+        // One doc per (uid, quiz, UTC-day). Doc ID is deterministic so rules
+        // can enforce uniqueness; updates are accepted only when the new score
+        // is strictly better than the existing one. Reads are server-side only
+        // — the scheduled updateDailyLeaderboards Cloud Function uses admin SDK.
         match /submissions/{docId} {
             allow read: if false;
+
             allow create: if request.auth != null
                 && request.resource.data.keys().hasOnly(
-                    ['uid', 'quiz_id', 'score', 'total', 'elapsed_ms', 'created_at'])
+                    ['uid', 'quiz_id', 'date', 'score', 'total', 'elapsed_ms', 'created_at'])
                 && request.resource.data.uid == request.auth.uid
                 && request.resource.data.quiz_id is string
+                && request.resource.data.date is string
+                && request.resource.data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+                && docId == request.resource.data.uid + '_'
+                          + request.resource.data.quiz_id + '_'
+                          + request.resource.data.date
                 && request.resource.data.score is int
                 && request.resource.data.total is int
                 && request.resource.data.elapsed_ms is int
@@ -20,7 +26,28 @@ service cloud.firestore {
                 && request.resource.data.score >= 0
                 && request.resource.data.score <= request.resource.data.total
                 && request.resource.data.elapsed_ms >= 0;
-            allow update, delete: if false;
+
+            allow update: if request.auth != null
+                && request.resource.data.keys().hasOnly(
+                    ['uid', 'quiz_id', 'date', 'score', 'total', 'elapsed_ms', 'created_at'])
+                && resource.data.uid == request.auth.uid
+                && request.resource.data.uid == resource.data.uid
+                && request.resource.data.quiz_id == resource.data.quiz_id
+                && request.resource.data.date == resource.data.date
+                && request.resource.data.score is int
+                && request.resource.data.total is int
+                && request.resource.data.elapsed_ms is int
+                && request.resource.data.created_at is timestamp
+                && request.resource.data.score >= 0
+                && request.resource.data.score <= request.resource.data.total
+                && request.resource.data.elapsed_ms >= 0
+                && (
+                    request.resource.data.score > resource.data.score
+                    || (request.resource.data.score == resource.data.score
+                        && request.resource.data.elapsed_ms < resource.data.elapsed_ms)
+                );
+
+            allow delete: if false;
         }
 
         // Aggregated daily top-N. Public read for leaderboard UI. Only the

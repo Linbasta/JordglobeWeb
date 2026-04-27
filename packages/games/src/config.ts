@@ -12,39 +12,30 @@ export interface EnvironmentConfig {
 }
 
 /**
- * Detects the current environment based on the protocol and hostname
+ * Build-time gated: `import.meta.env.DEV` is replaced with a literal boolean by
+ * Vite, so the dead branch (and any URLs inside it) is stripped from the prod
+ * bundle. The dev API URL comes from `.env.local` (gitignored) — never source.
  */
 function detectEnvironment(): EnvironmentConfig {
-    const protocol = window.location.protocol; // 'http:' or 'https:'
     const hostname = window.location.hostname;
     const port = window.location.port;
 
-    // Production: HTTPS on Cloud Run (hostname ends with .run.app or custom domain with HTTPS)
-    const isProduction = protocol === 'https:';
-    const isDevelopment = !isProduction;
-
-    let websocketUrl: string;
-    let baseUrl: string;
-    let apiUrl: string;
-
-    if (isDevelopment) {
-        // Development: separate WebSocket server on port 3003
-        websocketUrl = `ws://${hostname}:3003`;
-        baseUrl = `http://${hostname}:${port || 4817}`;
-        apiUrl = 'http://127.0.0.1:8000/graphql';
-    } else {
-        // Production: same server, WebSocket on same port (8080), use wss://
-        websocketUrl = `wss://${hostname}`;
-        baseUrl = `https://${hostname}`;
-        apiUrl = 'https://api.jordglobe.com/graphql';
+    if (import.meta.env.DEV) {
+        return {
+            isDevelopment: true,
+            isProduction: false,
+            websocketUrl: `ws://${hostname}:3003`,
+            baseUrl: `http://${hostname}:${port || 4817}`,
+            apiUrl: import.meta.env.PUBLIC_DEV_API_URL || 'http://127.0.0.1:8000/graphql',
+        };
     }
 
     return {
-        isDevelopment,
-        isProduction,
-        websocketUrl,
-        baseUrl,
-        apiUrl,
+        isDevelopment: false,
+        isProduction: true,
+        websocketUrl: `wss://${hostname}`,
+        baseUrl: `https://${hostname}`,
+        apiUrl: 'https://api.jordglobe.com/graphql',
     };
 }
 

@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { clearLocalUserData } from './local-user-data';
 
 export const firebaseConfig = {
     apiKey: 'AIzaSyDkYOnZ1lUM0d8zcYh_NquDCwsSnsjOfHY',
@@ -37,6 +38,18 @@ export const authReady = new Promise<void>((resolve) => {
         unsub();
         resolve();
     });
+});
+
+// Clear user-tied localStorage on sign-out (or on switching accounts). The
+// initial null→user transition on page load does not trigger; only transitions
+// from a known uid to a different uid (or to null) do.
+let lastKnownUid: string | null = null;
+onAuthStateChanged(auth, (user) => {
+    const newUid = user?.uid ?? null;
+    if (lastKnownUid !== null && newUid !== lastKnownUid) {
+        clearLocalUserData();
+    }
+    lastKnownUid = newUid;
 });
 
 /** True if the current user is signed in with a real provider (not anonymous). */

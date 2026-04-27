@@ -1,5 +1,12 @@
-import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db, auth, authReady, isRealUser } from './firebase';
+
+function utcDateKey(d = new Date()): string {
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
 
 export type LeaderboardEntry = {
     name: string;
@@ -22,17 +29,14 @@ export async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | n
 }
 
 /**
- * Submit a play as a personal best. Caller is responsible for only invoking
- * this when the score beats the user's previous PB — submissions are one-per-PB,
- * not one-per-play.
+ * Submit a play. Writes to /submissions/{uid}_{quizId}_{YYYY-MM-DD}; the doc is
+ * upserted but Firestore rules reject worse-or-equal updates, so only the
+ * user's best play of the day for this quiz survives. A rule-rejected write is
+ * a no-op (caller already had a better entry).
  *
- * Requires real (non-anonymous) Firebase authentication.
- *
- * Returns whether the play is a new world record (beats current top-10 entry
- * on /leaderboards/{quizId}). The leaderboard is materialised by a scheduled
- * Cloud Function every 15 minutes, so WR detection compares against the
- * *current* top entry at submit time — it will not see this play until the
- * next CF run.
+ * Returns whether the play would be a new world record vs. the current top
+ * entry on /leaderboards/{quizId}. The leaderboard is rebuilt every 15 min by
+ * the Cloud Function, so this comparison is against the *previous* run.
  */
 export async function postRecord(
     quizId: string,
@@ -43,18 +47,26 @@ export async function postRecord(
     await authReady;
     if (!isRealUser()) throw new Error('Authentication required to submit scores');
 
+    const uid = auth.currentUser!.uid;
+    const date = utcDateKey();
+    const docId = `${uid}_${quizId}_${date}`;
     const scoreInt = Math.floor(score);
     const totalInt = Math.floor(total);
     const elapsedInt = Math.floor(elapsedMs);
 
-    await addDoc(collection(db, 'submissions'), {
-        uid: auth.currentUser!.uid,
-        quiz_id: quizId,
-        score: scoreInt,
-        total: totalInt,
-        elapsed_ms: elapsedInt,
-        created_at: serverTimestamp(),
-    });
+    try {
+        await setDoc(doc(db, 'submissions', docId), {
+            uid,
+            quiz_id: quizId,
+            date,
+            score: scoreInt,
+            total: totalInt,
+            elapsed_ms: elapsedInt,
+            created_at: serverTimestamp(),
+        });
+    } catch (e: any) {
+        if (e?.code !== 'permission-denied') throw e;
+    }
 
     const leaderboard = await getLeaderboard(quizId);
     const top = leaderboard?.entries[0] ?? null;

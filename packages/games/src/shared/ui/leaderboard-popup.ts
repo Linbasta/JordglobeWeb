@@ -11,9 +11,9 @@
  * fillWithData() updates each row's cells in place — no DOM rebuild.
  */
 
-import { isRealUser } from '../firebase'
 import { postRecord, getLeaderboard, type LeaderboardEntry } from '../firestore-records'
 import { showLoginModal } from './login-modal'
+import { getCachedUsername } from '../username-cache'
 import { startConfetti, stopConfetti } from './confetti'
 import { t } from '../i18n/i18n'
 
@@ -50,7 +50,18 @@ function setRowEntry(row: HTMLTableRowElement, rank: number, name: string, score
 function setRowUser(row: HTMLTableRowElement, rank: number, score: number, total: number, elapsedMs: number): void {
     row.className = 'lb-row lb-you'
     row.cells[0].textContent = `${rank}`
-    row.cells[1].innerHTML = `<span class="lb-you-tag">${t('leaderboard.you')}</span>`
+
+    const nameCell = row.cells[1]
+    nameCell.textContent = ''
+    const username = getCachedUsername()
+    if (username) {
+        nameCell.appendChild(document.createTextNode(username + ' '))
+    }
+    const tag = document.createElement('span')
+    tag.className = 'lb-you-tag'
+    tag.textContent = t('leaderboard.you')
+    nameCell.appendChild(tag)
+
     row.cells[2].textContent = `${score}/${total}`
     row.cells[3].textContent = formatTime(elapsedMs)
 }
@@ -64,13 +75,33 @@ function setRowEmpty(row: HTMLTableRowElement, rank: number): void {
 }
 
 export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntry[], userScore: number, userTotal: number, userElapsedMs: number): void {
-    const scoreInt = Math.floor(userScore)
-    const elapsedInt = Math.floor(userElapsedMs)
+    let scoreInt = Math.floor(userScore)
+    let elapsedInt = Math.floor(userElapsedMs)
+    let totalInt = userTotal
+
+    // Dedupe: collapse any leaderboard rows belonging to this user into the
+    // "You" row, using whichever score is best. Defends against stale aggregates
+    // (server now dedupes by uid, but this guards against transitional state).
+    const username = getCachedUsername()
+    let dedupedEntries = entries
+    if (username) {
+        const own = entries.filter(e => e.name === username)
+        if (own.length > 0) {
+            for (const o of own) {
+                if (o.score > scoreInt || (o.score === scoreInt && o.elapsed_ms < elapsedInt)) {
+                    scoreInt = o.score
+                    elapsedInt = o.elapsed_ms
+                    totalInt = o.total ?? totalInt
+                }
+            }
+            dedupedEntries = entries.filter(e => e.name !== username)
+        }
+    }
 
     // Determine if user belongs in the top 10
-    let userRank = entries.length + 1
-    for (let i = 0; i < entries.length; i++) {
-        if (scoreInt > entries[i].score || (scoreInt === entries[i].score && elapsedInt < entries[i].elapsed_ms)) {
+    let userRank = dedupedEntries.length + 1
+    for (let i = 0; i < dedupedEntries.length; i++) {
+        if (scoreInt > dedupedEntries[i].score || (scoreInt === dedupedEntries[i].score && elapsedInt < dedupedEntries[i].elapsed_ms)) {
             userRank = i + 1
             break
         }
@@ -85,14 +116,14 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
 
         while (rowIdx < ROW_COUNT) {
             if (!userPlaced && userRank === rowIdx + 1) {
-                setRowUser(handle.rows[rowIdx], rowIdx + 1, scoreInt, userTotal, userElapsedMs)
+                setRowUser(handle.rows[rowIdx], rowIdx + 1, scoreInt, totalInt, elapsedInt)
                 userPlaced = true
                 rowIdx++
                 continue
             }
-            if (entryIdx < entries.length) {
-                const e = entries[entryIdx]
-                setRowEntry(handle.rows[rowIdx], rowIdx + 1, e.name, e.score, e.total ?? userTotal, e.elapsed_ms)
+            if (entryIdx < dedupedEntries.length) {
+                const e = dedupedEntries[entryIdx]
+                setRowEntry(handle.rows[rowIdx], rowIdx + 1, e.name, e.score, e.total ?? totalInt, e.elapsed_ms)
                 entryIdx++
             } else {
                 setRowEmpty(handle.rows[rowIdx], rowIdx + 1)
@@ -106,9 +137,9 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
     } else {
         // Fill top 10 entries only
         for (let i = 0; i < ROW_COUNT; i++) {
-            if (i < entries.length) {
-                const e = entries[i]
-                setRowEntry(handle.rows[i], i + 1, e.name, e.score, e.total ?? userTotal, e.elapsed_ms)
+            if (i < dedupedEntries.length) {
+                const e = dedupedEntries[i]
+                setRowEntry(handle.rows[i], i + 1, e.name, e.score, e.total ?? totalInt, e.elapsed_ms)
             } else {
                 setRowEmpty(handle.rows[i], i + 1)
             }
@@ -117,7 +148,7 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
         // Show user below separator
         handle.userRow.style.display = ''
         handle.userRow.previousElementSibling!.removeAttribute('style')
-        setRowUser(handle.userRow, 0, scoreInt, userTotal, userElapsedMs)
+        setRowUser(handle.userRow, 0, scoreInt, totalInt, elapsedInt)
         handle.userRow.cells[0].innerHTML = '&nbsp;'
     }
 }
@@ -258,20 +289,16 @@ export function showLeaderboardWithAuth(config: {
         }
     }
 
-    if (isRealUser()) {
-        doLoad()
-    } else {
-        showLoginModal({
-            onSuccess: () => doLoad(),
-            onCancel: () => {
-                if (backdrop) {
-                    backdrop.remove()
-                    backdrop = null
-                }
-                onClose()
-            },
-        })
-    }
+    showLoginModal({
+        onSuccess: () => doLoad(),
+        onCancel: () => {
+            if (backdrop) {
+                backdrop.remove()
+                backdrop = null
+            }
+            onClose()
+        },
+    })
 }
 
 export function hideLeaderboardPopup(): void {

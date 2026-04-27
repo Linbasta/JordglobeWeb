@@ -9,6 +9,7 @@
 
 import { t } from '../i18n/i18n'
 import { auth, firebaseConfig } from '../firebase'
+import { setCachedUsername } from '../username-cache'
 import { config } from '../../config'
 
 let backdrop: HTMLDivElement | null = null
@@ -45,22 +46,33 @@ async function graphql(query: string, variables: Record<string, unknown>): Promi
     return json.data
 }
 
-async function checkAccount(): Promise<boolean> {
+/**
+ * Resolves the current Firebase user against the Jordglobe backend.
+ * Returns the server-authoritative username, or null if no account exists.
+ */
+async function checkAccount(): Promise<string | null> {
     const data = await graphql(
         `mutation UserLogin($playerUserId: String!) { userLogin(playerUserId: $playerUserId) }`,
         { playerUserId: auth.currentUser!.uid },
     )
-    return data.userLogin === true
+    const v = data.userLogin
+    return typeof v === 'string' && v.length > 0 ? v : null
 }
 
-async function createAccount(username: string): Promise<void> {
+/** Creates the account and returns the server-canonical username. */
+async function createAccount(username: string): Promise<string> {
     const language = navigator.language.split('-')[0] || 'en'
-    await graphql(
+    const data = await graphql(
         `mutation UserCreate($playerUserId: String!, $language: String!, $username: String!) {
             userCreate(playerUserId: $playerUserId, language: $language, username: $username)
         }`,
         { playerUserId: auth.currentUser!.uid, language, username },
     )
+    const v = data.userCreate
+    if (typeof v !== 'string' || v.length === 0) {
+        throw new Error('userCreate did not return a username')
+    }
+    return v
 }
 
 // ── Username validation ──
@@ -79,18 +91,42 @@ function validateUsername(value: string): string | null {
 export async function showLoginModal(modalConfig: LoginModalConfig): Promise<void> {
     hideLoginModal()
 
-    const [firebase, firebaseui] = await Promise.all([
-        import('firebase/compat/app').then(m => m.default),
-        import('firebaseui'),
-        import('firebase/compat/auth'),
-        import('firebaseui/dist/firebaseui.css'),
-    ])
-
-    if (!compatInitialized) {
-        firebase.initializeApp(firebaseConfig)
-        compatInitialized = true
+    // Fast path: already signed into Firebase. Check Jordglobe account directly —
+    // if it exists we skip the modal entirely; if not we land on username creation
+    // without showing FirebaseUI. On error fall through to the full flow.
+    let skipFirebaseUI = false
+    const currentUser = auth.currentUser
+    if (currentUser && !currentUser.isAnonymous) {
+        try {
+            const username = await checkAccount()
+            if (username !== null) {
+                setCachedUsername(username)
+                modalConfig.onSuccess()
+                return
+            }
+            skipFirebaseUI = true
+        } catch (e: any) {
+            console.warn('Account check failed; showing full login flow:', e)
+        }
     }
-    const compatAuth = firebase.app().auth()
+
+    let firebase: any
+    let firebaseui: any
+    let compatAuth: any
+    if (!skipFirebaseUI) {
+        ;[firebase, firebaseui] = await Promise.all([
+            import('firebase/compat/app').then(m => m.default),
+            import('firebaseui'),
+            import('firebase/compat/auth'),
+            import('firebaseui/dist/firebaseui.css'),
+        ])
+
+        if (!compatInitialized) {
+            firebase.initializeApp(firebaseConfig)
+            compatInitialized = true
+        }
+        compatAuth = firebase.app().auth()
+    }
 
     const styleId = 'login-modal-styles'
     if (!document.getElementById(styleId)) {
@@ -145,6 +181,11 @@ export async function showLoginModal(modalConfig: LoginModalConfig): Promise<voi
     const usernameSubmit = card.querySelector('.lm-username-submit') as HTMLButtonElement
     const cancelBtn = card.querySelector('.lm-cancel') as HTMLButtonElement
 
+    if (skipFirebaseUI) {
+        firebaseuiEl.style.display = 'none'
+        usernameSection.style.display = 'block'
+    }
+
     cancelBtn.addEventListener('click', () => {
         hideLoginModal()
         modalConfig.onCancel()
@@ -158,8 +199,9 @@ export async function showLoginModal(modalConfig: LoginModalConfig): Promise<voi
         subtitle.innerHTML = `<span class="lm-spinner"></span>`
 
         try {
-            const exists = await checkAccount()
-            if (exists) {
+            const username = await checkAccount()
+            if (username !== null) {
+                setCachedUsername(username)
                 hideLoginModal()
                 modalConfig.onSuccess()
             } else {
@@ -199,7 +241,8 @@ export async function showLoginModal(modalConfig: LoginModalConfig): Promise<voi
         usernameError.textContent = ''
 
         try {
-            await createAccount(username)
+            const canonical = await createAccount(username)
+            setCachedUsername(canonical)
             hideLoginModal()
             modalConfig.onSuccess()
         } catch (e: any) {
@@ -223,6 +266,11 @@ export async function showLoginModal(modalConfig: LoginModalConfig): Promise<voi
         card.style.transform = 'scale(1)'
         card.style.opacity = '1'
     })
+
+    if (skipFirebaseUI) {
+        usernameInput.focus()
+        return
+    }
 
     // FirebaseUI config
     const uiConfig = {
