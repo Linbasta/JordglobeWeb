@@ -15,13 +15,31 @@ import { postRecord, getLeaderboard, type LeaderboardEntry } from '../firestore-
 import { showLoginModal } from './login-modal'
 import { getCachedUsername } from '../username-cache'
 import { startConfetti, stopConfetti } from './confetti'
-import { t } from '../i18n/i18n'
+import { t, getLocale } from '../i18n/i18n'
 
 export type { LeaderboardEntry }
 
 let backdrop: HTMLDivElement | null = null
+let countdownTimer: number | null = null
 
 const ROW_COUNT = 10
+
+function msUntilUtcMidnight(): number {
+    const now = new Date()
+    const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0)
+    return Math.max(0, next - now.getTime())
+}
+
+function formatCountdown(ms: number): string {
+    const totalMin = Math.ceil(ms / 60000)
+    const hours = Math.floor(totalMin / 60)
+    const minutes = totalMin % 60
+    return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+}
+
+function formatTodayUtc(): string {
+    return new Intl.DateTimeFormat(getLocale(), { dateStyle: 'long', timeZone: 'UTC' }).format(new Date())
+}
 
 export interface LeaderboardHandle {
     rows: HTMLTableRowElement[]
@@ -164,7 +182,9 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
         style.textContent = `
             .lb-backdrop { position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:350;opacity:0;transition:opacity 0.3s ease-in-out; }
             .lb-card { width:380px;max-width:calc(100vw - 32px);background:linear-gradient(180deg,#1a3a5c 0%,#0f2744 100%);border-radius:16px;padding:24px 20px;text-align:center;position:relative;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:scale(0.9);opacity:0;transition:transform 0.3s ease-out,opacity 0.3s ease-out; }
-            .lb-title { font-size:24px;font-weight:bold;color:#ffd700;margin-bottom:16px;font-family:Arial,sans-serif; }
+            .lb-title { font-size:24px;font-weight:bold;color:#ffd700;margin-bottom:4px;font-family:Arial,sans-serif; }
+            .lb-subtitle { font-size:13px;color:#a0c4e0;margin-bottom:8px;font-family:Arial,sans-serif; }
+            .lb-countdown { display:inline-block;font-size:11px;background:rgba(126,184,224,0.15);color:#7eb8e0;padding:3px 10px;border-radius:10px;margin-bottom:14px;font-family:Arial,sans-serif;font-weight:600;letter-spacing:0.3px;text-transform:uppercase; }
             .lb-record { font-size:18px;font-weight:bold;color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,0.6);margin-bottom:12px;font-family:Arial,sans-serif;opacity:0;transition:opacity 0.5s ease-in; }
             .lb-record.visible { opacity:1; }
             .lb-table { width:100%;border-collapse:collapse;margin-bottom:16px; }
@@ -223,6 +243,18 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     titleEl.className = 'lb-title'
     titleEl.textContent = t('leaderboard.title')
 
+    const subtitleEl = document.createElement('div')
+    subtitleEl.className = 'lb-subtitle'
+    subtitleEl.textContent = formatTodayUtc()
+
+    const countdownEl = document.createElement('div')
+    countdownEl.className = 'lb-countdown'
+    const updateCountdown = () => {
+        countdownEl.textContent = t('leaderboard.resetsIn').replace('{time}', formatCountdown(msUntilUtcMidnight()))
+    }
+    updateCountdown()
+    countdownTimer = window.setInterval(updateCountdown, 30000)
+
     const recordEl = document.createElement('div')
     recordEl.className = 'lb-record'
 
@@ -235,6 +267,8 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     })
 
     card.appendChild(titleEl)
+    card.appendChild(subtitleEl)
+    card.appendChild(countdownEl)
     card.appendChild(recordEl)
     card.appendChild(table)
     card.appendChild(closeBtn)
@@ -303,6 +337,10 @@ export function showLeaderboardWithAuth(config: {
 
 export function hideLeaderboardPopup(): void {
     stopConfetti()
+    if (countdownTimer !== null) {
+        clearInterval(countdownTimer)
+        countdownTimer = null
+    }
     if (backdrop) {
         backdrop.remove()
         backdrop = null
