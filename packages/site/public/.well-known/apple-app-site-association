@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "UAC68ZHPLG.com.linbasta.jordglobegeo",
-        "paths": [ "/duel*", "/medal*" ]
+        "paths": [ "/duel*", "/bullseye*", "/medal*" ]
       }
     ]
   }
