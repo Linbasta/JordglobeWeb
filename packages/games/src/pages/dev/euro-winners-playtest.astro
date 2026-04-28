@@ -1,0 +1,314 @@
+---
+// Dev-only playtest variant of the Euro Music Winners 2000-2025 quiz.
+// Mirrors src/games/euro-winners-2000s/GameRoot.astro but routes the end-of-game
+// leaderboard handoff to a localStorage tally (playtest-leaderboard.ts)
+// and uses an isolated quizId so personal-best storage and analytics don't pollute prod.
+import avatarTripletsUrl from '../../games/euro-music-quiz/assets/euro-music-quiz_avatar_triplets.png?url';
+import greenBtnUrl from '../../games/euro-music-quiz/assets/green_btn.png?url';
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Euro Winners Playtest</title>
+    <style is:global>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="renderCanvas"></canvas>
+
+<div class="ewq-start-root" hidden>
+    <img class="ewq-start-deco" src={avatarTripletsUrl} alt="" />
+    <div class="ewq-start-card">
+        <div class="ewq-start-title"></div>
+        <button
+            class="ewq-start-play"
+            type="button"
+            style={`background-image: url(${greenBtnUrl})`}
+        ></button>
+    </div>
+</div>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<style>
+    .ewq-start-root {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 500;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+        font-family: Arial, sans-serif;
+    }
+
+    .ewq-start-deco {
+        position: absolute;
+        left: 50%;
+        top: -195px;
+        transform: translateX(-50%);
+        width: 520px;
+        height: auto;
+        pointer-events: none;
+        display: block;
+    }
+
+    .ewq-start-card {
+        position: relative;
+        width: 620px;
+        height: 240px;
+        border-radius: 20px;
+        background: linear-gradient(90deg, #7a4bd0, #e86bb5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 28px 20px;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+
+    .ewq-start-title {
+        color: #fff;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .ewq-start-play {
+        width: 280px;
+        height: 112px;
+        border: none;
+        background-color: transparent;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        color: #fff;
+        font-size: 28px;
+        font-weight: 800;
+        font-family: inherit;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    @media (max-width: 700px) {
+        .ewq-start-deco {
+            width: 380px;
+            top: -142px;
+        }
+        .ewq-start-card {
+            width: calc(100vw - 32px);
+            height: auto;
+            min-height: 200px;
+            gap: 14px;
+            padding: 24px 16px;
+        }
+        .ewq-start-title {
+            font-size: 26px;
+        }
+        .ewq-start-play {
+            width: 240px;
+            height: 96px;
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .ewq-start-deco {
+            width: 300px;
+            top: -112px;
+        }
+        .ewq-start-card {
+            min-height: 180px;
+            gap: 12px;
+            padding: 20px 14px;
+        }
+        .ewq-start-title {
+            font-size: 22px;
+        }
+        .ewq-start-play {
+            width: 200px;
+            height: 80px;
+            font-size: 20px;
+        }
+    }
+</style>
+
+<script>
+    import { EURO_WINNERS_2000S_I18N } from '../../games/euro-winners-2000s/i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+
+    import sprite1 from '../../games/euro-music-quiz/assets/1.png?url';
+    import sprite2 from '../../games/euro-music-quiz/assets/2.png?url';
+    import sprite3 from '../../games/euro-music-quiz/assets/3.png?url';
+    import sprite4 from '../../games/euro-music-quiz/assets/4.png?url';
+    import sprite5 from '../../games/euro-music-quiz/assets/5.png?url';
+    import sprite6 from '../../games/euro-music-quiz/assets/6.png?url';
+
+    const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
+
+    document.body.style.backgroundColor = '#6496dc';
+
+    initI18n(EURO_WINNERS_2000S_I18N);
+    initMobile();
+
+    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    idleCallback(() => {
+        for (const url of SPRITE_URLS) new Image().src = url;
+    });
+
+    function showStartPanel(): Promise<void> {
+        return new Promise((resolve) => {
+            const root = document.querySelector<HTMLDivElement>('.ewq-start-root')!;
+            const title = root.querySelector<HTMLDivElement>('.ewq-start-title')!;
+            const play = root.querySelector<HTMLButtonElement>('.ewq-start-play')!;
+
+            title.textContent = t('start.title');
+            play.textContent = t('start.playButton');
+            root.hidden = false;
+
+            play.onclick = () => {
+                root.hidden = true;
+                resolve();
+            };
+        });
+    }
+
+    function iso2ToFlag(iso2: string): string {
+        return [...iso2]
+            .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+            .join('');
+    }
+
+    // [iso2, youtubeId, year, startSeconds, clipLengthSeconds]
+    const EURO_WINNERS_ENTRIES: Array<[string, string, number, number, number]> = [
+        ['DK', 'JF8fkHK0AWs', 2000, 30, 25],
+        ['EE', '92TSUlqzFi8', 2001, 30, 25],
+        ['LV', '_M-w89U8TEU', 2002, 30, 25],
+        ['TR', 'j0_QrKnqd5E', 2003, 30, 25],
+        ['UA', '10XR67NQcAc', 2004, 30, 25],
+        ['GR', 'rcOwvZ26KFQ', 2005, 30, 25],
+        ['FI', 'gAh9NRGNhUU', 2006, 30, 25],
+        ['RS', 'FSueQN1QvV4', 2007, 30, 25],
+        ['RU', '-72s4WzUcKI', 2008, 30, 25],
+        ['NO', 'WXwgZL4zx9o', 2009, 30, 25],
+        ['DE', '7pL9vdpSvnY', 2010, 30, 25],
+        ['AZ', '_0tlQUW5X0U', 2011, 30, 25],
+        ['SE', 'Pfo-8z86x80', 2012, 30, 25],
+        ['DK', 'QxVWcDevKLg', 2013, 30, 25],
+        ['AT', 'QRUIava4WRM', 2014, 30, 25],
+        ['SE', '5sGOwFVUU0I', 2015, 30, 25],
+        ['UA', 'B-rnM-MwRHY', 2016, 30, 25],
+        ['PT', 'Qotooj7ODCM', 2017, 30, 25],
+        ['IL', '84LBjXaeKk4', 2018, 30, 25],
+        ['NL', 'R3D-r4ogr7s', 2019, 30, 25],
+        ['IT', 'RVH5dn1cxAQ', 2021, 30, 25],
+        ['UA', 'F1fl60ypdLs', 2022, 30, 25],
+        ['SE', 'BE2Fj0W4jP4', 2023, 30, 25],
+        ['CH', 'CO_qJf-nW0k', 2024, 30, 25],
+        ['AT', 'onOex2WXjbA', 2025, 30, 25],
+    ];
+
+    function shuffle<T>(arr: T[]): T[] {
+        const out = arr.slice();
+        for (let i = out.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [out[i], out[j]] = [out[j], out[i]];
+        }
+        return out;
+    }
+
+    const EURO_WINNERS_QUESTIONS = shuffle(EURO_WINNERS_ENTRIES).map(
+        ([iso2, youtubeId, year, startTime, clipLength]) => ({
+            present: 'video' as const,
+            answer: 'country' as const,
+            countryISO2: iso2,
+            youtubeId,
+            prompt: t('question.prompt').replace('{year}', String(year)),
+            startTime,
+            endTime: startTime + clipLength,
+            hideTop: true,
+            hideBottomCorner: true,
+        }),
+    );
+
+    startQuizGame({
+        i18n: EURO_WINNERS_2000S_I18N,
+        questions: EURO_WINNERS_QUESTIONS,
+        scoreBarType: 'simple',
+        showHoverLabel: true,
+        allowRepeatedCountries: true,
+        quizId: 'euro-winners-playtest',
+        analyticsGame: 'EuroWinnersPlaytest',
+        analyticsGameId: 'euro-winners-playtest',
+        onReady: () => showStartPanel(),
+        onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
+            const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
+                import('../../shared/ui/result-overlay.ts'),
+                import('../../shared/quiz/quiz-runner.ts'),
+            ]);
+
+            const spriteNames = [0, 1, 2, 3, 4, 5].map((i) => t(`sprite.${i}`));
+            showResultOverlay({
+                score,
+                total,
+                elapsedMs,
+                results,
+                quizTitle: t('quiz.title'),
+                shareUrl: 'https://jordglobe.com/games/euro-winners-2000s/',
+                shareEmoji: '🎵',
+                sprites: SPRITE_URLS,
+                spriteNames,
+                getMessage: (s, t) =>
+                    s === t
+                        ? spriteNames[5]
+                        : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
+                formatShareSquares: (results) => {
+                    const qs = getQuestions();
+                    return results
+                        .map((correct, i) =>
+                            correct ? iso2ToFlag(qs[i].countryISO2) : '🟥',
+                        )
+                        .join('');
+                },
+                isPersonalBest,
+                onSeeRanking: async () => {
+                    const { showLeaderboardLocal } = await import(
+                        '../../dev-tests/playtest-leaderboard.ts'
+                    );
+                    showLeaderboardLocal({
+                        userScore: score,
+                        userTotal: total,
+                        userElapsedMs: elapsedMs,
+                        storageKey: 'playtest_leaderboard_euro-winners',
+                        onClose: () => {},
+                    });
+                },
+                onRetry: () => window.location.reload(),
+            });
+        },
+    });
+</script>
+
+</body>
+</html>

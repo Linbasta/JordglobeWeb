@@ -306,12 +306,13 @@ import greenBtnUrl from '../../games/euro-music-quiz/assets/green_btn.png?url';
                 isPersonalBest,
                 onSeeRanking: async () => {
                     const { showLeaderboardLocal } = await import(
-                        '../../dev-tests/euro-music-quiz-playtest-leaderboard.ts'
+                        '../../dev-tests/playtest-leaderboard.ts'
                     );
                     showLeaderboardLocal({
                         userScore: score,
                         userTotal: total,
                         userElapsedMs: elapsedMs,
+                        storageKey: 'playtest_leaderboard_euro-music-quiz',
                         onClose: () => {},
                     });
                 },
