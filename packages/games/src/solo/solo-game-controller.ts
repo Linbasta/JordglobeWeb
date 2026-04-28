@@ -347,46 +347,27 @@ export class SoloGameController extends BaseGameController {
     // =========================================================================
 
     private setupKeyboardShortcuts(): void {
-        window.addEventListener('keydown', (e) => {
-            // Inspector toggle (I key)
-            if (e.key === 'i' || e.key === 'I') {
-                this.toggleInspector();
-            }
-            // Toggle water shader controls (W key)
-            if (e.key === 'w' || e.key === 'W') {
-                this.toggleWaterShaderControls();
-            }
-            // Toggle collision/hit area debug visualization (C key)
-            if (e.key === 'c' || e.key === 'C') {
+        const shortcuts: Record<string, () => void> = {
+            i: () => this.toggleInspector(),
+            w: () => this.toggleWaterShaderControls(),
+            c: () => {
                 console.log('[SoloGameController] C key detected - toggling collision debug visualization');
                 this.toggleMarkerDebugVisualization();
-            }
-            // Toggle debug panel (D key) - dev only
-            if ((e.key === 'd' || e.key === 'D') && import.meta.env.DEV) {
-                this.toggleDebugPanel();
-            }
-            // Toggle collider debug visualization (V key) - dev only
-            if ((e.key === 'v' || e.key === 'V') && import.meta.env.DEV) {
-                this.globe.toggleColliderDebugVisualization();
-            }
-            // Toggle performance overlay (P key) - dev only
-            if ((e.key === 'p' || e.key === 'P') && import.meta.env.DEV) {
-                togglePerfOverlay();
-            }
-            // Toggle zoom tweaker panel (Z key) - dev only
-            if ((e.key === 'z' || e.key === 'Z') && import.meta.env.DEV) {
-                import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel());
-            }
-            // Toggle sensitivity calibrator (E key) - dev only
-            if ((e.key === 'e' || e.key === 'E') && import.meta.env.DEV) {
-                import('../shared/dev/sensitivity-calibrator').then(m => m.toggleSensitivityCalibrator(this.globe.getCamera()));
-            }
-            // Show pin tutorial (T key) - dev only
-            if ((e.key === 't' || e.key === 'T') && import.meta.env.DEV) {
-                dismissPinTutorial();  // Remove existing first
-                resetPinTutorial();
-                showPinTutorial(true);
-            }
+            },
+            ...(import.meta.env.DEV && {
+                d: () => this.toggleDebugPanel(),
+                v: () => this.globe.toggleColliderDebugVisualization(),
+                p: () => togglePerfOverlay(),
+                z: () => import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel()),
+                e: () => import('../shared/dev/sensitivity-calibrator').then(m => m.toggleSensitivityCalibrator(this.globe.getCamera())),
+                t: () => { dismissPinTutorial(); resetPinTutorial(); showPinTutorial(true); },
+            }),
+        };
+
+        window.addEventListener('keydown', (e) => {
+            const tag = (e.target as HTMLElement)?.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+            shortcuts[e.key.toLowerCase()]?.();
         });
     }
 
