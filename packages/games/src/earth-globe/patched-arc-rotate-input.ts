@@ -34,6 +34,27 @@ export class PatchedArcRotatePointersInput extends ArcRotateCameraPointersInput 
         }
     };
 
+    // Recover from missed pointerup: if the mouse is released outside the browser
+    // window, the OS may not deliver the pointerup. When the cursor re-enters with
+    // no buttons pressed but we still think a pointer is held, synthesize a
+    // pointerup on the canvas so Babylon clears its drag state.
+    private _onPointerMove = (e: PointerEvent): void => {
+        if (e.buttons !== 0) return;
+        if (!this._activePointerIds.has(e.pointerId)) return;
+        const target = this._trackedElement;
+        if (!target) return;
+        target.dispatchEvent(new PointerEvent('pointerup', {
+            bubbles: true,
+            cancelable: true,
+            pointerId: e.pointerId,
+            pointerType: e.pointerType,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            button: 0,
+            buttons: 0,
+        }));
+    };
+
     attachControl(noPreventDefault?: boolean): void {
         super.attachControl(noPreventDefault);
         const element = this.camera.getEngine().getInputElement();
@@ -44,6 +65,7 @@ export class PatchedArcRotatePointersInput extends ArcRotateCameraPointersInput 
         // always clean up the pointer set, no matter where the event lands.
         window.addEventListener('pointerup', this._onPointerRemove);
         window.addEventListener('pointercancel', this._onPointerRemove);
+        window.addEventListener('pointermove', this._onPointerMove);
     }
 
     detachControl(): void {
@@ -53,6 +75,7 @@ export class PatchedArcRotatePointersInput extends ArcRotateCameraPointersInput 
         }
         window.removeEventListener('pointerup', this._onPointerRemove);
         window.removeEventListener('pointercancel', this._onPointerRemove);
+        window.removeEventListener('pointermove', this._onPointerMove);
         this._activePointerIds.clear();
         this._lastMultiTouchTime = 0;
         super.detachControl();
