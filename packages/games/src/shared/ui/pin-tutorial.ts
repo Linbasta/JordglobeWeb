@@ -171,7 +171,8 @@ function displayTutorial(): void {
             pointer-events: none;
             z-index: 200;
         `
-        tutorialTextElement.textContent = 'Pick up the pin or right-click to answer'
+        const mouseIcon = `<img src="${asset('Mouse.png')}" alt="" style="height: 1.4em; vertical-align: middle; margin: 0 2px; position: relative; top: -2px; filter: drop-shadow(0 0 1px #000);">`
+        tutorialTextElement.innerHTML = `Pick up the pin or right-click ${mouseIcon} to answer`
         document.body.appendChild(tutorialTextElement)
     }
 }
