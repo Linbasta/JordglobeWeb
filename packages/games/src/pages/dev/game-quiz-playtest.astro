@@ -157,6 +157,10 @@ import greenBtnUrl from '../../games/euro-music-quiz/assets/green_btn.png?url';
     import { t, initI18n } from '../../shared/i18n/i18n.ts';
     import { initMobile } from '../../shared/ui/mobile-init.ts';
     import { startQuizGame } from '../../solo/start-quiz-game.ts';
+    import { resetPinTutorial } from '../../shared/ui/pin-tutorial.ts';
+
+    const isRetry = new URLSearchParams(window.location.search).has('retry');
+    if (!isRetry) resetPinTutorial();
 
     import sprite1 from '../../games/euro-music-quiz/assets/1.png?url';
     import sprite2 from '../../games/euro-music-quiz/assets/2.png?url';
@@ -297,7 +301,7 @@ import greenBtnUrl from '../../games/euro-music-quiz/assets/green_btn.png?url';
                         onClose: () => {},
                     });
                 },
-                onRetry: () => window.location.reload(),
+                onRetry: () => { window.location.href = window.location.pathname + '?retry'; },
             });
         },
     });
