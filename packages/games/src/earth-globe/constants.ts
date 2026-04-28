@@ -163,6 +163,11 @@ export const ORBIT_BASE = 800;
 /** Mobile orbit multiplier (lower = faster to compensate for small screens) */
 export const MOBILE_ORBIT_MULTIPLIER = 1.0;
 
+/** Camera inertia ease-out curve: inertia = min + (max-min) * (1 - (1-t)^power), t = (radius-CAMERA_LOWER_RADIUS)/(threshold-CAMERA_LOWER_RADIUS). */
+export const INERTIA_MIN = 0.5;
+export const INERTIA_MAX = 0.9;
+export const INERTIA_POWER = 6;
+
 // ============================================================================
 // Small Countries
 // ============================================================================
@@ -261,6 +266,9 @@ export const zoom = {
     markerHitRadiusFar: ZOOM_MARKER_HIT_RADIUS_FAR,
     colliderScaleClose: ZOOM_COLLIDER_SCALE_CLOSE,
     colliderScaleFar: ZOOM_COLLIDER_SCALE_FAR,
+    inertiaMin: INERTIA_MIN,
+    inertiaMax: INERTIA_MAX,
+    inertiaPower: INERTIA_POWER,
     orbitOverride: null as number | null,
     provinceBorderThicknessClose: PROVINCE_BORDER_THICKNESS_CLOSE,
     provinceBorderThicknessFar: PROVINCE_BORDER_THICKNESS_FAR,
