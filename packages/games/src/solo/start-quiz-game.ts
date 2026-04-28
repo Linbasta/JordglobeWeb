@@ -31,6 +31,10 @@ export interface QuizGameConfig {
      *  remaining question. Use for quizzes where the same country is the
      *  correct answer for multiple questions (e.g. Eurovision winners). */
     allowRepeatedCountries?: boolean
+    /** Override the initial camera framing with a specific lat/lon (skip
+     *  auto-fit to game countries). Useful when game countries span the
+     *  globe and the auto-frame ends up at the poles. */
+    initialFramingLocation?: { lat: number; lon: number }
     /** Callback when game completes. isPersonalBest is true if this score beat the stored PB. */
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[], isPersonalBest: boolean) => void
     showHoverLabel?: boolean
@@ -121,6 +125,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
                     removeOnWrong: config.removeOnWrong ?? false,
                     allowRepeatedCountries: config.allowRepeatedCountries ?? false,
+                    initialFramingLocation: config.initialFramingLocation,
                     onGameComplete: wrappedOnGameComplete,
                     quizId: config.quizId,
                     analyticsGame: config.analyticsGame,

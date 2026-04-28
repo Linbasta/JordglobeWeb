@@ -71,6 +71,7 @@ let questionShown = false
 let revealOnWrong = true
 let removeOnWrong = false
 let allowRepeatedCountries = false
+let initialFramingLocation: { lat: number; lon: number } | null = null
 let onRevealCorrectCb: ((correctCountryIndex: number) => void) | null = null
 let onHideRevealCb: (() => void) | null = null
 let onAnswerCb: ((data: {
@@ -125,6 +126,7 @@ export function startQuiz(
         revealCorrectOnWrong?: boolean
         removeOnWrong?: boolean
         allowRepeatedCountries?: boolean
+        initialFramingLocation?: { lat: number; lon: number }
         onRevealCorrect?: (correctCountryIndex: number) => void
         onHideReveal?: () => void
         onAnswer?: (data: {
@@ -163,6 +165,7 @@ export function startQuiz(
     revealOnWrong = config?.revealCorrectOnWrong ?? true
     removeOnWrong = config?.removeOnWrong ?? false
     allowRepeatedCountries = config?.allowRepeatedCountries ?? false
+    initialFramingLocation = config?.initialFramingLocation ?? null
     onRevealCorrectCb = config?.onRevealCorrect ?? null
     onHideRevealCb = config?.onHideReveal ?? null
     onAnswerCb = config?.onAnswer ?? null
@@ -397,9 +400,19 @@ export function tickQuiz(now: number): boolean {
                     : allPoints
                 const vp = getQuizViewportRegion()
 
+                const framingAnim = initialFramingLocation
+                    ? animateToLocation(
+                        globe.getCamera(),
+                        initialFramingLocation.lat,
+                        initialFramingLocation.lon,
+                        10.0,
+                        800,
+                    )
+                    : frameLocations(globe.getCamera(), framingPoints, 800, 0.8, vp)
+
                 activeAnimation = Promise.all([
                     animateDisableWave(globe, indices, delays),
-                    frameLocations(globe.getCamera(), framingPoints, 800, 0.8, vp),
+                    framingAnim,
                 ]).then(() => {
                     activeAnimation = null
                     advance(performance.now())

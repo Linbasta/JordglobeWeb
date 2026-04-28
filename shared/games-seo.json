@@ -43,6 +43,23 @@
         "ogTitle": "Euro Music-vinnare 2000–2025 - Gissa landet",
         "ogDescription": "Se varje Eurovision-vinnare från 2000 till 2025 och gissa vilket land som tog hem trofén i detta interaktiva 3D-globquiz."
       }
+    },
+    "game-quiz": {
+      "baseUrlOverride": "https://jordglobe.com/games/game-quiz",
+      "image": "/og-game-quiz.jpg",
+      "genre": "Video Game Quiz",
+      "en": {
+        "title": "Video Game Origins - Guess the Country | JordGlobe",
+        "description": "Watch clips of famous video games and guess which country created each one on an interactive 3D globe.",
+        "ogTitle": "Video Game Origins - Guess the Country",
+        "ogDescription": "Watch clips of famous video games and guess which country each one is from in this interactive 3D globe quiz."
+      },
+      "sv": {
+        "title": "Datorspelens ursprung - Gissa landet | JordGlobe",
+        "description": "Se klipp från kända datorspel och gissa vilket land som skapade dem på en interaktiv 3D-glob.",
+        "ogTitle": "Datorspelens ursprung - Gissa landet",
+        "ogDescription": "Se klipp från kända datorspel och gissa vilket land vart och ett kommer från i detta interaktiva 3D-globquiz."
+      }
     }
   }
 }

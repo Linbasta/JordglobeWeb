@@ -1,0 +1,275 @@
+---
+import avatarTripletsUrl from '../euro-music-quiz/assets/euro-music-quiz_avatar_triplets.png?url';
+import greenBtnUrl from '../euro-music-quiz/assets/green_btn.png?url';
+---
+
+<canvas id="renderCanvas"></canvas>
+
+<div class="gq-start-root" hidden>
+    <img class="gq-start-deco" src={avatarTripletsUrl} alt="" />
+    <div class="gq-start-card">
+        <div class="gq-start-title"></div>
+        <button
+            class="gq-start-play"
+            type="button"
+            style={`background-image: url(${greenBtnUrl})`}
+        ></button>
+    </div>
+</div>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<style>
+    .gq-start-root {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 500;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+        font-family: Arial, sans-serif;
+    }
+
+    .gq-start-deco {
+        position: absolute;
+        left: 50%;
+        top: -195px;
+        transform: translateX(-50%);
+        width: 520px;
+        height: auto;
+        pointer-events: none;
+        display: block;
+    }
+
+    .gq-start-card {
+        position: relative;
+        width: 620px;
+        height: 240px;
+        border-radius: 20px;
+        background: linear-gradient(90deg, #7a4bd0, #e86bb5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 28px 20px;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+
+    .gq-start-title {
+        color: #fff;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .gq-start-play {
+        width: 280px;
+        height: 112px;
+        border: none;
+        background-color: transparent;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        color: #fff;
+        font-size: 28px;
+        font-weight: 800;
+        font-family: inherit;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    @media (max-width: 700px) {
+        .gq-start-deco {
+            width: 380px;
+            top: -142px;
+        }
+        .gq-start-card {
+            width: calc(100vw - 32px);
+            height: auto;
+            min-height: 200px;
+            gap: 14px;
+            padding: 24px 16px;
+        }
+        .gq-start-title {
+            font-size: 26px;
+        }
+        .gq-start-play {
+            width: 240px;
+            height: 96px;
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .gq-start-deco {
+            width: 300px;
+            top: -112px;
+        }
+        .gq-start-card {
+            min-height: 180px;
+            gap: 12px;
+            padding: 20px 14px;
+        }
+        .gq-start-title {
+            font-size: 22px;
+        }
+        .gq-start-play {
+            width: 200px;
+            height: 80px;
+            font-size: 20px;
+        }
+    }
+</style>
+
+<script>
+    import { GAME_QUIZ_I18N } from './i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+
+    import sprite1 from '../euro-music-quiz/assets/1.png?url';
+    import sprite2 from '../euro-music-quiz/assets/2.png?url';
+    import sprite3 from '../euro-music-quiz/assets/3.png?url';
+    import sprite4 from '../euro-music-quiz/assets/4.png?url';
+    import sprite5 from '../euro-music-quiz/assets/5.png?url';
+    import sprite6 from '../euro-music-quiz/assets/6.png?url';
+
+    const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
+
+    document.body.style.backgroundColor = '#6496dc';
+
+    initI18n(GAME_QUIZ_I18N);
+    initMobile();
+
+    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    idleCallback(() => {
+        for (const url of SPRITE_URLS) new Image().src = url;
+    });
+
+    function showStartPanel(): Promise<void> {
+        return new Promise((resolve) => {
+            const root = document.querySelector<HTMLDivElement>('.gq-start-root')!;
+            const title = root.querySelector<HTMLDivElement>('.gq-start-title')!;
+            const play = root.querySelector<HTMLButtonElement>('.gq-start-play')!;
+
+            title.textContent = t('start.title');
+            play.textContent = t('start.playButton');
+            root.hidden = false;
+
+            play.onclick = () => {
+                root.hidden = true;
+                resolve();
+            };
+        });
+    }
+
+    function iso2ToFlag(iso2: string): string {
+        return [...iso2]
+            .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+            .join('');
+    }
+
+    // [iso2, gameName, youtubeId, startSeconds, clipLengthSeconds]
+    // Tweak startSeconds and clipLengthSeconds per entry as needed.
+    const GAME_QUIZ_ENTRIES: Array<[string, string, string, number, number]> = [
+        ['RU', 'Tetris',           '-FAzHyXZPm0', 30,   25],
+        ['SE', 'Minecraft',        'mxHIFijxTZY', 1230, 25],
+        ['JP', 'Super Mario',      '7-ukfGcTJtY', 30,   25],
+        ['CA', "Assassin's Creed", 'aV3yOcF7kwA', 30,   25],
+        ['FI', 'Angry Birds',      'tmcG-vbI6DQ', 30,   25],
+        ['FR', 'Rayman',           'T4k8MrBqxdA', 630,  25],
+        ['AU', 'Hollow Knight',    'G1atkq4C1KU', 630,  25],
+        ['BE', "Baldur's Gate",    'UCxFhfQFaec', 630,  25],
+        ['PL', 'Cyberpunk 2077',   'WX1hAbGmdwg', 30,   25],
+        ['KR', 'PUBG',             'HV1rC2JBuaQ', 800,  25],
+    ];
+
+    function shuffle<T>(arr: T[]): T[] {
+        const out = arr.slice();
+        for (let i = out.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [out[i], out[j]] = [out[j], out[i]];
+        }
+        return out;
+    }
+
+    const GAME_QUIZ_QUESTIONS = shuffle(GAME_QUIZ_ENTRIES).map(
+        ([iso2, _gameName, youtubeId, startTime, clipLength]) => ({
+            present: 'video' as const,
+            answer: 'country' as const,
+            countryISO2: iso2,
+            youtubeId,
+            prompt: t('question.prompt'),
+            startTime,
+            endTime: startTime + clipLength,
+        }),
+    );
+
+    startQuizGame({
+        i18n: GAME_QUIZ_I18N,
+        questions: GAME_QUIZ_QUESTIONS,
+        scoreBarType: 'simple',
+        showHoverLabel: true,
+        initialFramingLocation: { lat: 41.9, lon: 12.5 },
+        quizId: 'game-quiz',
+        analyticsGame: 'GameQuiz',
+        analyticsGameId: 'game-quiz',
+        onReady: () => showStartPanel(),
+        onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
+            const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
+                import('../../shared/ui/result-overlay.ts'),
+                import('../../shared/quiz/quiz-runner.ts'),
+            ]);
+
+            const spriteNames = [0, 1, 2, 3, 4, 5].map((i) => t(`sprite.${i}`));
+            showResultOverlay({
+                score,
+                total,
+                elapsedMs,
+                results,
+                quizTitle: t('quiz.title'),
+                shareUrl: 'https://jordglobe.com/games/game-quiz/',
+                shareEmoji: '🎮',
+                sprites: SPRITE_URLS,
+                spriteNames,
+                getMessage: (s, t) =>
+                    s === t
+                        ? spriteNames[5]
+                        : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
+                formatShareSquares: (results) => {
+                    const qs = getQuestions();
+                    return results
+                        .map((correct, i) =>
+                            correct ? iso2ToFlag(qs[i].countryISO2) : '🟥',
+                        )
+                        .join('');
+                },
+                isPersonalBest,
+                onSeeRanking: async () => {
+                    const { showLeaderboardWithAuth } = await import('../../shared/ui/leaderboard-popup.ts');
+                    showLeaderboardWithAuth({
+                        quizId: 'game-quiz',
+                        userScore: score,
+                        userTotal: total,
+                        userElapsedMs: elapsedMs,
+                        isPersonalBest,
+                        onClose: () => {},
+                    });
+                },
+                onRetry: () => window.location.reload(),
+            });
+        },
+    });
+</script>
