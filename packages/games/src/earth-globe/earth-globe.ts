@@ -629,6 +629,11 @@ export class EarthGlobe {
             this.camera.angularSensibilityY = angular;
         }
 
+        // Inertia: ease-out power curve. Steep rise close-in, plateau when zoomed out.
+        const inertiaT = Math.max(0, Math.min(1, (this.camera.radius - CAMERA_LOWER_RADIUS) / (zoom.threshold - CAMERA_LOWER_RADIUS)));
+        const inertiaEased = 1 - Math.pow(1 - inertiaT, zoom.inertiaPower);
+        this.camera.inertia = zoom.inertiaMin + (zoom.inertiaMax - zoom.inertiaMin) * inertiaEased;
+
         // Rebuild debug circles if multiplier changed
         this.colliderDebugUpdate?.();
     }
