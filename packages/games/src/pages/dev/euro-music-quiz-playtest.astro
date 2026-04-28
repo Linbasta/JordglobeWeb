@@ -1,0 +1,325 @@
+---
+// Dev-only playtest variant of the Eurovision quiz.
+// Mirrors src/games/euro-music-quiz/GameRoot.astro but routes the end-of-game
+// leaderboard handoff to a localStorage tally (./euro-music-quiz-playtest-leaderboard.ts)
+// and uses an isolated quizId so personal-best storage and analytics don't pollute prod.
+import avatarTripletsUrl from '../../games/euro-music-quiz/assets/euro-music-quiz_avatar_triplets.png?url';
+import greenBtnUrl from '../../games/euro-music-quiz/assets/green_btn.png?url';
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eurovision Quiz Playtest</title>
+    <style is:global>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="renderCanvas"></canvas>
+
+<div class="emq-start-root" hidden>
+    <img class="emq-start-deco" src={avatarTripletsUrl} alt="" />
+    <div class="emq-start-card">
+        <div class="emq-start-title"></div>
+        <button
+            class="emq-start-play"
+            type="button"
+            style={`background-image: url(${greenBtnUrl})`}
+        ></button>
+    </div>
+</div>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<style>
+    .emq-start-root {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 500;
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+        font-family: Arial, sans-serif;
+    }
+
+    .emq-start-deco {
+        position: absolute;
+        left: 50%;
+        top: -195px;
+        transform: translateX(-50%);
+        width: 520px;
+        height: auto;
+        pointer-events: none;
+        display: block;
+    }
+
+    .emq-start-card {
+        position: relative;
+        width: 620px;
+        height: 240px;
+        border-radius: 20px;
+        background: linear-gradient(90deg, #7a4bd0, #e86bb5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 28px 20px;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+
+    .emq-start-title {
+        color: #fff;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .emq-start-play {
+        width: 280px;
+        height: 112px;
+        border: none;
+        background-color: transparent;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        color: #fff;
+        font-size: 28px;
+        font-weight: 800;
+        font-family: inherit;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    @media (max-width: 700px) {
+        .emq-start-deco {
+            width: 380px;
+            top: -142px;
+        }
+        .emq-start-card {
+            width: calc(100vw - 32px);
+            height: auto;
+            min-height: 200px;
+            gap: 14px;
+            padding: 24px 16px;
+        }
+        .emq-start-title {
+            font-size: 26px;
+        }
+        .emq-start-play {
+            width: 240px;
+            height: 96px;
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .emq-start-deco {
+            width: 300px;
+            top: -112px;
+        }
+        .emq-start-card {
+            min-height: 180px;
+            gap: 12px;
+            padding: 20px 14px;
+        }
+        .emq-start-title {
+            font-size: 22px;
+        }
+        .emq-start-play {
+            width: 200px;
+            height: 80px;
+            font-size: 20px;
+        }
+    }
+</style>
+
+<script>
+    import { EURO_MUSIC_QUIZ_I18N } from '../../games/euro-music-quiz/i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+
+    import sprite1 from '../../games/euro-music-quiz/assets/1.png?url';
+    import sprite2 from '../../games/euro-music-quiz/assets/2.png?url';
+    import sprite3 from '../../games/euro-music-quiz/assets/3.png?url';
+    import sprite4 from '../../games/euro-music-quiz/assets/4.png?url';
+    import sprite5 from '../../games/euro-music-quiz/assets/5.png?url';
+    import sprite6 from '../../games/euro-music-quiz/assets/6.png?url';
+
+    const SPRITE_URLS = [sprite1, sprite2, sprite3, sprite4, sprite5, sprite6];
+
+    document.body.style.backgroundColor = '#6496dc';
+
+    initI18n(EURO_MUSIC_QUIZ_I18N);
+    initMobile();
+
+    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    idleCallback(() => {
+        for (const url of SPRITE_URLS) new Image().src = url;
+    });
+
+    function showStartPanel(): Promise<void> {
+        return new Promise((resolve) => {
+            const root = document.querySelector<HTMLDivElement>('.emq-start-root')!;
+            const title = root.querySelector<HTMLDivElement>('.emq-start-title')!;
+            const play = root.querySelector<HTMLButtonElement>('.emq-start-play')!;
+
+            title.textContent = t('start.title');
+            play.textContent = t('start.playButton');
+            root.hidden = false;
+
+            play.onclick = () => {
+                root.hidden = true;
+                resolve();
+            };
+        });
+    }
+
+    function iso2ToFlag(iso2: string): string {
+        return [...iso2]
+            .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+            .join('');
+    }
+
+    const COMPILATION_VIDEO_ID = '1jnR-m5u5yQ';
+    const SONG_OFFSET = 5;
+    const CLIP_DURATION = 22;
+
+    function parseTime(timeStr: string): number {
+        const [min, sec] = timeStr.split(':').map(Number);
+        return min * 60 + sec;
+    }
+
+    const EURO_MUSIC_QUIZ_ENTRIES: Array<[string, string, string, number?]> = [
+        ['00:01', 'AL', 'Albania'],
+        ['00:31', 'AM', 'Armenia'],
+        ['01:00', 'AU', 'Australia'],
+        ['01:29', 'AT', 'Austria'],
+        ['01:58', 'AZ', 'Azerbaijan'],
+        ['02:25', 'BE', 'Belgium'],
+        ['02:53', 'BG', 'Bulgaria'],
+        ['03:24', 'HR', 'Croatia'],
+        ['03:55', 'CY', 'Cyprus'],
+        ['04:24', 'CZ', 'Czech Republic'],
+        ['04:56', 'DK', 'Denmark'],
+        ['05:26', 'EE', 'Estonia'],
+        ['05:54', 'FI', 'Finland'],
+        ['06:26', 'FR', 'France'],
+        ['06:55', 'GE', 'Georgia'],
+        ['07:24', 'DE', 'Germany'],
+        ['07:56', 'GR', 'Greece'],
+        ['08:28', 'IL', 'Israel'],
+        ['08:59', 'IT', 'Italy'],
+        ['09:28', 'LV', 'Latvia'],
+        ['09:57', 'LT', 'Lithuania'],
+        ['10:29', 'LU', 'Luxembourg'],
+        ['11:03', 'MT', 'Malta'],
+        ['11:32', 'MD', 'Moldova'],
+        ['12:01', 'ME', 'Montenegro'],
+        ['12:31', 'NO', 'Norway'],
+        ['13:00', 'PL', 'Poland'],
+        ['13:30', 'PT', 'Portugal'],
+        ['13:58', 'RO', 'Romania'],
+        ['14:29', 'SM', 'San Marino'],
+        ['14:59', 'RS', 'Serbia'],
+        ['15:29', 'SE', 'Sweden'],
+        ['15:59', 'CH', 'Switzerland'],
+        ['16:28', 'UA', 'Ukraine'],
+        ['17:00', 'GB', 'United Kingdom'],
+    ];
+
+    const EURO_MUSIC_QUIZ_QUESTIONS = EURO_MUSIC_QUIZ_ENTRIES.map(
+        ([timeStr, iso2, countryName, duration]) => {
+            const songStart = parseTime(timeStr);
+            const clipLen = duration ?? CLIP_DURATION;
+            return {
+                present: 'video' as const,
+                answer: 'country' as const,
+                countryISO2: iso2,
+                youtubeId: COMPILATION_VIDEO_ID,
+                prompt: t('question.prompt'),
+                startTime: songStart + SONG_OFFSET,
+                endTime: songStart + SONG_OFFSET + clipLen,
+                hideBottom: true,
+            };
+        },
+    );
+
+    startQuizGame({
+        i18n: EURO_MUSIC_QUIZ_I18N,
+        questions: EURO_MUSIC_QUIZ_QUESTIONS,
+        scoreBarType: 'simple',
+        showHoverLabel: true,
+        // Suffix isolates personal-best storage and analytics from the prod quiz.
+        quizId: 'euro-music-quiz-playtest',
+        analyticsGame: 'EuroMusicQuizPlaytest',
+        analyticsGameId: 'euro-music-quiz-playtest_2026',
+        onReady: () => showStartPanel(),
+        onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
+            const [{ showResultOverlay }, { getQuestions }] = await Promise.all([
+                import('../../shared/ui/result-overlay.ts'),
+                import('../../shared/quiz/quiz-runner.ts'),
+            ]);
+
+            const spriteNames = [0, 1, 2, 3, 4, 5].map((i) => t(`sprite.${i}`));
+            showResultOverlay({
+                score,
+                total,
+                elapsedMs,
+                results,
+                quizTitle: t('quiz.title'),
+                shareUrl: 'https://jordglobe.com/games/euro-music-quiz/',
+                shareEmoji: '🎵',
+                sprites: SPRITE_URLS,
+                spriteNames,
+                getMessage: (s, t) =>
+                    s === t
+                        ? spriteNames[5]
+                        : spriteNames[Math.max(0, Math.min(4, Math.ceil((s / t) * 5) - 1))],
+                formatShareSquares: (results) => {
+                    const qs = getQuestions();
+                    return results
+                        .map((correct, i) =>
+                            correct ? iso2ToFlag(qs[i].countryISO2) : '🟥',
+                        )
+                        .join('');
+                },
+                isPersonalBest,
+                onSeeRanking: async () => {
+                    const { showLeaderboardLocal } = await import(
+                        '../../dev-tests/euro-music-quiz-playtest-leaderboard.ts'
+                    );
+                    showLeaderboardLocal({
+                        userScore: score,
+                        userTotal: total,
+                        userElapsedMs: elapsedMs,
+                        onClose: () => {},
+                    });
+                },
+                onRetry: () => window.location.reload(),
+            });
+        },
+    });
+</script>
+
+</body>
+</html>
