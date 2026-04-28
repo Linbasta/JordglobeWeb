@@ -27,6 +27,10 @@ export interface QuizGameConfig {
     scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
+    /** Restore previously-cleared countries to NORMAL at the start of each
+     *  remaining question. Use for quizzes where the same country is the
+     *  correct answer for multiple questions (e.g. Eurovision winners). */
+    allowRepeatedCountries?: boolean
     /** Callback when game completes. isPersonalBest is true if this score beat the stored PB. */
     onGameComplete?: (score: number, total: number, elapsedMs: number, results: boolean[], isPersonalBest: boolean) => void
     showHoverLabel?: boolean
@@ -116,6 +120,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
                     scoreBarType: config.scoreBarType,
                     revealCorrectOnWrong: config.revealCorrectOnWrong ?? true,
                     removeOnWrong: config.removeOnWrong ?? false,
+                    allowRepeatedCountries: config.allowRepeatedCountries ?? false,
                     onGameComplete: wrappedOnGameComplete,
                     quizId: config.quizId,
                     analyticsGame: config.analyticsGame,

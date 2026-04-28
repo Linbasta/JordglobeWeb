@@ -45,6 +45,7 @@ export interface QuizConfig {
     scoreBarType?: ScoreBarType
     revealCorrectOnWrong?: boolean
     removeOnWrong?: boolean
+    allowRepeatedCountries?: boolean
     onQuestionChanged?: (prompt: string, index: number, total: number) => void
     onCorrectAnswer?: (prompt: string) => void
     onWrongAnswer?: (wrongCountry: string, correctCountry: string) => void
@@ -124,6 +125,7 @@ export class QuizUIAdapter {
             {
                 revealCorrectOnWrong: config.revealCorrectOnWrong,
                 removeOnWrong: config.removeOnWrong,
+                allowRepeatedCountries: config.allowRepeatedCountries,
                 onRevealCorrect: (correctCountryIndex) => {
                     if (!this.hoverLabel) return
                     const country = this.globe.getCountryByIndex(correctCountryIndex)

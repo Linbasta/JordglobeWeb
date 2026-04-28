@@ -28,7 +28,7 @@ import {
 import { frameCountry, frameLocations, cameraShake, getZoomValue, animateToLocation, type ViewportRegion } from '../animation/camera-utils'
 import { ArcDrawer } from '../visualizers/arc-drawer'
 import { latLonToSphere, haversineDistance } from '../../earth-globe/geo-math'
-import { zoom, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe'
+import { zoom, STATE_DISABLED, STATE_CLEARED, STATE_NORMAL } from '../../earth-globe'
 import { ALTITUDE_NORMAL, ALTITUDE_CLEARED, ALTITUDE_WRONG_POP, ALTITUDE_SHOW_CORRECT } from '../../earth-globe/constants'
 import { burstAtPosition, wrongBurstAtPosition } from '../effects/marker-particles'
 import { showVideoOverlay, suspendVideoOverlay, expandVideoOverlay } from '../ui/video-overlay'
@@ -70,6 +70,7 @@ let questionShown = false
 // Config
 let revealOnWrong = true
 let removeOnWrong = false
+let allowRepeatedCountries = false
 let onRevealCorrectCb: ((correctCountryIndex: number) => void) | null = null
 let onHideRevealCb: (() => void) | null = null
 let onAnswerCb: ((data: {
@@ -123,6 +124,7 @@ export function startQuiz(
     config?: {
         revealCorrectOnWrong?: boolean
         removeOnWrong?: boolean
+        allowRepeatedCountries?: boolean
         onRevealCorrect?: (correctCountryIndex: number) => void
         onHideReveal?: () => void
         onAnswer?: (data: {
@@ -160,6 +162,7 @@ export function startQuiz(
 
     revealOnWrong = config?.revealCorrectOnWrong ?? true
     removeOnWrong = config?.removeOnWrong ?? false
+    allowRepeatedCountries = config?.allowRepeatedCountries ?? false
     onRevealCorrectCb = config?.onRevealCorrect ?? null
     onHideRevealCb = config?.onHideReveal ?? null
     onAnswerCb = config?.onAnswer ?? null
@@ -504,6 +507,7 @@ export function tickQuiz(now: number): boolean {
                     endTime: q.endTime,
                     hideTop,
                     hideBottom,
+                    hideBottomCorner: q.hideBottomCorner,
                 })
                 // Ensure video is expanded when showing new question
                 expandVideoOverlay()
@@ -552,6 +556,31 @@ export function tickQuiz(now: number): boolean {
             // Question display is handled by UI reading getCurrentStep()
             // Stay on this step for at least one frame so UI can update
             if (!questionShown) {
+                // Quizzes with repeated correct answers (e.g. Eurovision winners
+                // where SE/UA/DK/AT win multiple times) need every remaining
+                // question's country in NORMAL state. Raising only the current
+                // question's country would hint at the answer; one-shot
+                // countries that have already been answered keep their
+                // CLEARED visual since they aren't in `remaining`.
+                if (allowRepeatedCountries) {
+                    const ctrl = globe.getActiveController()
+                    const remaining = new Set<string>()
+                    for (let i = step.questionIndex; i < questions.length; i++) {
+                        const q = questions[i]
+                        if (q.answer === 'country' && q.countryISO2) {
+                            remaining.add(q.countryISO2)
+                        }
+                    }
+                    for (const iso2 of remaining) {
+                        const country = globe.getCountryByISO2(iso2)
+                        if (!country) continue
+                        if (ctrl.getState(country.index) === STATE_CLEARED) {
+                            ctrl.setState(country.index, STATE_NORMAL)
+                            ctrl.setAltitude(country.index, ALTITUDE_NORMAL)
+                            ctrl.setBlend(country.index, 1.0)
+                        }
+                    }
+                }
                 questionShown = true
             } else {
                 // UI has had a chance to update, now advance

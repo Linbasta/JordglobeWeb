@@ -11,6 +11,21 @@
 
 import { SCORE_BAR_BOTTOM, SCORE_BAR_GAP, PANEL_HEIGHT_VH, PANEL_ASPECT, PANEL_WIDTH_LANDSCAPE, PANEL_WIDTH_PORTRAIT } from './score-bar'
 
+// Tweakable: position/size of the soft black blob that masks burned-in
+// language/country names in the lower corner of compilation videos.
+// Uses a radial gradient — peak opacity (maxOpacity) at the center out to
+// solidStop, then fades to fully transparent at the edges.
+const BOTTOM_CORNER_COVER = {
+    side: 'left' as 'left' | 'right',
+    bottom: '0%',
+    inset: '00%', // distance from chosen side
+    width: '35%',
+    height: '25%',
+    borderRadius: '50%',
+    solidStop: '50%', // peak-opacity disc reaches this radius, then fades out
+    maxOpacity: 0.95,    // 0 = invisible, 1 = fully opaque black
+}
+
 // YouTube IFrame API types
 declare global {
     interface Window {
@@ -243,6 +258,9 @@ export interface VideoOverlayOptions {
     hideTop?: boolean
     /** Hide bottom center of video (country name in compilation) */
     hideBottom?: boolean
+    /** Hide a small box in a lower corner (burned-in language name).
+     *  Position/size configured via BOTTOM_CORNER_COVER constants. */
+    hideBottomCorner?: boolean
 }
 
 /**
@@ -279,7 +297,7 @@ export async function showVideoOverlay(
         }
         : optionsOrYoutubeId
 
-    const { youtubeId, prompt: promptText, hideTop, hideBottom } = options
+    const { youtubeId, prompt: promptText, hideTop, hideBottom, hideBottomCorner } = options
     const videoStartTime = options.startTime
     const videoEndTime = options.endTime
     const start = videoStartTime ?? 0
@@ -391,6 +409,20 @@ export async function showVideoOverlay(
             'width:45%;height:12%;' +
             'background:#000;pointer-events:none;z-index:1;'
         iframeWrap.appendChild(bottomCover)
+    }
+
+    // Small corner blob - hides burned-in language/country name with a soft fade
+    if (hideBottomCorner) {
+        const c = BOTTOM_CORNER_COVER
+        const peak = `rgba(0,0,0,${c.maxOpacity})`
+        const cornerCover = document.createElement('div')
+        cornerCover.style.cssText =
+            `position:absolute;bottom:${c.bottom};${c.side}:${c.inset};` +
+            `width:${c.width};height:${c.height};` +
+            `border-radius:${c.borderRadius};` +
+            `background:radial-gradient(ellipse at center, ${peak} ${c.solidStop}, rgba(0,0,0,0) 100%);` +
+            'pointer-events:none;z-index:1;'
+        iframeWrap.appendChild(cornerCover)
     }
 
     container.appendChild(iframeWrap)

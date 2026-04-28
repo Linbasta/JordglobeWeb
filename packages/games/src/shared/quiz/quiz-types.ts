@@ -59,6 +59,8 @@ export type Question = {
     hideTop?: boolean
     /** Hide bottom center of video (country name in compilation) */
     hideBottom?: boolean
+    /** Hide a small box in a lower corner (burned-in language name) */
+    hideBottomCorner?: boolean
 
     // present: "image"
     imageUrl?: string
