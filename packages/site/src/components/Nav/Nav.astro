@@ -85,10 +85,10 @@ import { locales } from "@config/siteSettings.json";
 					</Button>
 					<Button
 						variant="secondary"
-						class="my-auto mr-4 hidden px-4 py-2 md:block"
-						href="/games"
+						class="my-auto mr-4 hidden px-4 py-2 md:block !border-transparent !bg-[#3b82f6] hover:!bg-[#60a5fa] !text-white"
+						href="/about"
 					>
-						Games
+						About
 					</Button>
 					{/* Added Discord button with margin */}
 					<DiscordButton class="ml-4" />
@@ -120,6 +120,7 @@ import { locales } from "@config/siteSettings.json";
 
 <script>
 	let navbar: HTMLElement | null;
+	let scrollListenerAttached = false;
 
 	function scrollHandler() {
 		if (navbar) {
@@ -136,7 +137,30 @@ import { locales } from "@config/siteSettings.json";
 
 	function initNav() {
 		navbar = document.getElementById("nav__container");
+
+		// Always detach any existing listener — view transitions reuse this script,
+		// so without this we'd leak listeners across navigations and the listener
+		// from a previous page would keep mutating the new page's navbar.
+		if (scrollListenerAttached) {
+			window.removeEventListener("scroll", scrollHandler);
+			scrollListenerAttached = false;
+		}
+
+		// Pages that opt out of the scroll-fade mark the body with `static-nav`.
+		// Force the navbar back to its initial transparent state and don't attach.
+		if (document.body.classList.contains("static-nav")) {
+			if (navbar) {
+				navbar.classList.add("navbar--initial");
+				navbar.classList.remove("navbar--scrolled");
+			}
+			return;
+		}
+
 		window.addEventListener("scroll", scrollHandler, { passive: true });
+		scrollListenerAttached = true;
+		// Sync to current scroll position so we don't render in the wrong state
+		// for a frame after navigating to a non-static page.
+		scrollHandler();
 	}
 
 	// runs on initial page load

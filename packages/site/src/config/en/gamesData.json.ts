@@ -1,21 +1,50 @@
-// Import shared SEO config (single source of truth)
+// Import shared SEO config (single source of truth for SEO meta)
 import gamesSeoConfig from "../../../../../shared/games-seo.json";
 
-// Derive game listing data from SEO config
-const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => ({
-	id,
-	title: game.en.ogTitle || game.en.title.split(" | ")[0], // Use short title for cards
-	description: game.en.description,
-	image: id, // Image key for imageMap in GamesPage
-	link: `/games/${id}/`,
-	genre: game.genre,
-}));
+// Short, single-line copy used on the game-selector cards.
+// Long-form SEO text stays in shared/games-seo.json and is used for JSON-LD.
+const cardCopy: Record<string, { title: string; description: string }> = {
+	"euro-music-quiz": {
+		title: "Eurovision 2026",
+		description: "Guess the country from the song.",
+	},
+	"euro-winners-2000s": {
+		title: "Eurovision Winners",
+		description: "Guess every Eurovision winner from 2000–2025.",
+	},
+	"game-quiz": {
+		title: "Video Game Origins",
+		description: "Guess where each game was made.",
+	},
+};
+
+const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
+	const card = cardCopy[id];
+	return {
+		id,
+		title: card?.title ?? game.en.ogTitle,
+		description: card?.description ?? game.en.ogDescription,
+		seoTitle: game.en.ogTitle || game.en.title.split(" | ")[0],
+		seoDescription: game.en.description,
+		image: id, // Image key for imageMap in GameSelectorPage
+		link: `/games/${id}/`,
+		genre: game.genre,
+	};
+});
+
+const allGameIds = games.map((g) => g.id);
+
+const topics = [
+	{ title: "Top trivia", gameIds: allGameIds },
+	{ title: "Classic geography", gameIds: allGameIds },
+];
 
 const gamesData = {
 	pageTitle: "Games",
 	pageSubtitle: "Play geography games and test your knowledge",
 	playButton: "Play Now",
 	games,
+	topics,
 };
 
 export default gamesData;

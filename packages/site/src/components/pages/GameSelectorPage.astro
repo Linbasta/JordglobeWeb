@@ -1,0 +1,307 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+import { videoGameSchema } from "@js/jsonLD";
+
+import placeholderEuroMusic from "@images/front/placeholder-euro-music-quiz.jpg";
+import placeholderEuroWinners from "@images/front/placeholder-euro-winners-2000s.jpg";
+import placeholderGameQuiz from "@images/front/placeholder-game-quiz.jpg";
+import posterImage from "@images/front/first-frame.jpg";
+
+const imageMap: Record<string, ImageMetadata> = {
+    "euro-music-quiz": placeholderEuroMusic,
+    "euro-winners-2000s": placeholderEuroWinners,
+    "game-quiz": placeholderGameQuiz,
+};
+
+const locale = getLocaleFromUrl(Astro.url);
+const siteData = getTranslatedData("siteData", locale);
+const gamesData = getTranslatedData("gamesData", locale);
+
+type GameMeta = (typeof gamesData.games)[number] & { image: ImageMetadata };
+
+const gamesById = new Map<string, GameMeta>(
+    gamesData.games.map((game) => [
+        game.id,
+        { ...game, image: imageMap[game.id] },
+    ]),
+);
+
+const topics = (gamesData.topics ?? []).map((topic) => ({
+    title: topic.title,
+    games: topic.gameIds
+        .map((id) => gamesById.get(id))
+        .filter((g): g is GameMeta => Boolean(g)),
+}));
+
+const gameSchemas = Array.from(gamesById.values()).map((game) =>
+    videoGameSchema({
+        name: game.seoTitle ?? game.title,
+        description: game.seoDescription ?? game.description,
+        url: `${import.meta.env.SITE}${game.link}`,
+        image: `${import.meta.env.SITE}${game.image.src}`,
+        genre: game.genre,
+    }),
+);
+---
+
+<BaseLayout
+    title={`${gamesData.pageTitle} | ${siteData.title}`}
+    description={gamesData.pageSubtitle}
+    staticNav={true}
+>
+    {gameSchemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+
+    <section class="selector">
+        <video class="bg-video" autoplay muted playsinline poster={posterImage.src}>
+            <source src="/assets/globe.m4v" type="video/mp4" />
+        </video>
+        <div class="overlay"></div>
+
+        <div class="content">
+            <header class="page-header">
+                <h1>{gamesData.pageTitle}</h1>
+                <p>{gamesData.pageSubtitle}</p>
+            </header>
+
+            {topics.map((topic) => (
+                <section class="topic">
+                    <div class="topic-inner">
+                        <h2 class="topic-title">{topic.title}</h2>
+                        <div class="row">
+                            {topic.games.map((game) => (
+                                <a href={game.link} class="game-card">
+                                    <div class="thumb-stack">
+                                        <div class="thumb-base"></div>
+                                        <div class="thumb">
+                                            <Image
+                                                src={game.image}
+                                                alt={game.title}
+                                                width={800}
+                                                height={450}
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    </div>
+                                    <h3 class="card-title">{game.title}</h3>
+                                    <p class="card-desc">{game.description}</p>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ))}
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    .selector {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .bg-video {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        background: rgba(8, 18, 50, 0.72);
+        pointer-events: none;
+    }
+
+    .content {
+        position: relative;
+        z-index: 2;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 96px 32px 64px;
+        color: #fff;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 56px;
+    }
+
+    .page-header h1 {
+        font-size: clamp(40px, 6vw, 64px);
+        font-weight: 800;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        margin: 0 0 12px;
+    }
+
+    .page-header p {
+        font-size: clamp(16px, 2vw, 20px);
+        color: rgba(180, 210, 255, 0.85);
+        margin: 0;
+    }
+
+    .topic {
+        margin-bottom: 48px;
+    }
+
+    /* Cap matches 3 cards × 320px + 2 × 24px gap = 1008px, with slack. */
+    .topic-inner {
+        max-width: 1024px;
+        margin: 0 auto;
+    }
+
+    .topic-title {
+        font-size: clamp(20px, 2.5vw, 28px);
+        font-weight: 700;
+        margin: 0 0 16px;
+        color: #fff;
+    }
+
+    .row {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        /* Top padding leaves room for the thumb to raise on hover without being
+           clipped by overflow-x's implicit overflow-y clip. */
+        padding: 12px 0;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .row::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .row::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+    }
+
+    .game-card {
+        flex: 0 0 320px;
+        scroll-snap-align: start;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .thumb-stack {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        margin-bottom: 12px;
+    }
+
+    .thumb-base {
+        position: absolute;
+        inset: 0;
+        background: #3b82f6;
+        border-radius: 10px;
+    }
+
+    .thumb {
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #000;
+        transition: transform 0.18s ease;
+    }
+
+    .game-card:hover .thumb {
+        transform: translateY(-6px);
+    }
+
+    .thumb :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #5dd5ff;
+        margin: 0 0 6px;
+    }
+
+    .card-desc {
+        font-size: 14px;
+        color: rgba(180, 210, 255, 0.75);
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    @media (max-width: 640px) {
+        .content {
+            padding: 80px 16px 48px;
+        }
+
+        .game-card {
+            flex: 0 0 80vw;
+            max-width: 320px;
+        }
+
+        .row {
+            padding-left: 4px;
+            padding-right: 16px;
+        }
+    }
+</style>
+
+<script>
+    // Ping-pong loop for the bg video: play forward to end, then reverse to 0, repeat.
+    // Browsers don't reliably support negative playbackRate, so reverse is rAF-driven.
+    const video = document.querySelector<HTMLVideoElement>(".bg-video");
+    if (video) {
+        let reversing = false;
+        let lastFrameTime = 0;
+
+        function reverseStep(now: number) {
+            if (!video || !reversing) return;
+            if (!lastFrameTime) lastFrameTime = now;
+            const dt = (now - lastFrameTime) / 1000;
+            lastFrameTime = now;
+
+            const next = video.currentTime - dt;
+            if (next <= 0) {
+                video.currentTime = 0;
+                reversing = false;
+                lastFrameTime = 0;
+                void video.play();
+                return;
+            }
+            video.currentTime = next;
+            requestAnimationFrame(reverseStep);
+        }
+
+        video.addEventListener("ended", () => {
+            reversing = true;
+            lastFrameTime = 0;
+            requestAnimationFrame(reverseStep);
+        });
+    }
+
+    // Debug: 'c' toggles the dim overlay so we can see the raw bg video.
+    const overlay = document.querySelector<HTMLElement>(".overlay");
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "c") return;
+        const tag = (e.target as HTMLElement | null)?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        if (overlay) {
+            overlay.style.display = overlay.style.display === "none" ? "" : "none";
+        }
+    });
+</script>

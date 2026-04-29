@@ -1,7 +1,7 @@
 /* buttons, 4 types "primary", "secondary", "outline", "ghost" */
 /* Einar */
 .button {
-    @apply flex items-center justify-center rounded-full px-5 py-3 font-semibold tracking-tight transition-(--button-transition-properties) duration-200;
+    @apply flex items-center justify-center rounded-lg px-5 py-3 font-semibold tracking-tight transition-(--button-transition-properties) duration-200;
     @apply focus:outline-none;
     @apply disabled:pointer-events-none;
 }
@@ -33,5 +33,14 @@
 
 /* Custom class for Discord button */
 .discord-button {
-    @apply border border-primary-600 rounded-full p-2; /* Add border and padding with fully rounded corners */
+    @apply bg-[#5865F2] rounded-lg px-4 py-2;
+    @apply hover:bg-[#7983f5];
+}
+
+.discord-button img {
+    /* Invert the black logo PNG to white so it sits on the brand-purple fill. */
+    filter: brightness(0) invert(1);
+    /* Optical centering: nudge the wordmark down so it sits at visual center. */
+    position: relative;
+    top: 4px;
 }

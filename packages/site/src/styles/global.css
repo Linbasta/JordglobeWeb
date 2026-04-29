@@ -363,6 +363,23 @@
 		color: #00058e;
 	}
 
+	/* On static-nav pages (e.g. game selector) the nav sits over a dark bg,
+	   so flip nav-link text/icons to white for legibility. */
+	body.static-nav .nav__link--base {
+		color: #ffffff;
+	}
+
+	body.static-nav .nav__link--base:hover {
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	/* Language-selector dropdown defaults to white bg via --game-card-bg.
+	   On static-nav (dark page), give it a dark fill so the white text reads. */
+	body.static-nav .language-selector {
+		background-color: rgba(8, 18, 50, 0.95);
+		border-color: rgba(255, 255, 255, 0.15);
+	}
+
 	.mobile-menu,
 	.mobile-hamburger {
 		background-color: var(--game-primary-dark);

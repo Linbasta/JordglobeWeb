@@ -27,6 +27,7 @@ interface Props {
 	authorsData?: CollectionEntry<"authors">[];
 	postFrontmatter?: CollectionEntry<"blog">["data"];
 	noindex?: boolean; // you need to opt-in to no indexing, as it hides the page from search engines
+	staticNav?: boolean; // true → nav stays transparent (no scroll-fade)
 }
 
 const {
@@ -37,6 +38,7 @@ const {
 	authorsData,
 	postFrontmatter,
 	noindex = false,
+	staticNav = false,
 } = Astro.props as Props;
 
 const currLocale = getLocaleFromUrl(Astro.url);
@@ -55,7 +57,7 @@ const currLocale = getLocaleFromUrl(Astro.url);
 			noindex={noindex}
 		/>
 	</head>
-	<body id="body" class={`${siteSettings.useAnimations === true ? "use-animations" : ""}`}>
+	<body id="body" class:list={[siteSettings.useAnimations === true && "use-animations", staticNav && "static-nav"]}>
 		<!-- put cookie consent first so it is seen first by screen readers -->
 		<!-- <CookieConsent /> -->
 		<div class="min-h-[100lvh]">
