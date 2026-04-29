@@ -22,6 +22,7 @@ import { BASE_URL } from '../asset-path';
 import { getZoomValue } from '../animation/camera-utils';
 import { zoom } from '../../earth-globe';
 import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
+import { dismissPinTutorial } from '../ui/pin-tutorial';
 
 const EARTH_RADIUS = 2.0;
 const TOUCH_Y_OFFSET_PERCENT = 0.10; // 10% of screen height, upward from fingertip
@@ -158,6 +159,7 @@ function setupEventHandlers(): void {
             const pickY = e.pointerType === 'touch' ? e.clientY + touchYOffset : e.clientY;
             const pickResult = scene.pick(e.clientX, pickY, (mesh) => mesh === earthSphere);
             if (pickResult.hit) {
+                dismissPinTutorial();
                 enterPlacingMode();
                 updatePreviewPinFromEvent(e);
             }
