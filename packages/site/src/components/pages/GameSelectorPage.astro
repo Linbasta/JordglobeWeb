@@ -58,7 +58,15 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
     ))}
 
     <section class="selector">
-        <video class="bg-video" autoplay muted playsinline poster={posterImage.src}>
+        <video
+            class="bg-video"
+            autoplay
+            muted
+            playsinline
+            poster={posterImage.src}
+            data-video-desktop="/assets/globe.m4v"
+            data-video-mobile="/assets/globe-mobile.m4v"
+        >
             <source src="/assets/globe.m4v" type="video/mp4" />
         </video>
         <div class="overlay"></div>
@@ -249,14 +257,31 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
             padding: 80px 16px 48px;
         }
 
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            letter-spacing: 3px;
+        }
+
+        .topic {
+            margin-bottom: 28px;
+        }
+
+        .topic-title {
+            margin: 0 0 12px;
+        }
+
         .game-card {
             flex: 0 0 80vw;
             max-width: 320px;
         }
 
         .row {
-            padding-left: 4px;
-            padding-right: 16px;
+            padding: 12px 16px;
+            scroll-snap-type: x proximity;
+            scroll-padding-left: 16px;
         }
     }
 </style>
@@ -266,6 +291,17 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
     // Browsers don't reliably support negative playbackRate, so reverse is rAF-driven.
     const video = document.querySelector<HTMLVideoElement>(".bg-video");
     if (video) {
+        // Pick the mobile-encoded source on narrow viewports to save bandwidth and
+        // decode work. Mirrors the pattern used in HeroVideo.astro.
+        const source = video.querySelector<HTMLSourceElement>("source");
+        const desktopSrc = video.dataset.videoDesktop;
+        const mobileSrc = video.dataset.videoMobile;
+        const chosen = window.innerWidth < 768 ? mobileSrc : desktopSrc;
+        if (source && chosen && source.src !== chosen) {
+            source.src = chosen;
+            video.load();
+        }
+
         let reversing = false;
         let lastFrameTime = 0;
 

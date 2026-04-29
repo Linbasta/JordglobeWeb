@@ -79,5 +79,10 @@ export default defineConfig({
 		build: {
 			assetsInlineLimit: 0,
 		},
+		server: {
+			// Allow access from Tailscale Magic DNS hostnames (e.g. ms.tailXXXX.ts.net).
+			// Leading dot acts as a suffix wildcard for *.ts.net.
+			allowedHosts: ['.ts.net'],
+		},
 	},
 });

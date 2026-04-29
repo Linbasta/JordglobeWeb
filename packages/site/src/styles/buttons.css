@@ -31,16 +31,15 @@
     @apply focus:ring-primary-500 focus:ring-4;
 }
 
-/* Custom class for Discord button */
+/* Custom class for Discord button. Padding is left to callers so the button
+   can sit alongside other buttons that use either px-4/py-2 (compact) or the
+   .button-base px-5/py-3 sizing. */
 .discord-button {
-    @apply bg-[#5865F2] rounded-lg px-4 py-2;
+    @apply bg-[#5865F2] rounded-lg;
     @apply hover:bg-[#7983f5];
 }
 
 .discord-button img {
     /* Invert the black logo PNG to white so it sits on the brand-purple fill. */
     filter: brightness(0) invert(1);
-    /* Optical centering: nudge the wordmark down so it sits at visual center. */
-    position: relative;
-    top: 4px;
 }

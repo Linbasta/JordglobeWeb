@@ -90,8 +90,8 @@ import { locales } from "@config/siteSettings.json";
 					>
 						About
 					</Button>
-					{/* Added Discord button with margin */}
-					<DiscordButton class="ml-4" />
+					{/* Hide on mobile — the hamburger drawer carries its own DiscordButton */}
+					<DiscordButton class="ml-4 hidden md:flex px-4 py-2" />
 
 					{locales.length > 1 && <LanguageSelect class="ml-4 hidden md:block" />}
 

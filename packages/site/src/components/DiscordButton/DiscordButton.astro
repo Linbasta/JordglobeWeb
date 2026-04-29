@@ -1,7 +1,17 @@
 ---
 import Button from "@components/Button/Button.astro";
 import DiscordLogo from "@images/front/discord.png";
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props as Props;
 ---
-<Button variant="ghost" href="https://discord.gg/xQkdK2vkfF" class="md:block px-4 py-2 discord-button">
+<Button
+    variant="ghost"
+    href="https://discord.gg/xQkdK2vkfF"
+    class:list={["discord-button px-4 py-2", className]}
+>
     <img src={DiscordLogo.src} alt="Discord Logo" class="w-28 h-5" />
 </Button>

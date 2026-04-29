@@ -380,10 +380,27 @@
 		border-color: rgba(255, 255, 255, 0.15);
 	}
 
-	.mobile-menu,
 	.mobile-hamburger {
 		background-color: var(--game-primary-dark);
 		border-color: var(--game-card-border);
 		color: var(--game-text-secondary);
+	}
+
+	.mobile-menu {
+		background-color: rgba(8, 18, 50, 0.85);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border-color: rgba(255, 255, 255, 0.15);
+		color: #fff;
+	}
+
+	/* Translucent dark drawer needs light text regardless of page (the global
+	   `.nav__link--base` is dark blue, only flipped to white on static-nav). */
+	.mobile-menu .nav__link--base {
+		color: #fff;
+	}
+
+	.mobile-menu .nav__link--base:hover {
+		color: rgba(255, 255, 255, 0.8);
 	}
 }
