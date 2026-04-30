@@ -90,6 +90,9 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
 
     // 7. Derive showCountryLabel: show if any question uses text presentation
     const showCountryLabel = questions.some(q => q.present === 'text')
+    // Show hover country names for image-only quizzes (e.g. flags). Text quizzes
+    // would leak the answer via the hover label.
+    const showHoverLabel = questions.every(q => q.present === 'image')
 
     // 8. Debug hint (dev only)
     if (import.meta.env.DEV) {
@@ -105,7 +108,7 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
     return new Promise<void>((resolve) => {
         const game = new SoloGameController(canvasId, {
             showCountryLabel,
-            showHoverLabel: config.showHoverLabel ?? false,
+            showHoverLabel: config.showHoverLabel ?? showHoverLabel,
             onReady: async (controller) => {
                 if (config.onReady) await config.onReady()
 
