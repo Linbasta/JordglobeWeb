@@ -87,25 +87,38 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
                 <section class="topic">
                     <div class="topic-inner">
                         <h2 class="topic-title">{topic.title}</h2>
-                        <div class="row">
-                            {topic.games.map((game) => (
-                                <a href={game.link} class="game-card">
-                                    <div class="thumb-stack">
-                                        <div class="thumb-base"></div>
-                                        <div class="thumb">
-                                            <Image
-                                                src={game.image}
-                                                alt={game.title}
-                                                width={800}
-                                                height={450}
-                                                loading="lazy"
-                                            />
+                        <div class="row-wrap">
+                            <div class="row">
+                                {topic.games.map((game) => (
+                                    <a href={game.link} class="game-card" draggable="false">
+                                        <div class="thumb-stack">
+                                            <div class="thumb-base"></div>
+                                            <div class="thumb">
+                                                <Image
+                                                    src={game.image}
+                                                    alt={game.title}
+                                                    width={800}
+                                                    height={450}
+                                                    loading="lazy"
+                                                    draggable={false}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <h3 class="card-title">{game.title}</h3>
-                                    <p class="card-desc">{game.description}</p>
-                                </a>
-                            ))}
+                                        <h3 class="card-title">{game.title}</h3>
+                                        <p class="card-desc">{game.description}</p>
+                                    </a>
+                                ))}
+                            </div>
+                            <button class="nav-btn nav-prev" type="button" aria-label="Scroll left">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M15 18 9 12l6-6"></path>
+                                </svg>
+                            </button>
+                            <button class="nav-btn nav-next" type="button" aria-label="Scroll right">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m9 6 6 6-6 6"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -183,25 +196,139 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         color: #fff;
     }
 
+    .row-wrap {
+        position: relative;
+    }
+
+    .row-wrap::before,
+    .row-wrap::after {
+        content: "";
+        position: absolute;
+        top: 12px;
+        bottom: 0;
+        width: 64px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        z-index: 2;
+    }
+
+    .row-wrap::before {
+        left: 0;
+        background: linear-gradient(
+            to right,
+            rgba(8, 18, 50, 0.95),
+            rgba(8, 18, 50, 0)
+        );
+    }
+
+    .row-wrap::after {
+        right: 0;
+        background: linear-gradient(
+            to left,
+            rgba(8, 18, 50, 0.95),
+            rgba(8, 18, 50, 0)
+        );
+    }
+
+    .row-wrap[data-can-prev="true"]:hover::before,
+    .row-wrap[data-can-prev="true"].is-dragging::before {
+        opacity: 1;
+    }
+
+    .row-wrap[data-can-next="true"]:hover::after,
+    .row-wrap[data-can-next="true"].is-dragging::after {
+        opacity: 1;
+    }
+
     .row {
         display: flex;
         gap: 24px;
         overflow-x: auto;
-        scroll-snap-type: x mandatory;
+        scroll-snap-type: x proximity;
         /* Top padding leaves room for the thumb to raise on hover without being
            clipped by overflow-x's implicit overflow-y clip. */
         padding: 12px 0;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
 
     .row::-webkit-scrollbar {
-        height: 8px;
+        display: none;
     }
 
-    .row::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
+    .row.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    /* Free-form scroll while dragging or while a JS snap animation is
+       running. Without this, removing .is-dragging on release lets the CSS
+       snap engine kick in and instantly relocate the row to the nearest
+       snap point, killing the easing animation before its first frame. */
+    .row.is-dragging,
+    .row.is-snapping {
+        scroll-snap-type: none;
+    }
+
+    .row.is-dragging * {
+        cursor: grabbing !important;
+    }
+
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(8, 18, 50, 0.85);
+        color: #fff;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, background-color 0.15s ease,
+            transform 0.15s ease;
+        z-index: 3;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    .nav-btn:hover {
+        background: rgba(8, 18, 50, 0.95);
+        transform: translateY(-50%) scale(1.06);
+    }
+
+    .nav-prev {
+        left: 8px;
+    }
+
+    .nav-next {
+        right: 8px;
+    }
+
+    .row-wrap[data-can-prev="true"]:hover .nav-prev,
+    .row-wrap[data-can-prev="true"].is-dragging .nav-prev {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .row-wrap[data-can-next="true"]:hover .nav-next,
+    .row-wrap[data-can-next="true"].is-dragging .nav-next {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    @media (hover: none) {
+        .nav-btn {
+            display: none;
+        }
+        .row-wrap::before,
+        .row-wrap::after {
+            display: none;
+        }
     }
 
     .game-card {
@@ -345,5 +472,156 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         if (overlay) {
             overlay.style.display = overlay.style.display === "none" ? "" : "none";
         }
+    });
+</script>
+
+<script>
+    // 320px card + 24px gap = one card step.
+    const SCROLL_STEP = 344;
+    const DRAG_THRESHOLD = 5;
+
+    // Custom rAF-driven scroll animation with easeOutQuint. The .is-snapping
+    // class on the row keeps CSS scroll-snap-type: none for the animation's
+    // lifetime — without that, the browser snaps the row instantly the
+    // moment .is-dragging is removed and the easing never plays.
+    function animateScroll(el: HTMLElement, target: number) {
+        const handle = (el as any).__snapAnim as number | undefined;
+        if (handle !== undefined) cancelAnimationFrame(handle);
+        const start = el.scrollLeft;
+        const delta = target - start;
+        if (Math.abs(delta) < 0.5) {
+            el.classList.remove("is-snapping");
+            return;
+        }
+        el.classList.add("is-snapping");
+        // Distance-scaled: tiny snaps stay quick, full card jumps get
+        // enough time to feel deliberate.
+        const duration = Math.min(800, 420 + Math.abs(delta) * 0.7);
+        const t0 = performance.now();
+        const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+        const tick = (now: number) => {
+            const t = Math.min(1, (now - t0) / duration);
+            el.scrollLeft = start + delta * easeOutQuint(t);
+            if (t < 1) {
+                (el as any).__snapAnim = requestAnimationFrame(tick);
+            } else {
+                (el as any).__snapAnim = undefined;
+                el.classList.remove("is-snapping");
+            }
+        };
+        (el as any).__snapAnim = requestAnimationFrame(tick);
+    }
+
+    function nearestCardOffset(row: HTMLElement, target: number): number {
+        const cards = row.querySelectorAll<HTMLElement>(".game-card");
+        let nearest = target;
+        let minDist = Infinity;
+        cards.forEach((card) => {
+            const dist = Math.abs(card.offsetLeft - target);
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = card.offsetLeft;
+            }
+        });
+        return nearest;
+    }
+
+    document.querySelectorAll<HTMLElement>(".row-wrap").forEach((wrap) => {
+        const row = wrap.querySelector<HTMLElement>(".row");
+        const prevBtn = wrap.querySelector<HTMLButtonElement>(".nav-prev");
+        const nextBtn = wrap.querySelector<HTMLButtonElement>(".nav-next");
+        if (!row || !prevBtn || !nextBtn) return;
+
+        function updateBoundaries() {
+            if (!row) return;
+            const canPrev = row.scrollLeft > 1;
+            const canNext =
+                row.scrollLeft + row.clientWidth < row.scrollWidth - 1;
+            wrap.dataset.canPrev = canPrev ? "true" : "false";
+            wrap.dataset.canNext = canNext ? "true" : "false";
+        }
+        updateBoundaries();
+        row.addEventListener("scroll", updateBoundaries, { passive: true });
+        window.addEventListener("resize", updateBoundaries);
+
+        prevBtn.addEventListener("click", () => {
+            animateScroll(row, nearestCardOffset(row, row.scrollLeft - SCROLL_STEP));
+        });
+        nextBtn.addEventListener("click", () => {
+            animateScroll(row, nearestCardOffset(row, row.scrollLeft + SCROLL_STEP));
+        });
+
+        // Drag-to-scroll, mouse only — touch keeps native scrolling.
+        let isDown = false;
+        let isDragging = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        row.addEventListener("pointerdown", (e: PointerEvent) => {
+            if (e.pointerType !== "mouse" || e.button !== 0) return;
+            // Cancel any in-flight settle animation if the user grabs again.
+            const handle = (row as any).__snapAnim as number | undefined;
+            if (handle !== undefined) {
+                cancelAnimationFrame(handle);
+                (row as any).__snapAnim = undefined;
+                row.classList.remove("is-snapping");
+            }
+            isDown = true;
+            isDragging = false;
+            startX = e.clientX;
+            startScrollLeft = row.scrollLeft;
+            row.setPointerCapture(e.pointerId);
+        });
+
+        row.addEventListener("pointermove", (e: PointerEvent) => {
+            if (!isDown) return;
+            const dx = e.clientX - startX;
+            if (!isDragging && Math.abs(dx) > DRAG_THRESHOLD) {
+                isDragging = true;
+                row.classList.add("is-dragging");
+                wrap.classList.add("is-dragging");
+            }
+            if (isDragging) {
+                row.scrollLeft = startScrollLeft - dx;
+            }
+        });
+
+        function endDrag(e: PointerEvent) {
+            if (!isDown) return;
+            isDown = false;
+            try {
+                row?.releasePointerCapture(e.pointerId);
+            } catch {
+                /* pointer may already be released */
+            }
+            if (isDragging) {
+                // Suppress the synthetic click that would otherwise navigate
+                // when a drag ends on top of a card link.
+                const suppress = (ev: Event) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    row?.removeEventListener("click", suppress, true);
+                };
+                row?.addEventListener("click", suppress, true);
+                if (row) {
+                    // Order matters: add is-snapping BEFORE removing
+                    // is-dragging so scroll-snap-type stays `none` across
+                    // the transition. Otherwise the browser sees snap go
+                    // none → proximity with the row mid-card, snaps it
+                    // instantly, and our animation reads scrollLeft already
+                    // at the snap point (delta ≈ 0, no animation runs).
+                    row.classList.add("is-snapping");
+                    row.classList.remove("is-dragging");
+                    wrap.classList.remove("is-dragging");
+                    animateScroll(row, nearestCardOffset(row, row.scrollLeft));
+                } else {
+                    wrap.classList.remove("is-dragging");
+                }
+            }
+            isDragging = false;
+        }
+
+        row.addEventListener("pointerup", endDrag);
+        row.addEventListener("pointercancel", endDrag);
     });
 </script>
