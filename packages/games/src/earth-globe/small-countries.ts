@@ -114,14 +114,7 @@ export function isSurroundedCountry(iso2: string): boolean {
  * Small provinces that need magnification.
  * Format: "COUNTRY-ID" where ID is the province number.
  */
-const SMALL_PROVINCE_IDS = new Set([
-    'US-39',  // Rhode Island
-    'US-7',   // Delaware
-    'US-20',  // Maryland (small relative to neighbors)
-    'US-6',   // Connecticut
-    'US-30',  // New Jersey
-    'US-19',  // Massachusetts
-]);
+const SMALL_PROVINCE_IDS = new Set<string>([]);
 
 /**
  * Check if a province ID represents a small province

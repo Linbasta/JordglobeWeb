@@ -71,7 +71,7 @@ import { RegionAnimator } from './region-animator';
 export { STATE_NORMAL, STATE_DISABLED, STATE_CLEARED };
 import { ShaderFactory } from './shader-factory';
 import { LocationMarkerPool } from './location-marker-pool';
-import { isSmallCountry as checkSmallCountry, isSurroundedCountry } from './small-countries';
+import { isSmallCountry as checkSmallCountry, isSurroundedCountry, isSmallProvince } from './small-countries';
 import { getZoomValue } from '../shared/animation/camera-utils';
 import { tickPerf } from '../shared/dev/perf-overlay';
 
@@ -564,7 +564,7 @@ export class EarthGlobe {
         // Create small province markers for newly added regions
         if (this.smallMarkerPool) {
             for (const region of countryRegions) {
-                if (region.centroid) {
+                if (region.centroid && isSmallProvince(region.id)) {
                     const normal = region.centroid.normalizeToNew();
                     const position = region.centroid.add(normal.scale(REGION_ALTITUDE + 0.01));
                     const markerId = this.smallMarkerPool.acquireMarker(position, normal);
