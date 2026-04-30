@@ -60,6 +60,57 @@
         "ogTitle": "Datorspelens ursprung - Gissa landet",
         "ogDescription": "Se klipp från kända datorspel och gissa vilket land vart och ett kommer från i detta interaktiva 3D-globquiz."
       }
+    },
+    "united-states-of-america-states": {
+      "baseUrlOverride": "https://jordglobe.com/games/united-states-of-america-states",
+      "image": "/og-image.png",
+      "genre": "Geography Quiz",
+      "en": {
+        "title": "US States Quiz - Test Your Geography | JordGlobe",
+        "description": "Can you place all 50 US states on the map? Test your knowledge on an interactive 3D globe.",
+        "ogTitle": "US States Quiz",
+        "ogDescription": "Place all 50 US states on an interactive 3D globe."
+      },
+      "sv": {
+        "title": "USA-staterna Quiz - Testa din geografi | JordGlobe",
+        "description": "Kan du placera alla 50 amerikanska delstater på kartan? Testa dina kunskaper på en interaktiv 3D-glob.",
+        "ogTitle": "USA-staterna Quiz",
+        "ogDescription": "Placera alla 50 amerikanska delstater på en interaktiv 3D-glob."
+      }
+    },
+    "the-world-countries": {
+      "baseUrlOverride": "https://jordglobe.com/games/the-world-countries",
+      "image": "/og-image.png",
+      "genre": "Geography Quiz",
+      "en": {
+        "title": "Countries of the World Quiz - Test Your Geography | JordGlobe",
+        "description": "Can you place every country in the world? Test your knowledge of all 198 countries on an interactive 3D globe.",
+        "ogTitle": "Countries of the World Quiz",
+        "ogDescription": "Place every country in the world on an interactive 3D globe."
+      },
+      "sv": {
+        "title": "Världens länder Quiz - Testa din geografi | JordGlobe",
+        "description": "Kan du placera alla länder i världen? Testa dina kunskaper på 198 länder på en interaktiv 3D-glob.",
+        "ogTitle": "Världens länder Quiz",
+        "ogDescription": "Placera alla länder i världen på en interaktiv 3D-glob."
+      }
+    },
+    "the-world-flags": {
+      "baseUrlOverride": "https://jordglobe.com/games/the-world-flags",
+      "image": "/og-image.png",
+      "genre": "Geography Quiz",
+      "en": {
+        "title": "Flags of the World Quiz - Test Your Geography | JordGlobe",
+        "description": "Can you match every flag to its country? Test your knowledge of all 198 flags on an interactive 3D globe.",
+        "ogTitle": "Flags of the World Quiz",
+        "ogDescription": "Match every flag to its country on an interactive 3D globe."
+      },
+      "sv": {
+        "title": "Världens flaggor Quiz - Testa din geografi | JordGlobe",
+        "description": "Kan du para ihop varje flagga med rätt land? Testa dina kunskaper på 198 flaggor på en interaktiv 3D-glob.",
+        "ogTitle": "Världens flaggor Quiz",
+        "ogDescription": "Para ihop varje flagga med rätt land på en interaktiv 3D-glob."
+      }
     }
   }
 }

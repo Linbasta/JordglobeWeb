@@ -16,6 +16,18 @@ const cardCopy: Record<string, { title: string; description: string }> = {
 		title: "Video Game Origins",
 		description: "Guess where each game was made.",
 	},
+	"united-states-of-america-states": {
+		title: "US States",
+		description: "Pin all 50 states on the globe.",
+	},
+	"the-world-countries": {
+		title: "Countries of the World",
+		description: "Pin every country on the globe.",
+	},
+	"the-world-flags": {
+		title: "Flags of the World",
+		description: "Match every flag to its country.",
+	},
 };
 
 const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
@@ -33,10 +45,15 @@ const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 });
 
 const allGameIds = games.map((g) => g.id);
+const classicGeographyIds = [
+	"united-states-of-america-states",
+	"the-world-countries",
+	"the-world-flags",
+];
 
 const topics = [
 	{ title: "Top trivia", gameIds: allGameIds },
-	{ title: "Classic geography", gameIds: allGameIds },
+	{ title: "Classic geography", gameIds: classicGeographyIds },
 ];
 
 const gamesData = {

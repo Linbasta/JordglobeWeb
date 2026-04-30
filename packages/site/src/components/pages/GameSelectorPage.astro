@@ -9,12 +9,18 @@ import { videoGameSchema } from "@js/jsonLD";
 import placeholderEuroMusic from "@images/front/placeholder-euro-music-quiz.jpg";
 import placeholderEuroWinners from "@images/front/placeholder-euro-winners-2000s.jpg";
 import placeholderGameQuiz from "@images/front/placeholder-game-quiz.jpg";
+import placeholderUsStates from "@images/front/placeholder-united-states-of-america-states.jpg";
+import placeholderWorldCountries from "@images/front/placeholder-the-world-countries.jpg";
+import placeholderWorldFlags from "@images/front/placeholder-the-world-flags.jpg";
 import posterImage from "@images/front/first-frame.jpg";
 
 const imageMap: Record<string, ImageMetadata> = {
     "euro-music-quiz": placeholderEuroMusic,
     "euro-winners-2000s": placeholderEuroWinners,
     "game-quiz": placeholderGameQuiz,
+    "united-states-of-america-states": placeholderUsStates,
+    "the-world-countries": placeholderWorldCountries,
+    "the-world-flags": placeholderWorldFlags,
 };
 
 const locale = getLocaleFromUrl(Astro.url);

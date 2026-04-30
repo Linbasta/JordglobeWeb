@@ -16,6 +16,18 @@ const cardCopy: Record<string, { title: string; description: string }> = {
 		title: "Datorspelens ursprung",
 		description: "Gissa var varje spel gjordes.",
 	},
+	"united-states-of-america-states": {
+		title: "USA-staterna",
+		description: "Placera alla 50 delstater på globen.",
+	},
+	"the-world-countries": {
+		title: "Världens länder",
+		description: "Placera varje land på globen.",
+	},
+	"the-world-flags": {
+		title: "Världens flaggor",
+		description: "Para ihop varje flagga med rätt land.",
+	},
 };
 
 const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
@@ -33,10 +45,15 @@ const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 });
 
 const allGameIds = games.map((g) => g.id);
+const classicGeographyIds = [
+	"united-states-of-america-states",
+	"the-world-countries",
+	"the-world-flags",
+];
 
 const topics = [
 	{ title: "Topp trivia", gameIds: allGameIds },
-	{ title: "Klassisk geografi", gameIds: allGameIds },
+	{ title: "Klassisk geografi", gameIds: classicGeographyIds },
 ];
 
 const gamesData = {
