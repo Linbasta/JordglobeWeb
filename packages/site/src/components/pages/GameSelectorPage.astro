@@ -91,7 +91,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
                         <div class="row-wrap">
                             <div class="row">
                                 {topic.games.map((game) => (
-                                    <a href={game.link} class="game-card" draggable="false">
+                                    <a href={game.link} class="game-card" draggable="false" data-astro-reload>
                                         <div class="thumb-stack">
                                             <div class="thumb-base"></div>
                                             <div class="thumb">
@@ -541,6 +541,8 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         let startX = 0;
         let startScrollLeft = 0;
 
+        let activePointerId: number | null = null;
+
         row.addEventListener("pointerdown", (e: PointerEvent) => {
             if (e.pointerType !== "mouse" || e.button !== 0) return;
             // Cancel any in-flight settle animation if the user grabs again.
@@ -554,7 +556,12 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
             isDragging = false;
             startX = e.clientX;
             startScrollLeft = row.scrollLeft;
-            row.setPointerCapture(e.pointerId);
+            activePointerId = e.pointerId;
+            // Note: do NOT setPointerCapture here. Capturing on a plain click
+            // redirects the matching pointerup to the row, which causes the
+            // browser to fire `click` on the row instead of the descendant
+            // <a>, so card navigation silently breaks. Capture only kicks in
+            // once an actual drag is detected (see pointermove).
         });
 
         row.addEventListener("pointermove", (e: PointerEvent) => {
@@ -564,6 +571,11 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
                 isDragging = true;
                 row.classList.add("is-dragging");
                 wrap.classList.add("is-dragging");
+                try {
+                    row.setPointerCapture(e.pointerId);
+                } catch {
+                    /* capture may fail if pointer already released */
+                }
             }
             if (isDragging) {
                 row.scrollLeft = startScrollLeft - dx;
@@ -574,10 +586,13 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
             if (!isDown) return;
             isDown = false;
             try {
-                row?.releasePointerCapture(e.pointerId);
+                if (activePointerId !== null) {
+                    row?.releasePointerCapture(activePointerId);
+                }
             } catch {
-                /* pointer may already be released */
+                /* pointer may already be released or never captured */
             }
+            activePointerId = null;
             if (isDragging) {
                 // Suppress the synthetic click that would otherwise navigate
                 // when a drag ends on top of a card link.
