@@ -28,6 +28,19 @@ const base = import.meta.env.BASE_URL;
                 margin: 0;
                 overflow: hidden;
             }
+            body {
+                user-select: none;
+                -webkit-user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            input, textarea {
+                user-select: text;
+                -webkit-user-select: text;
+            }
+            img {
+                -webkit-user-drag: none;
+                user-drag: none;
+            }
             body.placing-mode {
                 cursor: none;
             }
@@ -61,5 +74,10 @@ const base = import.meta.env.BASE_URL;
     </head>
     <body>
         <slot />
+        <script>
+            document.addEventListener('dragstart', (e) => {
+                if (e.target instanceof HTMLImageElement) e.preventDefault();
+            });
+        </script>
     </body>
 </html>
