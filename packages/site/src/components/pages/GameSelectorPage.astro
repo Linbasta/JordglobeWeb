@@ -67,6 +67,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         <video
             class="bg-video"
             autoplay
+            loop
             muted
             playsinline
             poster={posterImage.src}
@@ -420,8 +421,8 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
 </style>
 
 <script>
-    // Ping-pong loop for the bg video: play forward to end, then reverse to 0, repeat.
-    // Browsers don't reliably support negative playbackRate, so reverse is rAF-driven.
+    // Native loop on the <video> element handles the wrap; this script just
+    // picks the right source for the viewport and pins playbackRate.
     const video = document.querySelector<HTMLVideoElement>(".bg-video");
     if (video) {
         // Pick the mobile-encoded source on narrow viewports to save bandwidth and
@@ -435,31 +436,14 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
             video.load();
         }
 
-        let reversing = false;
-        let lastFrameTime = 0;
-
-        function reverseStep(now: number) {
-            if (!video || !reversing) return;
-            if (!lastFrameTime) lastFrameTime = now;
-            const dt = (now - lastFrameTime) / 1000;
-            lastFrameTime = now;
-
-            const next = video.currentTime - dt;
-            if (next <= 0) {
-                video.currentTime = 0;
-                reversing = false;
-                lastFrameTime = 0;
-                void video.play();
-                return;
-            }
-            video.currentTime = next;
-            requestAnimationFrame(reverseStep);
-        }
-
-        video.addEventListener("ended", () => {
-            reversing = true;
-            lastFrameTime = 0;
-            requestAnimationFrame(reverseStep);
+        const PLAYBACK_RATE = 0.8;
+        video.playbackRate = PLAYBACK_RATE;
+        // Some browsers reset playbackRate on source/loadedmetadata, so re-pin.
+        video.addEventListener("loadedmetadata", () => {
+            video.playbackRate = PLAYBACK_RATE;
+        });
+        video.addEventListener("play", () => {
+            video.playbackRate = PLAYBACK_RATE;
         });
     }
 
