@@ -77,9 +77,6 @@ export function generateQuizSteps(questions: Question[]): Step[] {
     }
 
     // End game
-    if (hasProvinceQuestions) {
-        steps.push({ op: StepOp.ExitRegionMode })
-    }
     steps.push({ op: StepOp.GameComplete })
 
     return steps

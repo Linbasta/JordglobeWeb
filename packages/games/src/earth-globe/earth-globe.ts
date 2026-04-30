@@ -845,16 +845,32 @@ export class EarthGlobe {
     // =========================================================================
 
     /**
-     * Enter province mode for a given country.
+     * Reset all provinces of the given parent country to STATE_NORMAL at
+     * default altitude. Idempotent; safe to call when re-entering region mode
+     * for retry.
+     */
+    private resetParentProvincesToNormal(parentIndex: number): void {
+        if (parentIndex < 0) return;
+        const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
+        const allProvinces = this.provinceController.getAllRegions();
+        for (const province of allProvinces) {
+            if (province.parentRegionIndex === parentIndex) {
+                this.provinceController.getAnimationTexture().setAltitude(province.index, defaultAltitude);
+                this.provinceController.setState(province.index, STATE_NORMAL);
+            }
+        }
+    }
+
+    /**
+     * Ensure region mode is active for `iso2` with all of its provinces in
+     * STATE_NORMAL at default altitude. Idempotent — calling again with the
+     * same iso2 just resets province state (used for retry).
      * - Shows province meshes for that country
      * - Hides (disables) the parent country
      * - Routes getCountryAtLatLon() to the province picker
-     *
-     * No-op if provinces for this iso2 have not been loaded yet.
      */
     async enterRegionMode(iso2: string): Promise<void> {
-        if (this.regionModeISO2 === iso2) return;  // already in this mode
-        if (this.regionModeISO2 !== null) {
+        if (this.regionModeISO2 !== null && this.regionModeISO2 !== iso2) {
             this.exitRegionMode();  // exit previous mode first
         }
 
@@ -865,6 +881,12 @@ export class EarthGlobe {
         }
 
         const parentIndex = parentCountry.index;
+
+        if (this.regionModeISO2 === iso2) {
+            // Already set up — just reset province state for clean retry
+            this.resetParentProvincesToNormal(parentIndex);
+            return;
+        }
 
         // Load provinces for this country on demand (no-op if already cached)
         await this.loadProvincesForCountry(iso2);
@@ -919,14 +941,7 @@ export class EarthGlobe {
         }
 
         // Set provinces for this country to normal altitude; other loaded countries stay hidden
-        const defaultAltitude = REGION_ALTITUDE / ANIMATION_AMPLITUDE;
-        const allProvinces = this.provinceController.getAllRegions();
-        for (const province of allProvinces) {
-            if (province.parentRegionIndex === parentIndex) {
-                this.provinceController.getAnimationTexture().setAltitude(province.index, defaultAltitude);
-                this.provinceController.setState(province.index, STATE_NORMAL);
-            }
-        }
+        this.resetParentProvincesToNormal(parentIndex);
 
         // Hide the parent country: push altitude to 0 (recedes into globe) and grey it out
         this.countryController.setAltitude(parentIndex, 0);
@@ -936,6 +951,7 @@ export class EarthGlobe {
         this.countryController.hideAllSmallRegionMarkers();
 
         // Show markers for active small provinces (those belonging to this country)
+        const allProvinces = this.provinceController.getAllRegions();
         for (const province of allProvinces) {
             if (province.parentRegionIndex === parentIndex && province.centroid) {
                 this.provinceController.showSmallRegionMarker(province.index);
