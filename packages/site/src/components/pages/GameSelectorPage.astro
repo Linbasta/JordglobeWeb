@@ -6,21 +6,23 @@ import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
 import { videoGameSchema } from "@js/jsonLD";
 
-import placeholderEuroMusic from "@images/front/placeholder-euro-music-quiz.jpg";
-import placeholderEuroWinners from "@images/front/placeholder-euro-winners-2000s.jpg";
-import placeholderGameQuiz from "@images/front/placeholder-game-quiz.jpg";
-import placeholderUsStates from "@images/front/placeholder-united-states-of-america-states.jpg";
-import placeholderWorldCountries from "@images/front/placeholder-the-world-countries.jpg";
-import placeholderWorldFlags from "@images/front/placeholder-the-world-flags.jpg";
+import euroMusicImage from "@images/front/euro-music-quiz-thumbnail.png";
+import euroWinnersImage from "@images/front/euro-winners-2000s.png";
+import gameQuizImage from "@images/front/game-quiz.png";
+import usStatesImage from "@images/front/united-states-of-america-states.png";
+import worldCountriesImage from "@images/front/the-world-countries.png";
+import worldFlagsImage from "@images/front/the-world-flags.png";
+import worldCapitalsImage from "@images/front/the-world-capitals.png";
 import posterImage from "@images/front/first-frame.jpg";
 
 const imageMap: Record<string, ImageMetadata> = {
-    "euro-music-quiz": placeholderEuroMusic,
-    "euro-winners-2000s": placeholderEuroWinners,
-    "game-quiz": placeholderGameQuiz,
-    "united-states-of-america-states": placeholderUsStates,
-    "the-world-countries": placeholderWorldCountries,
-    "the-world-flags": placeholderWorldFlags,
+    "euro-music-quiz": euroMusicImage,
+    "euro-winners-2000s": euroWinnersImage,
+    "game-quiz": gameQuizImage,
+    "united-states-of-america-states": usStatesImage,
+    "the-world-countries": worldCountriesImage,
+    "the-world-flags": worldFlagsImage,
+    "the-world-capitals": worldCapitalsImage,
 };
 
 const locale = getLocaleFromUrl(Astro.url);

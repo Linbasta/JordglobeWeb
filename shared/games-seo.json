@@ -46,7 +46,7 @@
     },
     "game-quiz": {
       "baseUrlOverride": "https://jordglobe.com/games/game-quiz",
-      "image": "/og-game-quiz.jpg",
+      "image": "/og-game-quiz.png",
       "genre": "Video Game Quiz",
       "en": {
         "title": "Video Game Origins - Guess the Country | JordGlobe",
@@ -63,7 +63,7 @@
     },
     "united-states-of-america-states": {
       "baseUrlOverride": "https://jordglobe.com/games/united-states-of-america-states",
-      "image": "/og-image.png",
+      "image": "/og-united-states-of-america-states.png",
       "genre": "Geography Quiz",
       "en": {
         "title": "US States Quiz - Test Your Geography | JordGlobe",
@@ -80,7 +80,7 @@
     },
     "the-world-countries": {
       "baseUrlOverride": "https://jordglobe.com/games/the-world-countries",
-      "image": "/og-image.png",
+      "image": "/og-the-world-countries.png",
       "genre": "Geography Quiz",
       "en": {
         "title": "Countries of the World Quiz - Test Your Geography | JordGlobe",
@@ -97,7 +97,7 @@
     },
     "the-world-flags": {
       "baseUrlOverride": "https://jordglobe.com/games/the-world-flags",
-      "image": "/og-image.png",
+      "image": "/og-the-world-flags.png",
       "genre": "Geography Quiz",
       "en": {
         "title": "Flags of the World Quiz - Test Your Geography | JordGlobe",

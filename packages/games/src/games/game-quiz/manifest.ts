@@ -4,7 +4,7 @@ import { GAME_QUIZ_I18N } from './i18n';
 export const manifest: GameManifest = {
     id: 'game-quiz',
     published: true,
-    image: 'og-game-quiz.jpg',
+    image: 'og-game-quiz.png',
     i18n: GAME_QUIZ_I18N,
     locales: {
         en: {
