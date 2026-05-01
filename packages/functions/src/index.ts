@@ -88,6 +88,25 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         byQuiz.set(quizId, [...byUid.values()]);
     }
 
+    // Clear stale leaderboards from previous days
+    const existingSnap = await db.collection('leaderboards').get();
+    const staleIds = existingSnap.docs
+        .filter(d => d.data().date !== dateKey)
+        .map(d => d.id);
+
+    for (let i = 0; i < staleIds.length; i += BATCH_CHUNK) {
+        const batch = db.batch();
+        for (const id of staleIds.slice(i, i + BATCH_CHUNK)) {
+            const newData = byQuiz.has(id)
+                ? undefined  // will be written below with today's data
+                : { date: dateKey, entries: [], updated_at: FieldValue.serverTimestamp() };
+            if (newData) {
+                batch.set(db.collection('leaderboards').doc(id), newData);
+            }
+        }
+        await batch.commit();
+    }
+
     const quizIds = [...byQuiz.keys()];
     for (let i = 0; i < quizIds.length; i += BATCH_CHUNK) {
         const batch = db.batch();
