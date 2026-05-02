@@ -64,6 +64,11 @@ export default defineConfig({
 			// URLs are generated from packages/games/src/games/manifests.ts
 			// via scripts/generate-game-urls.ts (runs as prebuild).
 			customPages: gameUrls,
+			// i18n hreflang is handled in HTML <head> since game URLs use a
+			// suffix pattern (/games/id/sv/) that the sitemap plugin can't pair.
+			serialize(item) {
+				return { ...item, lastmod: new Date() };
+			},
 		}),
 		compress({
 			HTML: true,
