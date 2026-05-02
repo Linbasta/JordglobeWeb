@@ -57,7 +57,9 @@ export default defineConfig({
 				!page.includes('/play') &&
 				!page.includes('/medal') &&
 				!page.includes('/duel') &&
-				!page.includes('/elements'),
+				!page.includes('/elements') &&
+				!page.includes('/gdpr') &&
+				!page.includes('/keystatic'),
 			// Game pages are built separately and copied during deploy.
 			// URLs are generated from packages/games/src/games/manifests.ts
 			// via scripts/generate-game-urls.ts (runs as prebuild).
