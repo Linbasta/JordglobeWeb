@@ -35,6 +35,7 @@ import { showVideoOverlay, suspendVideoOverlay, expandVideoOverlay } from '../ui
 import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
 import { showTextCardOverlay, hideTextCardOverlay } from '../ui/text-card-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
+import { showLocationNameOverlay, hideLocationNameOverlay } from '../ui/location-name-overlay'
 import { showCorrectFeedback, showWrongFeedback } from '../ui/answer-feedback-overlay'
 
 // ============================================================================
@@ -100,11 +101,19 @@ function projectLatLonToScreen(lat: number, lng: number): { x: number; y: number
     const engine = scene.getEngine()
     const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight())
     const screenPos = Vector3.Project(worldPos, Matrix.Identity(), scene.getTransformMatrix(), viewport)
-    return { x: screenPos.x, y: screenPos.y }
+    // Vector3.Project returns coords relative to the rendering canvas.
+    // The feedback overlay is appended to document.body, so we need viewport
+    // coords — add the canvas's offset for layouts where it doesn't sit at (0, 0).
+    const rect = globe.getCanvas().getBoundingClientRect()
+    return { x: screenPos.x + rect.left, y: screenPos.y + rect.top }
 }
 
 function getAnswerScreenPos(): { x: number; y: number } {
     if (lastAnswerLatLon) return projectLatLonToScreen(lastAnswerLatLon.lat, lastAnswerLatLon.lng)
+    if (globe) {
+        const rect = globe.getCanvas().getBoundingClientRect()
+        return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    }
     return { x: window.innerWidth / 2, y: window.innerHeight / 2 }
 }
 
@@ -566,6 +575,8 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.ShowQuestion: {
+            // Clear any leftover answer overlay from the previous question
+            hideLocationNameOverlay()
             // Question display is handled by UI reading getCurrentStep()
             // Stay on this step for at least one frame so UI can update
             if (!questionShown) {
@@ -760,6 +771,9 @@ export function tickQuiz(now: number): boolean {
                             lng: clickLatLon.lng,
                             correct: isCorrect,
                         })
+                        if (q.locationName) {
+                            showLocationNameOverlay(q.locationName)
+                        }
                         const correctMarkerId = locationMarkers.get(qi) ?? -1
                         const correctQ = questions[qi]
                         const wrongLat = hitQ.answer === 'location-alternatives' ? hitQ.lat! : 0
@@ -909,6 +923,7 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.GameComplete: {
+            hideLocationNameOverlay()
             done = true
             break
         }

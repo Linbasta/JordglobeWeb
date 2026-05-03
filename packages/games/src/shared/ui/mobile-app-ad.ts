@@ -35,6 +35,7 @@ export function showMobileAppAd(): void {
     if (adContainer) return
 
     adContainer = document.createElement('div')
+    adContainer.className = 'mobile-app-ad'
     adContainer.style.cssText =
         `position:fixed;bottom:${AD_MARGIN}px;right:${AD_MARGIN}px;` +
         `width:${BANNER_WIDTH}px;height:${BANNER_HEIGHT}px;` +

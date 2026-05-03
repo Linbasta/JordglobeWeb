@@ -157,7 +157,8 @@ function setupEventHandlers(): void {
         if (e.button === 2 && !isPlacingMode) {
             const touchYOffset = -TOUCH_Y_OFFSET_PERCENT * canvas.clientHeight;
             const pickY = e.pointerType === 'touch' ? e.clientY + touchYOffset : e.clientY;
-            const pickResult = scene.pick(e.clientX, pickY, (mesh) => mesh === earthSphere);
+            const rect = canvas.getBoundingClientRect();
+            const pickResult = scene.pick(e.clientX - rect.left, pickY - rect.top, (mesh) => mesh === earthSphere);
             if (pickResult.hit) {
                 dismissPinTutorial();
                 enterPlacingMode();
@@ -230,14 +231,21 @@ function positionPinAtNormal(normal: Vector3): void {
 function updatePreviewPinAtScreenCoords(clientX: number, clientY: number): void {
     if (!previewPin) return;
 
-    const pickResult = scene.pick(clientX, clientY, (mesh) => mesh === earthSphere);
+    // scene.pick / createPickingRay expect canvas-local coords. clientX/Y come
+    // from pointer events as viewport coords, which only line up when the canvas
+    // covers the viewport — convert via the canvas rect for any other layout.
+    const rect = canvas.getBoundingClientRect();
+    const canvasX = clientX - rect.left;
+    const canvasY = clientY - rect.top;
+
+    const pickResult = scene.pick(canvasX, canvasY, (mesh) => mesh === earthSphere);
 
     if (pickResult.hit && pickResult.pickedPoint) {
         const normal = pickResult.pickedPoint.normalizeToNew();
         positionPinAtNormal(normal);
     } else if (isPlacingMode) {
         // Ray missed the globe — project pointer ray to nearest point on sphere edge
-        const ray = scene.createPickingRay(clientX, clientY, null, camera);
+        const ray = scene.createPickingRay(canvasX, canvasY, null, camera);
         const t = -Vector3.Dot(ray.origin, ray.direction);
         const closestOnRay = ray.origin.add(ray.direction.scale(Math.max(0, t)));
         const normal = closestOnRay.normalizeToNew();

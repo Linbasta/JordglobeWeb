@@ -595,10 +595,22 @@ export function isVideoVisible(): boolean {
 }
 
 /**
+ * When false, `collapseVideoOverlay()` becomes a no-op. Used by quizzes that
+ * place the video alongside the globe (e.g. drone-cities split layout) where
+ * the video doesn't occlude the pin and shouldn't slide away on placement.
+ */
+let collapseEnabled = true
+
+export function setVideoCollapseEnabled(enabled: boolean): void {
+    collapseEnabled = enabled
+}
+
+/**
  * Collapse the video overlay (slide up, showing only the prompt bar).
  * Used when entering pin placement state.
  */
 export function collapseVideoOverlay(): void {
+    if (!collapseEnabled) return
     if (!container || !visible) return
     if (isHidden) return // Already collapsed
 

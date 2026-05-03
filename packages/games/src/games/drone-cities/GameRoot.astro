@@ -1,0 +1,117 @@
+<canvas id="renderCanvas"></canvas>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<style is:global>
+    /* Side-by-side layout: video left, globe right.
+       Activated by `body.drone-cities-split`, only on landscape viewports
+       wide enough to fit both halves comfortably. */
+    @media (min-aspect-ratio: 1/1) and (min-width: 900px) {
+        body.drone-cities-split #renderCanvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 50vw !important;
+            width: 50vw !important;
+            height: 100vh !important;
+        }
+        /* Video overlay container — the only stable hook is `data-base-top` */
+        body.drone-cities-split div[data-base-top] {
+            left: 0 !important;
+            transform: none !important;
+            width: 50vw !important;
+            align-items: center !important;
+        }
+        /* Iframe wrapper — first child of the container */
+        body.drone-cities-split div[data-base-top] > div:first-child {
+            height: min(60vh, calc(50vw * 9 / 16 - 8px)) !important;
+            flex-shrink: 0 !important;
+        }
+        /* Move the QR/download banner off the globe and onto the video side */
+        body.drone-cities-split .mobile-app-ad {
+            left: 16px !important;
+            right: auto !important;
+            transform-origin: bottom left !important;
+        }
+    }
+</style>
+
+<script>
+    import { DRONE_CITIES_I18N } from './i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+    import { setVideoCollapseEnabled } from '../../shared/ui/video-overlay.ts';
+
+    document.body.style.backgroundColor = '#0e1a2b';
+    document.body.classList.add('drone-cities-split');
+    // Side-by-side layout: video doesn't occlude the globe, so don't slide
+    // it away when the player picks up the pin.
+    setVideoCollapseEnabled(false);
+
+    initI18n(DRONE_CITIES_I18N);
+    initMobile();
+
+    const DEFAULT_VIDEO_ID = 'f0l7vmoI3KM';
+    const CLIP_DURATION = 20;
+
+    function parseTime(timeStr: string): number {
+        const [min, sec] = timeStr.split(':').map(Number);
+        return min * 60 + sec;
+    }
+
+    type CityEntry = {
+        time: string;        // MM:SS offset into the video
+        name: string;        // Display name (e.g. "Paris")
+        lat: number;
+        lng: number;
+        videoId?: string;    // Optional override; falls back to DEFAULT_VIDEO_ID
+        duration?: number;   // Optional override for clip length in seconds
+    };
+
+    const CITIES: CityEntry[] = [
+        { time: '20:55', name: 'Hong Kong',      lat:  22.3, lng: 114.2, videoId: 'f0l7vmoI3KM' },
+        { time: '23:30', name: 'Rio de Janeiro', lat: -22.9, lng: -43.2, videoId: 'f0l7vmoI3KM' },
+        { time: '26:30', name: 'Singapore',      lat:   1.4, lng: 103.8, videoId: 'f0l7vmoI3KM' },
+        { time: '61:36', name: 'Taipei',         lat:  25.0, lng: 121.6, videoId: 'f0l7vmoI3KM' },
+        { time: '79:30', name: 'Kuala Lumpur',   lat:   3.1, lng: 101.7, videoId: 'f0l7vmoI3KM' },
+        { time: '84:50', name: 'Montreal',       lat:  45.5, lng: -73.6, videoId: 'f0l7vmoI3KM' },
+        { time: '98:45', name: 'Bergen',         lat:  60.4, lng:   5.3, videoId: 'f0l7vmoI3KM' },
+        { time: '4:52',  name: 'Paris',          lat:  48.9, lng:   2.4, videoId: '_DJb5HjeDkQ' },
+        { time: '8:27',  name: 'Istanbul',       lat:  41.0, lng:  29.0, videoId: '_DJb5HjeDkQ' },
+        { time: '11:11', name: 'New York',       lat:  40.7, lng: -74.0, videoId: '_DJb5HjeDkQ' },
+        { time: '22:40', name: 'London',         lat:  51.5, lng:  -0.1, videoId: '_DJb5HjeDkQ' },
+        { time: '24:07', name: 'Mumbai',         lat:  19.1, lng:  72.9, videoId: '_DJb5HjeDkQ' },
+        { time: '27:05', name: 'Moscow',         lat:  55.8, lng:  37.6, videoId: '_DJb5HjeDkQ' },
+    ];
+
+    const QUESTIONS = CITIES.map((city) => {
+        const start = parseTime(city.time);
+        const len = city.duration ?? CLIP_DURATION;
+        return {
+            present: 'video' as const,
+            answer: 'location-alternatives' as const,
+            youtubeId: city.videoId ?? DEFAULT_VIDEO_ID,
+            startTime: start,
+            endTime: start + len,
+            lat: city.lat,
+            lng: city.lng,
+            locationName: city.name,
+            prompt: t('question.prompt'),
+        };
+    });
+
+    startQuizGame({
+        i18n: DRONE_CITIES_I18N,
+        questions: QUESTIONS,
+        scoreBarType: 'simple',
+        quizId: 'drone-cities',
+        analyticsGame: 'DroneCities',
+        analyticsGameId: 'drone-cities_v1',
+    });
+</script>

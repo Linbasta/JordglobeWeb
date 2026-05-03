@@ -96,13 +96,17 @@ function tick(): void {
 
     if (!pointerValid) return;
 
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
+    // Use rect so that a canvas placed away from the viewport origin
+    // (e.g. fixed to the right half of the screen) still normalizes the
+    // pointer relative to the globe, not the screen.
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
     if (w === 0 || h === 0) return;
 
-    // Normalized pointer position (0..1)
-    const nx = lastPointerX / w;
-    const ny = lastPointerY / h;
+    // Normalized pointer position (0..1) within the canvas
+    const nx = (lastPointerX - rect.left) / w;
+    const ny = (lastPointerY - rect.top) / h;
 
     // Compute push from each edge (linear gradient: 1.0 at edge, 0.0 at margin boundary)
     let pushX = 0;
