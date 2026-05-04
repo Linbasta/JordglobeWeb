@@ -4,6 +4,12 @@
 
 import { t } from '../i18n/i18n'
 
+export function iso2ToFlag(iso2: string): string {
+    return [...iso2]
+        .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+        .join('')
+}
+
 export function generateShareMessage(
     title: string,
     score: number,

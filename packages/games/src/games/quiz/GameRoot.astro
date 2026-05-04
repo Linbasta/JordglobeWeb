@@ -42,6 +42,7 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
     async function startQuiz() {
         const questions = await buildQuestions(quiz);
         const { startQuizGame } = await import('../../solo/start-quiz-game.ts');
+        const allCountryAnswers = questions.every((q) => q.answer === 'country');
 
         await startQuizGame({
             canvasId: 'quizCanvas',
@@ -51,9 +52,10 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
             i18n: QUIZ_I18N,
             quizId,
             onGameComplete: async (score, total, elapsedMs, results, isPersonalBest) => {
-                const [{ showResultOverlay }, { DEFAULT_SCORE_LEVEL_SPRITES, getDefaultTierNames }] = await Promise.all([
+                const [{ showResultOverlay }, { DEFAULT_SCORE_LEVEL_SPRITES, getDefaultTierNames }, { iso2ToFlag }] = await Promise.all([
                     import('../../shared/ui/result-overlay.ts'),
                     import('../../shared/ui/default-score-levels.ts'),
+                    import('../../shared/ui/share-message.ts'),
                 ]);
 
                 const spriteNames = getDefaultTierNames();
@@ -67,6 +69,16 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
                     sprites: DEFAULT_SCORE_LEVEL_SPRITES,
                     spriteNames,
                     isPersonalBest,
+                    formatShareSquares: allCountryAnswers
+                        ? (rs) =>
+                            rs
+                                .map((correct, i) =>
+                                    correct && questions[i].countryISO2
+                                        ? iso2ToFlag(questions[i].countryISO2!)
+                                        : '🟥',
+                                )
+                                .join('')
+                        : undefined,
                     onSeeRanking: async () => {
                         const { showLeaderboardWithAuth } = await import('../../shared/ui/leaderboard-popup.ts');
                         showLeaderboardWithAuth({
