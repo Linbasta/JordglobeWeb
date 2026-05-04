@@ -83,7 +83,6 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         <div class="content">
             <header class="page-header">
                 <h1>{gamesData.pageTitle}</h1>
-                <p>{gamesData.pageSubtitle}</p>
             </header>
 
             {topics.map((topic) => (
@@ -108,8 +107,6 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
                                             </div>
                                             <div class="card-spinner"></div>
                                         </div>
-                                        <h3 class="card-title">{game.title}</h3>
-                                        <p class="card-desc">{game.description}</p>
                                     </a>
                                 ))}
                             </div>
@@ -175,12 +172,6 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         letter-spacing: 6px;
         text-transform: uppercase;
         margin: 0 0 12px;
-    }
-
-    .page-header p {
-        font-size: clamp(16px, 2vw, 20px);
-        color: rgba(180, 210, 255, 0.85);
-        margin: 0;
     }
 
     .topic {
@@ -345,7 +336,6 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
     .thumb-stack {
         position: relative;
         aspect-ratio: 16 / 9;
-        margin-bottom: 12px;
     }
 
     .thumb-base {
@@ -417,20 +407,6 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         height: 100%;
         object-fit: cover;
         display: block;
-    }
-
-    .card-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #5dd5ff;
-        margin: 0 0 6px;
-    }
-
-    .card-desc {
-        font-size: 14px;
-        color: rgba(180, 210, 255, 0.75);
-        margin: 0;
-        line-height: 1.4;
     }
 
     @media (max-width: 640px) {
