@@ -17,7 +17,10 @@ import { getTranslatedData } from "@js/translationUtils";
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
 const navData = getTranslatedData("navData", currLocale);
-import { locales } from "@config/siteSettings.json";
+import { locales, defaultLocale } from "@config/siteSettings.json";
+
+const isAboutPage = Astro.url.pathname.replace(/\/$/, "").endsWith("/about");
+const localeHome = currLocale === defaultLocale ? "/" : `/${currLocale}/`;
 // console.log(JSON.stringify(navData, null, 2));
 ---
 
@@ -88,9 +91,9 @@ import { locales } from "@config/siteSettings.json";
 					<Button
 						variant="secondary"
 						class="my-auto mr-4 hidden px-4 py-2 md:block !border-transparent !bg-[#3b82f6] hover:!bg-[#60a5fa] !text-white"
-						href="/about"
+						href={isAboutPage ? localeHome : "/about"}
 					>
-						About
+						{isAboutPage ? "Games" : "About"}
 					</Button>
 
 					{locales.length > 1 && <LanguageSelect class="hidden md:block" />}
