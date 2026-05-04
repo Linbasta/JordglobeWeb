@@ -30,6 +30,35 @@ const cardCopy: Record<string, { title: string; description: string }> = {
 	},
 };
 
+// Translatable text overlaid on the thumbnail (green title + white subtitle).
+// When set, the thumbnail uses a label-free background image.
+const cardLabels: Record<string, { title: string; subtitle: string }> = {
+	"euro-music-quiz": {
+		title: "Euro Music Quiz",
+		subtitle: "2026",
+	},
+	"euro-winners-2000s": {
+		title: "Euro Music Quiz Winners",
+		subtitle: "2000–2025",
+	},
+	"game-quiz": {
+		title: "Games",
+		subtitle: "Origins",
+	},
+	"united-states-of-america-states": {
+		title: "States",
+		subtitle: "USA",
+	},
+	"the-world-countries": {
+		title: "Countries",
+		subtitle: "World",
+	},
+	"the-world-flags": {
+		title: "Flags",
+		subtitle: "World",
+	},
+};
+
 const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 	const card = cardCopy[id];
 	return {
@@ -39,6 +68,7 @@ const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 		seoTitle: game.en.ogTitle || game.en.title.split(" | ")[0],
 		seoDescription: game.en.description,
 		image: id, // Image key for imageMap in GameSelectorPage
+		cardLabel: cardLabels[id],
 		link: `/games/${id}/`,
 		genre: game.genre,
 	};

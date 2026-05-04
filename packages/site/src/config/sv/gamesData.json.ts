@@ -30,6 +30,35 @@ const cardCopy: Record<string, { title: string; description: string }> = {
 	},
 };
 
+// Översättningsbar text som läggs ovanpå thumbnailen (grön titel + vit undertitel).
+// Om satt används en etikettfri bakgrundsbild för thumbnailen.
+const cardLabels: Record<string, { title: string; subtitle: string }> = {
+	"euro-music-quiz": {
+		title: "Euro Music Quiz",
+		subtitle: "2026",
+	},
+	"euro-winners-2000s": {
+		title: "Euro Music Quiz Vinnare",
+		subtitle: "2000–2025",
+	},
+	"game-quiz": {
+		title: "Spel",
+		subtitle: "Ursprung",
+	},
+	"united-states-of-america-states": {
+		title: "Stater",
+		subtitle: "USA",
+	},
+	"the-world-countries": {
+		title: "Länder",
+		subtitle: "Världen",
+	},
+	"the-world-flags": {
+		title: "Flaggor",
+		subtitle: "Världen",
+	},
+};
+
 const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 	const card = cardCopy[id];
 	return {
@@ -39,6 +68,7 @@ const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 		seoTitle: game.sv.ogTitle || game.sv.title.split(" | ")[0],
 		seoDescription: game.sv.description,
 		image: id, // Image key for imageMap in GameSelectorPage
+		cardLabel: cardLabels[id],
 		link: `/sv/games/${id}/`,
 		genre: game.genre,
 	};
