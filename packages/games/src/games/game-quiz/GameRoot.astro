@@ -1,12 +1,10 @@
 ---
-import avatarTripletsUrl from '../euro-music-quiz/assets/euro-music-quiz_avatar_triplets.png?url';
 import greenBtnUrl from '../euro-music-quiz/assets/green_btn.png?url';
 ---
 
 <canvas id="renderCanvas"></canvas>
 
 <div class="gq-start-root" hidden>
-    <img class="gq-start-deco" src={avatarTripletsUrl} alt="" />
     <div class="gq-start-card">
         <div class="gq-start-title"></div>
         <button
@@ -36,23 +34,12 @@ import greenBtnUrl from '../euro-music-quiz/assets/green_btn.png?url';
         font-family: Arial, sans-serif;
     }
 
-    .gq-start-deco {
-        position: absolute;
-        left: 50%;
-        top: -195px;
-        transform: translateX(-50%);
-        width: 520px;
-        height: auto;
-        pointer-events: none;
-        display: block;
-    }
-
     .gq-start-card {
         position: relative;
         width: 620px;
         height: 240px;
         border-radius: 20px;
-        background: linear-gradient(90deg, #7a4bd0, #e86bb5);
+        background: linear-gradient(90deg, #05012d, #6324f2);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -91,10 +78,6 @@ import greenBtnUrl from '../euro-music-quiz/assets/green_btn.png?url';
     }
 
     @media (max-width: 700px) {
-        .gq-start-deco {
-            width: 380px;
-            top: -142px;
-        }
         .gq-start-card {
             width: calc(100vw - 32px);
             height: auto;
@@ -113,10 +96,6 @@ import greenBtnUrl from '../euro-music-quiz/assets/green_btn.png?url';
     }
 
     @media (max-width: 420px) {
-        .gq-start-deco {
-            width: 300px;
-            top: -112px;
-        }
         .gq-start-card {
             min-height: 180px;
             gap: 12px;
