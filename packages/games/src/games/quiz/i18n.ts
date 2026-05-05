@@ -5,9 +5,13 @@ export const QUIZ_I18N: QuizTranslations = {
     availableLocales: [
         { code: 'en', label: 'English' },
         { code: 'sv', label: 'Svenska' },
+        { code: 'de', label: 'Deutsch' },
+        { code: 'fr', label: 'Français' },
     ],
     strings: {
         en: {},
         sv: {},
+        de: {},
+        fr: {},
     },
 };

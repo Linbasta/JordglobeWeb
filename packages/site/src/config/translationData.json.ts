@@ -19,12 +19,14 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv'];
+const supportedLangs = ['en', 'sv', 'de', 'fr'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
 	en: import.meta.glob('./en/*.json.ts', { eager: true }),
 	sv: import.meta.glob('./sv/*.json.ts', { eager: true }),
+	de: import.meta.glob('./de/*.json.ts', { eager: true }),
+	fr: import.meta.glob('./fr/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -69,6 +71,20 @@ export const textTranslations = {
 		back_to_all_posts: "Till alla inlägg",
 		updated: "Uppdaterad",
 	},
+	de: {
+		hero_text: "Alles, was du für eine großartige Website brauchst.",
+		hero_description:
+			"Eine Vorlage für das nächste große SaaS. Mehrere Seiten und Bereiche, Blog, i18n, Animationen, CMS – alles startklar.",
+		back_to_all_posts: "Zurück zu allen Beiträgen",
+		updated: "Aktualisiert",
+	},
+	fr: {
+		hero_text: "Tout ce qu'il vous faut pour un site web exceptionnel.",
+		hero_description:
+			"Un modèle pour le prochain SaaS incontournable. Plusieurs pages et sections, blog, i18n, animations, CMS – tout est prêt.",
+		back_to_all_posts: "Retour à tous les articles",
+		updated: "Mis à jour",
+	},
 } as const;
 
 /**
@@ -85,5 +101,11 @@ export const routeTranslations = {
 	},
 	sv: {
 		aboutKey: "om",
+	},
+	de: {
+		aboutKey: "ueber-uns",
+	},
+	fr: {
+		aboutKey: "a-propos",
 	},
 } as const;

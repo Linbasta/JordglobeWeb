@@ -23,5 +23,21 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se klipp från kända datorspel och gissa vilket land vart och ett kommer från i detta interaktiva 3D-globquiz.',
         },
+        de: {
+            title: 'Videospiel-Herkunft - Errate das Land | JordGlobe',
+            description:
+                'Sieh dir Clips berühmter Videospiele an und errate auf einem interaktiven 3D-Globus, in welchem Land jedes davon entstanden ist.',
+            ogTitle: 'Videospiel-Herkunft - Errate das Land',
+            ogDescription:
+                'Sieh dir Clips berühmter Videospiele an und errate in diesem interaktiven 3D-Globus-Quiz, aus welchem Land sie stammen.',
+        },
+        fr: {
+            title: 'Origine des jeux vidéo - Devine le pays | JordGlobe',
+            description:
+                'Regarde des extraits de jeux vidéo célèbres et devine sur un globe 3D interactif quel pays a créé chacun d\'eux.',
+            ogTitle: 'Origine des jeux vidéo - Devine le pays',
+            ogDescription:
+                'Regarde des extraits de jeux vidéo célèbres et devine de quel pays vient chacun dans ce quiz globe 3D interactif.',
+        },
     },
 };

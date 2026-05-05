@@ -5,6 +5,8 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
     availableLocales: [
         { code: 'en', label: 'English' },
         { code: 'sv', label: 'Svenska' },
+        { code: 'de', label: 'Deutsch' },
+        { code: 'fr', label: 'Français' },
     ],
     strings: {
         en: {
@@ -32,6 +34,32 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Musikälskare',
             'sprite.4':         'Hängiven fan',
             'sprite.5':         'Musikgud',
+        },
+        de: {
+            'loading.title':    'Lade Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Spielen',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Aus welchem Land kommt dieser Beitrag?',
+            'sprite.0':         'Null Punkte',
+            'sprite.1':         'Leicht interessiert',
+            'sprite.2':         'Halb neugierig',
+            'sprite.3':         'Musikliebhaber',
+            'sprite.4':         'Treuer Fan',
+            'sprite.5':         'Musikgott',
+        },
+        fr: {
+            'loading.title':    'Chargement du Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Jouer',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'De quel pays vient ce titre ?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Peu intéressé',
+            'sprite.2':         'Semi-curieux',
+            'sprite.3':         'Mélomane',
+            'sprite.4':         'Fan fidèle',
+            'sprite.5':         'Dieu de la musique',
         },
     },
 };

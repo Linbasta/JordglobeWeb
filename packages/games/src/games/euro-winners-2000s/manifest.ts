@@ -23,5 +23,21 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se varje Eurovision-vinnare från 2000 till 2025 och gissa vilket land som tog hem trofén i detta interaktiva 3D-globquiz.',
         },
+        de: {
+            title: 'Euro Music-Sieger 2000–2025 - Errate die Eurovision-Sieger | JordGlobe',
+            description:
+                'Sieh dir jeden Eurovision-Sieger von 2000 bis 2025 an und errate, welches Land gewonnen hat. Teste dein Eurovision-Wissen auf einem interaktiven 3D-Globus!',
+            ogTitle: 'Euro Music-Sieger 2000–2025 - Errate das Land',
+            ogDescription:
+                'Sieh dir jeden Eurovision-Sieger von 2000 bis 2025 an und errate auf einem interaktiven 3D-Globus, welches Land die Trophäe gewonnen hat.',
+        },
+        fr: {
+            title: 'Gagnants Euro Music 2000–2025 - Devine les vainqueurs de l\'Eurovision | JordGlobe',
+            description:
+                'Regarde chaque vainqueur du Concours Eurovision de 2000 à 2025 et devine quel pays a gagné. Mets tes connaissances Eurovision à l\'épreuve sur un globe 3D interactif !',
+            ogTitle: 'Gagnants Euro Music 2000–2025 - Devine le pays',
+            ogDescription:
+                'Regarde chaque vainqueur de l\'Eurovision de 2000 à 2025 et devine sur un globe 3D interactif quel pays a remporté le trophée.',
+        },
     },
 };

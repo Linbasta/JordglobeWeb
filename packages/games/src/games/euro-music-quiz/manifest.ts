@@ -23,5 +23,21 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se Eurovision 2026-framträdanden och gissa vilket land de kommer ifrån i detta interaktiva 3D-globquiz.',
         },
+        de: {
+            title: 'Euro Music Quiz - Errate die Eurovision-2026-Songs | JordGlobe',
+            description:
+                'Sieh dir die Beiträge des Eurovision Song Contest 2026 an und errate, aus welchem Land jeder Auftritt stammt – auf einem interaktiven 3D-Globus. Teste dein Eurovision-Wissen!',
+            ogTitle: 'Euro Music Quiz 2026 - Errate das Land anhand des Songs',
+            ogDescription:
+                'Sieh dir die Eurovision-2026-Auftritte an und errate auf einem interaktiven 3D-Globus, aus welchem Land sie stammen.',
+        },
+        fr: {
+            title: 'Euro Music Quiz - Devine les chansons de l\'Eurovision 2026 | JordGlobe',
+            description:
+                'Regarde les titres du Concours Eurovision 2026 et devine de quel pays vient chaque prestation sur un globe 3D interactif. Mets tes connaissances Eurovision à l\'épreuve !',
+            ogTitle: 'Euro Music Quiz 2026 - Devine le pays d\'après la chanson',
+            ogDescription:
+                'Regarde les prestations de l\'Eurovision 2026 et devine de quel pays elles viennent sur un globe 3D interactif.',
+        },
     },
 };

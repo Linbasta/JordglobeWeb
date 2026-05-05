@@ -25,6 +25,18 @@
         "description": "Se Eurovision Song Contest 2026-bidragen och gissa vilket land varje framträdande kommer ifrån på en interaktiv 3D-glob. Testa dina Eurovision-kunskaper!",
         "ogTitle": "Euro Music Quiz 2026 - Gissa landet från låten",
         "ogDescription": "Se Eurovision 2026-framträdanden och gissa vilket land de kommer ifrån i detta interaktiva 3D-globquiz."
+      },
+      "de": {
+        "title": "Euro Music Quiz - Errate die Eurovision-2026-Songs | JordGlobe",
+        "description": "Sieh dir die Beiträge des Eurovision Song Contest 2026 an und errate, aus welchem Land jeder Auftritt stammt – auf einem interaktiven 3D-Globus. Teste dein Eurovision-Wissen!",
+        "ogTitle": "Euro Music Quiz 2026 - Errate das Land anhand des Songs",
+        "ogDescription": "Sieh dir die Eurovision-2026-Auftritte an und errate auf einem interaktiven 3D-Globus, aus welchem Land sie stammen."
+      },
+      "fr": {
+        "title": "Euro Music Quiz - Devine les chansons de l'Eurovision 2026 | JordGlobe",
+        "description": "Regarde les titres du Concours Eurovision 2026 et devine de quel pays vient chaque prestation sur un globe 3D interactif. Mets tes connaissances Eurovision à l'épreuve !",
+        "ogTitle": "Euro Music Quiz 2026 - Devine le pays d'après la chanson",
+        "ogDescription": "Regarde les prestations de l'Eurovision 2026 et devine de quel pays elles viennent sur un globe 3D interactif."
       }
     },
     "euro-winners-2000s": {
@@ -42,6 +54,18 @@
         "description": "Se varje Eurovision-vinnare från 2000 till 2025 och gissa vilket land som vann. Testa dina Eurovision-kunskaper på en interaktiv 3D-glob!",
         "ogTitle": "Euro Music-vinnare 2000–2025 - Gissa landet",
         "ogDescription": "Se varje Eurovision-vinnare från 2000 till 2025 och gissa vilket land som tog hem trofén i detta interaktiva 3D-globquiz."
+      },
+      "de": {
+        "title": "Euro Music-Sieger 2000–2025 - Errate die Eurovision-Sieger | JordGlobe",
+        "description": "Sieh dir jeden Eurovision-Sieger von 2000 bis 2025 an und errate, welches Land gewonnen hat. Teste dein Eurovision-Wissen auf einem interaktiven 3D-Globus!",
+        "ogTitle": "Euro Music-Sieger 2000–2025 - Errate das Land",
+        "ogDescription": "Sieh dir jeden Eurovision-Sieger von 2000 bis 2025 an und errate auf einem interaktiven 3D-Globus, welches Land die Trophäe gewonnen hat."
+      },
+      "fr": {
+        "title": "Gagnants Euro Music 2000–2025 - Devine les vainqueurs de l'Eurovision | JordGlobe",
+        "description": "Regarde chaque vainqueur du Concours Eurovision de 2000 à 2025 et devine quel pays a gagné. Mets tes connaissances Eurovision à l'épreuve sur un globe 3D interactif !",
+        "ogTitle": "Gagnants Euro Music 2000–2025 - Devine le pays",
+        "ogDescription": "Regarde chaque vainqueur de l'Eurovision de 2000 à 2025 et devine sur un globe 3D interactif quel pays a remporté le trophée."
       }
     },
     "game-quiz": {
@@ -59,6 +83,18 @@
         "description": "Se klipp från kända datorspel och gissa vilket land som skapade dem på en interaktiv 3D-glob.",
         "ogTitle": "Datorspelens ursprung - Gissa landet",
         "ogDescription": "Se klipp från kända datorspel och gissa vilket land vart och ett kommer från i detta interaktiva 3D-globquiz."
+      },
+      "de": {
+        "title": "Videospiel-Herkunft - Errate das Land | JordGlobe",
+        "description": "Sieh dir Clips berühmter Videospiele an und errate auf einem interaktiven 3D-Globus, in welchem Land jedes davon entstanden ist.",
+        "ogTitle": "Videospiel-Herkunft - Errate das Land",
+        "ogDescription": "Sieh dir Clips berühmter Videospiele an und errate in diesem interaktiven 3D-Globus-Quiz, aus welchem Land sie stammen."
+      },
+      "fr": {
+        "title": "Origine des jeux vidéo - Devine le pays | JordGlobe",
+        "description": "Regarde des extraits de jeux vidéo célèbres et devine sur un globe 3D interactif quel pays a créé chacun d'eux.",
+        "ogTitle": "Origine des jeux vidéo - Devine le pays",
+        "ogDescription": "Regarde des extraits de jeux vidéo célèbres et devine de quel pays vient chacun dans ce quiz globe 3D interactif."
       }
     },
     "united-states-of-america-states": {
@@ -76,6 +112,18 @@
         "description": "Kan du placera alla 50 amerikanska delstater på kartan? Testa dina kunskaper på en interaktiv 3D-glob.",
         "ogTitle": "USA-staterna Quiz",
         "ogDescription": "Placera alla 50 amerikanska delstater på en interaktiv 3D-glob."
+      },
+      "de": {
+        "title": "US-Bundesstaaten Quiz - Teste deine Geografie | JordGlobe",
+        "description": "Kannst du alle 50 US-Bundesstaaten auf der Karte platzieren? Teste dein Wissen auf einem interaktiven 3D-Globus.",
+        "ogTitle": "US-Bundesstaaten Quiz",
+        "ogDescription": "Platziere alle 50 US-Bundesstaaten auf einem interaktiven 3D-Globus."
+      },
+      "fr": {
+        "title": "Quiz des États américains - Teste ta géographie | JordGlobe",
+        "description": "Peux-tu placer les 50 États américains sur la carte ? Mets tes connaissances à l'épreuve sur un globe 3D interactif.",
+        "ogTitle": "Quiz des États américains",
+        "ogDescription": "Place les 50 États américains sur un globe 3D interactif."
       }
     },
     "the-world-countries": {
@@ -93,6 +141,18 @@
         "description": "Kan du placera alla länder i världen? Testa dina kunskaper på 198 länder på en interaktiv 3D-glob.",
         "ogTitle": "Världens länder Quiz",
         "ogDescription": "Placera alla länder i världen på en interaktiv 3D-glob."
+      },
+      "de": {
+        "title": "Länder der Welt Quiz - Teste deine Geografie | JordGlobe",
+        "description": "Kannst du jedes Land der Welt platzieren? Teste dein Wissen über alle 198 Länder auf einem interaktiven 3D-Globus.",
+        "ogTitle": "Länder der Welt Quiz",
+        "ogDescription": "Platziere jedes Land der Welt auf einem interaktiven 3D-Globus."
+      },
+      "fr": {
+        "title": "Quiz des pays du monde - Teste ta géographie | JordGlobe",
+        "description": "Peux-tu placer chaque pays du monde ? Mets à l'épreuve tes connaissances des 198 pays sur un globe 3D interactif.",
+        "ogTitle": "Quiz des pays du monde",
+        "ogDescription": "Place chaque pays du monde sur un globe 3D interactif."
       }
     },
     "the-world-flags": {
@@ -110,6 +170,18 @@
         "description": "Kan du para ihop varje flagga med rätt land? Testa dina kunskaper på 198 flaggor på en interaktiv 3D-glob.",
         "ogTitle": "Världens flaggor Quiz",
         "ogDescription": "Para ihop varje flagga med rätt land på en interaktiv 3D-glob."
+      },
+      "de": {
+        "title": "Flaggen der Welt Quiz - Teste deine Geografie | JordGlobe",
+        "description": "Kannst du jede Flagge dem richtigen Land zuordnen? Teste dein Wissen über alle 198 Flaggen auf einem interaktiven 3D-Globus.",
+        "ogTitle": "Flaggen der Welt Quiz",
+        "ogDescription": "Ordne jede Flagge ihrem Land auf einem interaktiven 3D-Globus zu."
+      },
+      "fr": {
+        "title": "Quiz des drapeaux du monde - Teste ta géographie | JordGlobe",
+        "description": "Peux-tu associer chaque drapeau à son pays ? Mets à l'épreuve tes connaissances des 198 drapeaux sur un globe 3D interactif.",
+        "ogTitle": "Quiz des drapeaux du monde",
+        "ogDescription": "Associe chaque drapeau à son pays sur un globe 3D interactif."
       }
     }
   }

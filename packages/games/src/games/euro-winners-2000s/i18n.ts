@@ -5,6 +5,8 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
     availableLocales: [
         { code: 'en', label: 'English' },
         { code: 'sv', label: 'Svenska' },
+        { code: 'de', label: 'Deutsch' },
+        { code: 'fr', label: 'Français' },
     ],
     strings: {
         en: {
@@ -32,6 +34,32 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Musikälskare',
             'sprite.4':         'Hängiven fan',
             'sprite.5':         'Musikgud',
+        },
+        de: {
+            'loading.title':    'Lade Euro Music-Sieger',
+            'start.title':      'Euro Music-Sieger 2000–2025',
+            'start.playButton': 'Spielen',
+            'quiz.title':       'Euro Music-Sieger 2000–2025',
+            'question.prompt':  'Sieger {year} — aus welchem Land?',
+            'sprite.0':         'Null Punkte',
+            'sprite.1':         'Leicht interessiert',
+            'sprite.2':         'Halb neugierig',
+            'sprite.3':         'Musikliebhaber',
+            'sprite.4':         'Treuer Fan',
+            'sprite.5':         'Musikgott',
+        },
+        fr: {
+            'loading.title':    'Chargement des gagnants Euro Music',
+            'start.title':      'Gagnants Euro Music 2000–2025',
+            'start.playButton': 'Jouer',
+            'quiz.title':       'Gagnants Euro Music 2000–2025',
+            'question.prompt':  'Gagnant {year} — quel pays ?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Peu intéressé',
+            'sprite.2':         'Semi-curieux',
+            'sprite.3':         'Mélomane',
+            'sprite.4':         'Fan fidèle',
+            'sprite.5':         'Dieu de la musique',
         },
     },
 };

@@ -23,6 +23,22 @@ const TYPE_LABEL_SV: Record<string, string> = {
     locations: 'platser',
 };
 
+const TYPE_LABEL_DE: Record<string, string> = {
+    countries: 'Länder',
+    capitals: 'Hauptstädte',
+    provinces: 'Provinzen',
+    flags: 'Flaggen',
+    locations: 'Orte',
+};
+
+const TYPE_LABEL_FR: Record<string, string> = {
+    countries: 'pays',
+    capitals: 'capitales',
+    provinces: 'provinces',
+    flags: 'drapeaux',
+    locations: 'lieux',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -45,9 +61,55 @@ const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written German SEO for published quizzes. */
+const DE_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'US-Bundesstaaten Quiz - Teste deine Geografie | JordGlobe',
+        description: 'Kannst du alle 50 US-Bundesstaaten auf der Karte platzieren? Teste dein Wissen auf einem interaktiven 3D-Globus.',
+        ogTitle: 'US-Bundesstaaten Quiz',
+        ogDescription: 'Platziere alle 50 US-Bundesstaaten auf einem interaktiven 3D-Globus.',
+    },
+    'the-world-countries': {
+        title: 'Länder der Welt Quiz - Teste deine Geografie | JordGlobe',
+        description: 'Kannst du jedes Land der Welt platzieren? Teste dein Wissen über alle 198 Länder auf einem interaktiven 3D-Globus.',
+        ogTitle: 'Länder der Welt Quiz',
+        ogDescription: 'Platziere jedes Land der Welt auf einem interaktiven 3D-Globus.',
+    },
+    'the-world-flags': {
+        title: 'Flaggen der Welt Quiz - Teste deine Geografie | JordGlobe',
+        description: 'Kannst du jede Flagge dem richtigen Land zuordnen? Teste dein Wissen über alle 198 Flaggen auf einem interaktiven 3D-Globus.',
+        ogTitle: 'Flaggen der Welt Quiz',
+        ogDescription: 'Ordne jede Flagge ihrem Land auf einem interaktiven 3D-Globus zu.',
+    },
+};
+
+/** Hand-written French SEO for published quizzes. */
+const FR_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Quiz des États américains - Teste ta géographie | JordGlobe',
+        description: 'Peux-tu placer les 50 États américains sur la carte ? Mets tes connaissances à l\'épreuve sur un globe 3D interactif.',
+        ogTitle: 'Quiz des États américains',
+        ogDescription: 'Place les 50 États américains sur un globe 3D interactif.',
+    },
+    'the-world-countries': {
+        title: 'Quiz des pays du monde - Teste ta géographie | JordGlobe',
+        description: 'Peux-tu placer chaque pays du monde ? Mets à l\'épreuve tes connaissances des 198 pays sur un globe 3D interactif.',
+        ogTitle: 'Quiz des pays du monde',
+        ogDescription: 'Place chaque pays du monde sur un globe 3D interactif.',
+    },
+    'the-world-flags': {
+        title: 'Quiz des drapeaux du monde - Teste ta géographie | JordGlobe',
+        description: 'Peux-tu associer chaque drapeau à son pays ? Mets à l\'épreuve tes connaissances des 198 drapeaux sur un globe 3D interactif.',
+        ogTitle: 'Quiz des drapeaux du monde',
+        ogDescription: 'Associe chaque drapeau à son pays sur un globe 3D interactif.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
+    const typeLabelDe = TYPE_LABEL_DE[quiz.type] || 'Fragen';
+    const typeLabelFr = TYPE_LABEL_FR[quiz.type] || 'questions';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -60,6 +122,28 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const svOverride = SV_OVERRIDES[slug];
     if (svOverride) {
         locales.sv = svOverride;
+    }
+    const deOverride = DE_OVERRIDES[slug];
+    if (deOverride) {
+        locales.de = deOverride;
+    } else {
+        locales.de = {
+            title: `${quiz.name} Quiz - Teste deine Geografie | JordGlobe`,
+            description: `Kannst du alle ${count} ${typeLabelDe} in diesem Geografie-Quiz erkennen? Teste dein Wissen über ${quiz.name.toLowerCase()} auf einem interaktiven 3D-Globus.`,
+            ogTitle: `${quiz.name} Quiz`,
+            ogDescription: `Teste dein Wissen über ${count} ${typeLabelDe} auf einem interaktiven 3D-Globus.`,
+        };
+    }
+    const frOverride = FR_OVERRIDES[slug];
+    if (frOverride) {
+        locales.fr = frOverride;
+    } else {
+        locales.fr = {
+            title: `Quiz ${quiz.name} - Teste ta géographie | JordGlobe`,
+            description: `Peux-tu identifier les ${count} ${typeLabelFr} de ce quiz de géographie ? Mets à l'épreuve tes connaissances de ${quiz.name.toLowerCase()} sur un globe 3D interactif.`,
+            ogTitle: `Quiz ${quiz.name}`,
+            ogDescription: `Mets à l'épreuve tes connaissances de ${count} ${typeLabelFr} sur un globe 3D interactif.`,
+        };
     }
     return locales;
 }
