@@ -35,6 +35,7 @@ import { showVideoOverlay, suspendVideoOverlay, expandVideoOverlay } from '../ui
 import { showImageOverlay, hideImageOverlay } from '../ui/image-overlay'
 import { showTextCardOverlay, hideTextCardOverlay } from '../ui/text-card-overlay'
 import { showDistanceOverlay, hideDistanceOverlay } from '../ui/distance-overlay'
+import { showLocationNameOverlay, hideLocationNameOverlay } from '../ui/location-name-overlay'
 import { showCorrectFeedback, showWrongFeedback } from '../ui/answer-feedback-overlay'
 
 // ============================================================================
@@ -822,7 +823,10 @@ export function tickQuiz(now: number): boolean {
                 activeAnimation = cameraShake(globe.getCamera(), 300, 0.02)
                 activeAnimation.then(() => {
                     if (globe) {
-                        globe.hideMarker(step.wrongMarkerId)
+                        // Reset the wrong marker's scale so it stays available
+                        // for its own future question. Only the correct marker
+                        // is removed (its question is done).
+                        globe.setMarkerScale(step.wrongMarkerId, 1.0)
                         globe.hideMarker(step.correctMarkerId)
                     }
                     activeAnimation = null
@@ -909,6 +913,7 @@ export function tickQuiz(now: number): boolean {
         }
 
         case StepOp.GameComplete: {
+            hideLocationNameOverlay()
             done = true
             break
         }
@@ -1154,11 +1159,25 @@ async function handleMarkerWrongReveal(
     arcDrawer.removeArc(arcId)
     globe.setMarkerScale(correctMarkerId, 3.0)
 
+    // 3b. Show the correct location's name centered on screen so the player
+    //     learns what they were guessing.
+    let correctName: string | null = null
+    for (const [questionIndex, mid] of locationMarkers) {
+        if (mid === correctMarkerId) {
+            const q = questions[questionIndex]
+            correctName = q.locationName ?? q.prompt ?? null
+            break
+        }
+    }
+    if (correctName) showLocationNameOverlay(correctName)
+
     // 4. Hold
     await new Promise(r => setTimeout(r, 1500))
 
-    // 5. Hide both markers (question won't repeat)
-    globe.hideMarker(wrongMarkerId)
+    // 5. Reset the wrong marker (it's still the correct answer for its own
+    //    future question) and hide the correct one (this question is done).
+    hideLocationNameOverlay()
+    globe.setMarkerScale(wrongMarkerId, 1.0)
     globe.hideMarker(correctMarkerId)
 }
 
