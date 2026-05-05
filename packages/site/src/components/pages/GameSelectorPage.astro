@@ -205,7 +205,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
     .row-wrap::after {
         content: "";
         position: absolute;
-        top: 12px;
+        top: 0;
         bottom: 0;
         width: 64px;
         pointer-events: none;
@@ -232,13 +232,11 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         );
     }
 
-    .row-wrap[data-can-prev="true"]:hover::before,
-    .row-wrap[data-can-prev="true"].is-dragging::before {
+    .row-wrap[data-can-prev="true"]::before {
         opacity: 1;
     }
 
-    .row-wrap[data-can-next="true"]:hover::after,
-    .row-wrap[data-can-next="true"].is-dragging::after {
+    .row-wrap[data-can-next="true"]::after {
         opacity: 1;
     }
 
@@ -326,14 +324,10 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         .nav-btn {
             display: none;
         }
-        .row-wrap::before,
-        .row-wrap::after {
-            display: none;
-        }
     }
 
     .game-card {
-        flex: 0 0 240px;
+        flex: 0 0 220px;
         scroll-snap-align: start;
         text-decoration: none;
         color: inherit;
@@ -472,7 +466,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
 
         .game-card {
             flex: 0 0 60vw;
-            max-width: 240px;
+            max-width: 220px;
         }
 
         .row {
@@ -542,8 +536,8 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
 </script>
 
 <script>
-    // 240px card + 24px gap = one card step.
-    const SCROLL_STEP = 264;
+    // 220px card + 24px gap = one card step.
+    const SCROLL_STEP = 244;
     const DRAG_THRESHOLD = 5;
 
     // Custom rAF-driven scroll animation with easeOutQuint. The .is-snapping
