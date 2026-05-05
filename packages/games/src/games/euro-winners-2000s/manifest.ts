@@ -39,5 +39,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Regarde chaque vainqueur de l\'Eurovision de 2000 à 2025 et devine sur un globe 3D interactif quel pays a remporté le trophée.',
         },
+        it: {
+            title: 'Vincitori Euro Music 2000–2025 - Indovina i vincitori dell\'Eurovision | JordGlobe',
+            description:
+                'Guarda ogni vincitore dell\'Eurovision Song Contest dal 2000 al 2025 e indovina quale paese ha vinto. Metti alla prova le tue conoscenze sull\'Eurovision su un globo 3D interattivo!',
+            ogTitle: 'Vincitori Euro Music 2000–2025 - Indovina il paese',
+            ogDescription:
+                'Guarda ogni vincitore dell\'Eurovision dal 2000 al 2025 e indovina su un globo 3D interattivo quale paese ha vinto il trofeo.',
+        },
     },
 };

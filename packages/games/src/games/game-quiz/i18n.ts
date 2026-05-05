@@ -7,6 +7,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'sv', label: 'Svenska' },
         { code: 'de', label: 'Deutsch' },
         { code: 'fr', label: 'Français' },
+        { code: 'it', label: 'Italiano' },
     ],
     strings: {
         en: {
@@ -57,6 +58,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Joueur occasionnel',
             'sprite.2':         'Curieux des consoles',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        it: {
+            'loading.title':    'Caricamento Origini dei videogiochi',
+            'start.title':      'Origini dei videogiochi',
+            'start.playButton': 'Gioca',
+            'quiz.title':       'Origini dei videogiochi',
+            'question.prompt':  'Dove è stato creato questo gioco?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Giocatore occasionale',
+            'sprite.2':         'Curioso delle console',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

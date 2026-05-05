@@ -37,6 +37,12 @@
         "description": "Regarde les titres du Concours Eurovision 2026 et devine de quel pays vient chaque prestation sur un globe 3D interactif. Mets tes connaissances Eurovision à l'épreuve !",
         "ogTitle": "Euro Music Quiz 2026 - Devine le pays d'après la chanson",
         "ogDescription": "Regarde les prestations de l'Eurovision 2026 et devine de quel pays elles viennent sur un globe 3D interactif."
+      },
+      "it": {
+        "title": "Euro Music Quiz - Indovina le canzoni dell'Eurovision 2026 | JordGlobe",
+        "description": "Guarda i brani dell'Eurovision Song Contest 2026 e indovina da quale paese proviene ogni esibizione su un globo 3D interattivo. Metti alla prova le tue conoscenze sull'Eurovision!",
+        "ogTitle": "Euro Music Quiz 2026 - Indovina il paese dalla canzone",
+        "ogDescription": "Guarda le esibizioni dell'Eurovision 2026 e indovina da quale paese provengono su un globo 3D interattivo."
       }
     },
     "euro-winners-2000s": {
@@ -66,6 +72,12 @@
         "description": "Regarde chaque vainqueur du Concours Eurovision de 2000 à 2025 et devine quel pays a gagné. Mets tes connaissances Eurovision à l'épreuve sur un globe 3D interactif !",
         "ogTitle": "Gagnants Euro Music 2000–2025 - Devine le pays",
         "ogDescription": "Regarde chaque vainqueur de l'Eurovision de 2000 à 2025 et devine sur un globe 3D interactif quel pays a remporté le trophée."
+      },
+      "it": {
+        "title": "Vincitori Euro Music 2000–2025 - Indovina i vincitori dell'Eurovision | JordGlobe",
+        "description": "Guarda ogni vincitore dell'Eurovision Song Contest dal 2000 al 2025 e indovina quale paese ha vinto. Metti alla prova le tue conoscenze sull'Eurovision su un globo 3D interattivo!",
+        "ogTitle": "Vincitori Euro Music 2000–2025 - Indovina il paese",
+        "ogDescription": "Guarda ogni vincitore dell'Eurovision dal 2000 al 2025 e indovina su un globo 3D interattivo quale paese ha vinto il trofeo."
       }
     },
     "game-quiz": {
@@ -95,6 +107,12 @@
         "description": "Regarde des extraits de jeux vidéo célèbres et devine sur un globe 3D interactif quel pays a créé chacun d'eux.",
         "ogTitle": "Origine des jeux vidéo - Devine le pays",
         "ogDescription": "Regarde des extraits de jeux vidéo célèbres et devine de quel pays vient chacun dans ce quiz globe 3D interactif."
+      },
+      "it": {
+        "title": "Origini dei videogiochi - Indovina il paese | JordGlobe",
+        "description": "Guarda clip di videogiochi famosi e indovina su un globo 3D interattivo in quale paese è stato creato ognuno di essi.",
+        "ogTitle": "Origini dei videogiochi - Indovina il paese",
+        "ogDescription": "Guarda clip di videogiochi famosi e indovina da quale paese proviene ognuno in questo quiz su globo 3D interattivo."
       }
     },
     "united-states-of-america-states": {
@@ -124,6 +142,12 @@
         "description": "Peux-tu placer les 50 États américains sur la carte ? Mets tes connaissances à l'épreuve sur un globe 3D interactif.",
         "ogTitle": "Quiz des États américains",
         "ogDescription": "Place les 50 États américains sur un globe 3D interactif."
+      },
+      "it": {
+        "title": "Quiz degli Stati USA - Metti alla prova la tua geografia | JordGlobe",
+        "description": "Riesci a posizionare tutti i 50 stati americani sulla mappa? Metti alla prova le tue conoscenze su un globo 3D interattivo.",
+        "ogTitle": "Quiz degli Stati USA",
+        "ogDescription": "Posiziona tutti i 50 stati americani su un globo 3D interattivo."
       }
     },
     "the-world-countries": {
@@ -153,6 +177,12 @@
         "description": "Peux-tu placer chaque pays du monde ? Mets à l'épreuve tes connaissances des 198 pays sur un globe 3D interactif.",
         "ogTitle": "Quiz des pays du monde",
         "ogDescription": "Place chaque pays du monde sur un globe 3D interactif."
+      },
+      "it": {
+        "title": "Quiz dei paesi del mondo - Metti alla prova la tua geografia | JordGlobe",
+        "description": "Riesci a posizionare ogni paese del mondo? Metti alla prova le tue conoscenze su tutti i 198 paesi su un globo 3D interattivo.",
+        "ogTitle": "Quiz dei paesi del mondo",
+        "ogDescription": "Posiziona ogni paese del mondo su un globo 3D interattivo."
       }
     },
     "the-world-flags": {
@@ -182,6 +212,12 @@
         "description": "Peux-tu associer chaque drapeau à son pays ? Mets à l'épreuve tes connaissances des 198 drapeaux sur un globe 3D interactif.",
         "ogTitle": "Quiz des drapeaux du monde",
         "ogDescription": "Associe chaque drapeau à son pays sur un globe 3D interactif."
+      },
+      "it": {
+        "title": "Quiz delle bandiere del mondo - Metti alla prova la tua geografia | JordGlobe",
+        "description": "Riesci ad abbinare ogni bandiera al suo paese? Metti alla prova le tue conoscenze su tutte le 198 bandiere su un globo 3D interattivo.",
+        "ogTitle": "Quiz delle bandiere del mondo",
+        "ogDescription": "Abbina ogni bandiera al suo paese su un globo 3D interattivo."
       }
     }
   }

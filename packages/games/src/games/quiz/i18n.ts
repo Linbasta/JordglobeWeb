@@ -7,11 +7,13 @@ export const QUIZ_I18N: QuizTranslations = {
         { code: 'sv', label: 'Svenska' },
         { code: 'de', label: 'Deutsch' },
         { code: 'fr', label: 'Français' },
+        { code: 'it', label: 'Italiano' },
     ],
     strings: {
         en: {},
         sv: {},
         de: {},
         fr: {},
+        it: {},
     },
 };

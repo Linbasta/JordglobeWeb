@@ -45,6 +45,9 @@ export const textTranslations = {
         hero_description: "...",
         back_to_all_posts: "...",
         updated: "...",
+        nav_download: "...",
+        nav_about: "...",
+        nav_games: "...",
     },
 };
 
@@ -56,7 +59,7 @@ export const routeTranslations = {
 };
 ```
 
-> **Note:** The `aboutKey` must match the file name if you later add `pages/xx/<aboutKey>.astro`.
+> **Note:** The `aboutKey` **must** match the filename of the about page at `pages/xx/<aboutKey>.astro` (e.g. `a-propos.astro` for French). The navbar uses `routeTranslations` to build the about link and `textTranslations` (`nav_download`, `nav_about`, `nav_games`) for the button labels.
 
 ## 2. Site data files (5 files)
 
@@ -72,7 +75,7 @@ Create `packages/site/src/config/xx/` with these five files. Easiest path: copy 
 
 Mirror `packages/site/src/pages/sv/` to `packages/site/src/pages/xx/`. Eight are thin wrappers — copy as-is:
 
-- `index.astro`, `about.astro`, `gdpr.astro`, `medal.astro`
+- `index.astro`, `<aboutKey>.astro` (e.g. `a-propos.astro` — filename must match `routeTranslations`), `gdpr.astro`, `medal.astro`
 - `download.astro`, `downloadfromsite.astro`
 - `[...page].astro`, `__catchall__.astro`
 
@@ -156,9 +159,9 @@ These work automatically once the routes exist, but eyeball them:
 ```
 [ ] astro.config.mjs               i18n.locales += "xx"
 [ ] siteSettings.json.ts           locales / localeMap / languageSwitcherMap
-[ ] translationData.json.ts        supportedLangs / modulesMap / textTranslations / routeTranslations
+[ ] translationData.json.ts        supportedLangs / modulesMap / textTranslations (incl. nav_*) / routeTranslations
 [ ] src/config/xx/                 5 data files
-[ ] src/pages/xx/                  11 page files (3 with translated copy)
+[ ] src/pages/xx/                  11 page files (3 with translated copy, about page named after aboutKey)
 [ ] shared-defaults.ts             xx: block (all keys)
 [ ] country-names.ts               xx: block (249 entries)
 [ ] euro-music-quiz/i18n.ts        availableLocales + xx strings

@@ -39,5 +39,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Regarde des extraits de jeux vidéo célèbres et devine de quel pays vient chacun dans ce quiz globe 3D interactif.',
         },
+        it: {
+            title: 'Origini dei videogiochi - Indovina il paese | JordGlobe',
+            description:
+                'Guarda clip di videogiochi famosi e indovina su un globo 3D interattivo in quale paese è stato creato ognuno di essi.',
+            ogTitle: 'Origini dei videogiochi - Indovina il paese',
+            ogDescription:
+                'Guarda clip di videogiochi famosi e indovina da quale paese proviene ognuno in questo quiz su globo 3D interattivo.',
+        },
     },
 };

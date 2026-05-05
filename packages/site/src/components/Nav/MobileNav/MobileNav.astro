@@ -12,14 +12,19 @@ import DiscordLogo from "@images/front/discord.png";
 
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
-import { getTranslatedData } from "@js/translationUtils";
+import { getTranslatedData, useTranslations } from "@js/translationUtils";
 
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
 const navData = getTranslatedData("navData", currLocale);
+const t = useTranslations(currLocale);
 import { locales, defaultLocale } from "@config/siteSettings.json";
+import { routeTranslations } from "@config/translationData.json";
 
-const isAboutPage = Astro.url.pathname.replace(/\/$/, "").endsWith("/about");
+const aboutSlug = routeTranslations[currLocale].aboutKey;
+const aboutPath = currLocale === defaultLocale ? `/${aboutSlug}` : `/${currLocale}/${aboutSlug}`;
+const pathEnd = Astro.url.pathname.replace(/\/$/, "").split("/").pop();
+const isAboutPage = pathEnd === aboutSlug;
 const localeHome = currLocale === defaultLocale ? "/" : `/${currLocale}/`;
 ---
 
@@ -86,14 +91,14 @@ const localeHome = currLocale === defaultLocale ? "/" : `/${currLocale}/`;
 					class="w-full py-3 shadow-none"
 						href="/downloadfromsite"
 			>
-			Download
+			{t("nav_download")}
 			</Button>
 				<Button
 					variant="secondary"
 					class="w-full py-3 shadow-none !border-transparent !bg-[#3b82f6] hover:!bg-[#60a5fa] !text-white"
-					href={isAboutPage ? localeHome : "/about"}
+					href={isAboutPage ? localeHome : aboutPath}
 				>
-					{isAboutPage ? "Games" : "About"}
+					{isAboutPage ? t("nav_games") : t("nav_about")}
 				</Button>
 				<DiscordButton class="w-full py-3 shadow-none" />
 			</div>

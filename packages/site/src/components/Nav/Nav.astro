@@ -12,14 +12,19 @@ import DiscordLogo from "@images/front/discord.png";
 
 // utils
 import { getLocaleFromUrl } from "@js/localeUtils";
-import { getTranslatedData } from "@js/translationUtils";
+import { getTranslatedData, useTranslations } from "@js/translationUtils";
 
 // data
 const currLocale = getLocaleFromUrl(Astro.url);
 const navData = getTranslatedData("navData", currLocale);
+const t = useTranslations(currLocale);
 import { locales, defaultLocale } from "@config/siteSettings.json";
+import { routeTranslations } from "@config/translationData.json";
 
-const isAboutPage = Astro.url.pathname.replace(/\/$/, "").endsWith("/about");
+const aboutSlug = routeTranslations[currLocale].aboutKey;
+const aboutPath = currLocale === defaultLocale ? `/${aboutSlug}` : `/${currLocale}/${aboutSlug}`;
+const pathEnd = Astro.url.pathname.replace(/\/$/, "").split("/").pop();
+const isAboutPage = pathEnd === aboutSlug;
 const localeHome = currLocale === defaultLocale ? "/" : `/${currLocale}/`;
 // console.log(JSON.stringify(navData, null, 2));
 ---
@@ -84,16 +89,16 @@ const localeHome = currLocale === defaultLocale ? "/" : `/${currLocale}/`;
 						class="my-auto mr-4 hidden px-4 py-2 md:block"
 						href="/downloadfromsite"
 					>
-						Download
+						{t("nav_download")}
 					</Button>
 					{/* Hide on mobile — the hamburger drawer carries its own DiscordButton */}
 					<DiscordButton class="mr-4 hidden md:flex px-4 py-2" />
 					<Button
 						variant="secondary"
 						class="my-auto mr-4 hidden px-4 py-2 md:block !border-transparent !bg-[#3b82f6] hover:!bg-[#60a5fa] !text-white"
-						href={isAboutPage ? localeHome : "/about"}
+						href={isAboutPage ? localeHome : aboutPath}
 					>
-						{isAboutPage ? "Games" : "About"}
+						{isAboutPage ? t("nav_games") : t("nav_about")}
 					</Button>
 
 					{locales.length > 1 && <LanguageSelect class="hidden md:block" />}

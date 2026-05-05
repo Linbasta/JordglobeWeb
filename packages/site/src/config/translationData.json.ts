@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -27,6 +27,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	sv: import.meta.glob('./sv/*.json.ts', { eager: true }),
 	de: import.meta.glob('./de/*.json.ts', { eager: true }),
 	fr: import.meta.glob('./fr/*.json.ts', { eager: true }),
+	it: import.meta.glob('./it/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -63,6 +64,9 @@ export const textTranslations = {
 			"A template for the next killer SaaS. Multiple pages and sections, blog, i18n, animations, CMS - all ready to go.",
 		back_to_all_posts: "Back to all posts",
 		updated: "Updated",
+		nav_download: "Download",
+		nav_about: "About",
+		nav_games: "Games",
 	},
 	sv: {
 		hero_text: "Allt du behöver för en fantastisk webbplats.",
@@ -70,6 +74,9 @@ export const textTranslations = {
 			"En mall för nästa stora SaaS. Flera sidor och sektioner, blogg, i18n, animationer, CMS - allt redo att gå.",
 		back_to_all_posts: "Till alla inlägg",
 		updated: "Uppdaterad",
+		nav_download: "Ladda ner",
+		nav_about: "Om oss",
+		nav_games: "Spel",
 	},
 	de: {
 		hero_text: "Alles, was du für eine großartige Website brauchst.",
@@ -77,6 +84,9 @@ export const textTranslations = {
 			"Eine Vorlage für das nächste große SaaS. Mehrere Seiten und Bereiche, Blog, i18n, Animationen, CMS – alles startklar.",
 		back_to_all_posts: "Zurück zu allen Beiträgen",
 		updated: "Aktualisiert",
+		nav_download: "Herunterladen",
+		nav_about: "Über uns",
+		nav_games: "Spiele",
 	},
 	fr: {
 		hero_text: "Tout ce qu'il vous faut pour un site web exceptionnel.",
@@ -84,6 +94,19 @@ export const textTranslations = {
 			"Un modèle pour le prochain SaaS incontournable. Plusieurs pages et sections, blog, i18n, animations, CMS – tout est prêt.",
 		back_to_all_posts: "Retour à tous les articles",
 		updated: "Mis à jour",
+		nav_download: "Télécharger",
+		nav_about: "À propos",
+		nav_games: "Jeux",
+	},
+	it: {
+		hero_text: "Tutto ciò che serve per un sito web straordinario.",
+		hero_description:
+			"Un template per il prossimo grande SaaS. Più pagine e sezioni, blog, i18n, animazioni, CMS – tutto pronto.",
+		back_to_all_posts: "Torna a tutti gli articoli",
+		updated: "Aggiornato",
+		nav_download: "Scarica",
+		nav_about: "Chi siamo",
+		nav_games: "Giochi",
 	},
 } as const;
 
@@ -107,5 +130,8 @@ export const routeTranslations = {
 	},
 	fr: {
 		aboutKey: "a-propos",
+	},
+	it: {
+		aboutKey: "chi-siamo",
 	},
 } as const;

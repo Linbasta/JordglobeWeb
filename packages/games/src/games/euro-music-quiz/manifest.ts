@@ -39,5 +39,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Regarde les prestations de l\'Eurovision 2026 et devine de quel pays elles viennent sur un globe 3D interactif.',
         },
+        it: {
+            title: 'Euro Music Quiz - Indovina le canzoni dell\'Eurovision 2026 | JordGlobe',
+            description:
+                'Guarda i brani dell\'Eurovision Song Contest 2026 e indovina da quale paese proviene ogni esibizione su un globo 3D interattivo. Metti alla prova le tue conoscenze sull\'Eurovision!',
+            ogTitle: 'Euro Music Quiz 2026 - Indovina il paese dalla canzone',
+            ogDescription:
+                'Guarda le esibizioni dell\'Eurovision 2026 e indovina da quale paese provengono su un globo 3D interattivo.',
+        },
     },
 };
