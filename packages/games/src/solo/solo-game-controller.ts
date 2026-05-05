@@ -23,7 +23,7 @@ import { zoom } from '../earth-globe';
 // New quiz pipeline
 import { QuizUIAdapter, type QuizConfig } from '../shared/quiz/quiz-ui-adapter';
 import { QuizDebugManager } from '../shared/quiz/quiz-debug-manager';
-import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover } from '../shared/quiz/quiz-runner';
+import { getDebugState, getCurrentQuestionIndex, getQuestion, updateLocationHover, getHoveredLocationName, isLocationAlternativesQuestion } from '../shared/quiz/quiz-runner';
 import { togglePerfOverlay } from '../shared/dev/perf-overlay';
 import { showPinTutorial, resetPinTutorial, dismissPinTutorial } from '../shared/ui/pin-tutorial';
 import { getCountryName } from '../shared/i18n/i18n';
@@ -188,19 +188,16 @@ export class SoloGameController extends BaseGameController {
             if (this.selectionEnabled) {
                 handleHover(this.globe, country, latLon);
             }
-
-            // Update hover label (this should still work even when selection is disabled)
-            if (country) {
-                this.hoverCountryLabel?.show(getCountryName(country.id));
-            } else {
-                this.hoverCountryLabel?.hide();
-            }
+            this.refreshHoverLabel(country);
         });
 
         // Wire pin move → location marker hover detection + label position update
         onPinMove((latLon) => {
             if (this.quizAdapter) {
                 updateLocationHover(latLon.lat, latLon.lon);
+                // After hover state recomputes, the label may need to flip
+                // between city name / hidden / nothing.
+                this.refreshHoverLabel(null);
             }
             // Update HTML label position to follow the pin
             this.hoverCountryLabel?.updatePosition();
@@ -238,13 +235,7 @@ export class SoloGameController extends BaseGameController {
         if (this.selectionEnabled) {
             onCountryHover((country, latLon) => {
                 handleHover(this.globe, country, latLon);
-
-                // Update hover label
-                if (country) {
-                    this.hoverCountryLabel?.show(getCountryName(country.id));
-                } else {
-                    this.hoverCountryLabel?.hide();
-                }
+                this.refreshHoverLabel(country);
             });
         }
     }
@@ -268,6 +259,30 @@ export class SoloGameController extends BaseGameController {
         // It will get reconnected to the new countryLabelUI in setupAdditionalUI().
         // The countryLabelUI reference is nulled since the old GUI is gone.
         this.countryLabelUI = null;
+    }
+
+    /**
+     * Pick the right text for the hover label given the current quiz state.
+     * For location-alternatives quizzes, prefer the hovered marker's locationName
+     * and never fall back to the country name. For other quizzes, show the
+     * country name as before.
+     */
+    private refreshHoverLabel(country: RegionPolygon | null): void {
+        if (!this.hoverCountryLabel) return;
+        const locationName = getHoveredLocationName();
+        if (locationName !== null) {
+            this.hoverCountryLabel.show(locationName);
+            return;
+        }
+        if (isLocationAlternativesQuestion()) {
+            this.hoverCountryLabel.hide();
+            return;
+        }
+        if (country) {
+            this.hoverCountryLabel.show(getCountryName(country.id));
+        } else {
+            this.hoverCountryLabel.hide();
+        }
     }
 
     // =========================================================================

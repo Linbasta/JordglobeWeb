@@ -1,0 +1,68 @@
+<canvas id="renderCanvas"></canvas>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<script>
+    import { F1_CIRCUIT_I18N } from './i18n.ts';
+    import { t, initI18n } from '../../shared/i18n/i18n.ts';
+    import { initMobile } from '../../shared/ui/mobile-init.ts';
+    import { startQuizGame } from '../../solo/start-quiz-game.ts';
+    import { asset } from '../../shared/asset-path.ts';
+
+    initI18n(F1_CIRCUIT_I18N);
+    initMobile();
+
+    type CircuitEntry = {
+        image: string;   // filename inside public-prod/f1-circuit/
+        name: string;    // Display name
+        lat: number;
+        lng: number;
+    };
+
+    // Files live in packages/games/public-prod/f1-circuit/.
+    const CIRCUITS: CircuitEntry[] = [
+        { image: 'albert-park.png',  name: 'Albert Park',             lat: -37.85, lng: 144.97 },
+        { image: 'shanghai.png',     name: 'Shanghai International',  lat:  31.34, lng: 121.22 },
+        { image: 'suzuka.png',       name: 'Suzuka',                  lat:  34.84, lng: 136.54 },
+        { image: 'monaco.png',       name: 'Monaco',                  lat:  43.73, lng:   7.42 },
+        { image: 'barcelona.png',    name: 'Barcelona-Catalunya',     lat:  41.57, lng:   2.26 },
+        { image: 'montreal.png',     name: 'Gilles Villeneuve',       lat:  45.50, lng: -73.52 },
+        { image: 'spielberg.png',    name: 'Red Bull Ring',           lat:  47.22, lng:  14.76 },
+        { image: 'silverstone.png',  name: 'Silverstone',             lat:  52.08, lng:  -1.02 },
+        { image: 'hungaroring.png',  name: 'Hungaroring',             lat:  47.58, lng:  19.25 },
+        { image: 'spa.png',          name: 'Spa-Francorchamps',       lat:  50.44, lng:   5.97 },
+        { image: 'zandvoort.png',    name: 'Zandvoort',               lat:  52.39, lng:   4.54 },
+        { image: 'monza.png',        name: 'Monza',                   lat:  45.62, lng:   9.28 },
+        { image: 'baku.png',         name: 'Baku City Circuit',       lat:  40.37, lng:  49.85 },
+        { image: 'marina-bay.png',   name: 'Marina Bay',              lat:   1.29, lng: 103.86 },
+        { image: 'austin.png',       name: 'Circuit of the Americas', lat:  30.13, lng: -97.64 },
+        { image: 'mexico-city.png',  name: 'Hermanos Rodríguez',      lat:  19.40, lng: -99.09 },
+        { image: 'interlagos.png',   name: 'Interlagos',              lat: -23.70, lng: -46.70 },
+    ];
+
+    const QUESTIONS = CIRCUITS.map((c) => ({
+        present: 'image' as const,
+        answer: 'location-alternatives' as const,
+        imageUrl: asset(`f1-circuit/${c.image}`),
+        imageFit: 'contain' as const,
+        lat: c.lat,
+        lng: c.lng,
+        locationName: c.name,
+        prompt: t('question.prompt'),
+    }));
+
+    startQuizGame({
+        i18n: F1_CIRCUIT_I18N,
+        questions: QUESTIONS,
+        scoreBarType: 'simple',
+        quizId: 'f1-circuit',
+        analyticsGame: 'F1Circuit',
+        analyticsGameId: 'f1-circuit_v1',
+    });
+</script>

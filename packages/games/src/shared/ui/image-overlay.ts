@@ -34,7 +34,8 @@ export function showImageOverlay(
     imageUrl: string,
     prompt: string,
     frame: "default" | "simple",
-    imageCredit?: string
+    imageCredit?: string,
+    imageFit: "cover" | "contain" = "cover"
 ): void {
     hideImageOverlay()
     visible = true
@@ -80,7 +81,7 @@ export function showImageOverlay(
     const wrapper = document.createElement('div')
     wrapper.style.cssText = 'position:relative;display:inline-block;'
 
-    buildDefaultFrame(wrapper, imageUrl, prompt, imageCredit)
+    buildDefaultFrame(wrapper, imageUrl, prompt, imageCredit, imageFit)
 
     container.appendChild(wrapper)
     clipWrapper.appendChild(container)
@@ -109,7 +110,8 @@ function buildDefaultFrame(
     wrapper: HTMLDivElement,
     imageUrl: string,
     prompt: string,
-    imageCredit?: string
+    imageCredit?: string,
+    imageFit: "cover" | "contain" = "cover"
 ): void {
     // Fixed aspect ratio card: 952:642
     const ASPECT = 952 / 642
@@ -118,15 +120,16 @@ function buildDefaultFrame(
     let h = maxH, w = h * ASPECT
     if (w > maxW) { w = maxW; h = w / ASPECT }
 
-    // Image container with fixed aspect ratio
+    // Image container with fixed aspect ratio. White background fills the card
+    // behind any transparent image areas (and behind letterboxing when fit=contain).
     const imgContainer = document.createElement('div')
     imgContainer.style.cssText =
-        `width:${w}px;height:${h}px;overflow:hidden;position:relative;border-radius:12px;`
+        `width:${w}px;height:${h}px;overflow:hidden;position:relative;border-radius:12px;background:#fff;`
 
     const img = document.createElement('img')
     img.src = imageUrl
     img.style.cssText =
-        'width:100%;height:100%;object-fit:cover;display:block;'
+        `width:100%;height:100%;object-fit:${imageFit};display:block;`
     imgContainer.appendChild(img)
 
     // Prompt text with gradient background

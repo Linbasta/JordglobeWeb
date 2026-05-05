@@ -538,7 +538,7 @@ export function tickQuiz(now: number): boolean {
         case StepOp.ShowImage: {
             const q = questions[step.questionIndex]
             if (q.present === 'image' && q.imageUrl) {
-                showImageOverlay(q.imageUrl, q.prompt, q.imageFrame ?? 'default', q.imageCredit)
+                showImageOverlay(q.imageUrl, q.prompt, q.imageFrame ?? 'default', q.imageCredit, q.imageFit)
             }
             advance(now)
             break
@@ -1003,6 +1003,33 @@ function clearLocationHover(): void {
         globe.setMarkerScale(hoveredMarkerId, 1.0)
         hoveredMarkerId = -1
     }
+}
+
+/**
+ * Return the locationName/prompt of the question whose marker is currently
+ * hovered, or null if no marker is in range. Used by the controller to show
+ * the city name in the hover label for location-alternatives quizzes.
+ */
+export function getHoveredLocationName(): string | null {
+    if (hoveredMarkerId === -1) return null
+    for (const [questionIndex, markerId] of locationMarkers) {
+        if (markerId === hoveredMarkerId) {
+            const q = questions[questionIndex]
+            return q.locationName ?? q.prompt ?? null
+        }
+    }
+    return null
+}
+
+/**
+ * Whether the currently active question is a location-alternatives question.
+ * Controllers use this to suppress the country-name hover label, since the
+ * answer is the city/marker, not the country.
+ */
+export function isLocationAlternativesQuestion(): boolean {
+    const qi = findCurrentQuestionIndex()
+    const q = questions[qi]
+    return q?.answer === 'location-alternatives'
 }
 
 // ============================================================================

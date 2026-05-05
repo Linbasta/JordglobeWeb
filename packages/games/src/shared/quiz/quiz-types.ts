@@ -66,6 +66,10 @@ export type Question = {
     imageUrl?: string
     imageFrame?: "default" | "simple"
     imageCredit?: string
+    /** How the image fits the default frame's box. "cover" (default) crops to fill;
+     *  "contain" letterboxes against the white card background — use for diagrams
+     *  or transparent PNGs where cropping would clip the subject. */
+    imageFit?: "cover" | "contain"
 }
 
 // ============================================================================
