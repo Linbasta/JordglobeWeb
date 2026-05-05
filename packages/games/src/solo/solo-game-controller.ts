@@ -184,6 +184,7 @@ export class SoloGameController extends BaseGameController {
 
         // Always register hover callback, but check selectionEnabled inside
         onCountryHover((country, latLon) => {
+            this.hoveredCountry = country;
             // Only handle hover if selection is enabled
             if (this.selectionEnabled) {
                 handleHover(this.globe, country, latLon);
@@ -197,7 +198,7 @@ export class SoloGameController extends BaseGameController {
                 updateLocationHover(latLon.lat, latLon.lon);
                 // After hover state recomputes, the label may need to flip
                 // between city name / hidden / nothing.
-                this.refreshHoverLabel(null);
+                this.refreshHoverLabel(this.hoveredCountry);
             }
             // Update HTML label position to follow the pin
             this.hoverCountryLabel?.updatePosition();
@@ -234,6 +235,7 @@ export class SoloGameController extends BaseGameController {
         // Rewire hover selection
         if (this.selectionEnabled) {
             onCountryHover((country, latLon) => {
+                this.hoveredCountry = country;
                 handleHover(this.globe, country, latLon);
                 this.refreshHoverLabel(country);
             });
