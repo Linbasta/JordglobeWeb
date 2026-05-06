@@ -70,7 +70,7 @@ const games = Object.entries(gamesSeoConfig.games).map(([id, game]) => {
 		seoDescription: seo.description,
 		image: id, // Image key for imageMap in GameSelectorPage
 		cardLabel: cardLabels[id],
-		link: `/fr/games/${id}/`,
+		link: `/games/${id}/fr/`,
 		genre: game.genre,
 	};
 });

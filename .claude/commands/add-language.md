@@ -79,14 +79,14 @@ Create `packages/site/src/config/xx/` with these five files. Easiest path: copy 
 - `siteData.json.ts`
 - `navData.json.ts`
 - `faqData.json.ts`
-- `gamesData.json.ts` — uses `(game as any).xx ?? game.en` fallback until `shared/games-seo.json` has `xx` blocks (see step 7)
+- `gamesData.json.ts` — uses `(game as any).xx ?? game.en` fallback until `shared/games-seo.json` has `xx` blocks (see step 7). The card `link:` template **must** use the suffix pattern `/games/${id}/xx/` (the games package emits per-locale pages at that path). The prefix form `/xx/games/${id}/` does **not** resolve and falls through Firebase's catch-all rewrite to the English root.
 - `testimonialData.json.ts`
 
 ## 3. Site page templates (11 files)
 
-Mirror `packages/site/src/pages/sv/` to `packages/site/src/pages/xx/`. Eight are thin wrappers — copy as-is:
+Mirror `packages/site/src/pages/sv/` to `packages/site/src/pages/xx/` — **not** another locale, since at least one earlier locale's about-page template was bugged. Eight are thin wrappers — copy as-is:
 
-- `index.astro`, `<aboutKey>.astro` (filename must match `routeTranslations`), `gdpr.astro`, `medal.astro`
+- `index.astro`, `<aboutKey>.astro` (filename must match `routeTranslations`; body must be `<AboutPage />`, not the markdown-collection template), `gdpr.astro`, `medal.astro`
 - `download.astro`, `downloadfromsite.astro`
 - `[...page].astro`, `__catchall__.astro`
 
@@ -159,17 +159,36 @@ This populates JSON-LD on the game-selector page. Until added, the `xx` `gamesDa
 
 ## 8. Verification
 
-These work automatically once the routes exist, but eyeball them:
+**Run the verification script first** — it covers every structural invariant
+that has bitten us before (link pattern, about-page wrapper, country-code
+parity, missing locale blocks, etc.). From the repo root:
 
-- **Language switcher** — `LanguageSelect.astro` and `MobileLanguageSelect.astro` iterate `locales`, so `xx` should appear automatically.
+```bash
+bash packages/site/scripts/verify-locale.sh xx
+# or, with no arg, verify every registered non-default locale at once:
+bash packages/site/scripts/verify-locale.sh
+```
+
+Every line should print `PASS`. The script exits non-zero if anything fails.
+If a check fails, fix the underlying issue rather than weakening the check —
+the script is the regression net for past bugs.
+
+What the script verifies:
+- `astro.config.mjs`, `siteSettings.json.ts`, `translationData.json.ts` all register `xx`
+- `src/config/xx/` has all 5 data files
+- `src/pages/xx/` has all 11 page files, the about page filename matches `routeTranslations.xx.aboutKey`, and the about page is the `<AboutPage />` thin wrapper (not the markdown-collection template)
+- `src/config/xx/gamesData.json.ts` link uses the suffix pattern `/games/${id}/xx/` (regression: prefix pattern silently bounces to `/`)
+- `country-names.ts` has the same 249 ISO-2 codes for every locale (no missing/extra)
+- `shared/games-seo.json` parses and has every registered locale's block in every game
+- Per-game `i18n.ts`, `manifest.ts`, and `quiz-manifests.ts` (`TYPE_LABEL_XX`, `seoForQuiz` writes `locales.xx`)
+
+Then eyeball the runtime surface — these work automatically once routes exist:
+
+- **Language switcher** — `LanguageSelect.astro` / `MobileLanguageSelect.astro` iterate `locales`, so `xx` should appear automatically.
 - **HrefLang tags** — `Seo/HrefLang.astro` iterates `locales`, so hreflang emits automatically. Sanity-check sitemap output.
 - **Per-game language picker** — quizzes pull from each game's `availableLocales`.
 
-Programmatic checks before reporting done:
-
-- Country count: `grep -c '^        [A-Z][A-Z]:' packages/games/src/shared/i18n/country-names.ts` should equal `249 × (number of locales)`.
-- JSON parses: `python3 -c "import json; json.load(open('shared/games-seo.json'))"`.
-- New locale's country codes match `en` exactly (no missing/extra ISO-2 codes).
+Finally, run `pnpm preview` and click each of the 6 game cards on `/xx/`. Each should land on `/games/{id}/xx/` and load the localized quiz, not bounce to `/`.
 
 ## Quick checklist
 
@@ -190,7 +209,9 @@ Programmatic checks before reporting done:
 [ ] game-quiz/manifest.ts          locales.xx
 [ ] quiz-manifests.ts              TYPE_LABEL_XX + XX_OVERRIDES + seoForQuiz
 [ ] shared/games-seo.json          xx block per game
+[ ] verify-locale.sh xx            all PASS (link pattern, about wrapper, etc.)
 [ ] Visual verify language switcher, hreflang, per-game picker
+[ ] pnpm preview + click each card on /xx/ (lands on /games/{id}/xx/)
 ```
 
 Do not commit — let the user run `/commit` afterwards.
