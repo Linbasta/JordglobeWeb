@@ -1,0 +1,188 @@
+---
+import { Image } from "astro:assets";
+import phonesImage from "@images/front/download-phones.png";
+import appIcon from "@images/front/jordglobe-icon-512.png";
+import appStoreBadge from "@images/app-store-badge.svg";
+import googlePlayBadge from "@images/google-play-badge.png";
+import qrCode from "@images/qr.png";
+import { getLocaleFromUrl } from "@js/localeUtils";
+import { getTranslatedData } from "@js/translationUtils";
+
+const APP_STORE_URL = "https://apps.apple.com/se/app/jordglobe/id1599500931?l=en";
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo";
+
+const locale = getLocaleFromUrl(Astro.url);
+const gamesData = getTranslatedData("gamesData", locale);
+const t = gamesData.downloadBento;
+---
+
+<aside class="download-bento" aria-label={t.ariaLabel}>
+    <h2 class="bento-title">{t.title}</h2>
+
+    <div class="phones-wrap">
+        <Image
+            src={phonesImage}
+            alt={t.altPhones}
+            widths={[320, 480, 640]}
+            sizes="(max-width: 640px) 60vw, 220px"
+            loading="lazy"
+            draggable={false}
+        />
+    </div>
+
+    <p class="app-name">{t.appName}</p>
+
+    <div class="store-row">
+        <div class="app-icon">
+            <Image
+                src={appIcon}
+                alt={t.altAppIcon}
+                width={120}
+                height={120}
+                loading="lazy"
+                draggable={false}
+            />
+        </div>
+        <div class="badges">
+            <a href={GOOGLE_PLAY_URL} aria-label={t.altGooglePlay}>
+                <img src={googlePlayBadge.src} alt={t.altGooglePlay} />
+            </a>
+            <a href={APP_STORE_URL} aria-label={t.altAppStore}>
+                <img src={appStoreBadge.src} alt={t.altAppStore} />
+            </a>
+        </div>
+        <div class="qr">
+            <img src={qrCode.src} alt={t.altQr} />
+        </div>
+    </div>
+</aside>
+
+<style>
+    .download-bento {
+        --bento-pad: 20px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: var(--bento-pad);
+        border-radius: 16px;
+        background:
+            radial-gradient(
+                circle at 20% 10%,
+                rgba(255, 255, 255, 0.06),
+                transparent 40%
+            ),
+            radial-gradient(
+                circle at 80% 90%,
+                rgba(255, 255, 255, 0.04),
+                transparent 45%
+            ),
+            linear-gradient(180deg, #0c2070 0%, #081444 100%);
+        border: 1px solid rgba(120, 160, 255, 0.25);
+        color: #fff;
+        overflow: hidden;
+    }
+
+    .bento-title {
+        margin: 0;
+        font-family: "InterVariable", system-ui, sans-serif;
+        font-weight: 800;
+        font-size: clamp(20px, 1.6vw, 28px);
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .phones-wrap {
+        width: 100%;
+        display: grid;
+        place-items: center;
+    }
+
+    .phones-wrap :global(img) {
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
+    }
+
+    .app-name {
+        margin: 4px 0 8px;
+        font-weight: 700;
+        font-size: clamp(16px, 1.2vw, 20px);
+        text-align: center;
+    }
+
+    .store-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .app-icon :global(img) {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        display: block;
+    }
+
+    .badges {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        justify-self: center;
+    }
+
+    .badges a {
+        display: block;
+        line-height: 0;
+    }
+
+    .badges img {
+        height: 36px;
+        width: auto;
+        display: block;
+    }
+
+    .qr {
+        width: 76px;
+        height: 76px;
+        background: #fff;
+        border-radius: 6px;
+        padding: 4px;
+        display: grid;
+        place-items: center;
+    }
+
+    .qr img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    @media (max-width: 640px) {
+        .download-bento {
+            --bento-pad: 20px;
+        }
+        .phones-wrap :global(img) {
+            max-width: 220px;
+        }
+        .app-icon :global(img) {
+            width: 56px;
+            height: 56px;
+        }
+        .badges img {
+            height: 32px;
+        }
+        .qr {
+            width: 68px;
+            height: 68px;
+        }
+    }
+</style>

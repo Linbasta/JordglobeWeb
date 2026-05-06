@@ -2,6 +2,7 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 
+import DownloadBento from "@components/DownloadBento.astro";
 import { getLocaleFromUrl } from "@js/localeUtils";
 import { getTranslatedData } from "@js/translationUtils";
 import { videoGameSchema } from "@js/jsonLD";
@@ -85,51 +86,59 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
                 <h1>{gamesData.pageTitle}</h1>
             </header>
 
-            {topics.map((topic) => (
-                <section class="topic">
-                    <div class="topic-inner">
-                        <h2 class="topic-title">{topic.title}</h2>
-                        <div class="row-wrap">
-                            <div class="row">
-                                {topic.games.map((game) => (
-                                    <a href={game.link} class="game-card" draggable="false" data-astro-reload>
-                                        <div class="thumb-stack">
-                                            <div class="thumb-base"></div>
-                                            <div class="thumb">
-                                                <Image
-                                                    src={game.image}
-                                                    alt={game.title}
-                                                    width={800}
-                                                    height={450}
-                                                    loading="lazy"
-                                                    draggable={false}
-                                                />
-                                                {game.cardLabel && (
-                                                    <div class="thumb-label">
-                                                        <span class="thumb-label-title">{game.cardLabel.title}</span>
-                                                        <span class="thumb-label-subtitle">{game.cardLabel.subtitle}</span>
+            <div class="layout">
+                <div class="topics-col">
+                    {topics.map((topic) => (
+                        <section class="topic">
+                            <div class="topic-inner">
+                                <h2 class="topic-title">{topic.title}</h2>
+                                <div class="row-wrap">
+                                    <div class="row">
+                                        {topic.games.map((game) => (
+                                            <a href={game.link} class="game-card" draggable="false" data-astro-reload>
+                                                <div class="thumb-stack">
+                                                    <div class="thumb-base"></div>
+                                                    <div class="thumb">
+                                                        <Image
+                                                            src={game.image}
+                                                            alt={game.title}
+                                                            width={800}
+                                                            height={450}
+                                                            loading="lazy"
+                                                            draggable={false}
+                                                        />
+                                                        {game.cardLabel && (
+                                                            <div class="thumb-label">
+                                                                <span class="thumb-label-title">{game.cardLabel.title}</span>
+                                                                <span class="thumb-label-subtitle">{game.cardLabel.subtitle}</span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
-                                            <div class="card-spinner"></div>
-                                        </div>
-                                    </a>
-                                ))}
+                                                    <div class="card-spinner"></div>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                    <button class="nav-btn nav-prev" type="button" aria-label="Scroll left">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M15 18 9 12l6-6"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="nav-btn nav-next" type="button" aria-label="Scroll right">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="m9 6 6 6-6 6"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="nav-btn nav-prev" type="button" aria-label="Scroll left">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M15 18 9 12l6-6"></path>
-                                </svg>
-                            </button>
-                            <button class="nav-btn nav-next" type="button" aria-label="Scroll right">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="m9 6 6 6-6 6"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-            ))}
+                        </section>
+                    ))}
+                </div>
+
+                <div class="bento-col">
+                    <DownloadBento />
+                </div>
+            </div>
         </div>
     </section>
 </BaseLayout>
@@ -186,6 +195,34 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         margin: 0 0 12px;
     }
 
+    .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 32px;
+        align-items: start;
+    }
+
+    .bento-col {
+        display: none;
+    }
+
+    @media (min-width: 1024px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr) 320px;
+        }
+        .bento-col {
+            display: block;
+            position: sticky;
+            top: 96px;
+        }
+    }
+
+    @media (min-width: 1600px) {
+        .layout {
+            grid-template-columns: minmax(0, 1fr) 360px;
+        }
+    }
+
     .topic {
         margin-bottom: 48px;
     }
@@ -195,15 +232,10 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         margin: 0 auto;
     }
 
-    @media (min-width: 1600px) {
+    @media (min-width: 1024px) {
         .topic-inner {
-            max-width: 1100px;
-        }
-    }
-
-    @media (min-width: 2200px) {
-        .topic-inner {
-            max-width: 1400px;
+            max-width: none;
+            margin: 0;
         }
     }
 

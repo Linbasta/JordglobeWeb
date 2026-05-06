@@ -93,6 +93,16 @@ const gamesData = {
 	playButton: "Jogar",
 	games,
 	topics,
+	downloadBento: {
+		title: "Baixe o app agora!",
+		appName: "Jordglobe Geografia",
+		ariaLabel: "Baixar Jordglobe",
+		altPhones: "Jordglobe em três telefones",
+		altAppIcon: "Ícone do app Jordglobe",
+		altGooglePlay: "Disponível no Google Play",
+		altAppStore: "Baixar na App Store",
+		altQr: "Código QR para baixar o Jordglobe",
+	},
 };
 
 export default gamesData;

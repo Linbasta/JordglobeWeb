@@ -79,7 +79,7 @@ Create `packages/site/src/config/xx/` with these five files. Easiest path: copy 
 - `siteData.json.ts`
 - `navData.json.ts`
 - `faqData.json.ts`
-- `gamesData.json.ts` — uses `(game as any).xx ?? game.en` fallback until `shared/games-seo.json` has `xx` blocks (see step 7). The card `link:` template **must** use the suffix pattern `/games/${id}/xx/` (the games package emits per-locale pages at that path). The prefix form `/xx/games/${id}/` does **not** resolve and falls through Firebase's catch-all rewrite to the English root.
+- `gamesData.json.ts` — uses `(game as any).xx ?? game.en` fallback until `shared/games-seo.json` has `xx` blocks (see step 7). The card `link:` template **must** use the suffix pattern `/games/${id}/xx/` (the games package emits per-locale pages at that path). The prefix form `/xx/games/${id}/` does **not** resolve and falls through Firebase's catch-all rewrite to the English root. **Also include the `downloadBento` block** (`title`, `appName`, `ariaLabel`, `altPhones`, `altAppIcon`, `altGooglePlay`, `altAppStore`, `altQr`) — `DownloadBento.astro` reads it from `gamesData.downloadBento` and will throw at build time if absent.
 - `testimonialData.json.ts`
 
 ## 3. Site page templates (11 files)
