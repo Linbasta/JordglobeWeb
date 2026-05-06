@@ -13,6 +13,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'pt', label: 'Português' },
         { code: 'tr', label: 'Türkçe' },
         { code: 'da', label: 'Dansk' },
+        { code: 'nb', label: 'Norsk bokmål' },
     ],
     strings: {
         en: {
@@ -144,6 +145,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Musikelsker',
             'sprite.4':         'Trofast fan',
             'sprite.5':         'Musikgud',
+        },
+        nb: {
+            'loading.title':    'Laster Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Spill',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Hvilket land kommer dette bidraget fra?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Litt orientert',
+            'sprite.2':         'Halv-nysgjerrig',
+            'sprite.3':         'Musikkelsker',
+            'sprite.4':         'Trofast fan',
+            'sprite.5':         'Musikkgud',
         },
     },
 };

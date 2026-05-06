@@ -87,5 +87,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se hver Eurovision-vinder fra 2000 til 2025 og gæt i denne interaktive 3D-globusquiz, hvilket land der løb med trofæet.',
         },
+        nb: {
+            title: 'Euro Music-vinnere 2000–2025 - Gjett Eurovision-vinnerne | JordGlobe',
+            description:
+                'Se hver eneste Eurovision-vinner fra 2000 til 2025 og gjett hvilket land som vant. Test Eurovision-kunnskapen din på en interaktiv 3D-globus!',
+            ogTitle: 'Euro Music-vinnere 2000–2025 - Gjett landet',
+            ogDescription:
+                'Se hver Eurovision-vinner fra 2000 til 2025 og gjett i denne interaktive 3D-globusquizen hvilket land som tok trofeet.',
+        },
     },
 };

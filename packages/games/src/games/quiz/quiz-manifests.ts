@@ -87,6 +87,14 @@ const TYPE_LABEL_DA: Record<string, string> = {
     locations: 'steder',
 };
 
+const TYPE_LABEL_NB: Record<string, string> = {
+    countries: 'land',
+    capitals: 'hovedsteder',
+    provinces: 'provinser',
+    flags: 'flagg',
+    locations: 'steder',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -285,6 +293,28 @@ const DA_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Norwegian Bokmål SEO for published quizzes. */
+const NB_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Quiz om USAs delstater - Test geografien din | JordGlobe',
+        description: 'Klarer du å plassere alle 50 amerikanske delstater på kartet? Test kunnskapen din på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om USAs delstater',
+        ogDescription: 'Plasser alle 50 amerikanske delstater på en interaktiv 3D-globus.',
+    },
+    'the-world-countries': {
+        title: 'Quiz om verdens land - Test geografien din | JordGlobe',
+        description: 'Klarer du å plassere alle verdens land? Test kunnskapen din om alle 198 land på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om verdens land',
+        ogDescription: 'Plasser hvert land i verden på en interaktiv 3D-globus.',
+    },
+    'the-world-flags': {
+        title: 'Quiz om verdens flagg - Test geografien din | JordGlobe',
+        description: 'Klarer du å matche hvert flagg med riktig land? Test kunnskapen din om alle 198 flagg på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om verdens flagg',
+        ogDescription: 'Match hvert flagg med riktig land på en interaktiv 3D-globus.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -296,6 +326,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelPt = TYPE_LABEL_PT[quiz.type] || 'perguntas';
     const typeLabelTr = TYPE_LABEL_TR[quiz.type] || 'soru';
     const typeLabelDa = TYPE_LABEL_DA[quiz.type] || 'spørgsmål';
+    const typeLabelNb = TYPE_LABEL_NB[quiz.type] || 'spørsmål';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -395,6 +426,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Kan du genkende alle ${count} ${typeLabelDa} i denne geografi-quiz? Test din viden om ${quiz.name.toLowerCase()} på en interaktiv 3D-globus.`,
             ogTitle: `${quiz.name} Quiz`,
             ogDescription: `Test din viden om ${count} ${typeLabelDa} på en interaktiv 3D-globus.`,
+        };
+    }
+    const nbOverride = NB_OVERRIDES[slug];
+    if (nbOverride) {
+        locales.nb = nbOverride;
+    } else {
+        locales.nb = {
+            title: `${quiz.name} Quiz - Test geografien din | JordGlobe`,
+            description: `Klarer du å gjenkjenne alle ${count} ${typeLabelNb} i denne geografi-quizen? Test kunnskapen din om ${quiz.name.toLowerCase()} på en interaktiv 3D-globus.`,
+            ogTitle: `${quiz.name} Quiz`,
+            ogDescription: `Test kunnskapen din om ${count} ${typeLabelNb} på en interaktiv 3D-globus.`,
         };
     }
     return locales;

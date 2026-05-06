@@ -87,5 +87,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se klip fra berømte computerspil og gæt, hvilket land de stammer fra, i denne interaktive 3D-globusquiz.',
         },
+        nb: {
+            title: 'Dataspillenes opprinnelse - Gjett landet | JordGlobe',
+            description:
+                'Se klipp fra kjente dataspill og gjett på en interaktiv 3D-globus hvilket land hvert spill ble laget i.',
+            ogTitle: 'Dataspillenes opprinnelse - Gjett landet',
+            ogDescription:
+                'Se klipp fra kjente dataspill og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen.',
+        },
     },
 };

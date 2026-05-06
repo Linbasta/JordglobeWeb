@@ -13,6 +13,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'pt', label: 'Português' },
         { code: 'tr', label: 'Türkçe' },
         { code: 'da', label: 'Dansk' },
+        { code: 'nb', label: 'Norsk bokmål' },
     ],
     strings: {
         en: {
@@ -141,6 +142,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Hyggespiller',
             'sprite.2':         'Konsolnysgerrig',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        nb: {
+            'loading.title':    'Laster Dataspillenes opprinnelse',
+            'start.title':      'Dataspillenes opprinnelse',
+            'start.playButton': 'Spill',
+            'quiz.title':       'Dataspillenes opprinnelse',
+            'question.prompt':  'Hvor ble dette spillet laget?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Hyggespiller',
+            'sprite.2':         'Konsollnysgjerrig',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

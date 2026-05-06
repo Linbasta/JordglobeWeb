@@ -73,6 +73,12 @@
         "description": "Se bidragene fra Eurovision Song Contest 2026 og gæt, hvilket land hver optræden kommer fra, på en interaktiv 3D-globus. Test din Eurovision-viden!",
         "ogTitle": "Euro Music Quiz 2026 - Gæt landet ud fra sangen",
         "ogDescription": "Se Eurovision 2026-optrædener og gæt, hvilket land de kommer fra, i denne interaktive 3D-globusquiz."
+      },
+      "nb": {
+        "title": "Euro Music Quiz - Gjett Eurovision 2026-sangene | JordGlobe",
+        "description": "Se bidragene fra Eurovision Song Contest 2026 og gjett hvilket land hver opptreden kommer fra, på en interaktiv 3D-globus. Test Eurovision-kunnskapen din!",
+        "ogTitle": "Euro Music Quiz 2026 - Gjett landet ut fra sangen",
+        "ogDescription": "Se Eurovision 2026-opptredener og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen."
       }
     },
     "euro-winners-2000s": {
@@ -138,6 +144,12 @@
         "description": "Se hver eneste Eurovision-vinder fra 2000 til 2025 og gæt, hvilket land der vandt. Test din Eurovision-viden på en interaktiv 3D-globus!",
         "ogTitle": "Euro Music-vindere 2000–2025 - Gæt landet",
         "ogDescription": "Se hver Eurovision-vinder fra 2000 til 2025 og gæt i denne interaktive 3D-globusquiz, hvilket land der løb med trofæet."
+      },
+      "nb": {
+        "title": "Euro Music-vinnere 2000–2025 - Gjett Eurovision-vinnerne | JordGlobe",
+        "description": "Se hver eneste Eurovision-vinner fra 2000 til 2025 og gjett hvilket land som vant. Test Eurovision-kunnskapen din på en interaktiv 3D-globus!",
+        "ogTitle": "Euro Music-vinnere 2000–2025 - Gjett landet",
+        "ogDescription": "Se hver Eurovision-vinner fra 2000 til 2025 og gjett i denne interaktive 3D-globusquizen hvilket land som tok trofeet."
       }
     },
     "game-quiz": {
@@ -203,6 +215,12 @@
         "description": "Se klip fra berømte computerspil og gæt på en interaktiv 3D-globus, hvilket land hvert spil blev skabt i.",
         "ogTitle": "Computerspils oprindelse - Gæt landet",
         "ogDescription": "Se klip fra berømte computerspil og gæt, hvilket land de stammer fra, i denne interaktive 3D-globusquiz."
+      },
+      "nb": {
+        "title": "Dataspillenes opprinnelse - Gjett landet | JordGlobe",
+        "description": "Se klipp fra kjente dataspill og gjett på en interaktiv 3D-globus hvilket land hvert spill ble laget i.",
+        "ogTitle": "Dataspillenes opprinnelse - Gjett landet",
+        "ogDescription": "Se klipp fra kjente dataspill og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen."
       }
     },
     "united-states-of-america-states": {
@@ -268,6 +286,12 @@
         "description": "Kan du placere alle 50 amerikanske stater på kortet? Test din viden på en interaktiv 3D-globus.",
         "ogTitle": "Quiz om USA's stater",
         "ogDescription": "Placer alle 50 amerikanske stater på en interaktiv 3D-globus."
+      },
+      "nb": {
+        "title": "Quiz om USAs delstater - Test geografien din | JordGlobe",
+        "description": "Klarer du å plassere alle 50 amerikanske delstater på kartet? Test kunnskapen din på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om USAs delstater",
+        "ogDescription": "Plasser alle 50 amerikanske delstater på en interaktiv 3D-globus."
       }
     },
     "the-world-countries": {
@@ -333,6 +357,12 @@
         "description": "Kan du placere alle verdens lande? Test din viden om alle 198 lande på en interaktiv 3D-globus.",
         "ogTitle": "Quiz om verdens lande",
         "ogDescription": "Placer hvert land i verden på en interaktiv 3D-globus."
+      },
+      "nb": {
+        "title": "Quiz om verdens land - Test geografien din | JordGlobe",
+        "description": "Klarer du å plassere alle verdens land? Test kunnskapen din om alle 198 land på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om verdens land",
+        "ogDescription": "Plasser hvert land i verden på en interaktiv 3D-globus."
       }
     },
     "the-world-flags": {
@@ -398,6 +428,12 @@
         "description": "Kan du matche hvert flag med det rigtige land? Test din viden om alle 198 flag på en interaktiv 3D-globus.",
         "ogTitle": "Quiz om verdens flag",
         "ogDescription": "Match hvert flag med dets land på en interaktiv 3D-globus."
+      },
+      "nb": {
+        "title": "Quiz om verdens flagg - Test geografien din | JordGlobe",
+        "description": "Klarer du å matche hvert flagg med riktig land? Test kunnskapen din om alle 198 flagg på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om verdens flagg",
+        "ogDescription": "Match hvert flagg med riktig land på en interaktiv 3D-globus."
       }
     }
   }

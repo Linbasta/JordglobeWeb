@@ -87,5 +87,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se Eurovision 2026-optrædener og gæt, hvilket land de kommer fra, i denne interaktive 3D-globusquiz.',
         },
+        nb: {
+            title: 'Euro Music Quiz - Gjett Eurovision 2026-sangene | JordGlobe',
+            description:
+                'Se bidragene fra Eurovision Song Contest 2026 og gjett hvilket land hver opptreden kommer fra, på en interaktiv 3D-globus. Test Eurovision-kunnskapen din!',
+            ogTitle: 'Euro Music Quiz 2026 - Gjett landet ut fra sangen',
+            ogDescription:
+                'Se Eurovision 2026-opptredener og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen.',
+        },
     },
 };
