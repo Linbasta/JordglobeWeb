@@ -32,6 +32,18 @@ export const languageSwitcherMap = {
 	pt: "PT",
 } as const;
 
+// native language names shown in the expanded language list
+export const languageNameMap = {
+	en: "English",
+	sv: "Svenska",
+	de: "Deutsch",
+	fr: "Français",
+	it: "Italiano",
+	pl: "Polski",
+	es: "Español",
+	pt: "Português",
+} as const;
+
 // site settings that don't change between languages
 export const siteSettings: SiteSettingsProps = {
 	useViewTransitions: true,

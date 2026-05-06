@@ -11,7 +11,7 @@ import { getLocaleFromUrl } from "@js/localeUtils";
 import { getLocalizedPathname } from "@js/translationUtils";
 
 // config
-import { locales, languageSwitcherMap } from "@config/siteSettings.json";
+import { locales, languageSwitcherMap, languageNameMap } from "@config/siteSettings.json";
 
 interface Props {
 	class?: string; // any additional classes
@@ -21,6 +21,10 @@ interface Props {
 const { class: className, ...rest } = Astro.props as Props;
 
 const currLocale = getLocaleFromUrl(Astro.url);
+
+const sortedLocales = [...locales].sort((a, b) =>
+	languageNameMap[a].localeCompare(languageNameMap[b]),
+);
 ---
 
 <div class:list={["mobile-lang__dropdown description group relative text-sm", className]} {...rest}>
@@ -50,15 +54,15 @@ const currLocale = getLocaleFromUrl(Astro.url);
 	>
 		<ul class="mb-2 transition-[height] duration-300">
 			{
-				locales.map((lang) => (
+				sortedLocales.map((lang) => (
 					<li class="flex w-full">
 						<a
 							class="nav__link--base relative block w-full py-1 pl-8 leading-tight font-medium whitespace-nowrap transition duration-200"
 							href={getLocalizedPathname(lang, Astro.url)}
-							aria-label={`Change language to ${lang.toUpperCase()}`}
+							aria-label={`Change language to ${languageNameMap[lang]}`}
 							data-astro-reload
 						>
-							{languageSwitcherMap[lang]}
+							{languageNameMap[lang]}
 						</a>
 					</li>
 				))

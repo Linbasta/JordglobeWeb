@@ -11,7 +11,7 @@ import { getLocaleFromUrl } from "@js/localeUtils";
 import { getLocalizedPathname } from "@js/translationUtils";
 
 // config
-import { locales, languageSwitcherMap } from "@config/siteSettings.json";
+import { locales, languageSwitcherMap, languageNameMap } from "@config/siteSettings.json";
 
 interface Props {
 	class?: string; // any additional classes
@@ -21,6 +21,10 @@ interface Props {
 const { class: className, ...rest } = Astro.props as Props;
 
 const currLocale = getLocaleFromUrl(Astro.url);
+
+const sortedLocales = [...locales].sort((a, b) =>
+	languageNameMap[a].localeCompare(languageNameMap[b]),
+);
 ---
 
 <div
@@ -55,7 +59,7 @@ const currLocale = getLocaleFromUrl(Astro.url);
 		aria-labelledby="lang-select"
 		data-state="closed"
 		class:list={[
-			"lang-select__dropdown-content absolute top-full z-10 w-full transition-all duration-150",
+			"lang-select__dropdown-content absolute top-full right-0 z-10 transition-all duration-150",
 			"slide-in-from-top-2 fade-in-0 animate-in hidden will-change-transform",
 			"data-[state=closed]:fade-out-0 data-[state=closed]:animate-out",
 		]}
@@ -64,15 +68,15 @@ const currLocale = getLocaleFromUrl(Astro.url);
 			class="language-selector dark:border-base-800 dark:bg-base-900 mx-auto mt-3 w-fit max-w-xs rounded-md border border-solid px-3 py-1.5 whitespace-nowrap drop-shadow-sm"
 		>
 			{
-				locales.map((lang) => (
+				sortedLocales.map((lang) => (
 					<li class="flex w-full justify-center">
 						<a
 							class="nav__link--base relative block w-full py-1 leading-tight font-medium whitespace-nowrap transition duration-200 ml-4 letter-spacing"
 							href={getLocalizedPathname(lang, Astro.url)}
-							aria-label={`Change language to ${lang.toUpperCase()}`}
+							aria-label={`Change language to ${languageNameMap[lang]}`}
 							data-astro-reload
 						>
-							{languageSwitcherMap[lang]}
+							{languageNameMap[lang]}
 						</a>
 					</li>
 				))
