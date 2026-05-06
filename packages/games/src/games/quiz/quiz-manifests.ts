@@ -63,6 +63,14 @@ const TYPE_LABEL_ES: Record<string, string> = {
     locations: 'lugares',
 };
 
+const TYPE_LABEL_PT: Record<string, string> = {
+    countries: 'países',
+    capitals: 'capitais',
+    provinces: 'províncias',
+    flags: 'bandeiras',
+    locations: 'lugares',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -195,6 +203,28 @@ const ES_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Portuguese SEO for published quizzes. */
+const PT_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Quiz dos estados dos EUA - Teste seus conhecimentos de geografia | JordGlobe',
+        description: 'Você consegue colocar os 50 estados dos EUA no mapa? Teste seus conhecimentos em um globo 3D interativo.',
+        ogTitle: 'Quiz dos estados dos EUA',
+        ogDescription: 'Coloque os 50 estados dos EUA em um globo 3D interativo.',
+    },
+    'the-world-countries': {
+        title: 'Quiz dos países do mundo - Teste seus conhecimentos de geografia | JordGlobe',
+        description: 'Você consegue colocar cada país do mundo? Teste seus conhecimentos sobre os 198 países em um globo 3D interativo.',
+        ogTitle: 'Quiz dos países do mundo',
+        ogDescription: 'Coloque cada país do mundo em um globo 3D interativo.',
+    },
+    'the-world-flags': {
+        title: 'Quiz das bandeiras do mundo - Teste seus conhecimentos de geografia | JordGlobe',
+        description: 'Você consegue combinar cada bandeira com seu país? Teste seus conhecimentos sobre as 198 bandeiras em um globo 3D interativo.',
+        ogTitle: 'Quiz das bandeiras do mundo',
+        ogDescription: 'Combine cada bandeira com seu país em um globo 3D interativo.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -203,6 +233,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelIt = TYPE_LABEL_IT[quiz.type] || 'domande';
     const typeLabelPl = TYPE_LABEL_PL[quiz.type] || 'pytań';
     const typeLabelEs = TYPE_LABEL_ES[quiz.type] || 'preguntas';
+    const typeLabelPt = TYPE_LABEL_PT[quiz.type] || 'perguntas';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -269,6 +300,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `¿Puedes identificar las ${count} ${typeLabelEs} de este cuestionario de geografía? Pon a prueba tus conocimientos sobre ${quiz.name.toLowerCase()} en un globo 3D interactivo.`,
             ogTitle: `Cuestionario ${quiz.name}`,
             ogDescription: `Pon a prueba tus conocimientos sobre ${count} ${typeLabelEs} en un globo 3D interactivo.`,
+        };
+    }
+    const ptOverride = PT_OVERRIDES[slug];
+    if (ptOverride) {
+        locales.pt = ptOverride;
+    } else {
+        locales.pt = {
+            title: `Quiz ${quiz.name} - Teste seus conhecimentos de geografia | JordGlobe`,
+            description: `Você consegue identificar ${count} ${typeLabelPt} neste quiz de geografia? Teste seus conhecimentos sobre ${quiz.name.toLowerCase()} em um globo 3D interativo.`,
+            ogTitle: `Quiz ${quiz.name}`,
+            ogDescription: `Teste seus conhecimentos sobre ${count} ${typeLabelPt} em um globo 3D interativo.`,
         };
     }
     return locales;

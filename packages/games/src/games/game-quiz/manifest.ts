@@ -63,5 +63,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Mira clips de videojuegos famosos y adivina de qué país es cada uno en este cuestionario interactivo en un globo 3D.',
         },
+        pt: {
+            title: 'Origem dos videogames - Adivinhe o país | JordGlobe',
+            description:
+                'Assista a clipes de videogames famosos e adivinhe em um globo 3D interativo em qual país cada um foi criado.',
+            ogTitle: 'Origem dos videogames - Adivinhe o país',
+            ogDescription:
+                'Assista a clipes de videogames famosos e adivinhe de qual país é cada um neste quiz interativo em um globo 3D.',
+        },
     },
 };

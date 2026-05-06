@@ -10,6 +10,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'it', label: 'Italiano' },
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
+        { code: 'pt', label: 'Português' },
     ],
     strings: {
         en: {
@@ -102,6 +103,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Amante de la música',
             'sprite.4':         'Fan devoto',
             'sprite.5':         'Dios de la música',
+        },
+        pt: {
+            'loading.title':    'Carregando Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Jogar',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'De qual país é esta música?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Levemente ciente',
+            'sprite.2':         'Semicurioso',
+            'sprite.3':         'Amante da música',
+            'sprite.4':         'Fã dedicado',
+            'sprite.5':         'Deus da música',
         },
     },
 };

@@ -10,6 +10,7 @@ export const QUIZ_I18N: QuizTranslations = {
         { code: 'it', label: 'Italiano' },
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
+        { code: 'pt', label: 'Português' },
     ],
     strings: {
         en: {},
@@ -19,5 +20,6 @@ export const QUIZ_I18N: QuizTranslations = {
         it: {},
         pl: {},
         es: {},
+        pt: {},
     },
 };

@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -30,6 +30,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	it: import.meta.glob('./it/*.json.ts', { eager: true }),
 	pl: import.meta.glob('./pl/*.json.ts', { eager: true }),
 	es: import.meta.glob('./es/*.json.ts', { eager: true }),
+	pt: import.meta.glob('./pt/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -130,6 +131,16 @@ export const textTranslations = {
 		nav_about: "Sobre nosotros",
 		nav_games: "Juegos",
 	},
+	pt: {
+		hero_text: "Tudo o que você precisa para um site incrível.",
+		hero_description:
+			"Um modelo para o próximo grande SaaS. Várias páginas e seções, blog, i18n, animações, CMS — tudo pronto para usar.",
+		back_to_all_posts: "Voltar para todas as postagens",
+		updated: "Atualizado",
+		nav_download: "Baixar",
+		nav_about: "Sobre",
+		nav_games: "Jogos",
+	},
 } as const;
 
 /**
@@ -161,5 +172,8 @@ export const routeTranslations = {
 	},
 	es: {
 		aboutKey: "sobre-nosotros",
+	},
+	pt: {
+		aboutKey: "sobre",
 	},
 } as const;
