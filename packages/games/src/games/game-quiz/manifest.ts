@@ -79,5 +79,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Ünlü video oyunlarından klipler izle ve bu interaktif 3D küre sınavında her birinin hangi ülkeden olduğunu tahmin et.',
         },
+        da: {
+            title: 'Computerspils oprindelse - Gæt landet | JordGlobe',
+            description:
+                'Se klip fra berømte computerspil og gæt på en interaktiv 3D-globus, hvilket land hvert spil blev skabt i.',
+            ogTitle: 'Computerspils oprindelse - Gæt landet',
+            ogDescription:
+                'Se klip fra berømte computerspil og gæt, hvilket land de stammer fra, i denne interaktive 3D-globusquiz.',
+        },
     },
 };

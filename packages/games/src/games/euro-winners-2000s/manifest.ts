@@ -79,5 +79,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 '2000\'den 2025\'e kadar her Eurovision şampiyonunu izle ve bu interaktif 3D küre sınavında hangi ülkenin kupayı aldığını tahmin et.',
         },
+        da: {
+            title: 'Euro Music-vindere 2000–2025 - Gæt Eurovision-vinderne | JordGlobe',
+            description:
+                'Se hver eneste Eurovision-vinder fra 2000 til 2025 og gæt, hvilket land der vandt. Test din Eurovision-viden på en interaktiv 3D-globus!',
+            ogTitle: 'Euro Music-vindere 2000–2025 - Gæt landet',
+            ogDescription:
+                'Se hver Eurovision-vinder fra 2000 til 2025 og gæt i denne interaktive 3D-globusquiz, hvilket land der løb med trofæet.',
+        },
     },
 };

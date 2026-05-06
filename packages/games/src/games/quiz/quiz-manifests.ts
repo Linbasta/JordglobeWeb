@@ -79,6 +79,14 @@ const TYPE_LABEL_TR: Record<string, string> = {
     locations: 'yer',
 };
 
+const TYPE_LABEL_DA: Record<string, string> = {
+    countries: 'lande',
+    capitals: 'hovedstæder',
+    provinces: 'provinser',
+    flags: 'flag',
+    locations: 'steder',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -255,6 +263,28 @@ const PT_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Danish SEO for published quizzes. */
+const DA_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Quiz om USA\'s stater - Test din geografi | JordGlobe',
+        description: 'Kan du placere alle 50 amerikanske stater på kortet? Test din viden på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om USA\'s stater',
+        ogDescription: 'Placer alle 50 amerikanske stater på en interaktiv 3D-globus.',
+    },
+    'the-world-countries': {
+        title: 'Quiz om verdens lande - Test din geografi | JordGlobe',
+        description: 'Kan du placere alle verdens lande? Test din viden om alle 198 lande på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om verdens lande',
+        ogDescription: 'Placer hvert land i verden på en interaktiv 3D-globus.',
+    },
+    'the-world-flags': {
+        title: 'Quiz om verdens flag - Test din geografi | JordGlobe',
+        description: 'Kan du matche hvert flag med det rigtige land? Test din viden om alle 198 flag på en interaktiv 3D-globus.',
+        ogTitle: 'Quiz om verdens flag',
+        ogDescription: 'Match hvert flag med dets land på en interaktiv 3D-globus.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -265,6 +295,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelEs = TYPE_LABEL_ES[quiz.type] || 'preguntas';
     const typeLabelPt = TYPE_LABEL_PT[quiz.type] || 'perguntas';
     const typeLabelTr = TYPE_LABEL_TR[quiz.type] || 'soru';
+    const typeLabelDa = TYPE_LABEL_DA[quiz.type] || 'spørgsmål';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -353,6 +384,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Bu coğrafya sınavındaki ${count} ${typeLabelTr} tanıyabilir misin? ${quiz.name} bilgini interaktif 3D küre üzerinde sına.`,
             ogTitle: `${quiz.name} Sınavı`,
             ogDescription: `${count} ${typeLabelTr} bilgini interaktif 3D küre üzerinde sına.`,
+        };
+    }
+    const daOverride = DA_OVERRIDES[slug];
+    if (daOverride) {
+        locales.da = daOverride;
+    } else {
+        locales.da = {
+            title: `${quiz.name} Quiz - Test din geografi | JordGlobe`,
+            description: `Kan du genkende alle ${count} ${typeLabelDa} i denne geografi-quiz? Test din viden om ${quiz.name.toLowerCase()} på en interaktiv 3D-globus.`,
+            ogTitle: `${quiz.name} Quiz`,
+            ogDescription: `Test din viden om ${count} ${typeLabelDa} på en interaktiv 3D-globus.`,
         };
     }
     return locales;

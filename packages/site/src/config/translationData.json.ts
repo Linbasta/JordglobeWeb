@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -32,6 +32,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	es: import.meta.glob('./es/*.json.ts', { eager: true }),
 	pt: import.meta.glob('./pt/*.json.ts', { eager: true }),
 	tr: import.meta.glob('./tr/*.json.ts', { eager: true }),
+	da: import.meta.glob('./da/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -152,6 +153,16 @@ export const textTranslations = {
 		nav_about: "Hakkımızda",
 		nav_games: "Oyunlar",
 	},
+	da: {
+		hero_text: "Alt hvad du behøver til en fantastisk hjemmeside.",
+		hero_description:
+			"En skabelon til den næste store SaaS. Flere sider og sektioner, blog, i18n, animationer, CMS — alt er klar til brug.",
+		back_to_all_posts: "Tilbage til alle indlæg",
+		updated: "Opdateret",
+		nav_download: "Download",
+		nav_about: "Om os",
+		nav_games: "Spil",
+	},
 } as const;
 
 /**
@@ -189,5 +200,8 @@ export const routeTranslations = {
 	},
 	tr: {
 		aboutKey: "hakkimizda",
+	},
+	da: {
+		aboutKey: "om-os",
 	},
 } as const;

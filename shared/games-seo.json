@@ -67,6 +67,12 @@
         "description": "Eurovision Şarkı Yarışması 2026 katılımlarını izle ve her performansın hangi ülkeden olduğunu interaktif 3D küre üzerinde tahmin et. Eurovision bilgini sına!",
         "ogTitle": "Euro Music Quiz 2026 - Şarkıdan ülkeyi tahmin et",
         "ogDescription": "Eurovision 2026 performanslarını izle ve interaktif 3D küre üzerinde hangi ülkeden olduklarını tahmin et."
+      },
+      "da": {
+        "title": "Euro Music Quiz - Gæt Eurovision 2026-sangene | JordGlobe",
+        "description": "Se bidragene fra Eurovision Song Contest 2026 og gæt, hvilket land hver optræden kommer fra, på en interaktiv 3D-globus. Test din Eurovision-viden!",
+        "ogTitle": "Euro Music Quiz 2026 - Gæt landet ud fra sangen",
+        "ogDescription": "Se Eurovision 2026-optrædener og gæt, hvilket land de kommer fra, i denne interaktive 3D-globusquiz."
       }
     },
     "euro-winners-2000s": {
@@ -126,6 +132,12 @@
         "description": "2000 ile 2025 yılları arasındaki tüm Eurovision Şarkı Yarışması şampiyonlarını izle ve hangi ülkenin kazandığını tahmin et. Eurovision bilgini interaktif 3D küre üzerinde sına!",
         "ogTitle": "Euro Music Şampiyonları 2000–2025 - Ülkeyi tahmin et",
         "ogDescription": "2000'den 2025'e kadar her Eurovision şampiyonunu izle ve bu interaktif 3D küre sınavında hangi ülkenin kupayı aldığını tahmin et."
+      },
+      "da": {
+        "title": "Euro Music-vindere 2000–2025 - Gæt Eurovision-vinderne | JordGlobe",
+        "description": "Se hver eneste Eurovision-vinder fra 2000 til 2025 og gæt, hvilket land der vandt. Test din Eurovision-viden på en interaktiv 3D-globus!",
+        "ogTitle": "Euro Music-vindere 2000–2025 - Gæt landet",
+        "ogDescription": "Se hver Eurovision-vinder fra 2000 til 2025 og gæt i denne interaktive 3D-globusquiz, hvilket land der løb med trofæet."
       }
     },
     "game-quiz": {
@@ -185,6 +197,12 @@
         "description": "Ünlü video oyunlarından klipler izle ve interaktif 3D küre üzerinde her birinin hangi ülkede yapıldığını tahmin et.",
         "ogTitle": "Video Oyunlarının Kökeni - Ülkeyi tahmin et",
         "ogDescription": "Ünlü video oyunlarından klipler izle ve bu interaktif 3D küre sınavında her birinin hangi ülkeden olduğunu tahmin et."
+      },
+      "da": {
+        "title": "Computerspils oprindelse - Gæt landet | JordGlobe",
+        "description": "Se klip fra berømte computerspil og gæt på en interaktiv 3D-globus, hvilket land hvert spil blev skabt i.",
+        "ogTitle": "Computerspils oprindelse - Gæt landet",
+        "ogDescription": "Se klip fra berømte computerspil og gæt, hvilket land de stammer fra, i denne interaktive 3D-globusquiz."
       }
     },
     "united-states-of-america-states": {
@@ -244,6 +262,12 @@
         "description": "ABD'nin 50 eyaletini haritada yerleştirebilir misin? Bilgini interaktif 3D küre üzerinde sına.",
         "ogTitle": "ABD Eyaletleri Sınavı",
         "ogDescription": "ABD'nin 50 eyaletini interaktif 3D küre üzerine yerleştir."
+      },
+      "da": {
+        "title": "Quiz om USA's stater - Test din geografi | JordGlobe",
+        "description": "Kan du placere alle 50 amerikanske stater på kortet? Test din viden på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om USA's stater",
+        "ogDescription": "Placer alle 50 amerikanske stater på en interaktiv 3D-globus."
       }
     },
     "the-world-countries": {
@@ -303,6 +327,12 @@
         "description": "Dünyadaki her ülkeyi yerleştirebilir misin? 198 ülkeye dair bilgini interaktif 3D küre üzerinde sına.",
         "ogTitle": "Dünyanın Ülkeleri Sınavı",
         "ogDescription": "Dünyanın her ülkesini interaktif 3D küre üzerine yerleştir."
+      },
+      "da": {
+        "title": "Quiz om verdens lande - Test din geografi | JordGlobe",
+        "description": "Kan du placere alle verdens lande? Test din viden om alle 198 lande på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om verdens lande",
+        "ogDescription": "Placer hvert land i verden på en interaktiv 3D-globus."
       }
     },
     "the-world-flags": {
@@ -362,6 +392,12 @@
         "description": "Her bayrağı kendi ülkesiyle eşleştirebilir misin? 198 bayrağa dair bilgini interaktif 3D küre üzerinde sına.",
         "ogTitle": "Dünyanın Bayrakları Sınavı",
         "ogDescription": "Her bayrağı interaktif 3D küre üzerinde kendi ülkesiyle eşleştir."
+      },
+      "da": {
+        "title": "Quiz om verdens flag - Test din geografi | JordGlobe",
+        "description": "Kan du matche hvert flag med det rigtige land? Test din viden om alle 198 flag på en interaktiv 3D-globus.",
+        "ogTitle": "Quiz om verdens flag",
+        "ogDescription": "Match hvert flag med dets land på en interaktiv 3D-globus."
       }
     }
   }

@@ -12,6 +12,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
         { code: 'tr', label: 'Türkçe' },
+        { code: 'da', label: 'Dansk' },
     ],
     strings: {
         en: {
@@ -127,6 +128,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Rahat oyuncu',
             'sprite.2':         'Konsol meraklısı',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        da: {
+            'loading.title':    'Indlæser computerspils oprindelse',
+            'start.title':      'Computerspils oprindelse',
+            'start.playButton': 'Spil',
+            'quiz.title':       'Computerspils oprindelse',
+            'question.prompt':  'Hvor blev dette spil skabt?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Hyggespiller',
+            'sprite.2':         'Konsolnysgerrig',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

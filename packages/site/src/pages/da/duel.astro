@@ -1,0 +1,90 @@
+---
+export const prerender = true;
+import duelBannerImage from '@images/duel_banner.jpg';
+---
+
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="generator" content={Astro.generator} />
+    <title>Jordglobe - Dyst</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f0f2f5;
+        color: #333;
+        text-align: center;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 90%;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      p {
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .app-button {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+      }
+      .app-button:hover {
+        background-color: #0056b3;
+      }
+      .banner-image {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src={duelBannerImage.src} alt="Jordglobe Dyst" class="banner-image" />
+      <h1>Download JordGlobe-appen</h1>
+      <p>
+        For at deltage i dysten skal du have JordGlobe-appen installeret på din enhed.
+        Klik på knappen nedenfor for at downloade appen.
+      </p>
+      <div class="button-container">
+        <a id="downloadAppButton" class="app-button" href="https://apps.apple.com/app/id1599500931" style="background-color: #28a745;">Hent fra butikken</a>
+      </div>
+    </div>
+    <script>
+      const downloadAppButton = document.getElementById('downloadAppButton');
+      const isAndroid = /Android/.test(navigator.userAgent);
+      if (isAndroid) {
+        downloadAppButton.href = "https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo";
+      }
+    </script>
+  </body>
+</html>

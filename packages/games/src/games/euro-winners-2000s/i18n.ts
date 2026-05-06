@@ -12,6 +12,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
         { code: 'tr', label: 'Türkçe' },
+        { code: 'da', label: 'Dansk' },
     ],
     strings: {
         en: {
@@ -130,6 +131,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Müziksever',
             'sprite.4':         'Sadık hayran',
             'sprite.5':         'Müzik Tanrısı',
+        },
+        da: {
+            'loading.title':    'Indlæser Euro Music-vindere',
+            'start.title':      'Euro Music-vindere 2000–2025',
+            'start.playButton': 'Spil',
+            'quiz.title':       'Euro Music-vindere 2000–2025',
+            'question.prompt':  'Vinderen i {year} — hvilket land?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Lettere orienteret',
+            'sprite.2':         'Halv-nysgerrig',
+            'sprite.3':         'Musikelsker',
+            'sprite.4':         'Trofast fan',
+            'sprite.5':         'Musikgud',
         },
     },
 };
