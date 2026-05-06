@@ -8,6 +8,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'de', label: 'Deutsch' },
         { code: 'fr', label: 'Français' },
         { code: 'it', label: 'Italiano' },
+        { code: 'pl', label: 'Polski' },
     ],
     strings: {
         en: {
@@ -71,6 +72,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Giocatore occasionale',
             'sprite.2':         'Curioso delle console',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        pl: {
+            'loading.title':    'Ładowanie Pochodzenia gier wideo',
+            'start.title':      'Pochodzenie gier wideo',
+            'start.playButton': 'Graj',
+            'quiz.title':       'Pochodzenie gier wideo',
+            'question.prompt':  'Gdzie powstała ta gra?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Gracz okazjonalny',
+            'sprite.2':         'Ciekawy konsol',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

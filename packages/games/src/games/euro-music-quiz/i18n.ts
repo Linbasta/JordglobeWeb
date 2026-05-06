@@ -8,6 +8,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'de', label: 'Deutsch' },
         { code: 'fr', label: 'Français' },
         { code: 'it', label: 'Italiano' },
+        { code: 'pl', label: 'Polski' },
     ],
     strings: {
         en: {
@@ -74,6 +75,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Amante della musica',
             'sprite.4':         'Fan devoto',
             'sprite.5':         'Dio della musica',
+        },
+        pl: {
+            'loading.title':    'Ładowanie Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Graj',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Z jakiego kraju pochodzi ten utwór?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Lekko zorientowany',
+            'sprite.2':         'Półciekawy',
+            'sprite.3':         'Miłośnik muzyki',
+            'sprite.4':         'Oddany fan',
+            'sprite.5':         'Bóg muzyki',
         },
     },
 };

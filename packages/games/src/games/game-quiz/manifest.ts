@@ -47,5 +47,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Guarda clip di videogiochi famosi e indovina da quale paese proviene ognuno in questo quiz su globo 3D interattivo.',
         },
+        pl: {
+            title: 'Pochodzenie gier wideo - Zgadnij kraj | JordGlobe',
+            description:
+                'Obejrzyj klipy ze słynnych gier wideo i zgadnij na interaktywnym globusie 3D, w jakim kraju powstała każda z nich.',
+            ogTitle: 'Pochodzenie gier wideo - Zgadnij kraj',
+            ogDescription:
+                'Obejrzyj klipy ze słynnych gier wideo i zgadnij, z jakiego kraju pochodzą, w tym interaktywnym quizie z globusem 3D.',
+        },
     },
 };

@@ -8,6 +8,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'de', label: 'Deutsch' },
         { code: 'fr', label: 'Français' },
         { code: 'it', label: 'Italiano' },
+        { code: 'pl', label: 'Polski' },
     ],
     strings: {
         en: {
@@ -74,6 +75,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Amante della musica',
             'sprite.4':         'Fan devoto',
             'sprite.5':         'Dio della musica',
+        },
+        pl: {
+            'loading.title':    'Ładowanie zwycięzców Euro Music',
+            'start.title':      'Zwycięzcy Euro Music 2000–2025',
+            'start.playButton': 'Graj',
+            'quiz.title':       'Zwycięzcy Euro Music 2000–2025',
+            'question.prompt':  'Zwycięzca z {year} — jaki kraj?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Lekko zorientowany',
+            'sprite.2':         'Półciekawy',
+            'sprite.3':         'Miłośnik muzyki',
+            'sprite.4':         'Oddany fan',
+            'sprite.5':         'Bóg muzyki',
         },
     },
 };
