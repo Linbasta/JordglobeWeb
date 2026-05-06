@@ -11,6 +11,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
+        { code: 'tr', label: 'Türkçe' },
     ],
     strings: {
         en: {
@@ -113,6 +114,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Jogador casual',
             'sprite.2':         'Curioso de consoles',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        tr: {
+            'loading.title':    'Video Oyunlarının Kökeni yükleniyor',
+            'start.title':      'Video Oyunlarının Kökeni',
+            'start.playButton': 'Oyna',
+            'quiz.title':       'Video Oyunlarının Kökeni',
+            'question.prompt':  'Bu oyun nerede yapıldı?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Rahat oyuncu',
+            'sprite.2':         'Konsol meraklısı',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

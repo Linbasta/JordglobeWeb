@@ -71,5 +71,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Assista às apresentações da Eurovisão 2026 e adivinhe de qual país elas vêm neste quiz interativo em um globo 3D.',
         },
+        tr: {
+            title: 'Euro Music Quiz - Eurovision 2026 şarkılarını tahmin et | JordGlobe',
+            description:
+                'Eurovision Şarkı Yarışması 2026 katılımlarını izle ve her performansın hangi ülkeden olduğunu interaktif 3D küre üzerinde tahmin et. Eurovision bilgini sına!',
+            ogTitle: 'Euro Music Quiz 2026 - Şarkıdan ülkeyi tahmin et',
+            ogDescription:
+                'Eurovision 2026 performanslarını izle ve interaktif 3D küre üzerinde hangi ülkeden olduklarını tahmin et.',
+        },
     },
 };

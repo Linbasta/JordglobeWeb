@@ -71,5 +71,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Assista a clipes de videogames famosos e adivinhe de qual país é cada um neste quiz interativo em um globo 3D.',
         },
+        tr: {
+            title: 'Video Oyunlarının Kökeni - Ülkeyi tahmin et | JordGlobe',
+            description:
+                'Ünlü video oyunlarından klipler izle ve interaktif 3D küre üzerinde her birinin hangi ülkede yapıldığını tahmin et.',
+            ogTitle: 'Video Oyunlarının Kökeni - Ülkeyi tahmin et',
+            ogDescription:
+                'Ünlü video oyunlarından klipler izle ve bu interaktif 3D küre sınavında her birinin hangi ülkeden olduğunu tahmin et.',
+        },
     },
 };

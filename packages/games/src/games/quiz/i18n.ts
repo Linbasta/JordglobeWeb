@@ -11,6 +11,7 @@ export const QUIZ_I18N: QuizTranslations = {
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
+        { code: 'tr', label: 'Türkçe' },
     ],
     strings: {
         en: {},
@@ -21,5 +22,6 @@ export const QUIZ_I18N: QuizTranslations = {
         pl: {},
         es: {},
         pt: {},
+        tr: {},
     },
 };

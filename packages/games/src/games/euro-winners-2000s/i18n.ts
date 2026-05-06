@@ -11,6 +11,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
+        { code: 'tr', label: 'Türkçe' },
     ],
     strings: {
         en: {
@@ -116,6 +117,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Amante da música',
             'sprite.4':         'Fã dedicado',
             'sprite.5':         'Deus da música',
+        },
+        tr: {
+            'loading.title':    'Euro Music Şampiyonları yükleniyor',
+            'start.title':      'Euro Music Şampiyonları 2000–2025',
+            'start.playButton': 'Oyna',
+            'quiz.title':       'Euro Music Şampiyonları 2000–2025',
+            'question.prompt':  '{year} şampiyonu — hangi ülke?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Az çok haberdar',
+            'sprite.2':         'Yarı meraklı',
+            'sprite.3':         'Müziksever',
+            'sprite.4':         'Sadık hayran',
+            'sprite.5':         'Müzik Tanrısı',
         },
     },
 };

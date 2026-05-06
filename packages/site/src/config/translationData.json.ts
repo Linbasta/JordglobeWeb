@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -31,6 +31,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	pl: import.meta.glob('./pl/*.json.ts', { eager: true }),
 	es: import.meta.glob('./es/*.json.ts', { eager: true }),
 	pt: import.meta.glob('./pt/*.json.ts', { eager: true }),
+	tr: import.meta.glob('./tr/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -141,6 +142,16 @@ export const textTranslations = {
 		nav_about: "Sobre",
 		nav_games: "Jogos",
 	},
+	tr: {
+		hero_text: "Harika bir web sitesi için ihtiyacınız olan her şey.",
+		hero_description:
+			"Bir sonraki büyük SaaS için bir şablon. Birden fazla sayfa ve bölüm, blog, i18n, animasyonlar, CMS — hepsi kullanıma hazır.",
+		back_to_all_posts: "Tüm yazılara dön",
+		updated: "Güncellendi",
+		nav_download: "İndir",
+		nav_about: "Hakkımızda",
+		nav_games: "Oyunlar",
+	},
 } as const;
 
 /**
@@ -175,5 +186,8 @@ export const routeTranslations = {
 	},
 	pt: {
 		aboutKey: "sobre",
+	},
+	tr: {
+		aboutKey: "hakkimizda",
 	},
 } as const;

@@ -11,6 +11,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'pl', label: 'Polski' },
         { code: 'es', label: 'Español' },
         { code: 'pt', label: 'Português' },
+        { code: 'tr', label: 'Türkçe' },
     ],
     strings: {
         en: {
@@ -116,6 +117,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Amante da música',
             'sprite.4':         'Fã dedicado',
             'sprite.5':         'Deus da música',
+        },
+        tr: {
+            'loading.title':    'Euro Music Quiz yükleniyor',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Oyna',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Bu şarkı hangi ülkeden?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Az çok haberdar',
+            'sprite.2':         'Yarı meraklı',
+            'sprite.3':         'Müziksever',
+            'sprite.4':         'Sadık hayran',
+            'sprite.5':         'Müzik Tanrısı',
         },
     },
 };

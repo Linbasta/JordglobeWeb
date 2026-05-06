@@ -71,6 +71,14 @@ const TYPE_LABEL_PT: Record<string, string> = {
     locations: 'lugares',
 };
 
+const TYPE_LABEL_TR: Record<string, string> = {
+    countries: 'ülke',
+    capitals: 'başkent',
+    provinces: 'il',
+    flags: 'bayrak',
+    locations: 'yer',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -203,6 +211,28 @@ const ES_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Turkish SEO for published quizzes. */
+const TR_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'ABD Eyaletleri Sınavı - Coğrafyanı sına | JordGlobe',
+        description: 'ABD\'nin 50 eyaletini haritada yerleştirebilir misin? Bilgini interaktif 3D küre üzerinde sına.',
+        ogTitle: 'ABD Eyaletleri Sınavı',
+        ogDescription: 'ABD\'nin 50 eyaletini interaktif 3D küre üzerine yerleştir.',
+    },
+    'the-world-countries': {
+        title: 'Dünyanın Ülkeleri Sınavı - Coğrafyanı sına | JordGlobe',
+        description: 'Dünyadaki her ülkeyi yerleştirebilir misin? 198 ülkeye dair bilgini interaktif 3D küre üzerinde sına.',
+        ogTitle: 'Dünyanın Ülkeleri Sınavı',
+        ogDescription: 'Dünyanın her ülkesini interaktif 3D küre üzerine yerleştir.',
+    },
+    'the-world-flags': {
+        title: 'Dünyanın Bayrakları Sınavı - Coğrafyanı sına | JordGlobe',
+        description: 'Her bayrağı kendi ülkesiyle eşleştirebilir misin? 198 bayrağa dair bilgini interaktif 3D küre üzerinde sına.',
+        ogTitle: 'Dünyanın Bayrakları Sınavı',
+        ogDescription: 'Her bayrağı interaktif 3D küre üzerinde kendi ülkesiyle eşleştir.',
+    },
+};
+
 /** Hand-written Portuguese SEO for published quizzes. */
 const PT_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -234,6 +264,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelPl = TYPE_LABEL_PL[quiz.type] || 'pytań';
     const typeLabelEs = TYPE_LABEL_ES[quiz.type] || 'preguntas';
     const typeLabelPt = TYPE_LABEL_PT[quiz.type] || 'perguntas';
+    const typeLabelTr = TYPE_LABEL_TR[quiz.type] || 'soru';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -311,6 +342,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Você consegue identificar ${count} ${typeLabelPt} neste quiz de geografia? Teste seus conhecimentos sobre ${quiz.name.toLowerCase()} em um globo 3D interativo.`,
             ogTitle: `Quiz ${quiz.name}`,
             ogDescription: `Teste seus conhecimentos sobre ${count} ${typeLabelPt} em um globo 3D interativo.`,
+        };
+    }
+    const trOverride = TR_OVERRIDES[slug];
+    if (trOverride) {
+        locales.tr = trOverride;
+    } else {
+        locales.tr = {
+            title: `${quiz.name} Sınavı - Coğrafyanı sına | JordGlobe`,
+            description: `Bu coğrafya sınavındaki ${count} ${typeLabelTr} tanıyabilir misin? ${quiz.name} bilgini interaktif 3D küre üzerinde sına.`,
+            ogTitle: `${quiz.name} Sınavı`,
+            ogDescription: `${count} ${typeLabelTr} bilgini interaktif 3D küre üzerinde sına.`,
         };
     }
     return locales;
