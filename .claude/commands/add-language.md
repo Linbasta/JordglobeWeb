@@ -102,7 +102,7 @@ Three contain hardcoded copy that needs translating:
 
 ### `packages/games/src/shared/i18n/shared-defaults.ts`
 
-Add an `xx:` block alongside existing locales. Translate every key (settings, result.*, leaderboard.*, login.*, tier.*).
+Add an `xx:` block alongside existing locales. Translate every key — categories are `loading.*`, `settings.*`, `result.*`, `leaderboard.*`, `login.*`, `tier.*`. The `en:` block is the source of truth; `verify-locale.sh` enforces key parity (any missing key fails the check).
 
 ### `packages/games/src/shared/i18n/country-names.ts`
 

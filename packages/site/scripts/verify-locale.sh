@@ -38,6 +38,29 @@ fail() { echo "  FAIL  $1"; FAIL=1; }
 
 echo "== Cross-locale checks =="
 
+# Shared-defaults key parity: every locale's block has the same string keys as en.
+# Catches locales that forgot to add new keys (e.g. when 'loading.*' was introduced).
+python3 - <<'PY' && pass "shared-defaults.ts: every locale has the same string keys as en" || fail "shared-defaults.ts: locale string keys differ from en (see python output above)"
+import re, sys
+text = open('packages/games/src/shared/i18n/shared-defaults.ts').read()
+# Match each "xx: { ... }" block under `strings:` (top-level locales only).
+blocks = {}
+for m in re.finditer(r'^        ([a-z]{2}): \{(.*?)^        \},', text, re.M | re.S):
+    keys = sorted(re.findall(r"'([^']+)':", m.group(2)))
+    blocks[m.group(1)] = keys
+en = set(blocks.get('en', []))
+if not en:
+    print("  could not find en block"); sys.exit(1)
+ok = True
+for loc, keys in blocks.items():
+    s = set(keys)
+    missing, extra = en - s, s - en
+    if missing or extra:
+        print(f"  {loc}: missing={sorted(missing)} extra={sorted(extra)}")
+        ok = False
+sys.exit(0 if ok else 1)
+PY
+
 # Country code parity: every locale's block has the same 249 ISO-2 codes as en.
 python3 - <<'PY' && pass "country-names: every locale has the same 249 ISO-2 codes" || fail "country-names: locale codes differ from en (see python output above)"
 import re, sys

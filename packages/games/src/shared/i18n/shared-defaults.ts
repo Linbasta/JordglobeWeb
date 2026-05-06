@@ -6,6 +6,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
     strings: {
         en: {
             'loading.title':              'Loading Quiz',
+            'loading.initializing':       'Initializing...',
+            'loading.modules':            'Creating modules...',
+            'loading.ui':                 'Setting up UI...',
+            'loading.complete':           'Complete!',
             'settings.title':             'Settings',
             'settings.language':          'Language',
             'settings.moreGames':         'Other games',
@@ -61,6 +65,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         sv: {
             'loading.title':              'Laddar quiz',
+            'loading.initializing':       'Initierar...',
+            'loading.modules':            'Skapar moduler...',
+            'loading.ui':                 'Förbereder gränssnitt...',
+            'loading.complete':           'Klar!',
             'settings.title':             'Inställningar',
             'settings.language':          'Språk',
             'settings.moreGames':         'Andra spel',
@@ -116,6 +124,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         de: {
             'loading.title':              'Quiz wird geladen',
+            'loading.initializing':       'Initialisierung...',
+            'loading.modules':            'Module werden erstellt...',
+            'loading.ui':                 'Oberfläche wird eingerichtet...',
+            'loading.complete':           'Fertig!',
             'settings.title':             'Einstellungen',
             'settings.language':          'Sprache',
             'settings.moreGames':         'Weitere Spiele',
@@ -171,6 +183,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         fr: {
             'loading.title':              'Chargement du quiz',
+            'loading.initializing':       'Initialisation...',
+            'loading.modules':            'Création des modules...',
+            'loading.ui':                 'Configuration de l\'interface...',
+            'loading.complete':           'Terminé !',
             'settings.title':             'Paramètres',
             'settings.language':          'Langue',
             'settings.moreGames':         'Autres jeux',
@@ -226,6 +242,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         it: {
             'loading.title':              'Caricamento quiz',
+            'loading.initializing':       'Inizializzazione...',
+            'loading.modules':            'Creazione moduli...',
+            'loading.ui':                 'Configurazione interfaccia...',
+            'loading.complete':           'Completato!',
             'settings.title':             'Impostazioni',
             'settings.language':          'Lingua',
             'settings.moreGames':         'Altri giochi',
@@ -281,6 +301,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         pl: {
             'loading.title':              'Ładowanie quizu',
+            'loading.initializing':       'Inicjowanie...',
+            'loading.modules':            'Tworzenie modułów...',
+            'loading.ui':                 'Konfigurowanie interfejsu...',
+            'loading.complete':           'Gotowe!',
             'settings.title':             'Ustawienia',
             'settings.language':          'Język',
             'settings.moreGames':         'Inne gry',
@@ -336,6 +360,10 @@ export const SHARED_DEFAULTS: QuizTranslations = {
         },
         es: {
             'loading.title':              'Cargando cuestionario',
+            'loading.initializing':       'Inicializando...',
+            'loading.modules':            'Creando módulos...',
+            'loading.ui':                 'Configurando la interfaz...',
+            'loading.complete':           '¡Listo!',
             'settings.title':             'Ajustes',
             'settings.language':          'Idioma',
             'settings.moreGames':         'Otros juegos',

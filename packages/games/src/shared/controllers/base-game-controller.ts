@@ -13,6 +13,7 @@
  */
 
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture';
+import { t } from '../i18n/i18n';
 
 import {
     EarthGlobe,
@@ -81,13 +82,13 @@ export abstract class BaseGameController {
         this.loadingText = document.getElementById('loadingText');
         this.loadingScreen = document.getElementById('loadingScreen');
 
-        this.updateLoadingProgress(5, 'Initializing scene...');
+        this.updateLoadingProgress(5, t('loading.initializing'));
 
         // Create the core globe
         this.globe = new EarthGlobe({
             canvasId,
             onReady: async (globe) => {
-                this.updateLoadingProgress(75, 'Creating modules...');
+                this.updateLoadingProgress(75, t('loading.modules'));
 
                 // Initialize PinManager with callback to get active picker (routes to provinces in region mode)
                 await initPinManager(
@@ -119,7 +120,7 @@ export abstract class BaseGameController {
                 // Expose state manager for debugging
                 (window as any).__globeState = this.stateManager;
 
-                this.updateLoadingProgress(90, 'Setting up UI...');
+                this.updateLoadingProgress(90, t('loading.ui'));
 
                 // Create GUI
                 this.createGUI();
@@ -147,7 +148,7 @@ export abstract class BaseGameController {
                     this.onPinPlaced(country, latLon);
                 });
 
-                this.updateLoadingProgress(100, 'Complete!');
+                this.updateLoadingProgress(100, t('loading.complete'));
 
                 // Call ready callback
                 if (this.options.onReady) {

@@ -46,7 +46,6 @@ if (!quiz) throw new Error(`Unknown quiz slug: ${quizSlug}`);
 
         await startQuizGame({
             canvasId: 'quizCanvas',
-            title: quiz.name,
             questions,
             scoreBarType: 'simple',
             i18n: QUIZ_I18N,

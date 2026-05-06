@@ -5,6 +5,8 @@
  * that BaseGameController queries by ID. Call before constructing the controller.
  */
 
+import { t } from '../i18n/i18n'
+
 let styleEl: HTMLStyleElement | null = null
 let screenEl: HTMLDivElement | null = null
 
@@ -54,7 +56,7 @@ export function createLoadingScreen(title: string): void {
     screenEl.innerHTML =
         `<h2>${title}</h2>` +
         `<div class="loading-bar"><div class="loading-progress" id="loadingProgress"></div></div>` +
-        `<div class="loading-text" id="loadingText">Initializing...</div>`
+        `<div class="loading-text" id="loadingText">${t('loading.initializing')}</div>`
     document.body.appendChild(screenEl)
 }
 
