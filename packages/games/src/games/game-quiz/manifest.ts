@@ -55,5 +55,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Obejrzyj klipy ze słynnych gier wideo i zgadnij, z jakiego kraju pochodzą, w tym interaktywnym quizie z globusem 3D.',
         },
+        es: {
+            title: 'Origen de los videojuegos - Adivina el país | JordGlobe',
+            description:
+                'Mira clips de videojuegos famosos y adivina en un globo 3D interactivo en qué país se creó cada uno.',
+            ogTitle: 'Origen de los videojuegos - Adivina el país',
+            ogDescription:
+                'Mira clips de videojuegos famosos y adivina de qué país es cada uno en este cuestionario interactivo en un globo 3D.',
+        },
     },
 };

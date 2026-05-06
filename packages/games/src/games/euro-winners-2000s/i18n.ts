@@ -9,6 +9,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'fr', label: 'Français' },
         { code: 'it', label: 'Italiano' },
         { code: 'pl', label: 'Polski' },
+        { code: 'es', label: 'Español' },
     ],
     strings: {
         en: {
@@ -88,6 +89,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Miłośnik muzyki',
             'sprite.4':         'Oddany fan',
             'sprite.5':         'Bóg muzyki',
+        },
+        es: {
+            'loading.title':    'Cargando ganadores de Euro Music',
+            'start.title':      'Ganadores Euro Music 2000–2025',
+            'start.playButton': 'Jugar',
+            'quiz.title':       'Ganadores Euro Music 2000–2025',
+            'question.prompt':  'Ganador de {year}: ¿qué país?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Algo interesado',
+            'sprite.2':         'Medio curioso',
+            'sprite.3':         'Amante de la música',
+            'sprite.4':         'Fan devoto',
+            'sprite.5':         'Dios de la música',
         },
     },
 };

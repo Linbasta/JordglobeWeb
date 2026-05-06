@@ -55,6 +55,14 @@ const TYPE_LABEL_PL: Record<string, string> = {
     locations: 'miejsc',
 };
 
+const TYPE_LABEL_ES: Record<string, string> = {
+    countries: 'países',
+    capitals: 'capitales',
+    provinces: 'provincias',
+    flags: 'banderas',
+    locations: 'lugares',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -165,6 +173,28 @@ const PL_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Spanish SEO for published quizzes. */
+const ES_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Cuestionario de estados de EE. UU. - Pon a prueba tu geografía | JordGlobe',
+        description: '¿Puedes colocar los 50 estados de EE. UU. en el mapa? Pon a prueba tus conocimientos en un globo 3D interactivo.',
+        ogTitle: 'Cuestionario de estados de EE. UU.',
+        ogDescription: 'Coloca los 50 estados de EE. UU. en un globo 3D interactivo.',
+    },
+    'the-world-countries': {
+        title: 'Cuestionario de países del mundo - Pon a prueba tu geografía | JordGlobe',
+        description: '¿Puedes colocar cada país del mundo? Pon a prueba tus conocimientos sobre los 198 países en un globo 3D interactivo.',
+        ogTitle: 'Cuestionario de países del mundo',
+        ogDescription: 'Coloca cada país del mundo en un globo 3D interactivo.',
+    },
+    'the-world-flags': {
+        title: 'Cuestionario de banderas del mundo - Pon a prueba tu geografía | JordGlobe',
+        description: '¿Puedes emparejar cada bandera con su país? Pon a prueba tus conocimientos sobre las 198 banderas en un globo 3D interactivo.',
+        ogTitle: 'Cuestionario de banderas del mundo',
+        ogDescription: 'Empareja cada bandera con su país en un globo 3D interactivo.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -172,6 +202,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelFr = TYPE_LABEL_FR[quiz.type] || 'questions';
     const typeLabelIt = TYPE_LABEL_IT[quiz.type] || 'domande';
     const typeLabelPl = TYPE_LABEL_PL[quiz.type] || 'pytań';
+    const typeLabelEs = TYPE_LABEL_ES[quiz.type] || 'preguntas';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -227,6 +258,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Czy potrafisz rozpoznać wszystkie ${count} ${typeLabelPl} w tym quizie geograficznym? Sprawdź swoją wiedzę o ${quiz.name.toLowerCase()} na interaktywnym globusie 3D.`,
             ogTitle: `Quiz ${quiz.name}`,
             ogDescription: `Sprawdź swoją wiedzę o ${count} ${typeLabelPl} na interaktywnym globusie 3D.`,
+        };
+    }
+    const esOverride = ES_OVERRIDES[slug];
+    if (esOverride) {
+        locales.es = esOverride;
+    } else {
+        locales.es = {
+            title: `Cuestionario ${quiz.name} - Pon a prueba tu geografía | JordGlobe`,
+            description: `¿Puedes identificar las ${count} ${typeLabelEs} de este cuestionario de geografía? Pon a prueba tus conocimientos sobre ${quiz.name.toLowerCase()} en un globo 3D interactivo.`,
+            ogTitle: `Cuestionario ${quiz.name}`,
+            ogDescription: `Pon a prueba tus conocimientos sobre ${count} ${typeLabelEs} en un globo 3D interactivo.`,
         };
     }
     return locales;
