@@ -40,48 +40,54 @@ const {
     </div>
 
     <!-- Poster Overlay (First Video Frame) -->
+    <!-- z-10 keeps it above the bg <video> but below the logo (z-20) and the
+         fixed navbar (z-30 in BaseLayout's Nav). Without this it covered the
+         navbar until the video's `loadeddata` event fired. -->
     <div
         id="poster-overlay"
-        class="absolute inset-0 z-30 bg-cover bg-center"
-        style={`background-image: url('${posterSrc.src}');`}
+        class="absolute inset-0 z-10 bg-cover bg-center pointer-events-none"
+        style={`background-image: url('${posterSrc}');`}
     >
     </div>
 
     <!-- Content -->
     <div class="relative z-20 flex h-full w-full items-center justify-center px-4">
-        <div class="animate-fadeIn w-full max-w-[500px]" style="animation-duration: 1s;">
-            <Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={400} />
+        <div class="animate-fadeIn w-full max-w-[500px]">
+            <Image src={logoSrc} alt={logoAlt} class="w-full" width={700} height={400} loading="eager" />
         </div>
     </div>
 </section>
 
-<script client:load>
-    const featureVideo = document.getElementById("feature-video");
-    const video = document.getElementById("hero-video");
-    const videoSource = document.getElementById("video-source");
-    const posterOverlay = document.getElementById("poster-overlay");
-    const logo = document.querySelector(".animate-fadeIn");
+<script>
+    function initHeroVideo() {
+        const featureVideo = document.getElementById("feature-video");
+        const video = document.getElementById("hero-video") as HTMLVideoElement | null;
+        const videoSource = document.getElementById("video-source") as HTMLSourceElement | null;
+        const posterOverlay = document.getElementById("poster-overlay");
 
-    // Set video source once based on initial screen width
-    const isMobile = window.innerWidth < 768;
-    videoSource.src = isMobile ? 
-        featureVideo.dataset.videoMobile : 
-        featureVideo.dataset.videoDesktop;
-    video.load();
+        if (!featureVideo || !video || !videoSource) return;
 
-    video.addEventListener("loadeddata", () => {
-        if (posterOverlay) {
-            posterOverlay.style.transition = "opacity 0.5s";
-            posterOverlay.style.opacity = "0";
-            setTimeout(() => posterOverlay.remove(), 500);
-        }
-    });
+        const isMobile = window.innerWidth < 768;
+        const chosen = isMobile
+            ? featureVideo.dataset.videoMobile
+            : featureVideo.dataset.videoDesktop;
+        if (chosen) videoSource.src = chosen;
+        video.load();
 
-    video.addEventListener("play", () => {
-        if (logo) {
-            logo.style.animationPlayState = "running";
-        }
-    });
+        video.addEventListener("loadeddata", () => {
+            if (posterOverlay) {
+                posterOverlay.style.transition = "opacity 0.5s";
+                posterOverlay.style.opacity = "0";
+                setTimeout(() => posterOverlay.remove(), 500);
+            }
+        });
+    }
+
+    initHeroVideo();
+    // Re-run after view transitions: the new page re-renders #poster-overlay
+    // (z-30, fullscreen) and without re-running this, it never fades out and
+    // blocks clicks on the navbar.
+    document.addEventListener("astro:after-swap", initHeroVideo);
 </script>
 
 <style>
@@ -98,7 +104,6 @@ const {
     }
 
     .animate-fadeIn {
-        animation: fadeIn cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        animation-play-state: paused; /* Start paused */
+        animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 </style>
