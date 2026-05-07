@@ -111,5 +111,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Bekijk de optredens van Eurovisie 2026 en raad uit welk land ze komen in deze interactieve 3D-globe-quiz.',
         },
+        uk: {
+            title: 'Euro Music Quiz — Вгадай пісні Євробачення 2026 | JordGlobe',
+            description:
+                'Дивися виступи Пісенного конкурсу Євробачення 2026 та вгадай, з якої країни кожен виступ, на інтерактивному 3D-глобусі. Перевір свої знання про Євробачення!',
+            ogTitle: 'Euro Music Quiz 2026 — Вгадай країну за піснею',
+            ogDescription:
+                'Дивись виступи Євробачення 2026 і вгадуй, з якої вони країни, у цій інтерактивній вікторині на 3D-глобусі.',
+        },
     },
 };

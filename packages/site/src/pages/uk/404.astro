@@ -1,0 +1,59 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+// main layout
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+// components
+import Button from "@components/Button/Button.astro";
+
+// utils
+import { getLocaleFromUrl } from "@js/localeUtils";
+
+// images
+import errorImage from "@images/dog-error.png";
+
+const currLocale = getLocaleFromUrl(Astro.url);
+---
+
+<BaseLayout title="404" description="Помилка 404. Сторінку не знайдено." noindex={true}>
+	<section class="mt-20 py-24">
+		<div class="site-container mx-auto px-4">
+			<div class="-mx-4 flex flex-wrap items-center">
+				<div class="relative mb-16 w-full px-4 md:mb-0 md:w-1/2">
+					<Image
+						src={errorImage}
+						class="mx-auto rounded-xl"
+						alt="error 404"
+						loading="eager"
+						width={600}
+						densities={[1.5, 2]}
+					/>
+				</div>
+				<div class="w-full px-4 md:w-1/2">
+					<div class="text-center md:max-w-xl md:text-left">
+						<span
+							class="from-gradient-1 via-gradient-2 to-gradient-3 mb-6 inline-block rounded-full bg-linear-40 px-3 py-1.5 text-sm font-semibold tracking-tight text-white uppercase"
+							>Помилка 404</span
+						>
+						<h2
+							class="text-base-900 dark:text-base-100 mb-4 text-4xl leading-tight font-bold tracking-tighter md:text-5xl"
+						>
+							Ой! Помилка 404
+						</h2>
+						<p class="text-base-500 mb-6 text-lg md:text-xl">
+							Щось пішло не так — цю сторінку зламано.
+						</p>
+						<div class="flex flex-wrap justify-center md:justify-start">
+							<Button variant="primary" href={getRelativeLocaleUrl(currLocale, "/")}
+								>Повернутися на головну</Button
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

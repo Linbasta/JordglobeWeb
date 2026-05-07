@@ -111,5 +111,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Bekijk fragmenten van beroemde videogames en raad uit welk land ze komen in deze interactieve 3D-globe-quiz.',
         },
+        uk: {
+            title: 'Походження відеоігор — Вгадай країну | JordGlobe',
+            description:
+                'Дивись кліпи з відомих відеоігор і вгадуй на інтерактивному 3D-глобусі, у якій країні створено кожну з них.',
+            ogTitle: 'Походження відеоігор — Вгадай країну',
+            ogDescription:
+                'Дивись кліпи з відомих відеоігор і вгадуй у цій інтерактивній вікторині на 3D-глобусі, з якої вони країни.',
+        },
     },
 };

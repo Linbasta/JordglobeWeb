@@ -111,5 +111,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Bekijk elke Eurovisie-winnaar van 2000 tot 2025 en raad in deze interactieve 3D-globe-quiz welk land de trofee mee naar huis nam.',
         },
+        uk: {
+            title: 'Переможці Євробачення 2000–2025 — Вгадай переможців | JordGlobe',
+            description:
+                'Подивись усіх переможців Пісенного конкурсу Євробачення з 2000 по 2025 рік і вгадай, яка країна перемогла. Перевір свої знання на інтерактивному 3D-глобусі!',
+            ogTitle: 'Переможці Євробачення 2000–2025 — Вгадай країну',
+            ogDescription:
+                'Подивись усіх переможців Євробачення з 2000 по 2025 рік і вгадай у цій інтерактивній вікторині на 3D-глобусі, яка країна забрала трофей.',
+        },
     },
 };

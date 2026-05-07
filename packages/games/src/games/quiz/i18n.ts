@@ -16,6 +16,7 @@ export const QUIZ_I18N: QuizTranslations = {
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
+        { code: 'uk', label: 'Українська' },
     ],
     strings: {
         en: {},
@@ -31,5 +32,6 @@ export const QUIZ_I18N: QuizTranslations = {
         nb: {},
         fi: {},
         nl: {},
+        uk: {},
     },
 };

@@ -16,6 +16,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
+        { code: 'uk', label: 'Українська' },
     ],
     strings: {
         en: {
@@ -186,6 +187,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Muziekliefhebber',
             'sprite.4':         'Toegewijde fan',
             'sprite.5':         'Muziekgod',
+        },
+        uk: {
+            'loading.title':    'Завантаження переможців Євробачення',
+            'start.title':      'Переможці Євробачення 2000–2025',
+            'start.playButton': 'Грати',
+            'quiz.title':       'Переможці Євробачення 2000–2025',
+            'question.prompt':  'Переможець {year} — яка країна?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Трохи в курсі',
+            'sprite.2':         'Напівцікавий',
+            'sprite.3':         'Любитель музики',
+            'sprite.4':         'Відданий фанат',
+            'sprite.5':         'Музичний бог',
         },
     },
 };

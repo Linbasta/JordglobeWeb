@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl', 'uk'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -36,6 +36,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	nb: import.meta.glob('./nb/*.json.ts', { eager: true }),
 	fi: import.meta.glob('./fi/*.json.ts', { eager: true }),
 	nl: import.meta.glob('./nl/*.json.ts', { eager: true }),
+	uk: import.meta.glob('./uk/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -196,6 +197,16 @@ export const textTranslations = {
 		nav_about: "Over ons",
 		nav_games: "Spellen",
 	},
+	uk: {
+		hero_text: "Усе, що потрібно для чудового вебсайту.",
+		hero_description:
+			"Шаблон для наступного хітового SaaS. Кілька сторінок і розділів, блог, i18n, анімації, CMS — усе готове до роботи.",
+		back_to_all_posts: "Повернутися до всіх дописів",
+		updated: "Оновлено",
+		nav_download: "Завантажити",
+		nav_about: "Про нас",
+		nav_games: "Ігри",
+	},
 } as const;
 
 /**
@@ -245,5 +256,8 @@ export const routeTranslations = {
 	},
 	nl: {
 		aboutKey: "over-ons",
+	},
+	uk: {
+		aboutKey: "pro-nas",
 	},
 } as const;

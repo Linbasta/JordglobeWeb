@@ -111,6 +111,14 @@ const TYPE_LABEL_NL: Record<string, string> = {
     locations: 'plaatsen',
 };
 
+const TYPE_LABEL_UK: Record<string, string> = {
+    countries: 'країн',
+    capitals: 'столиць',
+    provinces: 'провінцій',
+    flags: 'прапорів',
+    locations: 'місць',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -375,6 +383,28 @@ const NL_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Ukrainian SEO for published quizzes. */
+const UK_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Вікторина зі штатів США — Перевір свою географію | JordGlobe',
+        description: 'Чи зможеш розмістити всі 50 штатів США на карті? Перевір свої знання на інтерактивному 3D-глобусі.',
+        ogTitle: 'Вікторина зі штатів США',
+        ogDescription: 'Розмісти всі 50 штатів США на інтерактивному 3D-глобусі.',
+    },
+    'the-world-countries': {
+        title: 'Вікторина країн світу — Перевір свою географію | JordGlobe',
+        description: 'Чи зможеш розмістити кожну країну світу? Перевір свої знання про всі 198 країн на інтерактивному 3D-глобусі.',
+        ogTitle: 'Вікторина країн світу',
+        ogDescription: 'Розмісти кожну країну світу на інтерактивному 3D-глобусі.',
+    },
+    'the-world-flags': {
+        title: 'Вікторина прапорів світу — Перевір свою географію | JordGlobe',
+        description: 'Чи зможеш зіставити кожен прапор з його країною? Перевір свої знання про всі 198 прапорів на інтерактивному 3D-глобусі.',
+        ogTitle: 'Вікторина прапорів світу',
+        ogDescription: 'Зістав кожен прапор з його країною на інтерактивному 3D-глобусі.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -389,6 +419,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelNb = TYPE_LABEL_NB[quiz.type] || 'spørsmål';
     const typeLabelFi = TYPE_LABEL_FI[quiz.type] || 'kysymystä';
     const typeLabelNl = TYPE_LABEL_NL[quiz.type] || 'vragen';
+    const typeLabelUk = TYPE_LABEL_UK[quiz.type] || 'питань';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -521,6 +552,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Kun je alle ${count} ${typeLabelNl} in deze aardrijkskundequiz herkennen? Test je kennis van ${quiz.name.toLowerCase()} op een interactieve 3D-globe.`,
             ogTitle: `Quiz ${quiz.name}`,
             ogDescription: `Test je kennis van ${count} ${typeLabelNl} op een interactieve 3D-globe.`,
+        };
+    }
+    const ukOverride = UK_OVERRIDES[slug];
+    if (ukOverride) {
+        locales.uk = ukOverride;
+    } else {
+        locales.uk = {
+            title: `Вікторина ${quiz.name} — Перевір свою географію | JordGlobe`,
+            description: `Чи зможеш визначити всі ${count} ${typeLabelUk} у цій географічній вікторині? Перевір свої знання про ${quiz.name.toLowerCase()} на інтерактивному 3D-глобусі.`,
+            ogTitle: `Вікторина ${quiz.name}`,
+            ogDescription: `Перевір свої знання про ${count} ${typeLabelUk} на інтерактивному 3D-глобусі.`,
         };
     }
     return locales;

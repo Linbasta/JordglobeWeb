@@ -16,6 +16,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
+        { code: 'uk', label: 'Українська' },
     ],
     strings: {
         en: {
@@ -186,6 +187,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',
+        },
+        uk: {
+            'loading.title':    'Завантаження походження відеоігор',
+            'start.title':      'Походження відеоігор',
+            'start.playButton': 'Грати',
+            'quiz.title':       'Походження відеоігор',
+            'question.prompt':  'Де було створено цю гру?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Казуальний гравець',
+            'sprite.2':         'Цікавиться консолями',
+            'sprite.3':         'Геймер',
+            'sprite.4':         'Хардкор',
+            'sprite.5':         'Спідранер',
         },
     },
 };
