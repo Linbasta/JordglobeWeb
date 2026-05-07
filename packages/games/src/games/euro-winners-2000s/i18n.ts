@@ -17,6 +17,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
         { code: 'uk', label: 'Українська' },
+        { code: 'cs', label: 'Čeština' },
     ],
     strings: {
         en: {
@@ -200,6 +201,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Любитель музики',
             'sprite.4':         'Відданий фанат',
             'sprite.5':         'Музичний бог',
+        },
+        cs: {
+            'loading.title':    'Načítání vítězů Eurovize',
+            'start.title':      'Vítězové Eurovize 2000–2025',
+            'start.playButton': 'Hrát',
+            'quiz.title':       'Vítězové Eurovize 2000–2025',
+            'question.prompt':  'Vítěz {year} — jaká země?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Trochu v obraze',
+            'sprite.2':         'Polozvědavý',
+            'sprite.3':         'Milovník hudby',
+            'sprite.4':         'Oddaný fanoušek',
+            'sprite.5':         'Hudební bůh',
         },
     },
 };

@@ -1,0 +1,18 @@
+---
+import LoadingDownload from '@components/LoadingDownload.astro';
+---
+
+<LoadingDownload />
+
+<script>
+  const clientUserAgent = navigator.userAgent;
+  
+  window.onload = async () => {
+    const { getDownloadUrl } = await import('@js/DownloadFromSite');
+    const url = await getDownloadUrl(clientUserAgent, true);
+    
+    setTimeout(() => {
+      window.location.href = url;
+    }, 1000);
+  };
+</script>

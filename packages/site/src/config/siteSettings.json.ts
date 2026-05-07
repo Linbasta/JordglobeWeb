@@ -5,7 +5,7 @@
 import { type SiteSettingsProps } from "./types/configDataTypes";
 
 // The below locales need to match what you've put in your `astro.config.mjs` file
-export const locales = ["en", "sv", "de", "fr", "it", "pl", "es", "pt", "tr", "da", "nb", "fi", "nl", "uk"] as const;
+export const locales = ["en", "sv", "de", "fr", "it", "pl", "es", "pt", "tr", "da", "nb", "fi", "nl", "uk", "cs"] as const;
 export const defaultLocale = "en" as const;
 
 // localeMap is used to map languages to their respective locales - used for formatDate function
@@ -24,6 +24,7 @@ export const localeMap = {
 	fi: "fi-FI",
 	nl: "nl-NL",
 	uk: "uk-UA",
+	cs: "cs-CZ",
 } as const;
 
 // text to show in the language switcher for each locale
@@ -42,6 +43,7 @@ export const languageSwitcherMap = {
 	fi: "FI",
 	nl: "NL",
 	uk: "UK",
+	cs: "CS",
 } as const;
 
 // native language names shown in the expanded language list
@@ -60,6 +62,7 @@ export const languageNameMap = {
 	fi: "Suomi",
 	nl: "Nederlands",
 	uk: "Українська",
+	cs: "Čeština",
 } as const;
 
 // site settings that don't change between languages

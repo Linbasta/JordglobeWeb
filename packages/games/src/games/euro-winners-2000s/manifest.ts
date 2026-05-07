@@ -119,5 +119,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Подивись усіх переможців Євробачення з 2000 по 2025 рік і вгадай у цій інтерактивній вікторині на 3D-глобусі, яка країна забрала трофей.',
         },
+        cs: {
+            title: 'Vítězové Eurovize 2000–2025 — Hádej vítěze | JordGlobe',
+            description:
+                'Podívej se na všechny vítěze Eurovize od roku 2000 do 2025 a hádej, která země zvítězila. Otestuj své znalosti Eurovize na interaktivním 3D glóbu!',
+            ogTitle: 'Vítězové Eurovize 2000–2025 — Hádej zemi',
+            ogDescription:
+                'Podívej se na všechny vítěze Eurovize od 2000 do 2025 a hádej v tomto interaktivním kvízu na 3D glóbu, která země získala trofej.',
+        },
     },
 };

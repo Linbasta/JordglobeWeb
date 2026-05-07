@@ -119,6 +119,14 @@ const TYPE_LABEL_UK: Record<string, string> = {
     locations: 'місць',
 };
 
+const TYPE_LABEL_CS: Record<string, string> = {
+    countries: 'zemí',
+    capitals: 'hlavních měst',
+    provinces: 'provincií',
+    flags: 'vlajek',
+    locations: 'míst',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -405,6 +413,28 @@ const UK_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Czech SEO for published quizzes. */
+const CS_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Kvíz států USA — Otestuj si zeměpis | JordGlobe',
+        description: 'Dokážeš umístit všech 50 amerických států na mapu? Otestuj své znalosti na interaktivním 3D glóbu.',
+        ogTitle: 'Kvíz států USA',
+        ogDescription: 'Umísti všech 50 amerických států na interaktivní 3D glóbus.',
+    },
+    'the-world-countries': {
+        title: 'Kvíz zemí světa — Otestuj si zeměpis | JordGlobe',
+        description: 'Dokážeš umístit každou zemi světa? Otestuj své znalosti všech 198 zemí na interaktivním 3D glóbu.',
+        ogTitle: 'Kvíz zemí světa',
+        ogDescription: 'Umísti každou zemi světa na interaktivní 3D glóbus.',
+    },
+    'the-world-flags': {
+        title: 'Kvíz vlajek světa — Otestuj si zeměpis | JordGlobe',
+        description: 'Dokážeš přiřadit každou vlajku ke správné zemi? Otestuj své znalosti všech 198 vlajek na interaktivním 3D glóbu.',
+        ogTitle: 'Kvíz vlajek světa',
+        ogDescription: 'Přiřaď každou vlajku k její zemi na interaktivním 3D glóbu.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -420,6 +450,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelFi = TYPE_LABEL_FI[quiz.type] || 'kysymystä';
     const typeLabelNl = TYPE_LABEL_NL[quiz.type] || 'vragen';
     const typeLabelUk = TYPE_LABEL_UK[quiz.type] || 'питань';
+    const typeLabelCs = TYPE_LABEL_CS[quiz.type] || 'otázek';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -563,6 +594,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Чи зможеш визначити всі ${count} ${typeLabelUk} у цій географічній вікторині? Перевір свої знання про ${quiz.name.toLowerCase()} на інтерактивному 3D-глобусі.`,
             ogTitle: `Вікторина ${quiz.name}`,
             ogDescription: `Перевір свої знання про ${count} ${typeLabelUk} на інтерактивному 3D-глобусі.`,
+        };
+    }
+    const csOverride = CS_OVERRIDES[slug];
+    if (csOverride) {
+        locales.cs = csOverride;
+    } else {
+        locales.cs = {
+            title: `Kvíz ${quiz.name} — Otestuj si zeměpis | JordGlobe`,
+            description: `Dokážeš rozpoznat všech ${count} ${typeLabelCs} v tomto zeměpisném kvízu? Otestuj své znalosti tématu ${quiz.name.toLowerCase()} na interaktivním 3D glóbu.`,
+            ogTitle: `Kvíz ${quiz.name}`,
+            ogDescription: `Otestuj své znalosti ${count} ${typeLabelCs} na interaktivním 3D glóbu.`,
         };
     }
     return locales;

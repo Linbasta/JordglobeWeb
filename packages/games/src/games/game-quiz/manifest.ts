@@ -119,5 +119,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Дивись кліпи з відомих відеоігор і вгадуй у цій інтерактивній вікторині на 3D-глобусі, з якої вони країни.',
         },
+        cs: {
+            title: 'Původ videoher — Hádej zemi | JordGlobe',
+            description:
+                'Sleduj klipy ze slavných videoher a hádej na interaktivním 3D glóbu, ve které zemi byla každá z nich vytvořena.',
+            ogTitle: 'Původ videoher — Hádej zemi',
+            ogDescription:
+                'Sleduj klipy ze slavných videoher a hádej v tomto interaktivním kvízu na 3D glóbu, z jaké země pocházejí.',
+        },
     },
 };

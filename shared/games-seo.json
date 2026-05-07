@@ -97,6 +97,12 @@
         "description": "Дивися виступи Пісенного конкурсу Євробачення 2026 та вгадай, з якої країни кожен виступ, на інтерактивному 3D-глобусі. Перевір свої знання про Євробачення!",
         "ogTitle": "Euro Music Quiz 2026 — Вгадай країну за піснею",
         "ogDescription": "Дивись виступи Євробачення 2026 і вгадуй, з якої вони країни, у цій інтерактивній вікторині на 3D-глобусі."
+      },
+      "cs": {
+        "title": "Euro Music Quiz — Hádej písně Eurovize 2026 | JordGlobe",
+        "description": "Sleduj soutěžní písně Eurovize 2026 a hádej, z jaké země každé vystoupení pochází, na interaktivním 3D glóbu. Otestuj své znalosti Eurovize!",
+        "ogTitle": "Euro Music Quiz 2026 — Hádej zemi podle písně",
+        "ogDescription": "Sleduj vystoupení Eurovize 2026 a hádej, z jaké země pocházejí, v tomto interaktivním kvízu na 3D glóbu."
       }
     },
     "euro-winners-2000s": {
@@ -186,6 +192,12 @@
         "description": "Подивись усіх переможців Пісенного конкурсу Євробачення з 2000 по 2025 рік і вгадай, яка країна перемогла. Перевір свої знання на інтерактивному 3D-глобусі!",
         "ogTitle": "Переможці Євробачення 2000–2025 — Вгадай країну",
         "ogDescription": "Подивись усіх переможців Євробачення з 2000 по 2025 рік і вгадай у цій інтерактивній вікторині на 3D-глобусі, яка країна забрала трофей."
+      },
+      "cs": {
+        "title": "Vítězové Eurovize 2000–2025 — Hádej vítěze | JordGlobe",
+        "description": "Podívej se na všechny vítěze Eurovize od roku 2000 do 2025 a hádej, která země zvítězila. Otestuj své znalosti Eurovize na interaktivním 3D glóbu!",
+        "ogTitle": "Vítězové Eurovize 2000–2025 — Hádej zemi",
+        "ogDescription": "Podívej se na všechny vítěze Eurovize od 2000 do 2025 a hádej v tomto interaktivním kvízu na 3D glóbu, která země získala trofej."
       }
     },
     "game-quiz": {
@@ -275,6 +287,12 @@
         "description": "Дивись кліпи з відомих відеоігор і вгадуй на інтерактивному 3D-глобусі, у якій країні створено кожну з них.",
         "ogTitle": "Походження відеоігор — Вгадай країну",
         "ogDescription": "Дивись кліпи з відомих відеоігор і вгадуй у цій інтерактивній вікторині на 3D-глобусі, з якої вони країни."
+      },
+      "cs": {
+        "title": "Původ videoher — Hádej zemi | JordGlobe",
+        "description": "Sleduj klipy ze slavných videoher a hádej na interaktivním 3D glóbu, ve které zemi byla každá z nich vytvořena.",
+        "ogTitle": "Původ videoher — Hádej zemi",
+        "ogDescription": "Sleduj klipy ze slavných videoher a hádej v tomto interaktivním kvízu na 3D glóbu, z jaké země pocházejí."
       }
     },
     "united-states-of-america-states": {
@@ -364,6 +382,12 @@
         "description": "Чи зможеш розмістити всі 50 штатів США на карті? Перевір свої знання на інтерактивному 3D-глобусі.",
         "ogTitle": "Вікторина зі штатів США",
         "ogDescription": "Розмісти всі 50 штатів США на інтерактивному 3D-глобусі."
+      },
+      "cs": {
+        "title": "Kvíz států USA — Otestuj si zeměpis | JordGlobe",
+        "description": "Dokážeš umístit všech 50 amerických států na mapu? Otestuj své znalosti na interaktivním 3D glóbu.",
+        "ogTitle": "Kvíz států USA",
+        "ogDescription": "Umísti všech 50 amerických států na interaktivní 3D glóbus."
       }
     },
     "the-world-countries": {
@@ -453,6 +477,12 @@
         "description": "Чи зможеш розмістити кожну країну світу? Перевір свої знання про всі 198 країн на інтерактивному 3D-глобусі.",
         "ogTitle": "Вікторина країн світу",
         "ogDescription": "Розмісти кожну країну світу на інтерактивному 3D-глобусі."
+      },
+      "cs": {
+        "title": "Kvíz zemí světa — Otestuj si zeměpis | JordGlobe",
+        "description": "Dokážeš umístit každou zemi světa? Otestuj své znalosti všech 198 zemí na interaktivním 3D glóbu.",
+        "ogTitle": "Kvíz zemí světa",
+        "ogDescription": "Umísti každou zemi světa na interaktivní 3D glóbus."
       }
     },
     "the-world-flags": {
@@ -542,6 +572,12 @@
         "description": "Чи зможеш зіставити кожен прапор з його країною? Перевір свої знання про всі 198 прапорів на інтерактивному 3D-глобусі.",
         "ogTitle": "Вікторина прапорів світу",
         "ogDescription": "Зістав кожен прапор з його країною на інтерактивному 3D-глобусі."
+      },
+      "cs": {
+        "title": "Kvíz vlajek světa — Otestuj si zeměpis | JordGlobe",
+        "description": "Dokážeš přiřadit každou vlajku ke správné zemi? Otestuj své znalosti všech 198 vlajek na interaktivním 3D glóbu.",
+        "ogTitle": "Kvíz vlajek světa",
+        "ogDescription": "Přiřaď každou vlajku k její zemi na interaktivním 3D glóbu."
       }
     }
   }

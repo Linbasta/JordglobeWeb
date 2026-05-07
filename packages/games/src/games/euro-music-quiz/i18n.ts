@@ -17,6 +17,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
         { code: 'uk', label: 'Українська' },
+        { code: 'cs', label: 'Čeština' },
     ],
     strings: {
         en: {
@@ -200,6 +201,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Любитель музики',
             'sprite.4':         'Відданий фанат',
             'sprite.5':         'Музичний бог',
+        },
+        cs: {
+            'loading.title':    'Načítání Euro Music Quiz',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Hrát',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Z jaké země je tato píseň?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Trochu v obraze',
+            'sprite.2':         'Polozvědavý',
+            'sprite.3':         'Milovník hudby',
+            'sprite.4':         'Oddaný fanoušek',
+            'sprite.5':         'Hudební bůh',
         },
     },
 };

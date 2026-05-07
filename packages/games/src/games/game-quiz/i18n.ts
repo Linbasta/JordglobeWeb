@@ -17,6 +17,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'fi', label: 'Suomi' },
         { code: 'nl', label: 'Nederlands' },
         { code: 'uk', label: 'Українська' },
+        { code: 'cs', label: 'Čeština' },
     ],
     strings: {
         en: {
@@ -200,6 +201,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Геймер',
             'sprite.4':         'Хардкор',
             'sprite.5':         'Спідранер',
+        },
+        cs: {
+            'loading.title':    'Načítání původu videoher',
+            'start.title':      'Původ videoher',
+            'start.playButton': 'Hrát',
+            'quiz.title':       'Původ videoher',
+            'question.prompt':  'Kde byla tato hra vytvořena?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Casual hráč',
+            'sprite.2':         'Zvědavý na konzole',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
         },
     },
 };

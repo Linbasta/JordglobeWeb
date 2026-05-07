@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl', 'uk'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl', 'uk', 'cs'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -37,6 +37,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	fi: import.meta.glob('./fi/*.json.ts', { eager: true }),
 	nl: import.meta.glob('./nl/*.json.ts', { eager: true }),
 	uk: import.meta.glob('./uk/*.json.ts', { eager: true }),
+	cs: import.meta.glob('./cs/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -207,6 +208,16 @@ export const textTranslations = {
 		nav_about: "Про нас",
 		nav_games: "Ігри",
 	},
+	cs: {
+		hero_text: "Vše, co potřebujete pro skvělý web.",
+		hero_description:
+			"Šablona pro další hitový SaaS. Několik stránek a sekcí, blog, i18n, animace, CMS — vše připraveno k použití.",
+		back_to_all_posts: "Zpět na všechny příspěvky",
+		updated: "Aktualizováno",
+		nav_download: "Stáhnout",
+		nav_about: "O nás",
+		nav_games: "Hry",
+	},
 } as const;
 
 /**
@@ -259,5 +270,8 @@ export const routeTranslations = {
 	},
 	uk: {
 		aboutKey: "pro-nas",
+	},
+	cs: {
+		aboutKey: "o-nas",
 	},
 } as const;
