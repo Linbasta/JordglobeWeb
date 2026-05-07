@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -34,6 +34,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	tr: import.meta.glob('./tr/*.json.ts', { eager: true }),
 	da: import.meta.glob('./da/*.json.ts', { eager: true }),
 	nb: import.meta.glob('./nb/*.json.ts', { eager: true }),
+	fi: import.meta.glob('./fi/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -174,6 +175,16 @@ export const textTranslations = {
 		nav_about: "Om oss",
 		nav_games: "Spill",
 	},
+	fi: {
+		hero_text: "Kaikki mitä tarvitset upeaan verkkosivustoon.",
+		hero_description:
+			"Pohja seuraavalle huippu-SaaS:lle. Useita sivuja ja osioita, blogi, i18n, animaatiot, CMS — kaikki valmiina käyttöön.",
+		back_to_all_posts: "Takaisin kaikkiin julkaisuihin",
+		updated: "Päivitetty",
+		nav_download: "Lataa",
+		nav_about: "Tietoa",
+		nav_games: "Pelit",
+	},
 } as const;
 
 /**
@@ -217,5 +228,8 @@ export const routeTranslations = {
 	},
 	nb: {
 		aboutKey: "om-oss",
+	},
+	fi: {
+		aboutKey: "tietoa",
 	},
 } as const;

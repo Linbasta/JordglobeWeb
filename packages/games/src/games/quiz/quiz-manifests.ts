@@ -95,6 +95,14 @@ const TYPE_LABEL_NB: Record<string, string> = {
     locations: 'steder',
 };
 
+const TYPE_LABEL_FI: Record<string, string> = {
+    countries: 'maata',
+    capitals: 'pääkaupunkia',
+    provinces: 'maakuntaa',
+    flags: 'lippua',
+    locations: 'paikkaa',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -315,6 +323,28 @@ const NB_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Finnish SEO for published quizzes. */
+const FI_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'USA:n osavaltiot -tietovisa - Testaa maantieteen taitosi | JordGlobe',
+        description: 'Pystytkö asettamaan kaikki 50 USA:n osavaltiota kartalle? Testaa tietosi interaktiivisella 3D-maapallolla.',
+        ogTitle: 'USA:n osavaltiot -tietovisa',
+        ogDescription: 'Aseta kaikki 50 USA:n osavaltiota interaktiiviselle 3D-maapallolle.',
+    },
+    'the-world-countries': {
+        title: 'Maailman maat -tietovisa - Testaa maantieteen taitosi | JordGlobe',
+        description: 'Pystytkö asettamaan jokaisen maailman maan? Testaa tietosi 198 maasta interaktiivisella 3D-maapallolla.',
+        ogTitle: 'Maailman maat -tietovisa',
+        ogDescription: 'Aseta jokainen maailman maa interaktiiviselle 3D-maapallolle.',
+    },
+    'the-world-flags': {
+        title: 'Maailman liput -tietovisa - Testaa maantieteen taitosi | JordGlobe',
+        description: 'Pystytkö yhdistämään jokaisen lipun oikeaan maahan? Testaa tietosi 198 lipusta interaktiivisella 3D-maapallolla.',
+        ogTitle: 'Maailman liput -tietovisa',
+        ogDescription: 'Yhdistä jokainen lippu oikeaan maahan interaktiivisella 3D-maapallolla.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -327,6 +357,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelTr = TYPE_LABEL_TR[quiz.type] || 'soru';
     const typeLabelDa = TYPE_LABEL_DA[quiz.type] || 'spørgsmål';
     const typeLabelNb = TYPE_LABEL_NB[quiz.type] || 'spørsmål';
+    const typeLabelFi = TYPE_LABEL_FI[quiz.type] || 'kysymystä';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -437,6 +468,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Klarer du å gjenkjenne alle ${count} ${typeLabelNb} i denne geografi-quizen? Test kunnskapen din om ${quiz.name.toLowerCase()} på en interaktiv 3D-globus.`,
             ogTitle: `${quiz.name} Quiz`,
             ogDescription: `Test kunnskapen din om ${count} ${typeLabelNb} på en interaktiv 3D-globus.`,
+        };
+    }
+    const fiOverride = FI_OVERRIDES[slug];
+    if (fiOverride) {
+        locales.fi = fiOverride;
+    } else {
+        locales.fi = {
+            title: `${quiz.name} -tietovisa - Testaa maantieteen taitosi | JordGlobe`,
+            description: `Pystytkö tunnistamaan kaikki ${count} ${typeLabelFi} tässä maantieteen tietovisassa? Testaa tietosi aiheesta ${quiz.name.toLowerCase()} interaktiivisella 3D-maapallolla.`,
+            ogTitle: `${quiz.name} -tietovisa`,
+            ogDescription: `Testaa tietosi ${count} ${typeLabelFi} interaktiivisella 3D-maapallolla.`,
         };
     }
     return locales;

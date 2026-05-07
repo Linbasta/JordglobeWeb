@@ -95,5 +95,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se Eurovision 2026-opptredener og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen.',
         },
+        fi: {
+            title: 'Euro Music Quiz - Arvaa Eurovision 2026 -kappaleet | JordGlobe',
+            description:
+                'Katso Eurovision laulukilpailun 2026 kappaleet ja arvaa, mistä maasta kukin esitys on, interaktiivisella 3D-maapallolla. Testaa Eurovision-tietämyksesi!',
+            ogTitle: 'Euro Music Quiz 2026 - Arvaa maa kappaleen perusteella',
+            ogDescription:
+                'Katso Eurovision 2026 -esitykset ja arvaa, mistä maasta ne ovat, tässä interaktiivisessa 3D-maapallotietovisassa.',
+        },
     },
 };

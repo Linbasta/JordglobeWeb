@@ -14,6 +14,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'tr', label: 'Türkçe' },
         { code: 'da', label: 'Dansk' },
         { code: 'nb', label: 'Norsk bokmål' },
+        { code: 'fi', label: 'Suomi' },
     ],
     strings: {
         en: {
@@ -155,6 +156,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Hyggespiller',
             'sprite.2':         'Konsollnysgjerrig',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        fi: {
+            'loading.title':    'Ladataan Videopelien syntyä',
+            'start.title':      'Videopelien synty',
+            'start.playButton': 'Pelaa',
+            'quiz.title':       'Videopelien synty',
+            'question.prompt':  'Missä tämä peli tehtiin?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Rentopelaaja',
+            'sprite.2':         'Konsoliutelias',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

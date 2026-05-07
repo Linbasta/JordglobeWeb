@@ -14,6 +14,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'tr', label: 'Türkçe' },
         { code: 'da', label: 'Dansk' },
         { code: 'nb', label: 'Norsk bokmål' },
+        { code: 'fi', label: 'Suomi' },
     ],
     strings: {
         en: {
@@ -158,6 +159,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Musikkelsker',
             'sprite.4':         'Trofast fan',
             'sprite.5':         'Musikkgud',
+        },
+        fi: {
+            'loading.title':    'Ladataan Euro Music Quizia',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Pelaa',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Mistä maasta tämä kappale on?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Hieman perillä',
+            'sprite.2':         'Puoliksi utelias',
+            'sprite.3':         'Musiikinystävä',
+            'sprite.4':         'Omistautunut fani',
+            'sprite.5':         'Musiikin jumala',
         },
     },
 };

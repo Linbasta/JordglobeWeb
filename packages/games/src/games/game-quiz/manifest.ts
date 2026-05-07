@@ -95,5 +95,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Se klipp fra kjente dataspill og gjett hvilket land de kommer fra, i denne interaktive 3D-globusquizen.',
         },
+        fi: {
+            title: 'Videopelien synty - Arvaa maa | JordGlobe',
+            description:
+                'Katso pätkiä kuuluisista videopeleistä ja arvaa interaktiivisella 3D-maapallolla, missä maassa kukin peli on tehty.',
+            ogTitle: 'Videopelien synty - Arvaa maa',
+            ogDescription:
+                'Katso pätkiä kuuluisista videopeleistä ja arvaa tässä interaktiivisessa 3D-maapallotietovisassa, mistä maasta kukin peli on.',
+        },
     },
 };
