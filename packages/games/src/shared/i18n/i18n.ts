@@ -30,7 +30,26 @@ export function getAvailableLocales(): LocaleDef[] {
 
 export function setLocale(code: string): void {
     localStorage.setItem(STORAGE_KEY, code)
-    location.reload()
+    const next = nextLocaleUrl(code)
+    if (next) location.href = next
+    else location.reload()
+}
+
+// Game pages live at `/games/{id}/{lang}/` (or `/games/{id}/` for the default
+// locale). Swap the trailing locale segment so the URL stays authoritative —
+// otherwise picking a language would only update localStorage and the
+// URL-driven `<html lang>` resolution would immediately overwrite it on reload.
+function nextLocaleUrl(code: string): string | null {
+    const codes = current.availableLocales.map(l => l.code)
+    const url = new URL(location.href)
+    const segments = url.pathname.split('/').filter(Boolean)
+    if (segments[0] !== 'games' || segments.length < 2) return null
+
+    if (codes.includes(segments[segments.length - 1])) segments.pop()
+    if (code !== current.defaultLocale) segments.push(code)
+
+    url.pathname = '/' + segments.join('/') + '/'
+    return url.toString()
 }
 
 export function getCountryName(iso2: string): string {
@@ -56,16 +75,16 @@ function resolveLocale(bundle: QuizTranslations): string {
     const codes = bundle.availableLocales.map(l => l.code)
     if (codes.length === 0) return bundle.defaultLocale
 
-    const stored = safeRead(STORAGE_KEY)
-    if (stored && codes.includes(stored)) return stored
-
-    // <html lang="…"> set by per-locale pre-rendered HTML (e.g. /games/euro-music-quiz/sv/).
-    // Stronger signal than navigator language because it reflects the server's URL routing.
+    // URL is authoritative: a user landing on /games/{id}/fi/ should see fi,
+    // even if a previous in-game switch left a different code in localStorage.
     const fromHtml = matchHtmlLangLocale(codes)
     if (fromHtml) return fromHtml
 
     const fromPath = matchPathLocale(codes)
     if (fromPath) return fromPath
+
+    const stored = safeRead(STORAGE_KEY)
+    if (stored && codes.includes(stored)) return stored
 
     const fromNav = matchNavigatorLocale(codes)
     if (fromNav) return fromNav
