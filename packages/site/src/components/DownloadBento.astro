@@ -59,7 +59,7 @@ const t = gamesData.downloadBento;
 
 <style>
     .download-bento {
-        --bento-pad: 20px;
+        --bento-pad: 12px;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -88,7 +88,7 @@ const t = gamesData.downloadBento;
         margin: 0;
         font-family: "InterVariable", system-ui, sans-serif;
         font-weight: 800;
-        font-size: clamp(20px, 1.6vw, 28px);
+        font-size: clamp(14px, 1.1vw, 18px);
         text-align: center;
         line-height: 1.2;
     }
@@ -101,7 +101,7 @@ const t = gamesData.downloadBento;
 
     .phones-wrap :global(img) {
         width: 100%;
-        max-width: 220px;
+        max-width: 440px;
         height: auto;
         object-fit: contain;
         display: block;
@@ -115,17 +115,25 @@ const t = gamesData.downloadBento;
         text-align: center;
     }
 
+    /* `--badge-width` is the shared width of both store badges, and
+       `--badge-stack-h` is the resulting combined height of the two
+       stacked badges plus the 8px gap between them. The two badge files
+       have aspect ratios ~3.35 (Google) and ~2.99 (Apple); at 140px wide
+       that's 41.8 + 8 + 46.8 ≈ 96.6 px. The icon and QR squares both use
+       this same value so they line up exactly with the badge column. */
     .store-row {
+        --badge-width: 140px;
+        --badge-stack-h: 97px;
         width: 100%;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
+        display: flex;
         align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 8px;
     }
 
     .app-icon :global(img) {
-        width: 64px;
-        height: 64px;
+        width: var(--badge-stack-h);
+        height: var(--badge-stack-h);
         border-radius: 14px;
         display: block;
     }
@@ -144,14 +152,14 @@ const t = gamesData.downloadBento;
     }
 
     .badges img {
-        height: 36px;
-        width: auto;
+        width: var(--badge-width);
+        height: auto;
         display: block;
     }
 
     .qr {
-        width: 76px;
-        height: 76px;
+        width: var(--badge-stack-h);
+        height: var(--badge-stack-h);
         background: #fff;
         border-radius: 6px;
         padding: 4px;
