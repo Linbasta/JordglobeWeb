@@ -18,6 +18,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'nl', label: 'Nederlands' },
         { code: 'uk', label: 'Українська' },
         { code: 'cs', label: 'Čeština' },
+        { code: 'el', label: 'Ελληνικά' },
     ],
     strings: {
         en: {
@@ -211,6 +212,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Casual hráč',
             'sprite.2':         'Zvědavý na konzole',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        el: {
+            'loading.title':    'Φόρτωση προέλευσης βιντεοπαιχνιδιών',
+            'start.title':      'Προέλευση βιντεοπαιχνιδιών',
+            'start.playButton': 'Παίξε',
+            'quiz.title':       'Προέλευση βιντεοπαιχνιδιών',
+            'question.prompt':  'Πού φτιάχτηκε αυτό το παιχνίδι;',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Περιστασιακός παίκτης',
+            'sprite.2':         'Περίεργος για κονσόλες',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

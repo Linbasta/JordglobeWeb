@@ -127,5 +127,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Sleduj vystoupení Eurovize 2026 a hádej, z jaké země pocházejí, v tomto interaktivním kvízu na 3D glóbu.',
         },
+        el: {
+            title: 'Euro Music Quiz — Μάντεψε τα τραγούδια της Eurovision 2026 | JordGlobe',
+            description:
+                'Δες τις συμμετοχές του Διαγωνισμού Τραγουδιού Eurovision 2026 και μάντεψε από ποια χώρα είναι κάθε εμφάνιση σε μια διαδραστική 3D υδρόγειο. Δοκίμασε τις γνώσεις σου για την Eurovision!',
+            ogTitle: 'Euro Music Quiz 2026 — Μάντεψε τη χώρα από το τραγούδι',
+            ogDescription:
+                'Δες τις εμφανίσεις της Eurovision 2026 και μάντεψε από ποια χώρα είναι σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο.',
+        },
     },
 };

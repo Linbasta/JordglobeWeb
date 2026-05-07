@@ -1,0 +1,40 @@
+---
+---
+<html lang="el">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Άνοιγμα στο Jordglobe</title>
+    <style>
+      body { margin:0; padding:0; display:flex; align-items:center; justify-content:center; height:100vh; width:100vw; background:#111; }
+      .center { text-align:center; }
+      .open-btn { padding:1em 2em; background:#2563eb; color:#fff; border-radius:8px; font-size:2em; text-decoration:none; margin-top:2em; display:inline-block; }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+      <h1 style="color:#fff;font-size:2.5em;margin-bottom:2em;">Άνοιγμα στο Jordglobe</h1>
+      <a id="open-app" class="open-btn">Άνοιγμα εφαρμογής</a>
+      <p style="margin-top:2em;color:#888;">Αν δεν συμβεί τίποτα, ίσως χρειάζεται πρώτα να εγκαταστήσεις την εφαρμογή.</p>
+    </div>
+    <script>
+      const params = window.location.search.replace(/^\?/, '');
+      const appUrl = 'jordglobe://open' + (params ? '?' + params : '');
+      const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const storeUrl = isiOS
+        ? 'https://apps.apple.com/app/id1599500931'
+        : isAndroid
+          ? 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
+          : '/';
+      const btn = document.getElementById('open-app');
+      btn.setAttribute('href', appUrl);
+      btn.setAttribute('data-store-url', storeUrl);
+      btn.addEventListener('click', function(e) {
+        setTimeout(function() {
+          window.location = storeUrl;
+        }, 2000);
+      });
+    </script>
+  </body>
+</html>

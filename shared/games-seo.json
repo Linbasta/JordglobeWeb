@@ -103,6 +103,12 @@
         "description": "Sleduj soutěžní písně Eurovize 2026 a hádej, z jaké země každé vystoupení pochází, na interaktivním 3D glóbu. Otestuj své znalosti Eurovize!",
         "ogTitle": "Euro Music Quiz 2026 — Hádej zemi podle písně",
         "ogDescription": "Sleduj vystoupení Eurovize 2026 a hádej, z jaké země pocházejí, v tomto interaktivním kvízu na 3D glóbu."
+      },
+      "el": {
+        "title": "Euro Music Quiz — Μάντεψε τα τραγούδια της Eurovision 2026 | JordGlobe",
+        "description": "Δες τις συμμετοχές του Διαγωνισμού Τραγουδιού Eurovision 2026 και μάντεψε από ποια χώρα είναι κάθε εμφάνιση σε μια διαδραστική 3D υδρόγειο. Δοκίμασε τις γνώσεις σου για την Eurovision!",
+        "ogTitle": "Euro Music Quiz 2026 — Μάντεψε τη χώρα από το τραγούδι",
+        "ogDescription": "Δες τις εμφανίσεις της Eurovision 2026 και μάντεψε από ποια χώρα είναι σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο."
       }
     },
     "euro-winners-2000s": {
@@ -198,6 +204,12 @@
         "description": "Podívej se na všechny vítěze Eurovize od roku 2000 do 2025 a hádej, která země zvítězila. Otestuj své znalosti Eurovize na interaktivním 3D glóbu!",
         "ogTitle": "Vítězové Eurovize 2000–2025 — Hádej zemi",
         "ogDescription": "Podívej se na všechny vítěze Eurovize od 2000 do 2025 a hádej v tomto interaktivním kvízu na 3D glóbu, která země získala trofej."
+      },
+      "el": {
+        "title": "Νικητές Eurovision 2000–2025 — Μάντεψε τους νικητές | JordGlobe",
+        "description": "Δες όλους τους νικητές του Διαγωνισμού Eurovision από το 2000 έως το 2025 και μάντεψε ποια χώρα κέρδισε. Δοκίμασε τις γνώσεις σου για την Eurovision σε μια διαδραστική 3D υδρόγειο!",
+        "ogTitle": "Νικητές Eurovision 2000–2025 — Μάντεψε τη χώρα",
+        "ogDescription": "Δες κάθε νικητή της Eurovision από το 2000 έως το 2025 και μάντεψε σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο ποια χώρα πήρε το τρόπαιο."
       }
     },
     "game-quiz": {
@@ -293,6 +305,12 @@
         "description": "Sleduj klipy ze slavných videoher a hádej na interaktivním 3D glóbu, ve které zemi byla každá z nich vytvořena.",
         "ogTitle": "Původ videoher — Hádej zemi",
         "ogDescription": "Sleduj klipy ze slavných videoher a hádej v tomto interaktivním kvízu na 3D glóbu, z jaké země pocházejí."
+      },
+      "el": {
+        "title": "Προέλευση βιντεοπαιχνιδιών — Μάντεψε τη χώρα | JordGlobe",
+        "description": "Δες κλιπ από διάσημα βιντεοπαιχνίδια και μάντεψε σε μια διαδραστική 3D υδρόγειο σε ποια χώρα δημιουργήθηκε το καθένα.",
+        "ogTitle": "Προέλευση βιντεοπαιχνιδιών — Μάντεψε τη χώρα",
+        "ogDescription": "Δες κλιπ από διάσημα βιντεοπαιχνίδια και μάντεψε σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο από ποια χώρα είναι."
       }
     },
     "united-states-of-america-states": {
@@ -388,6 +406,12 @@
         "description": "Dokážeš umístit všech 50 amerických států na mapu? Otestuj své znalosti na interaktivním 3D glóbu.",
         "ogTitle": "Kvíz států USA",
         "ogDescription": "Umísti všech 50 amerických států na interaktivní 3D glóbus."
+      },
+      "el": {
+        "title": "Κουίζ πολιτειών ΗΠΑ — Δοκίμασε τη γεωγραφία σου | JordGlobe",
+        "description": "Μπορείς να τοποθετήσεις και τις 50 πολιτείες των ΗΠΑ στον χάρτη; Δοκίμασε τις γνώσεις σου σε μια διαδραστική 3D υδρόγειο.",
+        "ogTitle": "Κουίζ πολιτειών ΗΠΑ",
+        "ogDescription": "Τοποθέτησε και τις 50 πολιτείες των ΗΠΑ σε μια διαδραστική 3D υδρόγειο."
       }
     },
     "the-world-countries": {
@@ -483,6 +507,12 @@
         "description": "Dokážeš umístit každou zemi světa? Otestuj své znalosti všech 198 zemí na interaktivním 3D glóbu.",
         "ogTitle": "Kvíz zemí světa",
         "ogDescription": "Umísti každou zemi světa na interaktivní 3D glóbus."
+      },
+      "el": {
+        "title": "Κουίζ χωρών του κόσμου — Δοκίμασε τη γεωγραφία σου | JordGlobe",
+        "description": "Μπορείς να τοποθετήσεις κάθε χώρα του κόσμου; Δοκίμασε τις γνώσεις σου και για τις 198 χώρες σε μια διαδραστική 3D υδρόγειο.",
+        "ogTitle": "Κουίζ χωρών του κόσμου",
+        "ogDescription": "Τοποθέτησε κάθε χώρα του κόσμου σε μια διαδραστική 3D υδρόγειο."
       }
     },
     "the-world-flags": {
@@ -578,6 +608,12 @@
         "description": "Dokážeš přiřadit každou vlajku ke správné zemi? Otestuj své znalosti všech 198 vlajek na interaktivním 3D glóbu.",
         "ogTitle": "Kvíz vlajek světa",
         "ogDescription": "Přiřaď každou vlajku k její zemi na interaktivním 3D glóbu."
+      },
+      "el": {
+        "title": "Κουίζ σημαιών του κόσμου — Δοκίμασε τη γεωγραφία σου | JordGlobe",
+        "description": "Μπορείς να αντιστοιχίσεις κάθε σημαία με τη χώρα της; Δοκίμασε τις γνώσεις σου και για τις 198 σημαίες σε μια διαδραστική 3D υδρόγειο.",
+        "ogTitle": "Κουίζ σημαιών του κόσμου",
+        "ogDescription": "Αντιστοίχισε κάθε σημαία με τη χώρα της σε μια διαδραστική 3D υδρόγειο."
       }
     }
   }

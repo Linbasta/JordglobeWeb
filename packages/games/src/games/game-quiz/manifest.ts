@@ -127,5 +127,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Sleduj klipy ze slavných videoher a hádej v tomto interaktivním kvízu na 3D glóbu, z jaké země pocházejí.',
         },
+        el: {
+            title: 'Προέλευση βιντεοπαιχνιδιών — Μάντεψε τη χώρα | JordGlobe',
+            description:
+                'Δες κλιπ από διάσημα βιντεοπαιχνίδια και μάντεψε σε μια διαδραστική 3D υδρόγειο σε ποια χώρα δημιουργήθηκε το καθένα.',
+            ogTitle: 'Προέλευση βιντεοπαιχνιδιών — Μάντεψε τη χώρα',
+            ogDescription:
+                'Δες κλιπ από διάσημα βιντεοπαιχνίδια και μάντεψε σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο από ποια χώρα είναι.',
+        },
     },
 };

@@ -18,6 +18,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'nl', label: 'Nederlands' },
         { code: 'uk', label: 'Українська' },
         { code: 'cs', label: 'Čeština' },
+        { code: 'el', label: 'Ελληνικά' },
     ],
     strings: {
         en: {
@@ -214,6 +215,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Milovník hudby',
             'sprite.4':         'Oddaný fanoušek',
             'sprite.5':         'Hudební bůh',
+        },
+        el: {
+            'loading.title':    'Φόρτωση νικητών Eurovision',
+            'start.title':      'Νικητές Eurovision 2000–2025',
+            'start.playButton': 'Παίξε',
+            'quiz.title':       'Νικητές Eurovision 2000–2025',
+            'question.prompt':  'Νικητής {year} — ποια χώρα;',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Ελαφρώς ενημερωμένος',
+            'sprite.2':         'Μισο-περίεργος',
+            'sprite.3':         'Λάτρης της μουσικής',
+            'sprite.4':         'Πιστός θαυμαστής',
+            'sprite.5':         'Θεός της μουσικής',
         },
     },
 };

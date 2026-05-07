@@ -127,6 +127,14 @@ const TYPE_LABEL_CS: Record<string, string> = {
     locations: 'míst',
 };
 
+const TYPE_LABEL_EL: Record<string, string> = {
+    countries: 'χώρες',
+    capitals: 'πρωτεύουσες',
+    provinces: 'επαρχίες',
+    flags: 'σημαίες',
+    locations: 'τοποθεσίες',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -435,6 +443,28 @@ const CS_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Greek SEO for published quizzes. */
+const EL_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Κουίζ πολιτειών ΗΠΑ — Δοκίμασε τη γεωγραφία σου | JordGlobe',
+        description: 'Μπορείς να τοποθετήσεις και τις 50 πολιτείες των ΗΠΑ στον χάρτη; Δοκίμασε τις γνώσεις σου σε μια διαδραστική 3D υδρόγειο.',
+        ogTitle: 'Κουίζ πολιτειών ΗΠΑ',
+        ogDescription: 'Τοποθέτησε και τις 50 πολιτείες των ΗΠΑ σε μια διαδραστική 3D υδρόγειο.',
+    },
+    'the-world-countries': {
+        title: 'Κουίζ χωρών του κόσμου — Δοκίμασε τη γεωγραφία σου | JordGlobe',
+        description: 'Μπορείς να τοποθετήσεις κάθε χώρα του κόσμου; Δοκίμασε τις γνώσεις σου και για τις 198 χώρες σε μια διαδραστική 3D υδρόγειο.',
+        ogTitle: 'Κουίζ χωρών του κόσμου',
+        ogDescription: 'Τοποθέτησε κάθε χώρα του κόσμου σε μια διαδραστική 3D υδρόγειο.',
+    },
+    'the-world-flags': {
+        title: 'Κουίζ σημαιών του κόσμου — Δοκίμασε τη γεωγραφία σου | JordGlobe',
+        description: 'Μπορείς να αντιστοιχίσεις κάθε σημαία με τη χώρα της; Δοκίμασε τις γνώσεις σου και για τις 198 σημαίες σε μια διαδραστική 3D υδρόγειο.',
+        ogTitle: 'Κουίζ σημαιών του κόσμου',
+        ogDescription: 'Αντιστοίχισε κάθε σημαία με τη χώρα της σε μια διαδραστική 3D υδρόγειο.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -451,6 +481,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelNl = TYPE_LABEL_NL[quiz.type] || 'vragen';
     const typeLabelUk = TYPE_LABEL_UK[quiz.type] || 'питань';
     const typeLabelCs = TYPE_LABEL_CS[quiz.type] || 'otázek';
+    const typeLabelEl = TYPE_LABEL_EL[quiz.type] || 'ερωτήσεις';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -605,6 +636,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Dokážeš rozpoznat všech ${count} ${typeLabelCs} v tomto zeměpisném kvízu? Otestuj své znalosti tématu ${quiz.name.toLowerCase()} na interaktivním 3D glóbu.`,
             ogTitle: `Kvíz ${quiz.name}`,
             ogDescription: `Otestuj své znalosti ${count} ${typeLabelCs} na interaktivním 3D glóbu.`,
+        };
+    }
+    const elOverride = EL_OVERRIDES[slug];
+    if (elOverride) {
+        locales.el = elOverride;
+    } else {
+        locales.el = {
+            title: `Κουίζ ${quiz.name} — Δοκίμασε τη γεωγραφία σου | JordGlobe`,
+            description: `Μπορείς να αναγνωρίσεις και τις ${count} ${typeLabelEl} σε αυτό το κουίζ γεωγραφίας; Δοκίμασε τις γνώσεις σου για ${quiz.name.toLowerCase()} σε μια διαδραστική 3D υδρόγειο.`,
+            ogTitle: `Κουίζ ${quiz.name}`,
+            ogDescription: `Δοκίμασε τις γνώσεις σου για ${count} ${typeLabelEl} σε μια διαδραστική 3D υδρόγειο.`,
         };
     }
     return locales;

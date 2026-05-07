@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl', 'uk', 'cs'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl', 'uk', 'cs', 'el'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -38,6 +38,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	nl: import.meta.glob('./nl/*.json.ts', { eager: true }),
 	uk: import.meta.glob('./uk/*.json.ts', { eager: true }),
 	cs: import.meta.glob('./cs/*.json.ts', { eager: true }),
+	el: import.meta.glob('./el/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -218,6 +219,16 @@ export const textTranslations = {
 		nav_about: "O nás",
 		nav_games: "Hry",
 	},
+	el: {
+		hero_text: "Όλα όσα χρειάζεστε για έναν εκπληκτικό ιστότοπο.",
+		hero_description:
+			"Ένα πρότυπο για το επόμενο επιτυχημένο SaaS. Πολλές σελίδες και ενότητες, blog, i18n, κινούμενα γραφικά, CMS — όλα έτοιμα προς χρήση.",
+		back_to_all_posts: "Πίσω σε όλες τις αναρτήσεις",
+		updated: "Ενημερώθηκε",
+		nav_download: "Λήψη",
+		nav_about: "Σχετικά",
+		nav_games: "Παιχνίδια",
+	},
 } as const;
 
 /**
@@ -273,5 +284,8 @@ export const routeTranslations = {
 	},
 	cs: {
 		aboutKey: "o-nas",
+	},
+	el: {
+		aboutKey: "schetika",
 	},
 } as const;

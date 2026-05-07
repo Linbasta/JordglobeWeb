@@ -127,5 +127,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Podívej se na všechny vítěze Eurovize od 2000 do 2025 a hádej v tomto interaktivním kvízu na 3D glóbu, která země získala trofej.',
         },
+        el: {
+            title: 'Νικητές Eurovision 2000–2025 — Μάντεψε τους νικητές | JordGlobe',
+            description:
+                'Δες όλους τους νικητές του Διαγωνισμού Eurovision από το 2000 έως το 2025 και μάντεψε ποια χώρα κέρδισε. Δοκίμασε τις γνώσεις σου για την Eurovision σε μια διαδραστική 3D υδρόγειο!',
+            ogTitle: 'Νικητές Eurovision 2000–2025 — Μάντεψε τη χώρα',
+            ogDescription:
+                'Δες κάθε νικητή της Eurovision από το 2000 έως το 2025 και μάντεψε σε αυτό το διαδραστικό κουίζ σε 3D υδρόγειο ποια χώρα πήρε το τρόπαιο.',
+        },
     },
 };
