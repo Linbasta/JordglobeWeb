@@ -85,6 +85,12 @@
         "description": "Katso Eurovision laulukilpailun 2026 kappaleet ja arvaa, mistä maasta kukin esitys on, interaktiivisella 3D-maapallolla. Testaa Eurovision-tietämyksesi!",
         "ogTitle": "Euro Music Quiz 2026 - Arvaa maa kappaleen perusteella",
         "ogDescription": "Katso Eurovision 2026 -esitykset ja arvaa, mistä maasta ne ovat, tässä interaktiivisessa 3D-maapallotietovisassa."
+      },
+      "nl": {
+        "title": "Euro Music Quiz - Raad de Eurovisie 2026-liedjes | JordGlobe",
+        "description": "Bekijk de inzendingen van het Eurovisie Songfestival 2026 en raad uit welk land elk optreden komt op een interactieve 3D-globe. Test je Eurovisie-kennis!",
+        "ogTitle": "Euro Music Quiz 2026 - Raad het land aan de hand van het lied",
+        "ogDescription": "Bekijk de optredens van Eurovisie 2026 en raad uit welk land ze komen in deze interactieve 3D-globe-quiz."
       }
     },
     "euro-winners-2000s": {
@@ -162,6 +168,12 @@
         "description": "Katso jokainen Eurovision laulukilpailun voittaja vuosilta 2000–2025 ja arvaa, mikä maa voitti. Testaa Eurovision-tietämyksesi interaktiivisella 3D-maapallolla!",
         "ogTitle": "Euro Music -voittajat 2000–2025 - Arvaa maa",
         "ogDescription": "Katso jokainen Eurovision-voittaja vuosilta 2000–2025 ja arvaa tässä interaktiivisessa 3D-maapallotietovisassa, mikä maa vei voiton."
+      },
+      "nl": {
+        "title": "Euro Music-winnaars 2000–2025 - Raad de Eurovisie-winnaars | JordGlobe",
+        "description": "Bekijk elke winnaar van het Eurovisie Songfestival van 2000 tot 2025 en raad welk land won. Test je Eurovisie-kennis op een interactieve 3D-globe!",
+        "ogTitle": "Euro Music-winnaars 2000–2025 - Raad het land",
+        "ogDescription": "Bekijk elke Eurovisie-winnaar van 2000 tot 2025 en raad in deze interactieve 3D-globe-quiz welk land de trofee mee naar huis nam."
       }
     },
     "game-quiz": {
@@ -239,6 +251,12 @@
         "description": "Katso pätkiä kuuluisista videopeleistä ja arvaa interaktiivisella 3D-maapallolla, missä maassa kukin peli on tehty.",
         "ogTitle": "Videopelien synty - Arvaa maa",
         "ogDescription": "Katso pätkiä kuuluisista videopeleistä ja arvaa tässä interaktiivisessa 3D-maapallotietovisassa, mistä maasta kukin peli on."
+      },
+      "nl": {
+        "title": "Oorsprong van videogames - Raad het land | JordGlobe",
+        "description": "Bekijk fragmenten van beroemde videogames en raad op een interactieve 3D-globe in welk land elke game is gemaakt.",
+        "ogTitle": "Oorsprong van videogames - Raad het land",
+        "ogDescription": "Bekijk fragmenten van beroemde videogames en raad uit welk land ze komen in deze interactieve 3D-globe-quiz."
       }
     },
     "united-states-of-america-states": {
@@ -316,6 +334,12 @@
         "description": "Pystytkö asettamaan kaikki 50 USA:n osavaltiota kartalle? Testaa tietosi interaktiivisella 3D-maapallolla.",
         "ogTitle": "USA:n osavaltiot -tietovisa",
         "ogDescription": "Aseta kaikki 50 USA:n osavaltiota interaktiiviselle 3D-maapallolle."
+      },
+      "nl": {
+        "title": "Quiz Amerikaanse staten - Test je aardrijkskunde | JordGlobe",
+        "description": "Kun je alle 50 Amerikaanse staten op de kaart plaatsen? Test je kennis op een interactieve 3D-globe.",
+        "ogTitle": "Quiz Amerikaanse staten",
+        "ogDescription": "Plaats alle 50 Amerikaanse staten op een interactieve 3D-globe."
       }
     },
     "the-world-countries": {
@@ -393,6 +417,12 @@
         "description": "Pystytkö asettamaan jokaisen maailman maan? Testaa tietosi 198 maasta interaktiivisella 3D-maapallolla.",
         "ogTitle": "Maailman maat -tietovisa",
         "ogDescription": "Aseta jokainen maailman maa interaktiiviselle 3D-maapallolle."
+      },
+      "nl": {
+        "title": "Quiz landen van de wereld - Test je aardrijkskunde | JordGlobe",
+        "description": "Kun je elk land ter wereld plaatsen? Test je kennis van alle 198 landen op een interactieve 3D-globe.",
+        "ogTitle": "Quiz landen van de wereld",
+        "ogDescription": "Plaats elk land ter wereld op een interactieve 3D-globe."
       }
     },
     "the-world-flags": {
@@ -470,6 +500,12 @@
         "description": "Pystytkö yhdistämään jokaisen lipun oikeaan maahan? Testaa tietosi 198 lipusta interaktiivisella 3D-maapallolla.",
         "ogTitle": "Maailman liput -tietovisa",
         "ogDescription": "Yhdistä jokainen lippu oikeaan maahan interaktiivisella 3D-maapallolla."
+      },
+      "nl": {
+        "title": "Quiz vlaggen van de wereld - Test je aardrijkskunde | JordGlobe",
+        "description": "Kun je elke vlag aan het juiste land koppelen? Test je kennis van alle 198 vlaggen op een interactieve 3D-globe.",
+        "ogTitle": "Quiz vlaggen van de wereld",
+        "ogDescription": "Koppel elke vlag aan het juiste land op een interactieve 3D-globe."
       }
     }
   }

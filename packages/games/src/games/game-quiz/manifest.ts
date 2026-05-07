@@ -103,5 +103,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Katso pätkiä kuuluisista videopeleistä ja arvaa tässä interaktiivisessa 3D-maapallotietovisassa, mistä maasta kukin peli on.',
         },
+        nl: {
+            title: 'Oorsprong van videogames - Raad het land | JordGlobe',
+            description:
+                'Bekijk fragmenten van beroemde videogames en raad op een interactieve 3D-globe in welk land elke game is gemaakt.',
+            ogTitle: 'Oorsprong van videogames - Raad het land',
+            ogDescription:
+                'Bekijk fragmenten van beroemde videogames en raad uit welk land ze komen in deze interactieve 3D-globe-quiz.',
+        },
     },
 };

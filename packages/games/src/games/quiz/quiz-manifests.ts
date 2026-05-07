@@ -103,6 +103,14 @@ const TYPE_LABEL_FI: Record<string, string> = {
     locations: 'paikkaa',
 };
 
+const TYPE_LABEL_NL: Record<string, string> = {
+    countries: 'landen',
+    capitals: 'hoofdsteden',
+    provinces: 'provincies',
+    flags: 'vlaggen',
+    locations: 'plaatsen',
+};
+
 /** Hand-written Swedish SEO for published quizzes. */
 const SV_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     'united-states-of-america-states': {
@@ -345,6 +353,28 @@ const FI_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
     },
 };
 
+/** Hand-written Dutch SEO for published quizzes. */
+const NL_OVERRIDES: Record<string, GameManifest['locales']['string']> = {
+    'united-states-of-america-states': {
+        title: 'Quiz Amerikaanse staten - Test je aardrijkskunde | JordGlobe',
+        description: 'Kun je alle 50 Amerikaanse staten op de kaart plaatsen? Test je kennis op een interactieve 3D-globe.',
+        ogTitle: 'Quiz Amerikaanse staten',
+        ogDescription: 'Plaats alle 50 Amerikaanse staten op een interactieve 3D-globe.',
+    },
+    'the-world-countries': {
+        title: 'Quiz landen van de wereld - Test je aardrijkskunde | JordGlobe',
+        description: 'Kun je elk land ter wereld plaatsen? Test je kennis van alle 198 landen op een interactieve 3D-globe.',
+        ogTitle: 'Quiz landen van de wereld',
+        ogDescription: 'Plaats elk land ter wereld op een interactieve 3D-globe.',
+    },
+    'the-world-flags': {
+        title: 'Quiz vlaggen van de wereld - Test je aardrijkskunde | JordGlobe',
+        description: 'Kun je elke vlag aan het juiste land koppelen? Test je kennis van alle 198 vlaggen op een interactieve 3D-globe.',
+        ogTitle: 'Quiz vlaggen van de wereld',
+        ogDescription: 'Koppel elke vlag aan het juiste land op een interactieve 3D-globe.',
+    },
+};
+
 function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const count = quiz.questionIds.length;
     const typeLabel = TYPE_LABEL[quiz.type] || 'questions';
@@ -358,6 +388,7 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
     const typeLabelDa = TYPE_LABEL_DA[quiz.type] || 'spørgsmål';
     const typeLabelNb = TYPE_LABEL_NB[quiz.type] || 'spørsmål';
     const typeLabelFi = TYPE_LABEL_FI[quiz.type] || 'kysymystä';
+    const typeLabelNl = TYPE_LABEL_NL[quiz.type] || 'vragen';
     const slug = toSlug(quiz.name);
     const locales: GameManifest['locales'] = {
         en: {
@@ -479,6 +510,17 @@ function seoForQuiz(quiz: QuizDef): GameManifest['locales'] {
             description: `Pystytkö tunnistamaan kaikki ${count} ${typeLabelFi} tässä maantieteen tietovisassa? Testaa tietosi aiheesta ${quiz.name.toLowerCase()} interaktiivisella 3D-maapallolla.`,
             ogTitle: `${quiz.name} -tietovisa`,
             ogDescription: `Testaa tietosi ${count} ${typeLabelFi} interaktiivisella 3D-maapallolla.`,
+        };
+    }
+    const nlOverride = NL_OVERRIDES[slug];
+    if (nlOverride) {
+        locales.nl = nlOverride;
+    } else {
+        locales.nl = {
+            title: `Quiz ${quiz.name} - Test je aardrijkskunde | JordGlobe`,
+            description: `Kun je alle ${count} ${typeLabelNl} in deze aardrijkskundequiz herkennen? Test je kennis van ${quiz.name.toLowerCase()} op een interactieve 3D-globe.`,
+            ogTitle: `Quiz ${quiz.name}`,
+            ogDescription: `Test je kennis van ${count} ${typeLabelNl} op een interactieve 3D-globe.`,
         };
     }
     return locales;

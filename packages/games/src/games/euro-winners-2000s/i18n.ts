@@ -15,6 +15,7 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
         { code: 'da', label: 'Dansk' },
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
+        { code: 'nl', label: 'Nederlands' },
     ],
     strings: {
         en: {
@@ -172,6 +173,19 @@ export const EURO_WINNERS_2000S_I18N: QuizTranslations = {
             'sprite.3':         'Musiikinystävä',
             'sprite.4':         'Omistautunut fani',
             'sprite.5':         'Musiikin jumala',
+        },
+        nl: {
+            'loading.title':    'Euro Music-winnaars worden geladen',
+            'start.title':      'Euro Music-winnaars 2000–2025',
+            'start.playButton': 'Spelen',
+            'quiz.title':       'Euro Music-winnaars 2000–2025',
+            'question.prompt':  'Winnaar van {year} — welk land?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Lichtjes op de hoogte',
+            'sprite.2':         'Half nieuwsgierig',
+            'sprite.3':         'Muziekliefhebber',
+            'sprite.4':         'Toegewijde fan',
+            'sprite.5':         'Muziekgod',
         },
     },
 };

@@ -103,5 +103,13 @@ export const manifest: GameManifest = {
             ogDescription:
                 'Katso jokainen Eurovision-voittaja vuosilta 2000–2025 ja arvaa tässä interaktiivisessa 3D-maapallotietovisassa, mikä maa vei voiton.',
         },
+        nl: {
+            title: 'Euro Music-winnaars 2000–2025 - Raad de Eurovisie-winnaars | JordGlobe',
+            description:
+                'Bekijk elke winnaar van het Eurovisie Songfestival van 2000 tot 2025 en raad welk land won. Test je Eurovisie-kennis op een interactieve 3D-globe!',
+            ogTitle: 'Euro Music-winnaars 2000–2025 - Raad het land',
+            ogDescription:
+                'Bekijk elke Eurovisie-winnaar van 2000 tot 2025 en raad in deze interactieve 3D-globe-quiz welk land de trofee mee naar huis nam.',
+        },
     },
 };

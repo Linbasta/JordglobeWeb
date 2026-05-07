@@ -24,7 +24,7 @@ export default defineConfig({
 	// i18n configuration must match src/config/translations.json.ts
 	i18n: {
 		defaultLocale: "en",
-		locales: ["en", "sv", "de", "fr", "it", "pl", "es", "pt", "tr", "da", "nb", "fi"],
+		locales: ["en", "sv", "de", "fr", "it", "pl", "es", "pt", "tr", "da", "nb", "fi", "nl"],
 		routing: {
 			prefixDefaultLocale: false,
 		},

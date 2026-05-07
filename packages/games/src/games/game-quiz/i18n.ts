@@ -15,6 +15,7 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
         { code: 'da', label: 'Dansk' },
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
+        { code: 'nl', label: 'Nederlands' },
     ],
     strings: {
         en: {
@@ -169,6 +170,19 @@ export const GAME_QUIZ_I18N: QuizTranslations = {
             'sprite.0':         'Game Over',
             'sprite.1':         'Rentopelaaja',
             'sprite.2':         'Konsoliutelias',
+            'sprite.3':         'Gamer',
+            'sprite.4':         'Hardcore',
+            'sprite.5':         'Speedrunner',
+        },
+        nl: {
+            'loading.title':    'Oorsprong van videogames wordt geladen',
+            'start.title':      'Oorsprong van videogames',
+            'start.playButton': 'Spelen',
+            'quiz.title':       'Oorsprong van videogames',
+            'question.prompt':  'Waar is deze game gemaakt?',
+            'sprite.0':         'Game Over',
+            'sprite.1':         'Casual speler',
+            'sprite.2':         'Console-nieuwsgierig',
             'sprite.3':         'Gamer',
             'sprite.4':         'Hardcore',
             'sprite.5':         'Speedrunner',

@@ -15,6 +15,7 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
         { code: 'da', label: 'Dansk' },
         { code: 'nb', label: 'Norsk bokmål' },
         { code: 'fi', label: 'Suomi' },
+        { code: 'nl', label: 'Nederlands' },
     ],
     strings: {
         en: {
@@ -172,6 +173,19 @@ export const EURO_MUSIC_QUIZ_I18N: QuizTranslations = {
             'sprite.3':         'Musiikinystävä',
             'sprite.4':         'Omistautunut fani',
             'sprite.5':         'Musiikin jumala',
+        },
+        nl: {
+            'loading.title':    'Euro Music Quiz wordt geladen',
+            'start.title':      'Euro Music Quiz 2026',
+            'start.playButton': 'Spelen',
+            'quiz.title':       'Euro Music Quiz',
+            'question.prompt':  'Uit welk land komt dit nummer?',
+            'sprite.0':         'Nul Points',
+            'sprite.1':         'Lichtjes op de hoogte',
+            'sprite.2':         'Half nieuwsgierig',
+            'sprite.3':         'Muziekliefhebber',
+            'sprite.4':         'Toegewijde fan',
+            'sprite.5':         'Muziekgod',
         },
     },
 };

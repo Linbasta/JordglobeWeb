@@ -19,7 +19,7 @@ const dataKeys = [
 ];
 
 // Define supported languages
-const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi'];
+const supportedLangs = ['en', 'sv', 'de', 'fr', 'it', 'pl', 'es', 'pt', 'tr', 'da', 'nb', 'fi', 'nl'];
 
 // Use static glob imports for each supported language
 const modulesMap: Record<string, Record<string, any>> = {
@@ -35,6 +35,7 @@ const modulesMap: Record<string, Record<string, any>> = {
 	da: import.meta.glob('./da/*.json.ts', { eager: true }),
 	nb: import.meta.glob('./nb/*.json.ts', { eager: true }),
 	fi: import.meta.glob('./fi/*.json.ts', { eager: true }),
+	nl: import.meta.glob('./nl/*.json.ts', { eager: true }),
 };
 
 // Build dataTranslations using modulesMap
@@ -185,6 +186,16 @@ export const textTranslations = {
 		nav_about: "Tietoa",
 		nav_games: "Pelit",
 	},
+	nl: {
+		hero_text: "Alles wat je nodig hebt voor een geweldige website.",
+		hero_description:
+			"Een sjabloon voor de volgende topper-SaaS. Meerdere pagina's en secties, blog, i18n, animaties, CMS — alles direct klaar voor gebruik.",
+		back_to_all_posts: "Terug naar alle berichten",
+		updated: "Bijgewerkt",
+		nav_download: "Downloaden",
+		nav_about: "Over ons",
+		nav_games: "Spellen",
+	},
 } as const;
 
 /**
@@ -231,5 +242,8 @@ export const routeTranslations = {
 	},
 	fi: {
 		aboutKey: "tietoa",
+	},
+	nl: {
+		aboutKey: "over-ons",
 	},
 } as const;
