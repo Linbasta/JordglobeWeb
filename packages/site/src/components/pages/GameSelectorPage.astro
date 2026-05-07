@@ -168,7 +168,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         z-index: 2;
         max-width: 1280px;
         margin: 0 auto;
-        padding: 96px 32px 64px;
+        padding: 96px 16px 64px;
         color: #fff;
     }
 
@@ -196,7 +196,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
         --topic-gap: 48px;
         display: grid;
         grid-template-columns: minmax(0, 1fr);
-        column-gap: 32px;
+        column-gap: 16px;
         align-items: start;
     }
 
@@ -365,7 +365,7 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
 
     .row {
         display: flex;
-        gap: 24px;
+        gap: 12px;
         overflow-x: auto;
         scroll-snap-type: x proximity;
         /* `--lift-room` is the vertical breathing room the hover lift needs
@@ -452,10 +452,20 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
     }
 
     .game-card {
-        flex: 0 0 400px;
+        flex: 0 0 280px;
         scroll-snap-align: start;
         text-decoration: none;
         color: inherit;
+    }
+
+    /* At ≥1600 vp the topics-col is 1152 px, which fits 4 × 280 + 3 × 12 =
+       1156 px only 4 px short of cleanly rejecting a 4th card. Bumping the
+       card to 376 makes 3 × 376 + 2 × 12 = 1152 px exact: 3 cards fill the
+       row, 4 are 384 px too wide so they can't appear. */
+    @media (min-width: 1600px) {
+        .game-card {
+            flex: 0 0 376px;
+        }
     }
 
     .thumb-stack {
@@ -661,8 +671,8 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
 </script>
 
 <script>
-    // 400px card + 24px gap = one card step.
-    const SCROLL_STEP = 424;
+    // 280px card + 12px gap = one card step.
+    const SCROLL_STEP = 292;
     const DRAG_THRESHOLD = 5;
 
     // Custom rAF-driven scroll animation with easeOutQuint. The .is-snapping
