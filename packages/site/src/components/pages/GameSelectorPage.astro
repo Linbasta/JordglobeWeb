@@ -591,23 +591,61 @@ const gameSchemas = Array.from(gamesById.values()).map((game) =>
             letter-spacing: 3px;
         }
 
-        .topic {
-            margin-bottom: 28px;
-        }
-
         .topic-title {
             margin: 0 0 12px;
+            font-size: 18px;
         }
 
-        .game-card {
-            flex: 0 0 60vw;
-            max-width: 220px;
+        .row-wrap {
+            position: static;
+            max-width: none;
+            margin: 0;
+        }
+
+        .row-wrap::before,
+        .row-wrap::after,
+        .nav-btn {
+            display: none;
         }
 
         .row {
-            padding: 12px 16px;
-            scroll-snap-type: x proximity;
-            scroll-padding-left: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            overflow: visible;
+            padding: 0;
+            scroll-snap-type: none;
+        }
+
+        .game-card {
+            display: block;
+            flex: initial;
+            max-width: none;
+            width: 100%;
+            min-width: 0;
+            scroll-snap-align: none;
+        }
+
+        /* iOS Safari + CSS Grid + aspect-ratio is unreliable: the grid's
+           intrinsic-sizing pass can resolve the cell before aspect-ratio
+           computes height, leaving the box at 0 height. Padding-bottom
+           gives an explicit width-derived height that always works. */
+        .thumb-stack {
+            aspect-ratio: auto;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+
+        .thumb-label {
+            padding: 6px 8px;
+        }
+
+        .thumb-label-title {
+            font-size: 14px;
+        }
+
+        .thumb-label-subtitle {
+            font-size: 10px;
         }
     }
 </style>
