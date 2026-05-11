@@ -33,6 +33,7 @@ import {
     logGameSessionEnd,
     logAnswer,
 } from '../analytics'
+import { logGameStarted, logGameEnded } from '../firestore-events'
 import { playCorrectSfx, playIncorrectSfx } from '../sfx/sfx-player'
 
 /**
@@ -113,6 +114,11 @@ export class QuizUIAdapter {
             logGameSessionStart(this.analyticsGame, this.analyticsGameId, this.sessionId)
         }
 
+        // Anonymous play-count (writes regardless of consent)
+        if (config.quizId) {
+            logGameStarted(config.quizId)
+        }
+
         if (config.scoreBarType === 'simple') {
             createSimpleScoreBar(config.questions.length, config.questions.length, config.quizId)
         } else {
@@ -188,24 +194,8 @@ export class QuizUIAdapter {
         }
 
         if (!stillActive) {
-            // Quiz completed
             this.active = false
-            const elapsedMs = performance.now() - this.startTime
-            // Log session end (only if analytics configured)
-            if (this.analyticsGame && this.analyticsGameId && !this.gameCompleteFired) {
-                logGameSessionEnd(
-                    this.analyticsGame,
-                    this.analyticsGameId,
-                    this.sessionId,
-                    getScore(),
-                    getTotal(),
-                    elapsedMs
-                )
-            }
-            if (this.config?.onGameComplete && !this.gameCompleteFired) {
-                this.gameCompleteFired = true
-                this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
-            }
+            this.fireGameComplete()
             return false
         }
 
@@ -299,15 +289,35 @@ export class QuizUIAdapter {
             }
         }
 
-        // Handle game complete
+        // Handle game complete — first frame on which GameComplete appears.
+        // isDone() flips true the next frame; tick()'s !stillActive branch also
+        // calls fireGameComplete, which no-ops on the second invocation.
         if (step.op === StepOp.GameComplete && !isDone()) {
-            // This is the first frame of game_complete
-            // (isDone() will be true on the next frame)
-            const elapsedMs = performance.now() - this.startTime
-            if (this.config?.onGameComplete && !this.gameCompleteFired) {
-                this.gameCompleteFired = true
-                this.config.onGameComplete(getScore(), getTotal(), elapsedMs, getResults())
-            }
+            this.fireGameComplete()
+        }
+    }
+
+    private fireGameComplete(): void {
+        if (this.gameCompleteFired) return
+        this.gameCompleteFired = true
+        const elapsedMs = performance.now() - this.startTime
+        const score = getScore()
+        const total = getTotal()
+        if (this.analyticsGame && this.analyticsGameId) {
+            logGameSessionEnd(
+                this.analyticsGame,
+                this.analyticsGameId,
+                this.sessionId,
+                score,
+                total,
+                elapsedMs
+            )
+        }
+        if (this.config?.quizId) {
+            logGameEnded(this.config.quizId, score, total)
+        }
+        if (this.config?.onGameComplete) {
+            this.config.onGameComplete(score, total, elapsedMs, getResults())
         }
     }
 }

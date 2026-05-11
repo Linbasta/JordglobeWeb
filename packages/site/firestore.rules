@@ -56,5 +56,38 @@ service cloud.firestore {
             allow read: if true;
             allow write: if false;
         }
+
+        // Anonymous play-count telemetry. Writes are accepted from any visitor
+        // (no auth required) with a strict shape and no identifying fields.
+        // Reads are admin-SDK only. Time is stored at minute resolution to
+        // prevent sub-second correlation between paired start/end events.
+        match /games_started/{docId} {
+            allow read, update, delete: if false;
+            allow create: if request.resource.data.keys().hasOnly(['quiz_id', 'date', 'minute'])
+                && request.resource.data.quiz_id is string
+                && request.resource.data.quiz_id.size() > 0
+                && request.resource.data.quiz_id.size() < 100
+                && request.resource.data.date is string
+                && request.resource.data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+                && request.resource.data.minute is string
+                && request.resource.data.minute.matches('^\\d{2}:\\d{2}$');
+        }
+
+        match /games_ended/{docId} {
+            allow read, update, delete: if false;
+            allow create: if request.resource.data.keys().hasOnly(['quiz_id', 'score', 'total', 'date', 'minute'])
+                && request.resource.data.quiz_id is string
+                && request.resource.data.quiz_id.size() > 0
+                && request.resource.data.quiz_id.size() < 100
+                && request.resource.data.score is int
+                && request.resource.data.total is int
+                && request.resource.data.score >= 0
+                && request.resource.data.total > 0
+                && request.resource.data.score <= request.resource.data.total
+                && request.resource.data.date is string
+                && request.resource.data.date.matches('^\\d{4}-\\d{2}-\\d{2}$')
+                && request.resource.data.minute is string
+                && request.resource.data.minute.matches('^\\d{2}:\\d{2}$');
+        }
     }
 }
