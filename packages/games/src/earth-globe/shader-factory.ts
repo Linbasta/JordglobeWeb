@@ -102,7 +102,7 @@ export class ShaderFactory {
         });
 
         // Setup compilation callbacks
-        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onCompiled = () => { console.log(`Shader ${name} compiled successfully`); };
         shaderMaterial.onError = (effect, errors) => {
             console.error(`Shader compilation error in ${name}:`, errors);
         };
@@ -177,7 +177,7 @@ export class ShaderFactory {
             samplers: ["animationTexture", "expansionTexture", ...extraSamplers]
         });
 
-        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onCompiled = () => { console.log(`Shader ${name} compiled successfully`); };
         shaderMaterial.onError = (effect, errors) => {
             console.error(`Shader compilation error in ${name}:`, errors);
         };
@@ -289,7 +289,7 @@ export class ShaderFactory {
             samplers: ["animationTexture"]
         });
 
-        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onCompiled = () => { console.log(`Shader ${name} compiled successfully`); };
         shaderMaterial.onError = (effect, errors) => {
             console.error(`Shader compilation error in ${name}:`, errors);
         };
@@ -360,7 +360,7 @@ export class ShaderFactory {
             samplers: ["animationTexture"]
         });
 
-        shaderMaterial.onCompiled = () => console.log(`Shader ${name} compiled successfully`);
+        shaderMaterial.onCompiled = () => { console.log(`Shader ${name} compiled successfully`); };
         shaderMaterial.onError = (effect, errors) => {
             console.error(`Shader compilation error in ${name}:`, errors);
         };

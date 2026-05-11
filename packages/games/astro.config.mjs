@@ -17,6 +17,13 @@ export default defineConfig({
         ...(allowedHosts.length > 0 ? { allowedHosts } : {}),
     },
     vite: {
+        esbuild: isProd
+            ? {
+                // Strip noisy logs from prod bundles; keep warn/error for real reporting.
+                pure: ['console.log', 'console.debug', 'console.info'],
+                drop: ['debugger'],
+            }
+            : {},
         build: {
             rollupOptions: {
                 // Don't bundle dev tools in production

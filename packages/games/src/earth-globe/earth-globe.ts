@@ -14,6 +14,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Material } from '@babylonjs/core/Materials/material';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { Logger } from '@babylonjs/core/Misc/logger';
 
 // Side effect imports
 import '@babylonjs/core/Meshes/meshBuilder';
@@ -25,6 +26,14 @@ import '@babylonjs/core/Culling/ray';  // Required for scene.pick() to work!
 import '@babylonjs/core/Shaders/layer.fragment';  // Required for GUI Image/Rectangle controls
 import '@babylonjs/core/Shaders/layer.vertex';
 import '@babylonjs/core/Misc/rgbdTextureTools';  // Required for RGBD texture decoding
+
+// Silence Babylon's "BJS - [hh:mm:ss]" Log/Warn lines in prod (keep errors).
+// Must run before `new Engine(...)` — the version banner fires there.
+// esbuild's `pure: console.log` can't strip these: Babylon binds console.log
+// into a variable at module load, so the call site isn't `console.log(...)`.
+if (!import.meta.env.DEV) {
+    Logger.LogLevels = Logger.ErrorLogLevel;
+}
 
 // Module imports
 import {
