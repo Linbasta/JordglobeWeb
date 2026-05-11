@@ -1,14 +1,16 @@
 /**
- * Leaderboard Popup — shows top scores.
+ * Leaderboard Popup — shows top scores with a Daily/Weekly toggle.
  *
  * Two entry points:
- *  - showLeaderboardPopup(config) — creates the popup with skeleton rows, returns
+ *  - showLeaderboardPopup(onClose) — creates the popup with skeleton rows, returns
  *    a handle to fill data into. Caller owns the data flow.
  *  - showLeaderboardWithAuth(config) — full flow: auth gate, submit score, fetch
  *    leaderboard, fill data.
  *
  * The table always has exactly ROW_COUNT rows. On creation they show skeleton bars.
- * fillWithData() updates each row's cells in place — no DOM rebuild.
+ * fillWithData() loads both daily + weekly into the handle's state, picks an
+ * initial mode (weekly when daily has < 5 entries), and renders. Tab clicks
+ * switch the mode and re-render in place — no DOM rebuild.
  */
 
 import { postRecord, getLeaderboard, type LeaderboardEntry } from '../firestore-records'
@@ -18,11 +20,13 @@ import { startConfetti, stopConfetti } from './confetti'
 import { t, getLocale } from '../i18n/i18n'
 
 export type { LeaderboardEntry }
+export type LeaderboardMode = 'daily' | 'weekly'
 
 let backdrop: HTMLDivElement | null = null
 let countdownTimer: number | null = null
 
 const ROW_COUNT = 10
+const WEEKLY_DEFAULT_THRESHOLD = 5
 
 function msUntilUtcMidnight(): number {
     const now = new Date()
@@ -41,11 +45,28 @@ function formatTodayUtc(): string {
     return new Intl.DateTimeFormat(getLocale(), { dateStyle: 'long', timeZone: 'UTC' }).format(new Date())
 }
 
+interface LeaderboardState {
+    mode: LeaderboardMode
+    daily: LeaderboardEntry[]
+    weekly: LeaderboardEntry[]
+    userScore: number
+    userTotal: number
+    userElapsedMs: number
+    isNewRecord: boolean
+}
+
 export interface LeaderboardHandle {
     rows: HTMLTableRowElement[]
     userRow: HTMLTableRowElement
+    userSepRow: HTMLTableRowElement
     card: HTMLElement
     recordEl: HTMLElement
+    titleEl: HTMLElement
+    subtitleEl: HTMLElement
+    countdownEl: HTMLElement
+    dailyBtn: HTMLButtonElement
+    weeklyBtn: HTMLButtonElement
+    state: LeaderboardState
 }
 
 function formatTime(ms: number): string {
@@ -92,13 +113,19 @@ function setRowEmpty(row: HTMLTableRowElement, rank: number): void {
     row.cells[3].innerHTML = '&nbsp;'
 }
 
-export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntry[], userScore: number, userTotal: number, userElapsedMs: number): void {
+function renderRows(
+    handle: LeaderboardHandle,
+    entries: LeaderboardEntry[],
+    userScore: number,
+    userTotal: number,
+    userElapsedMs: number,
+): void {
     let scoreInt = Math.floor(userScore)
     let elapsedInt = Math.floor(userElapsedMs)
     let totalInt = userTotal
 
-    // Dedupe: collapse any leaderboard rows belonging to this user into the
-    // "You" row, using whichever score is best. Defends against stale aggregates
+    // Dedupe: collapse any rows belonging to this user into the "You" row,
+    // using whichever score is best. Defends against stale aggregates
     // (server now dedupes by uid, but this guards against transitional state).
     const username = getCachedUsername()
     let dedupedEntries = entries
@@ -116,7 +143,6 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
         }
     }
 
-    // Determine if user belongs in the top 10
     let userRank = dedupedEntries.length + 1
     for (let i = 0; i < dedupedEntries.length; i++) {
         if (scoreInt > dedupedEntries[i].score || (scoreInt === dedupedEntries[i].score && elapsedInt < dedupedEntries[i].elapsed_ms)) {
@@ -127,7 +153,6 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
     const userInTop10 = userRank <= ROW_COUNT
 
     if (userInTop10) {
-        // Merge user into the top 10 list
         let rowIdx = 0
         let entryIdx = 0
         let userPlaced = false
@@ -149,11 +174,9 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
             rowIdx++
         }
 
-        // Hide the separate user row since they're already in the list
         handle.userRow.style.display = 'none'
-        handle.userRow.previousElementSibling!.setAttribute('style', 'display:none') // hide separator
+        handle.userSepRow.style.display = 'none'
     } else {
-        // Fill top 10 entries only
         for (let i = 0; i < ROW_COUNT; i++) {
             if (i < dedupedEntries.length) {
                 const e = dedupedEntries[i]
@@ -163,12 +186,63 @@ export function fillWithData(handle: LeaderboardHandle, entries: LeaderboardEntr
             }
         }
 
-        // Show user below separator
         handle.userRow.style.display = ''
-        handle.userRow.previousElementSibling!.removeAttribute('style')
+        handle.userSepRow.style.display = ''
         setRowUser(handle.userRow, 0, scoreInt, totalInt, elapsedInt)
         handle.userRow.cells[0].innerHTML = '&nbsp;'
     }
+}
+
+function applyMode(handle: LeaderboardHandle): void {
+    const { mode, daily, weekly, userScore, userTotal, userElapsedMs, isNewRecord } = handle.state
+
+    handle.dailyBtn.classList.toggle('lb-tab-active', mode === 'daily')
+    handle.weeklyBtn.classList.toggle('lb-tab-active', mode === 'weekly')
+
+    if (mode === 'daily') {
+        handle.titleEl.textContent = t('leaderboard.title')
+        handle.subtitleEl.textContent = formatTodayUtc()
+        handle.countdownEl.style.display = ''
+        if (isNewRecord) {
+            handle.recordEl.classList.add('visible')
+        }
+    } else {
+        handle.titleEl.textContent = t('leaderboard.titleWeekly')
+        handle.subtitleEl.textContent = t('leaderboard.weeklyRange')
+        handle.countdownEl.style.display = 'none'
+        handle.recordEl.classList.remove('visible')
+    }
+
+    const entries = mode === 'daily' ? daily : weekly
+    renderRows(handle, entries, userScore, userTotal, userElapsedMs)
+}
+
+function pickInitialMode(daily: LeaderboardEntry[], weekly: LeaderboardEntry[]): LeaderboardMode {
+    // Default to weekly when daily is sparse, but only if weekly actually has
+    // more to show — otherwise sticking with daily is the same picture.
+    if (daily.length < WEEKLY_DEFAULT_THRESHOLD && weekly.length > daily.length) return 'weekly'
+    return 'daily'
+}
+
+export function fillWithData(
+    handle: LeaderboardHandle,
+    daily: LeaderboardEntry[],
+    weekly: LeaderboardEntry[],
+    userScore: number,
+    userTotal: number,
+    userElapsedMs: number,
+    options: { isNewRecord?: boolean; initialMode?: LeaderboardMode } = {},
+): void {
+    handle.state = {
+        mode: options.initialMode ?? pickInitialMode(daily, weekly),
+        daily,
+        weekly,
+        userScore,
+        userTotal,
+        userElapsedMs,
+        isNewRecord: options.isNewRecord ?? false,
+    }
+    applyMode(handle)
 }
 
 /** Creates the popup with skeleton rows. Returns a handle to fill data into. */
@@ -182,6 +256,10 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
         style.textContent = `
             .lb-backdrop { position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:350;opacity:0;transition:opacity 0.3s ease-in-out; }
             .lb-card { width:380px;max-width:calc(100vw - 32px);background:linear-gradient(180deg,#1a3a5c 0%,#0f2744 100%);border-radius:16px;padding:24px 20px;text-align:center;position:relative;box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:scale(0.9);opacity:0;transition:transform 0.3s ease-out,opacity 0.3s ease-out; }
+            .lb-tabs { display:flex;gap:4px;background:rgba(0,0,0,0.25);border-radius:10px;padding:3px;margin:0 auto 14px;width:fit-content; }
+            .lb-tab { background:transparent;border:none;color:#a0c4e0;font-family:Arial,sans-serif;font-size:13px;font-weight:600;padding:6px 18px;border-radius:8px;cursor:pointer;transition:background 0.15s,color 0.15s; }
+            .lb-tab:hover { color:#fff; }
+            .lb-tab-active { background:rgba(126,184,224,0.25);color:#fff; }
             .lb-title { font-size:24px;font-weight:bold;color:#ffd700;margin-bottom:4px;font-family:Arial,sans-serif; }
             .lb-subtitle { font-size:13px;color:#a0c4e0;margin-bottom:8px;font-family:Arial,sans-serif; }
             .lb-countdown { display:inline-block;font-size:11px;background:rgba(126,184,224,0.15);color:#7eb8e0;padding:3px 10px;border-radius:10px;margin-bottom:14px;font-family:Arial,sans-serif;font-weight:600;letter-spacing:0.3px;text-transform:uppercase; }
@@ -209,6 +287,20 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     const card = document.createElement('div')
     card.className = 'lb-card'
 
+    const tabsEl = document.createElement('div')
+    tabsEl.className = 'lb-tabs'
+
+    const dailyBtn = document.createElement('button')
+    dailyBtn.className = 'lb-tab lb-tab-active'
+    dailyBtn.textContent = t('leaderboard.tabDaily')
+
+    const weeklyBtn = document.createElement('button')
+    weeklyBtn.className = 'lb-tab'
+    weeklyBtn.textContent = t('leaderboard.tabWeekly')
+
+    tabsEl.appendChild(dailyBtn)
+    tabsEl.appendChild(weeklyBtn)
+
     const table = document.createElement('table')
     table.className = 'lb-table'
 
@@ -226,11 +318,10 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
         rows.push(tr)
     }
 
-    // Separator + user row
-    const sepRow = document.createElement('tr')
-    sepRow.className = 'lb-separator'
-    sepRow.innerHTML = '<td colspan="4"></td>'
-    tbody.appendChild(sepRow)
+    const userSepRow = document.createElement('tr')
+    userSepRow.className = 'lb-separator'
+    userSepRow.innerHTML = '<td colspan="4"></td>'
+    tbody.appendChild(userSepRow)
 
     const userRow = document.createElement('tr')
     userRow.className = 'lb-row'
@@ -266,6 +357,7 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
         onClose()
     })
 
+    card.appendChild(tabsEl)
     card.appendChild(titleEl)
     card.appendChild(subtitleEl)
     card.appendChild(countdownEl)
@@ -276,13 +368,46 @@ export function showLeaderboardPopup(onClose: () => void): LeaderboardHandle {
     backdrop.appendChild(card)
     document.body.appendChild(backdrop)
 
+    const handle: LeaderboardHandle = {
+        rows,
+        userRow,
+        userSepRow,
+        card,
+        recordEl,
+        titleEl,
+        subtitleEl,
+        countdownEl,
+        dailyBtn,
+        weeklyBtn,
+        state: {
+            mode: 'daily',
+            daily: [],
+            weekly: [],
+            userScore: 0,
+            userTotal: 0,
+            userElapsedMs: 0,
+            isNewRecord: false,
+        },
+    }
+
+    dailyBtn.addEventListener('click', () => {
+        if (handle.state.mode === 'daily') return
+        handle.state.mode = 'daily'
+        applyMode(handle)
+    })
+    weeklyBtn.addEventListener('click', () => {
+        if (handle.state.mode === 'weekly') return
+        handle.state.mode = 'weekly'
+        applyMode(handle)
+    })
+
     requestAnimationFrame(() => {
         backdrop!.style.opacity = '1'
         card.style.transform = 'scale(1)'
         card.style.opacity = '1'
     })
 
-    return { rows, userRow, card, recordEl }
+    return handle
 }
 
 /** Full flow: show popup, handle auth, submit score, fetch & display leaderboard. */
@@ -306,14 +431,17 @@ export function showLeaderboardWithAuth(config: {
             }
 
             const leaderboard = await getLeaderboard(quizId)
-            const entries = leaderboard?.entries ?? []
+            const daily = leaderboard?.entries ?? []
+            const weekly = leaderboard?.weekly_entries ?? []
 
-            fillWithData(handle, entries, userScore, userTotal, userElapsedMs)
+            fillWithData(handle, daily, weekly, userScore, userTotal, userElapsedMs, { isNewRecord })
 
             if (isNewRecord) {
                 handle.recordEl.textContent = t('leaderboard.worldRecord')
-                handle.recordEl.classList.add('visible')
-                if (backdrop) startConfetti(backdrop, handle.card, 10)
+                if (handle.state.mode === 'daily') {
+                    handle.recordEl.classList.add('visible')
+                    if (backdrop) startConfetti(backdrop, handle.card, 10)
+                }
             }
         } catch (e: any) {
             console.warn('Leaderboard load failed:', e)

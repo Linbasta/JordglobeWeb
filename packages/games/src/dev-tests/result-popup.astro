@@ -37,6 +37,8 @@
             <button data-action="leaderboard" data-args="8,10,102000">Leaderboard: 8/10</button>
             <button data-action="leaderboard" data-args="10,10,83000">Leaderboard: 10/10 (PB)</button>
             <button data-action="leaderboard-fake" data-args="5,10,180000">Fake: full board, you outside top 10</button>
+            <button data-action="leaderboard-fake-sparse" data-args="8,10,90000">Fake: sparse daily (2), full weekly</button>
+            <button data-action="leaderboard-fake-empty" data-args="8,10,90000">Fake: empty daily, full weekly</button>
 
             <div class="section-label">Score Bar Preview</div>
             <button data-action="toggle-score-bar">Toggle Score Bar</button>
@@ -320,7 +322,7 @@
                 case 'leaderboard-fake':
                     import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardPopup, fillWithData }) => {
                         const handle = showLeaderboardPopup(() => {});
-                        const fakeEntries = [
+                        const fakeDaily = [
                             { name: 'Alice', score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
                             { name: 'Bob', score: 10, total: 10, elapsed_ms: 71000, created_at: '' },
                             { name: 'Charlie', score: 10, total: 10, elapsed_ms: 85000, created_at: '' },
@@ -332,7 +334,45 @@
                             { name: 'Ivy', score: 8, total: 10, elapsed_ms: 95000, created_at: '' },
                             { name: 'Jack', score: 7, total: 10, elapsed_ms: 82000, created_at: '' },
                         ];
-                        fillWithData(handle, fakeEntries, args[0], args[1], args[2]);
+                        const fakeWeekly = [
+                            { name: 'Zara', score: 10, total: 10, elapsed_ms: 55000, created_at: '' },
+                            ...fakeDaily,
+                        ].slice(0, 10);
+                        fillWithData(handle, fakeDaily, fakeWeekly, args[0], args[1], args[2]);
+                    });
+                    break;
+                case 'leaderboard-fake-sparse':
+                    import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardPopup, fillWithData }) => {
+                        const handle = showLeaderboardPopup(() => {});
+                        const fakeDaily = [
+                            { name: 'Alice', score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
+                            { name: 'Bob', score: 9, total: 10, elapsed_ms: 71000, created_at: '' },
+                        ];
+                        const fakeWeekly = [
+                            { name: 'Zara', score: 10, total: 10, elapsed_ms: 55000, created_at: '' },
+                            { name: 'Alice', score: 10, total: 10, elapsed_ms: 62000, created_at: '' },
+                            { name: 'Yves', score: 10, total: 10, elapsed_ms: 68000, created_at: '' },
+                            { name: 'Bob', score: 9, total: 10, elapsed_ms: 71000, created_at: '' },
+                            { name: 'Xena', score: 9, total: 10, elapsed_ms: 74000, created_at: '' },
+                            { name: 'Will', score: 8, total: 10, elapsed_ms: 66000, created_at: '' },
+                            { name: 'Vera', score: 8, total: 10, elapsed_ms: 88000, created_at: '' },
+                            { name: 'Uma', score: 7, total: 10, elapsed_ms: 70000, created_at: '' },
+                        ];
+                        fillWithData(handle, fakeDaily, fakeWeekly, args[0], args[1], args[2]);
+                    });
+                    break;
+                case 'leaderboard-fake-empty':
+                    import('../shared/ui/leaderboard-popup.ts').then(({ showLeaderboardPopup, fillWithData }) => {
+                        const handle = showLeaderboardPopup(() => {});
+                        const fakeWeekly = [
+                            { name: 'Zara', score: 10, total: 10, elapsed_ms: 55000, created_at: '' },
+                            { name: 'Yves', score: 10, total: 10, elapsed_ms: 68000, created_at: '' },
+                            { name: 'Xena', score: 9, total: 10, elapsed_ms: 74000, created_at: '' },
+                            { name: 'Will', score: 8, total: 10, elapsed_ms: 66000, created_at: '' },
+                            { name: 'Vera', score: 8, total: 10, elapsed_ms: 88000, created_at: '' },
+                            { name: 'Uma', score: 7, total: 10, elapsed_ms: 70000, created_at: '' },
+                        ];
+                        fillWithData(handle, [], fakeWeekly, args[0], args[1], args[2]);
                     });
                     break;
                 case 'toggle-score-bar':

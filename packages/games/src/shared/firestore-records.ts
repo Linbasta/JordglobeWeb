@@ -19,6 +19,8 @@ export type LeaderboardEntry = {
 export type LeaderboardDoc = {
     date: string;
     entries: LeaderboardEntry[];
+    week_start_date?: string;
+    weekly_entries?: LeaderboardEntry[];
 };
 
 export async function getLeaderboard(quizId: string): Promise<LeaderboardDoc | null> {

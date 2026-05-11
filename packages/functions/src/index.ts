@@ -8,6 +8,7 @@ const userDb = getFirestore('jordglobe');
 
 const TOP_N = 10;
 const BATCH_CHUNK = 400;
+const WEEKLY_DAYS = 7;
 
 type Entry = {
     name: string;
@@ -17,25 +18,55 @@ type Entry = {
     created_at: string;
 };
 
-export async function buildDailyLeaderboards(): Promise<{ quizzes: number; totalSubmissions: number }> {
+function isBetter(candidate: Entry, prev: Entry): boolean {
+    return candidate.score > prev.score
+        || (candidate.score === prev.score && candidate.elapsed_ms < prev.elapsed_ms);
+}
+
+function upsertBest(
+    map: Map<string, Map<string, Entry>>,
+    quizId: string,
+    uid: string,
+    candidate: Entry,
+): void {
+    const byUid = map.get(quizId) ?? new Map<string, Entry>();
+    const prev = byUid.get(uid);
+    if (!prev || isBetter(candidate, prev)) {
+        byUid.set(uid, candidate);
+    }
+    map.set(quizId, byUid);
+}
+
+function sortAndSlice(entries: Entry[]): Entry[] {
+    entries.sort((a, b) => b.score - a.score || a.elapsed_ms - b.elapsed_ms);
+    return entries.slice(0, TOP_N);
+}
+
+export async function buildDailyLeaderboards(): Promise<{
+    quizzes: number;
+    totalSubmissions: number;
+    weeklyQuizzes: number;
+}> {
     const now = new Date();
-    const startUtc = new Date(Date.UTC(
+    const startToday = new Date(Date.UTC(
         now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
     ));
-    const dateKey = startUtc.toISOString().slice(0, 10);
+    const startWeek = new Date(startToday);
+    startWeek.setUTCDate(startWeek.getUTCDate() - (WEEKLY_DAYS - 1));
+
+    const dateKey = startToday.toISOString().slice(0, 10);
+    const weekStartKey = startWeek.toISOString().slice(0, 10);
 
     const snap = await db.collection('submissions')
-        .where('created_at', '>=', Timestamp.fromDate(startUtc))
+        .where('created_at', '>=', Timestamp.fromDate(startWeek))
         .get();
 
-    // Collect unique UIDs to batch-fetch Usernames
     const uidSet = new Set<string>();
     for (const d of snap.docs) {
         const uid = d.data().uid;
         if (typeof uid === 'string') uidSet.add(uid);
     }
 
-    // Look up Usernames from the jordglobe database
     const uidToName = new Map<string, string>();
     const uids = [...uidSet];
     for (let i = 0; i < uids.length; i += 10) {
@@ -53,9 +84,10 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         }
     }
 
-    // Per (quizId, uid), keep only the user's best submission so the
-    // leaderboard never shows the same person twice.
-    const byQuizByUid = new Map<string, Map<string, Entry>>();
+    const dailyByQuizByUid = new Map<string, Map<string, Entry>>();
+    const weeklyByQuizByUid = new Map<string, Map<string, Entry>>();
+    const startTodayMs = startToday.getTime();
+
     for (const d of snap.docs) {
         const data = d.data();
         const quizId = data.quiz_id;
@@ -65,6 +97,7 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
         const name = uidToName.get(uid);
         if (!name) continue;
         const ts = data.created_at;
+        const createdMs = ts instanceof Timestamp ? ts.toDate().getTime() : 0;
         const candidate: Entry = {
             name,
             score: data.score,
@@ -72,59 +105,41 @@ export async function buildDailyLeaderboards(): Promise<{ quizzes: number; total
             elapsed_ms: data.elapsed_ms,
             created_at: ts instanceof Timestamp ? ts.toDate().toISOString() : '',
         };
-        const byUid = byQuizByUid.get(quizId) ?? new Map<string, Entry>();
-        const prev = byUid.get(uid);
-        if (!prev
-            || candidate.score > prev.score
-            || (candidate.score === prev.score && candidate.elapsed_ms < prev.elapsed_ms)
-        ) {
-            byUid.set(uid, candidate);
+        upsertBest(weeklyByQuizByUid, quizId, uid, candidate);
+        if (createdMs >= startTodayMs) {
+            upsertBest(dailyByQuizByUid, quizId, uid, candidate);
         }
-        byQuizByUid.set(quizId, byUid);
     }
 
-    const byQuiz = new Map<string, Entry[]>();
-    for (const [quizId, byUid] of byQuizByUid) {
-        byQuiz.set(quizId, [...byUid.values()]);
-    }
-
-    // Clear stale leaderboards from previous days
     const existingSnap = await db.collection('leaderboards').get();
-    const staleIds = existingSnap.docs
-        .filter(d => d.data().date !== dateKey)
-        .map(d => d.id);
+    const allQuizIds = new Set<string>([
+        ...weeklyByQuizByUid.keys(),
+        ...dailyByQuizByUid.keys(),
+        ...existingSnap.docs.map(d => d.id),
+    ]);
 
-    for (let i = 0; i < staleIds.length; i += BATCH_CHUNK) {
-        const batch = db.batch();
-        for (const id of staleIds.slice(i, i + BATCH_CHUNK)) {
-            const newData = byQuiz.has(id)
-                ? undefined  // will be written below with today's data
-                : { date: dateKey, entries: [], updated_at: FieldValue.serverTimestamp() };
-            if (newData) {
-                batch.set(db.collection('leaderboards').doc(id), newData);
-            }
-        }
-        await batch.commit();
-    }
-
-    const quizIds = [...byQuiz.keys()];
+    const quizIds = [...allQuizIds];
     for (let i = 0; i < quizIds.length; i += BATCH_CHUNK) {
         const batch = db.batch();
         for (const quizId of quizIds.slice(i, i + BATCH_CHUNK)) {
-            const entries = byQuiz.get(quizId)!;
-            entries.sort((a, b) =>
-                b.score - a.score || a.elapsed_ms - b.elapsed_ms,
-            );
+            const dailyEntries = sortAndSlice([...(dailyByQuizByUid.get(quizId)?.values() ?? [])]);
+            const weeklyEntries = sortAndSlice([...(weeklyByQuizByUid.get(quizId)?.values() ?? [])]);
             batch.set(db.collection('leaderboards').doc(quizId), {
                 date: dateKey,
-                entries: entries.slice(0, TOP_N),
+                entries: dailyEntries,
+                week_start_date: weekStartKey,
+                weekly_entries: weeklyEntries,
                 updated_at: FieldValue.serverTimestamp(),
             });
         }
         await batch.commit();
     }
 
-    return { quizzes: byQuiz.size, totalSubmissions: snap.size };
+    return {
+        quizzes: dailyByQuizByUid.size,
+        totalSubmissions: snap.size,
+        weeklyQuizzes: weeklyByQuizByUid.size,
+    };
 }
 
 export const updateDailyLeaderboards = onSchedule(
