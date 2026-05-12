@@ -63,8 +63,10 @@ function copyToClipboard(text: string): void {
 
 const COPY_ICON = '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
 const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+const EXIT_ICON = '<svg viewBox="0 0 24 24"><path d="M3 3h12v4h-2V5H5v14h8v-2h2v4H3V3z"/><path d="M11 11h8.5l-2.3-2.3 1.4-1.4 4.4 4.4c.3.3.3.8 0 1.1l-4.4 4.4-1.4-1.4 2.3-2.3H11v-2.5z"/></svg>'
 const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
+const MORE_GAMES_URL = 'https://jordglobe.com/'
 
 export function showResultOverlay(config: ResultOverlayConfig): void {
     hideResultOverlay()
@@ -101,6 +103,10 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-ranking-btn:active { transform:scale(0.97); }
             .ro-retry-btn { display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
             .ro-retry-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.03); }
+            .ro-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif;box-sizing:border-box; }
+            .ro-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
+            .ro-more-btn:active { transform:scale(0.98); }
+            .ro-more-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
             .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:16px; }
             .ro-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
             .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
@@ -147,6 +153,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
                 <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="ro-store-badge"></a>
                 <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="ro-store-badge"></a>
             </div>
+            <a class="ro-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
             ${onRetry ? `<button class="ro-retry-btn">${t('result.retry')}</button>` : ''}
         </div>
     `

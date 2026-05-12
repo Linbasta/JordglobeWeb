@@ -10,7 +10,7 @@ import { getAvailableLocales, getLocale, setLocale, t } from '../i18n/i18n'
 import { auth, isRealUser } from '../firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
-const MORE_GAMES_URL = 'https://jordglobe.com/games/'
+const MORE_GAMES_URL = 'https://jordglobe.com/'
 const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 
