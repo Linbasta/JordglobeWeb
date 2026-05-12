@@ -68,11 +68,10 @@ function injectStyles(): void {
         .sm-row:first-of-type { border-top:none; }
         .sm-label { font-size:15px;color:#a0c4e0;font-weight:bold; }
         .sm-value { font-size:15px;color:#fff; }
-        .sm-lang-group { display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end; }
-        .sm-lang-btn { padding:6px 12px;background:transparent;border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:#a0c4e0;font-size:13px;font-weight:bold;cursor:pointer;font-family:inherit;transition:background 0.15s,color 0.15s,border-color 0.15s; }
-        .sm-lang-btn:hover { background:rgba(255,255,255,0.08);color:#fff; }
-        .sm-lang-btn.active { background:#2a7fff;border-color:#2a7fff;color:#fff; }
-        .sm-lang-btn.active:hover { background:#3d8fff; }
+        .sm-lang-select { appearance:none;-webkit-appearance:none;-moz-appearance:none;padding:8px 36px 8px 12px;background-color:rgba(255,255,255,0.08);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23a0c4e0' d='M7 10l5 5 5-5z'/></svg>");background-repeat:no-repeat;background-position:right 8px center;background-size:18px 18px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;transition:background-color 0.15s,border-color 0.15s;min-width:140px; }
+        .sm-lang-select:hover { background-color:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.4); }
+        .sm-lang-select:focus { outline:none;border-color:#2a7fff; }
+        .sm-lang-select option { background:#0f2744;color:#fff; }
         .sm-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
         .sm-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
         .sm-more-btn:active { transform:scale(0.98); }
@@ -178,25 +177,25 @@ function renderLanguageRow(): string {
     const locales = getAvailableLocales()
     if (locales.length < 2) return ''
     const active = getLocale()
-    const buttons = locales.map(loc => {
-        const cls = 'sm-lang-btn' + (loc.code === active ? ' active' : '')
-        return `<button type="button" class="${cls}" data-locale="${loc.code}">${loc.label}</button>`
+    const options = locales.map(loc => {
+        const sel = loc.code === active ? ' selected' : ''
+        return `<option value="${loc.code}"${sel}>${loc.label}</option>`
     }).join('')
     return `
         <div class="sm-row">
             <span class="sm-label">${t('settings.language')}</span>
-            <div class="sm-lang-group">${buttons}</div>
+            <select class="sm-lang-select" aria-label="${t('settings.language')}">${options}</select>
         </div>
     `
 }
 
 function wireLanguageButtons(card: HTMLElement): void {
+    const select = card.querySelector<HTMLSelectElement>('.sm-lang-select')
+    if (!select) return
     const active = getLocale()
-    card.querySelectorAll<HTMLButtonElement>('.sm-lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const code = btn.dataset.locale
-            if (code && code !== active) setLocale(code)
-        })
+    select.addEventListener('change', () => {
+        const code = select.value
+        if (code && code !== active) setLocale(code)
     })
 }
 
