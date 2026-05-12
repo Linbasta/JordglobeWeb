@@ -55,7 +55,9 @@ export function createSimpleScoreBar(turnsLeft: number, total: number, quizId?: 
         `z-index:100;display:flex;align-items:center;gap:6px;` +
         `max-width:calc(100vw - 8px);`
 
-    const settingsBtn = createSettingsButton('scorebar-left')
+    const settingsBtn = createSettingsButton('scorebar-left', {
+        onRetry: () => window.location.reload(),
+    })
 
     root = document.createElement('div')
     root.style.cssText =

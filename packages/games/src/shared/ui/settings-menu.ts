@@ -20,6 +20,8 @@ const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.4
 
 const EXIT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h12v4h-2V5H5v14h8v-2h2v4H3V3z"/><path d="M11 11h8.5l-2.3-2.3 1.4-1.4 4.4 4.4c.3.3.3.8 0 1.1l-4.4 4.4-1.4-1.4 2.3-2.3H11v-2.5z"/></svg>'
 
+const RETRY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
+
 const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>'
 
 const CHECK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
@@ -72,16 +74,20 @@ function injectStyles(): void {
         .sm-lang-select:hover { background-color:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.4); }
         .sm-lang-select:focus { outline:none;border-color:#2a7fff; }
         .sm-lang-select option { background:#0f2744;color:#fff; }
-        .sm-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
-        .sm-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
+        .sm-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 20px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,color 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
+        .sm-more-btn:hover { background:rgba(255,255,255,0.1);color:#fff;transform:scale(1.02); }
         .sm-more-btn:active { transform:scale(0.98); }
-        .sm-more-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
+        .sm-more-btn svg { width:18px;height:18px;fill:currentColor;flex-shrink:0; }
         .sm-share-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:10px 20px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s,color 0.15s;font-family:inherit;box-sizing:border-box; }
         .sm-share-btn:hover { background:rgba(255,255,255,0.1);color:#fff;transform:scale(1.02); }
         .sm-share-btn:active { transform:scale(0.98); }
         .sm-share-btn svg { width:18px;height:18px;fill:currentColor;flex-shrink:0; }
         .sm-share-btn.copied { background:#22c55e;border-color:#22c55e;color:#fff; }
         .sm-share-btn.copied:hover { background:#22c55e; }
+        .sm-retry-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-align:center;transition:background 0.15s,transform 0.1s;font-family:inherit;box-sizing:border-box; }
+        .sm-retry-btn:hover { background:#3d8fff;transform:scale(1.02); }
+        .sm-retry-btn:active { transform:scale(0.98); }
+        .sm-retry-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
         .sm-auth-banner { display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border-radius:10px;padding:10px 14px;margin-bottom:16px; }
         .sm-auth-avatar { width:32px;height:32px;border-radius:50%;background:#2a7fff;color:#fff;font-size:14px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit; }
         .sm-auth-email { flex:1;font-size:13px;color:#a0c4e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left; }
@@ -98,7 +104,12 @@ function injectStyles(): void {
 
 export type SettingsButtonVariant = 'scorebar-left'
 
-export function createSettingsButton(variant: SettingsButtonVariant = 'scorebar-left'): HTMLButtonElement {
+export interface SettingsMenuOptions {
+    /** When provided, a "Play again" button is rendered at the bottom of the menu. */
+    onRetry?: () => void
+}
+
+export function createSettingsButton(variant: SettingsButtonVariant = 'scorebar-left', opts: SettingsMenuOptions = {}): HTMLButtonElement {
     injectStyles()
     const btn = document.createElement('button')
     btn.type = 'button'
@@ -107,7 +118,7 @@ export function createSettingsButton(variant: SettingsButtonVariant = 'scorebar-
     btn.innerHTML = COG_ICON
     btn.addEventListener('click', (e) => {
         e.stopPropagation()
-        showSettingsMenu()
+        showSettingsMenu(opts)
     })
     return btn
 }
@@ -117,7 +128,7 @@ export function createSettingsButton(variant: SettingsButtonVariant = 'scorebar-
 let backdrop: HTMLDivElement | null = null
 let keyListener: ((e: KeyboardEvent) => void) | null = null
 
-export function showSettingsMenu(): void {
+export function showSettingsMenu(opts: SettingsMenuOptions = {}): void {
     hideSettingsMenu()
     injectStyles()
 
@@ -135,6 +146,7 @@ export function showSettingsMenu(): void {
             <button class="sm-auth-link" type="button"></button>
         </div>
         ${renderLanguageRow()}
+        ${opts.onRetry ? `<button class="sm-retry-btn" type="button">${RETRY_ICON}${t('settings.retry')}</button>` : ''}
         <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
         <button class="sm-share-btn">${SHARE_ICON}${t('settings.share')}</button>
         <div class="sm-store-links">
@@ -149,6 +161,14 @@ export function showSettingsMenu(): void {
     wireLanguageButtons(card)
     wireShareButton(card)
     wireAuthRow(card)
+
+    if (opts.onRetry) {
+        const retryBtn = card.querySelector('.sm-retry-btn') as HTMLButtonElement | null
+        retryBtn?.addEventListener('click', () => {
+            hideSettingsMenu()
+            opts.onRetry!()
+        })
+    }
 
     const closeBtn = card.querySelector('.sm-close') as HTMLButtonElement
     closeBtn.addEventListener('click', hideSettingsMenu)
