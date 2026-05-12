@@ -19,6 +19,7 @@ function utcDateAndMinute(): { date: string; minute: string } {
 
 export async function logGameStarted(quizId: string): Promise<void> {
     if (!quizId) return
+    if (import.meta.env.DEV) return
     try {
         await addDoc(collection(db, 'games_started'), {
             quiz_id: quizId,
@@ -35,6 +36,7 @@ export async function logGameEnded(
     total: number,
 ): Promise<void> {
     if (!quizId) return
+    if (import.meta.env.DEV) return
     try {
         await addDoc(collection(db, 'games_ended'), {
             quiz_id: quizId,
