@@ -1,0 +1,868 @@
+<canvas id="renderCanvas" width="1280" height="720"></canvas>
+
+<style is:global>
+    html, body { height: 100%; margin: 0; }
+    #renderCanvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        background: #102030;
+        touch-action: none;
+    }
+    #score {
+        position: fixed;
+        top: 18px; left: 18px;
+        font-family: "Impact", "Arial Black", sans-serif;
+        font-weight: 900;
+        font-size: 48px;
+        line-height: 1;
+        color: #ffd400;
+        -webkit-text-stroke: 3px #000;
+        text-shadow: 0 4px 0 #b35d00, 0 6px 18px rgba(0, 0, 0, 0.55);
+        letter-spacing: 1px;
+        pointer-events: none;
+        z-index: 50;
+    }
+    #score .label { font-size: 16px; letter-spacing: 2px; display: block; }
+    #highscore {
+        position: fixed;
+        top: 18px; right: 18px;
+        text-align: right;
+        font-family: "Impact", "Arial Black", sans-serif;
+        font-weight: 900;
+        font-size: 36px;
+        line-height: 1;
+        color: #ffd400;
+        -webkit-text-stroke: 3px #000;
+        text-shadow: 0 3px 0 #b35d00, 0 5px 14px rgba(0, 0, 0, 0.55);
+        letter-spacing: 1px;
+        pointer-events: none;
+        z-index: 50;
+    }
+    #highscore .label {
+        display: block;
+        font-size: 16px;
+        letter-spacing: 2px;
+        -webkit-text-stroke: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+    }
+    #hud {
+        position: fixed;
+        top: 90px; left: 18px;
+        font-family: monospace;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.45);
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.5;
+        pointer-events: none;
+        z-index: 50;
+    }
+    #missionBanner {
+        position: fixed;
+        bottom: 224px;
+        right: 18px;
+        text-align: right;
+        font-family: "Impact", "Arial Black", sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 50;
+    }
+    #missionBanner .next {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 24px;
+        line-height: 1;
+        color: #fff;
+        -webkit-text-stroke: 2px #000;
+        text-shadow: 0 2px 0 #444, 0 3px 10px rgba(0, 0, 0, 0.6);
+        letter-spacing: 0.5px;
+    }
+    #missionBanner .main {
+        display: block;
+        font-size: 56px;
+        line-height: 1;
+        letter-spacing: 1px;
+        color: #ffd400;
+        -webkit-text-stroke: 3px #000;
+        text-shadow:
+            0 4px 0 #b35d00,
+            0 6px 18px rgba(0, 0, 0, 0.55);
+    }
+    #minimap {
+        position: fixed;
+        bottom: 12px; right: 12px;
+        width: 200px; height: 200px;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+        background: #000;
+        z-index: 50;
+    }
+    #clock {
+        position: fixed;
+        bottom: 332px; right: 18px;
+        font-family: "Courier New", "Menlo", monospace;
+        font-size: 72px;
+        font-weight: bold;
+        color: #ff3a3a;
+        text-shadow:
+            0 0 12px rgba(255, 60, 60, 0.85),
+            0 4px 12px rgba(0, 0, 0, 0.6);
+        letter-spacing: 4px;
+        pointer-events: none;
+        z-index: 50;
+    }
+    #clock.warn { color: #ff1010; animation: clockPulse 0.5s infinite alternate; }
+    @keyframes clockPulse {
+        from { transform: scale(1.0); }
+        to   { transform: scale(1.12); }
+    }
+    #gameOver {
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-family: "Impact", "Arial Black", sans-serif;
+        font-weight: 900;
+        color: #ff2020;
+        text-transform: uppercase;
+        letter-spacing: 6px;
+        display: none;
+        pointer-events: none;
+        z-index: 100;
+    }
+    #gameOver .big {
+        display: block;
+        font-size: 120px;
+        -webkit-text-stroke: 4px #000;
+        text-shadow: 0 6px 0 #660000, 0 12px 32px rgba(0, 0, 0, 0.8);
+    }
+    #gameOver .retry {
+        display: block;
+        margin-top: 16px;
+        font-size: 32px;
+        color: #fff;
+        -webkit-text-stroke: 2px #000;
+        text-shadow: 0 3px 0 #444, 0 4px 12px rgba(0, 0, 0, 0.7);
+        letter-spacing: 4px;
+        animation: retryBlink 0.9s infinite alternate;
+    }
+    @keyframes retryBlink {
+        from { opacity: 0.45; }
+        to   { opacity: 1; }
+    }
+    #tweaks {
+        position: fixed;
+        bottom: 12px; left: 12px;
+        font-family: monospace;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.55);
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        z-index: 50;
+    }
+    #tweaks .row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+    #tweaks label { width: 110px; }
+    #tweaks input[type="range"] { width: 200px; }
+    #tweaks .val { width: 70px; text-align: right; }
+
+    .arrival {
+        position: fixed;
+        left: 50%;
+        bottom: 30%;
+        transform: translateX(-50%);
+        font-family: sans-serif;
+        font-size: 48px;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        pointer-events: none;
+        z-index: 60;
+        animation: arrival-flyup 2s ease-out forwards;
+    }
+    @keyframes arrival-flyup {
+        0%   { transform: translate(-50%, 0)     scale(0.7); opacity: 0; }
+        15%  { transform: translate(-50%, 0)     scale(1.0); opacity: 1; }
+        100% { transform: translate(-50%, -300px) scale(1.0); opacity: 0; }
+    }
+</style>
+
+<div id="score"><span class="label">SCORE</span><span id="scoreVal">0</span></div>
+<div id="highscore"><span class="label">HI SCORE</span><span id="highscoreVal">0</span></div>
+<div id="hud">↑ / ↓ drive &nbsp;·&nbsp; ← / → turn</div>
+<div id="missionBanner"></div>
+<div id="clock">20</div>
+<div id="gameOver">
+    <span class="big">Game Over</span>
+    <span class="retry">Press R to retry</span>
+</div>
+<canvas id="minimap" width="400" height="400"></canvas>
+<div id="tweaks">
+    <div class="row">
+        <label>REVEAL (km)</label>
+        <input type="range" id="t_reveal" min="50" max="5000" step="50" />
+        <span class="val" id="t_reveal_v"></span>
+    </div>
+    <div class="row">
+        <label>CAM HEIGHT</label>
+        <input type="range" id="t_height" min="0" max="4" step="0.05" />
+        <span class="val" id="t_height_v"></span>
+    </div>
+    <div class="row">
+        <label>CAM LOOK AHEAD</label>
+        <input type="range" id="t_ahead" min="0" max="4" step="0.05" />
+        <span class="val" id="t_ahead_v"></span>
+    </div>
+</div>
+
+<script>
+    import '@babylonjs/core/Shaders/default.fragment';
+    import '@babylonjs/core/Shaders/default.vertex';
+
+    import { EarthGlobe, EARTH_RADIUS } from '../../earth-globe';
+    import { loadCountriesBin } from '../../earth-globe/countries-bin-loader';
+    import { Engine } from '@babylonjs/core/Engines/engine';
+    import { Scene } from '@babylonjs/core/scene';
+    import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+    import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
+    import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+    import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+    import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+    import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+    import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
+    import { Vector3, Quaternion, Matrix } from '@babylonjs/core/Maths/math.vector';
+    import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
+    import { asset } from '../../shared/asset-path';
+
+    type LocationRecord = { name: string; lat: number; lng: number };
+    type LocationsFile = Record<string, LocationRecord>;
+
+    // Taxi dimensions (world units).
+    const BODY_LEN = 0.18;
+    const BODY_WIDTH = 0.08;
+    const BODY_HEIGHT = 0.04;
+    const CABIN_LEN = 0.08;
+    const CABIN_HEIGHT = 0.035;
+
+    // Driving.
+    const ACCEL = 0.5;
+    const MAX_FWD_SPEED = 1.5;
+    const MAX_REV_SPEED = -0.6;
+    const TURN_RATE  = 1.8;
+    const DRIFT_TURN_MULT  = 2.2;   // sharper turn while handbrake held
+    const DRIFT_BRAKE      = 0.6;   // rad/s² — handbrake deceleration
+    const SLIP_RATE_DRIFT  = 1.0;   // rad/s — how fast motion catches up to facing while drifting (low = long slide)
+    const SLIP_RATE_NORMAL = 20.0;  // rad/s — effectively instant when not drifting
+
+    // Chase camera offsets (world units).
+    const CAMERA_BACK = 0.75;
+    let CAMERA_HEIGHT = 0.7;
+    let CAMERA_LOOK_AHEAD = 0.6;
+
+    const bindSlider = (id: string, valId: string, initial: number, apply: (v: number) => void) => {
+        const input = document.getElementById(id) as HTMLInputElement;
+        const val = document.getElementById(valId)!;
+        input.value = String(initial);
+        val.textContent = initial.toFixed(2);
+        input.addEventListener('input', () => {
+            const v = parseFloat(input.value);
+            apply(v);
+            val.textContent = v.toFixed(2);
+        });
+    };
+    bindSlider('t_height', 't_height_v', CAMERA_HEIGHT,     v => { CAMERA_HEIGHT = v; });
+    bindSlider('t_ahead',  't_ahead_v',  CAMERA_LOOK_AHEAD, v => { CAMERA_LOOK_AHEAD = v; });
+
+    // Driving state.
+    let lat = 0;
+    let lon = 0;
+    let heading = 0;          // facing direction (visual)
+    let motionHeading = 0;    // actual direction of travel — lags `heading` during drift
+    let speed = 0;
+
+    // Countdown clock + score.
+    const START_TIME = 20;
+    const TIME_BONUS_INITIAL = 5;       // seconds added on the FIRST pickup
+    const TIME_BONUS_DECAY = 0.9;       // each subsequent bonus = previous * this
+    let timeLeft = START_TIME;
+    let gameOver = false;
+    let score = 0;
+    let timeBonus = TIME_BONUS_INITIAL;   // current bonus, decays per pickup
+    let lastShownSecond = Math.ceil(START_TIME);
+    const clockEl = document.getElementById('clock')!;
+    const gameOverEl = document.getElementById('gameOver')!;
+    const scoreValEl = document.getElementById('scoreVal')!;
+    const highscoreValEl = document.getElementById('highscoreVal')!;
+
+    const HIGHSCORE_KEY = 'globe-taxi.highscore';
+    let highscore = parseInt(localStorage.getItem(HIGHSCORE_KEY) || '0', 10) || 0;
+    highscoreValEl.textContent = highscore.toString();
+
+    // Shift+H clears the persisted high score.
+    window.addEventListener('keydown', (e) => {
+        if (e.shiftKey && (e.key === 'H' || e.key === 'h')) {
+            localStorage.removeItem(HIGHSCORE_KEY);
+            highscore = 0;
+            highscoreValEl.textContent = '0';
+        }
+    });
+
+    // Play a one-shot decoded AudioBuffer. No-op if context or buffer not ready.
+    const playBuf = (buf: AudioBuffer | null) => {
+        if (!audioCtx || !buf) return;
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        src.connect(audioCtx.destination);
+        src.start();
+    };
+    const playTick = (which: 1 | 2) => playBuf(which === 1 ? tickBuf1 : tickBuf2);
+
+    const keys: Record<string, boolean> = {};
+    const trackedKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '];
+
+    // Engine sound — Web Audio synth. Lazy-init on first arrow keydown
+    // (browsers block audio until a user gesture).
+    let audioCtx: AudioContext | null = null;
+    let engineOsc: OscillatorNode | null = null;
+    let engineSubOsc: OscillatorNode | null = null;
+    let engineGain: GainNode | null = null;
+    let screechGain: GainNode | null = null;
+    let screechFilter: BiquadFilterNode | null = null;
+    let tickBuf1: AudioBuffer | null = null;
+    let tickBuf2: AudioBuffer | null = null;
+    let correctBuf: AudioBuffer | null = null;
+    let timesUpBuf: AudioBuffer | null = null;
+    const ensureEngineAudio = () => {
+        if (audioCtx) { audioCtx.resume(); return; }
+        const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+        audioCtx = new Ctx() as AudioContext;
+
+        engineOsc = audioCtx.createOscillator();
+        engineOsc.type = 'sawtooth';
+        engineOsc.frequency.value = 55;
+
+        engineSubOsc = audioCtx.createOscillator();
+        engineSubOsc.type = 'square';
+        engineSubOsc.frequency.value = 27;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 380;
+        filter.Q.value = 1.5;
+
+        engineGain = audioCtx.createGain();
+        engineGain.gain.value = 0;
+
+        engineOsc.connect(filter);
+        engineSubOsc.connect(filter);
+        filter.connect(engineGain);
+        engineGain.connect(audioCtx.destination);
+
+        engineOsc.start();
+        engineSubOsc.start();
+
+        // Tire screech — white noise through a peaky band-pass.
+        const noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+        const noiseData = noiseBuf.getChannelData(0);
+        for (let i = 0; i < noiseData.length; i++) noiseData[i] = Math.random() * 2 - 1;
+        const noiseSrc = audioCtx.createBufferSource();
+        noiseSrc.buffer = noiseBuf;
+        noiseSrc.loop = true;
+        screechFilter = audioCtx.createBiquadFilter();
+        screechFilter.type = 'bandpass';
+        screechFilter.frequency.value = 3500;
+        screechFilter.Q.value = 7;
+        screechGain = audioCtx.createGain();
+        screechGain.gain.value = 0;
+        noiseSrc.connect(screechFilter);
+        screechFilter.connect(screechGain);
+        screechGain.connect(audioCtx.destination);
+        noiseSrc.start();
+
+        // Decode the tick samples once the context exists.
+        const decodeTick = (url: string): Promise<AudioBuffer> =>
+            fetch(url).then(r => r.arrayBuffer()).then(b => audioCtx!.decodeAudioData(b));
+        decodeTick(asset('globe-taxi/Tick1_100.wav')).then(b => { tickBuf1 = b; });
+        decodeTick(asset('globe-taxi/Tick2_100.wav')).then(b => { tickBuf2 = b; });
+        decodeTick(asset('globe-taxi/correct_6.wav')).then(b => { correctBuf = b; });
+        decodeTick(asset('globe-taxi/times_up.wav')).then(b => { timesUpBuf = b; });
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if (trackedKeys.includes(e.key)) {
+            ensureEngineAudio();
+            keys[e.key] = true;
+            e.preventDefault();
+        }
+    });
+    window.addEventListener('keyup', (e) => {
+        if (trackedKeys.includes(e.key)) { keys[e.key] = false; e.preventDefault(); }
+    });
+
+    const wrapPi = (x: number) => {
+        const twoPi = Math.PI * 2;
+        return ((x + Math.PI) % twoPi + twoPi) % twoPi - Math.PI;
+    };
+
+    // Distance thresholds (radians on the unit sphere).
+    const EARTH_RADIUS_KM = 6371;
+    let   REVEAL_RADIUS_KM = 3000;
+    let   REVEAL_RADIUS    = REVEAL_RADIUS_KM / EARTH_RADIUS_KM;
+    const ARRIVAL_RADIUS   = 150 / EARTH_RADIUS_KM;
+
+    {
+        const input = document.getElementById('t_reveal') as HTMLInputElement;
+        const val = document.getElementById('t_reveal_v')!;
+        input.value = String(REVEAL_RADIUS_KM);
+        val.textContent = `${REVEAL_RADIUS_KM} km`;
+        input.addEventListener('input', () => {
+            REVEAL_RADIUS_KM = parseInt(input.value, 10);
+            REVEAL_RADIUS = REVEAL_RADIUS_KM / EARTH_RADIUS_KM;
+            val.textContent = `${REVEAL_RADIUS_KM} km`;
+        });
+    }
+
+    const angularDistance = (
+        lat1: number, lon1: number, lat2: number, lon2: number,
+    ) => {
+        const dLat = lat2 - lat1;
+        const dLon = lon2 - lon1;
+        const a = Math.sin(dLat / 2) ** 2
+            + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+        return 2 * Math.asin(Math.min(1, Math.sqrt(a)));
+    };
+
+    const showArrival = (name: string) => {
+        const el = document.createElement('div');
+        el.className = 'arrival';
+        el.textContent = name;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2100);
+    };
+
+    const locationsPromise: Promise<LocationRecord[]> = fetch(asset('locations.json'))
+        .then((r) => r.json() as Promise<LocationsFile>)
+        .then((obj) => Object.values(obj));
+
+    const pickRandom = <T,>(pool: T[]): T => pool[Math.floor(Math.random() * pool.length)];
+
+    // Minimap setup deferred until the main globe is ready (avoids any startup
+    // contention between two Babylon engines created at the same instant).
+    // Hide the target marker on the minimap for now; flip to true to show it.
+    const SHOW_TARGET_ON_MINIMAP = false;
+
+    type UpdateMinimap = (
+        taxiLatRad: number, taxiLonRad: number, taxiHeadingRad: number,
+        target: { latRad: number; lonRad: number; revealed: boolean } | null,
+    ) => void;
+
+    const setupMinimap = (): UpdateMinimap => {
+        const minimapCanvas = document.getElementById('minimap') as HTMLCanvasElement;
+        const miniEngine = new Engine(minimapCanvas, true);
+        const miniScene = new Scene(miniEngine);
+        miniScene.clearColor = new Color4(0.04, 0.06, 0.12, 1);
+        const miniCamera = new ArcRotateCamera('miniCam', 0, Math.PI / 2, 3.3, Vector3.Zero(), miniScene);
+        new HemisphericLight('miniLight', new Vector3(0.5, 1, 0.3), miniScene);
+
+        const miniGlobe = MeshBuilder.CreateSphere('miniGlobe', { diameter: 2, segments: 32 }, miniScene);
+        const miniGlobeMat = new StandardMaterial('miniGlobeMat', miniScene);
+        miniGlobeMat.specularColor = new Color3(0.05, 0.05, 0.1);
+        miniGlobeMat.emissiveColor = new Color3(0.25, 0.25, 0.25);
+        miniGlobe.material = miniGlobeMat;
+
+        // Build the minimap texture by rasterising the actual country polygons.
+        loadCountriesBin(asset('countries-enriched.bin')).then((countries) => {
+            const W = 2048, H = 1024;
+            const c = document.createElement('canvas');
+            c.width = W;
+            c.height = H;
+            const ctx = c.getContext('2d')!;
+
+            // Ocean.
+            ctx.fillStyle = '#1f6bcc';
+            ctx.fillRect(0, 0, W, H);
+
+            const project = (lat: number, lon: number) => ({
+                x: (lon + 180) / 360 * W,
+                y: (90 - lat) / 180 * H,
+            });
+            const tracePolygon = (poly: number[][]) => {
+                ctx.beginPath();
+                for (let i = 0; i < poly.length; i++) {
+                    const [lat, lon] = poly[i];
+                    const p = project(lat, lon);
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                }
+                ctx.closePath();
+            };
+
+            // Land — collect lake polygon indices per country so we skip them.
+            ctx.fillStyle = '#46b15a';
+            for (const country of countries) {
+                const lakeIdx = new Set<number>();
+                if (country.lakes) {
+                    for (const ids of Object.values(country.lakes)) {
+                        for (const i of ids) lakeIdx.add(i);
+                    }
+                }
+                for (let p = 0; p < country.paths.length; p++) {
+                    if (lakeIdx.has(p)) continue;
+                    tracePolygon(country.paths[p]);
+                    ctx.fill();
+                }
+            }
+
+            // Punch lakes back to ocean color.
+            ctx.fillStyle = '#1f6bcc';
+            for (const country of countries) {
+                if (!country.lakes) continue;
+                for (const ids of Object.values(country.lakes)) {
+                    for (const i of ids) {
+                        const poly = country.paths[i];
+                        if (!poly) continue;
+                        tracePolygon(poly);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            const tex = new Texture(c.toDataURL(), miniScene, true, false);
+            tex.uScale = -1;        // un-mirror to match Babylon's sphere UV orientation
+            tex.uOffset = 0.5;      // and shift 180° to align longitudes
+            miniGlobeMat.diffuseTexture = tex;
+        });
+
+        // Target marker: small red sphere.
+        const miniTarget = MeshBuilder.CreateSphere('miniTarget', { diameter: 0.12, segments: 12 }, miniScene);
+        const miniTargetMat = new StandardMaterial('miniTarget_mat', miniScene);
+        miniTargetMat.emissiveColor = new Color3(1.0, 0.2, 0.2);
+        miniTargetMat.disableLighting = true;
+        miniTarget.material = miniTargetMat;
+        miniTarget.setEnabled(false);
+
+        // Taxi marker: flat triangle arrow lying on the surface, tip = heading.
+        // CreateDisc with tessellation=3 gives an equilateral triangle in the
+        // XY plane with one vertex on +X; scaling X elongates it into an arrow.
+        const miniTaxi = MeshBuilder.CreateDisc('miniTaxi', {
+            radius: 0.07,
+            tessellation: 3,
+            sideOrientation: 2,    // DOUBLESIDE so the arrow renders from either face
+        }, miniScene);
+        miniTaxi.scaling.x = 1.8;
+        miniTaxi.rotationQuaternion = Quaternion.Identity();
+        const miniTaxiMat = new StandardMaterial('miniTaxi_mat', miniScene);
+        miniTaxiMat.emissiveColor = new Color3(1.0, 0.85, 0.0);
+        miniTaxiMat.disableLighting = true;
+        miniTaxi.material = miniTaxiMat;
+
+        const miniSurface = (latRad: number, lonRad: number, alt = 0.04) => {
+            const r = 1 + alt;
+            return new Vector3(
+                r * Math.cos(latRad) * Math.cos(lonRad),
+                r * Math.sin(latRad),
+                r * Math.cos(latRad) * Math.sin(lonRad),
+            );
+        };
+
+        miniEngine.runRenderLoop(() => miniScene.render());
+
+        return (taxiLatRad, taxiLonRad, taxiHeadingRad, target) => {
+            miniCamera.alpha = taxiLonRad;
+            miniCamera.beta = Math.PI / 2 - taxiLatRad;
+
+            const surface = miniSurface(taxiLatRad, taxiLonRad);
+            miniTaxi.position.copyFrom(surface);
+
+            // Build a frame at the taxi: normal = outward, forward = heading
+            // tangent. Disc's local +X = arrow tip → forward; local +Z = disc
+            // normal → sphere normal.
+            const normal = surface.normalizeToNew();
+            const east = new Vector3(-Math.sin(taxiLonRad), 0, Math.cos(taxiLonRad));
+            const north = Vector3.Cross(east, normal).normalize();
+            const forward = east.scale(Math.sin(taxiHeadingRad))
+                .add(north.scale(Math.cos(taxiHeadingRad)))
+                .normalize();
+            const right = Vector3.Cross(normal, forward).normalize();
+
+            const m = [
+                forward.x, forward.y, forward.z, 0,
+                right.x,   right.y,   right.z,   0,
+                normal.x,  normal.y,  normal.z,  0,
+                0, 0, 0, 1,
+            ];
+            Quaternion.FromRotationMatrixToRef(Matrix.FromArray(m), miniTaxi.rotationQuaternion!);
+
+            if (SHOW_TARGET_ON_MINIMAP && target && target.revealed) {
+                miniTarget.setEnabled(true);
+                miniTarget.position.copyFrom(miniSurface(target.latRad, target.lonRad));
+            } else {
+                miniTarget.setEnabled(false);
+            }
+        };
+    };
+
+    new EarthGlobe({
+        canvasId: 'renderCanvas',
+        onReady: async (globe) => {
+            const scene = globe.getScene();
+            const camera = globe.getCamera();
+
+            // Build taxi as a parent transform with body + cabin children.
+            const taxi = new TransformNode('taxi', scene);
+            taxi.rotationQuaternion = Quaternion.Identity();
+
+            const body = MeshBuilder.CreateBox('taxiBody', {
+                width: BODY_WIDTH, height: BODY_HEIGHT, depth: BODY_LEN,
+            }, scene);
+            const bodyMat = new StandardMaterial('taxiBodyMat', scene);
+            bodyMat.diffuseColor = new Color3(1.0, 0.82, 0.10);
+            bodyMat.emissiveColor = new Color3(0.4, 0.32, 0.04);
+            body.material = bodyMat;
+            body.parent = taxi;
+            body.position.y = BODY_HEIGHT / 2;
+
+            const cabin = MeshBuilder.CreateBox('taxiCabin', {
+                width: BODY_WIDTH * 0.85, height: CABIN_HEIGHT, depth: CABIN_LEN,
+            }, scene);
+            const cabinMat = new StandardMaterial('taxiCabinMat', scene);
+            cabinMat.diffuseColor = new Color3(0.15, 0.15, 0.18);
+            cabinMat.emissiveColor = new Color3(0.04, 0.04, 0.05);
+            cabin.material = cabinMat;
+            cabin.parent = taxi;
+            cabin.position.y = BODY_HEIGHT + CABIN_HEIGHT / 2;
+            cabin.position.z = -BODY_LEN * 0.05;
+
+            // Single mission target — rerolls when reached.
+            type Target = {
+                name: string;
+                latRad: number;
+                lonRad: number;
+                markerId: number;
+                revealed: boolean;
+            };
+            const banner = document.getElementById('missionBanner')!;
+            const allLocations = await locationsPromise;
+            let target: Target | null = null;
+            let nextLoc: LocationRecord | null = null;
+
+            const renderBanner = () => {
+                if (!target) { banner.textContent = ''; return; }
+                banner.innerHTML = (nextLoc ? `<span class="next">then ${nextLoc.name}</span>` : '')
+                    + `<span class="main">Goto ${target.name}!</span>`;
+            };
+
+            const makeTarget = (loc: LocationRecord): Target => {
+                const markerId = globe.acquireMarker(loc.lat, loc.lng);
+                globe.setMarkerScale(markerId, 1.25);
+                globe.hideMarker(markerId);
+                return {
+                    name: loc.name,
+                    latRad: loc.lat * Math.PI / 180,
+                    lonRad: loc.lng * Math.PI / 180,
+                    markerId,
+                    revealed: false,
+                };
+            };
+
+            const advanceTarget = () => {
+                target = nextLoc ? makeTarget(nextLoc) : makeTarget(pickRandom(allLocations));
+                nextLoc = pickRandom(allLocations);
+                renderBanner();
+            };
+            // Bootstrap: first target + queued next.
+            target = makeTarget(pickRandom(allLocations));
+            nextLoc = pickRandom(allLocations);
+            renderBanner();
+
+            const resetGame = () => {
+                // Release any live marker and clear targets.
+                if (target) globe.releaseMarker(target.markerId);
+                target = makeTarget(pickRandom(allLocations));
+                nextLoc = pickRandom(allLocations);
+                renderBanner();
+                lat = 0; lon = 0; heading = 0; motionHeading = 0; speed = 0;
+                score = 0;
+                scoreValEl.textContent = '0';
+                timeLeft = START_TIME;
+                timeBonus = TIME_BONUS_INITIAL;
+                lastShownSecond = Math.ceil(START_TIME);
+                gameOver = false;
+                gameOverEl.style.display = 'none';
+                clockEl.classList.remove('warn');
+            };
+
+            window.addEventListener('keydown', (e) => {
+                if ((e.key === 'r' || e.key === 'R') && gameOver) {
+                    resetGame();
+                }
+            });
+
+            // Replace EarthGlobe's ArcRotateCamera with a UniversalCamera so we
+            // can set position + target + upVector directly each frame (and so
+            // the camera's roll matches the taxi's surface frame).
+            camera.detachControl();
+            const chaseCam = new UniversalCamera('chaseCam', Vector3.Zero(), scene);
+            chaseCam.minZ = 0.01;
+            scene.activeCamera = chaseCam;
+
+            // Minimap engine + scene are created now that the main globe is up.
+            const updateMinimap = setupMinimap();
+
+            scene.onBeforeRenderObservable.add(() => {
+                const dt = Math.min(scene.getEngine().getDeltaTime() / 1000, 0.1);
+
+                // Tick the countdown clock.
+                if (!gameOver) {
+                    timeLeft -= dt;
+                    if (timeLeft <= 0) {
+                        timeLeft = 0;
+                        gameOver = true;
+                        gameOverEl.style.display = 'block';
+                        speed = 0;
+                        playBuf(timesUpBuf);
+                    }
+                    const shown = Math.ceil(timeLeft);
+                    // Tic-toc SFX during the last 10 seconds (one per crossing).
+                    if (shown < lastShownSecond && shown <= 10 && shown >= 1) {
+                        playTick(shown % 2 === 0 ? 2 : 1);
+                    }
+                    lastShownSecond = shown;
+                    clockEl.textContent = shown.toString();
+                    clockEl.classList.toggle('warn', timeLeft <= 5);
+                }
+
+                if (!gameOver) {
+                    const drifting = !!keys[' '];
+
+                    const turn = TURN_RATE * (drifting ? DRIFT_TURN_MULT : 1);
+                    if (keys['ArrowLeft'])  heading -= turn * dt;
+                    if (keys['ArrowRight']) heading += turn * dt;
+                    heading = wrapPi(heading);
+
+                    // No throttle while handbrake held — drift brakes instead.
+                    if (!drifting && keys['ArrowUp'])   speed += ACCEL * dt;
+                    if (!drifting && keys['ArrowDown']) speed -= ACCEL * dt;
+                    if (drifting) {
+                        const brake = DRIFT_BRAKE * dt;
+                        if (speed >  brake) speed -= brake;
+                        else if (speed < -brake) speed += brake;
+                        else speed = 0;
+                    }
+                    speed = Math.max(MAX_REV_SPEED, Math.min(MAX_FWD_SPEED, speed));
+
+                    // Motion heading converges toward facing — slowly while
+                    // drifting (so the taxi slides sideways for a moment),
+                    // near-instantly otherwise.
+                    const slipRate = drifting ? SLIP_RATE_DRIFT : SLIP_RATE_NORMAL;
+                    let dh = wrapPi(heading - motionHeading);
+                    const maxStep = slipRate * dt;
+                    if (Math.abs(dh) > maxStep) dh = Math.sign(dh) * maxStep;
+                    motionHeading = wrapPi(motionHeading + dh);
+                }
+
+                // Engine sound — pitch + volume track speed, with per-frame
+                // random jitter so it doesn't sound like a clean tone.
+                if (audioCtx && engineOsc && engineSubOsc && engineGain) {
+                    const t = audioCtx.currentTime;
+                    const speedRatio = Math.min(1, Math.abs(speed) / MAX_FWD_SPEED);
+                    const baseHz = 55 + speedRatio * 130;
+                    // ±8% pitch jitter — random each frame, no periodic LFO.
+                    const jitterHz = baseHz * (Math.random() - 0.5) * 0.16;
+                    engineOsc.frequency.setTargetAtTime(baseHz + jitterHz, t, 0.03);
+                    engineSubOsc.frequency.setTargetAtTime((baseHz + jitterHz) * 0.5, t, 0.03);
+                    // Slight volume jitter too for liveliness.
+                    const base = 0.03 + speedRatio * 0.14;
+                    const gainJitter = (Math.random() - 0.5) * 0.015;
+                    engineGain.gain.setTargetAtTime(gameOver ? 0 : base + gainJitter, t, 0.08);
+
+                    // Tire screech — audible while drifting and actually rolling.
+                    if (screechGain && screechFilter) {
+                        const screeching = !gameOver && !!keys[' '] && Math.abs(speed) > 0.2;
+                        const screechVol = screeching ? 0.08 + speedRatio * 0.06 : 0;
+                        screechGain.gain.setTargetAtTime(screechVol, t, 0.04);
+                        // Wobble the band-pass frequency for a livelier "tearing" texture.
+                        const fc = 2800 + (Math.random() - 0.5) * 1200;
+                        screechFilter.frequency.setTargetAtTime(fc, t, 0.05);
+                    }
+                }
+
+                if (speed !== 0) {
+                    const d = speed * dt;
+                    const sinLat = Math.sin(lat);
+                    const cosLat = Math.cos(lat);
+                    const sinD = Math.sin(d);
+                    const cosD = Math.cos(d);
+                    const sinLat2 = sinLat * cosD + cosLat * sinD * Math.cos(motionHeading);
+                    const lat2 = Math.asin(Math.max(-1, Math.min(1, sinLat2)));
+                    const lon2 = lon + Math.atan2(
+                        Math.sin(motionHeading) * sinD * cosLat,
+                        cosD - sinLat * sinLat2,
+                    );
+                    lat = lat2;
+                    lon = wrapPi(lon2);
+                }
+
+                const latDeg = lat * 180 / Math.PI;
+                const lonDeg = lon * 180 / Math.PI;
+                const { position, normal } = globe.positionAtLatLon(latDeg, lonDeg, 0);
+                taxi.position.copyFrom(position);
+
+                const east = new Vector3(-Math.sin(lon), 0, Math.cos(lon));
+                const north = Vector3.Cross(east, normal).normalize();
+                const forward = east.scale(Math.sin(heading)).add(north.scale(Math.cos(heading))).normalize();
+                const right = Vector3.Cross(normal, forward).normalize();
+
+                const m = [
+                    right.x, right.y, right.z, 0,
+                    normal.x, normal.y, normal.z, 0,
+                    forward.x, forward.y, forward.z, 0,
+                    0, 0, 0, 1,
+                ];
+                Quaternion.FromRotationMatrixToRef(Matrix.FromArray(m), taxi.rotationQuaternion!);
+
+                // Reveal + arrival.
+                if (target) {
+                    const dist = angularDistance(lat, lon, target.latRad, target.lonRad);
+                    if (!target.revealed && dist <= REVEAL_RADIUS) {
+                        target.revealed = true;
+                        globe.showMarker(target.markerId);
+                    }
+                    if (dist <= ARRIVAL_RADIUS) {
+                        const reached = target;
+                        globe.releaseMarker(reached.markerId);
+                        showArrival(reached.name);
+                        playBuf(correctBuf);
+                        timeLeft += timeBonus;
+                        timeBonus *= TIME_BONUS_DECAY;
+                        score += 1;
+                        scoreValEl.textContent = score.toString();
+                        if (score > highscore) {
+                            highscore = score;
+                            highscoreValEl.textContent = highscore.toString();
+                            localStorage.setItem(HIGHSCORE_KEY, highscore.toString());
+                        }
+                        advanceTarget();
+                    }
+                }
+
+                // Chase camera — UniversalCamera with up vector locked to the
+                // taxi's surface normal so the view rolls with the taxi.
+                const camPos = position
+                    .add(normal.scale(CAMERA_HEIGHT))
+                    .add(forward.scale(-CAMERA_BACK));
+                const lookAt = position.add(forward.scale(CAMERA_LOOK_AHEAD));
+                chaseCam.position.copyFrom(camPos);
+                chaseCam.upVector.copyFrom(normal);
+                chaseCam.setTarget(lookAt);
+
+                updateMinimap(lat, lon, heading, target);
+            });
+        },
+    });
+</script>

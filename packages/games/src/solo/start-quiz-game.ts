@@ -13,7 +13,6 @@ import { initI18n, t } from '../shared/i18n/i18n'
 import { mountLanguageSwitcher } from '../shared/ui/language-switcher'
 import { createLoadingScreen } from '../shared/ui/loading-screen'
 import { preloadQuizImages } from '../shared/ui/image-preloader'
-import { showMobileAppAd } from '../shared/ui/mobile-app-ad'
 import { checkAndUpdatePersonalBest } from '../shared/ui/result-overlay'
 import { showConsentBannerIfNeeded } from '../shared/ui/consent-banner'
 import { initAnalytics } from '../shared/analytics'
@@ -61,9 +60,6 @@ export async function startQuizGame(config: QuizGameConfig): Promise<void> {
 
     // Mount language switcher (no-op when <2 available locales)
     mountLanguageSwitcher()
-
-    // 2. Mobile app ad (desktop only)
-    showMobileAppAd()
 
     // 3. Consent banner & analytics
     showConsentBannerIfNeeded((granted) => {
