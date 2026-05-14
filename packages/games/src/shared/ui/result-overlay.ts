@@ -93,17 +93,18 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-sprite { width:100px;height:100px;object-fit:contain;flex-shrink:0; }
             .ro-message { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:24px;font-family:Arial,sans-serif; }
             .ro-share { border-top:1px solid rgba(255,255,255,0.15);padding-top:20px;margin-top:4px; }
-            .ro-share-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 20px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-bottom:20px;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(34,197,94,0.3);box-sizing:border-box; }
+            .ro-share-btn { display:grid;grid-template-columns:20px 1fr 20px;align-items:center;gap:0 8px;width:100%;padding:12px 40px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-bottom:20px;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(34,197,94,0.3);box-sizing:border-box; }
             .ro-share-btn:hover { background:#16a34a;transform:scale(1.03);box-shadow:0 4px 16px rgba(34,197,94,0.4); }
             .ro-share-btn:active { transform:scale(0.97); }
             .ro-share-btn svg { width:20px;height:20px;fill:#fff; }
             .ro-share-btn.copied { background:#16a34a; }
             .ro-share-btn.copied:hover { background:#16a34a; }
-            .ro-ranking-btn, .ro-more-btn, .ro-retry-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif;box-sizing:border-box; }
+            .ro-ranking-btn, .ro-more-btn, .ro-retry-btn { display:grid;grid-template-columns:20px 1fr 20px;align-items:center;gap:0 8px;width:100%;margin-top:10px;padding:12px 40px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif;box-sizing:border-box; }
             .ro-ranking-btn:hover, .ro-more-btn:hover, .ro-retry-btn:hover { background:#3d8fff;transform:scale(1.02); }
             .ro-ranking-btn:active, .ro-more-btn:active, .ro-retry-btn:active { transform:scale(0.98); }
             .ro-retry-btn { margin-top:24px; }
             .ro-ranking-btn svg, .ro-more-btn svg, .ro-retry-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
+            .ro-share-btn > span, .ro-ranking-btn > span, .ro-more-btn > span, .ro-retry-btn > span { text-align:center; }
             .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:24px; }
             .ro-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
             .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
@@ -142,11 +143,11 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         </div>
         ${isPersonalBest ? `<div class="ro-personal-best">${t('result.badge.personalBest')}</div>` : ''}
         <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
-        <button class="ro-share-btn">${SHARE_ICON} ${t('result.share.copy')}</button>
+        <button class="ro-share-btn">${SHARE_ICON}<span>${t('result.share.copy')}</span></button>
         <div class="ro-share">
-            ${onSeeRanking ? `<button class="ro-ranking-btn">${TROPHY_ICON}${t('result.seeRanking')}</button>` : ''}
-            <a class="ro-more-btn" href="${MORE_GAMES_URL}">${EXIT_ICON}${t('settings.moreGames')}</a>
-            ${onRetry ? `<button class="ro-retry-btn">${RETRY_ICON}${t('result.retry')}</button>` : ''}
+            ${onSeeRanking ? `<button class="ro-ranking-btn">${TROPHY_ICON}<span>${t('result.seeRanking')}</span></button>` : ''}
+            <a class="ro-more-btn" href="${MORE_GAMES_URL}">${EXIT_ICON}<span>${t('settings.moreGames')}</span></a>
+            ${onRetry ? `<button class="ro-retry-btn">${RETRY_ICON}<span>${t('result.retry')}</span></button>` : ''}
             <div class="ro-store-links">
                 <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="ro-store-badge"></a>
                 <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="ro-store-badge"></a>
@@ -205,10 +206,10 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         const customSquares = formatShareSquares ? formatShareSquares(results) : undefined
         const msg = generateShareMessage(quizTitle, score, total, elapsedMs, results, shareUrl, shareEmoji, customSquares)
         copyToClipboard(msg)
-        shareBtn.innerHTML = `${CHECK_ICON} ${t('result.share.copied')}`
+        shareBtn.innerHTML = `${CHECK_ICON}<span>${t('result.share.copied')}</span>`
         shareBtn.classList.add('copied')
         setTimeout(() => {
-            shareBtn.innerHTML = `${SHARE_ICON} ${t('result.share.copy')}`
+            shareBtn.innerHTML = `${SHARE_ICON}<span>${t('result.share.copy')}</span>`
             shareBtn.classList.remove('copied')
         }, 2000)
     })
