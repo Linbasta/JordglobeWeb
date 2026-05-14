@@ -61,9 +61,11 @@ function copyToClipboard(text: string): void {
     document.body.removeChild(ta)
 }
 
-const COPY_ICON = '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>'
+const SHARE_ICON = '<svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>'
 const CHECK_ICON = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
 const EXIT_ICON = '<svg viewBox="0 0 24 24"><path d="M3 3h12v4h-2V5H5v14h8v-2h2v4H3V3z"/><path d="M11 11h8.5l-2.3-2.3 1.4-1.4 4.4 4.4c.3.3.3.8 0 1.1l-4.4 4.4-1.4-1.4 2.3-2.3H11v-2.5z"/></svg>'
+const RETRY_ICON = '<svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
+const TROPHY_ICON = '<svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>'
 const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.linbasta.jordglobegeo'
 const MORE_GAMES_URL = 'https://jordglobe.com/'
@@ -91,23 +93,18 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
             .ro-sprite { width:100px;height:100px;object-fit:contain;flex-shrink:0; }
             .ro-message { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:24px;font-family:Arial,sans-serif; }
             .ro-share { border-top:1px solid rgba(255,255,255,0.15);padding-top:20px;margin-top:4px; }
-            .ro-share-text { font-size:14px;color:#a0c4e0;margin-bottom:14px;line-height:1.4;font-family:Arial,sans-serif; }
-            .ro-share-btn { display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif; }
-            .ro-share-btn:hover { background:#3d8fff;transform:scale(1.03); }
+            .ro-share-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 20px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-bottom:20px;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(34,197,94,0.3);box-sizing:border-box; }
+            .ro-share-btn:hover { background:#16a34a;transform:scale(1.03);box-shadow:0 4px 16px rgba(34,197,94,0.4); }
             .ro-share-btn:active { transform:scale(0.97); }
             .ro-share-btn svg { width:20px;height:20px;fill:#fff; }
-            .ro-share-btn.copied { background:#22c55e; }
-            .ro-share-btn.copied:hover { background:#22c55e; }
-            .ro-ranking-btn { display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,#ffd700 0%,#ffaa00 100%);border:none;border-radius:10px;color:#1a1a2e;font-size:16px;font-weight:bold;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-bottom:20px;font-family:Arial,sans-serif;box-shadow:0 2px 12px rgba(255,215,0,0.3); }
-            .ro-ranking-btn:hover { transform:scale(1.03);box-shadow:0 4px 16px rgba(255,215,0,0.4); }
-            .ro-ranking-btn:active { transform:scale(0.97); }
-            .ro-retry-btn { display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#a0c4e0;font-size:14px;cursor:pointer;transition:background 0.15s,transform 0.1s;margin-top:16px;font-family:Arial,sans-serif; }
-            .ro-retry-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.03); }
-            .ro-more-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif;box-sizing:border-box; }
-            .ro-more-btn:hover { background:#3d8fff;transform:scale(1.02); }
-            .ro-more-btn:active { transform:scale(0.98); }
-            .ro-more-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
-            .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:16px; }
+            .ro-share-btn.copied { background:#16a34a; }
+            .ro-share-btn.copied:hover { background:#16a34a; }
+            .ro-ranking-btn, .ro-more-btn, .ro-retry-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:12px 20px;background:#2a7fff;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;text-decoration:none;text-align:center;transition:background 0.15s,transform 0.1s;font-family:Arial,sans-serif;box-sizing:border-box; }
+            .ro-ranking-btn:hover, .ro-more-btn:hover, .ro-retry-btn:hover { background:#3d8fff;transform:scale(1.02); }
+            .ro-ranking-btn:active, .ro-more-btn:active, .ro-retry-btn:active { transform:scale(0.98); }
+            .ro-retry-btn { margin-top:24px; }
+            .ro-ranking-btn svg, .ro-more-btn svg, .ro-retry-btn svg { width:20px;height:20px;fill:currentColor;flex-shrink:0; }
+            .ro-store-links { display:flex;justify-content:center;gap:12px;margin-top:24px; }
             .ro-store-badge { height:36px;transition:transform 0.1s,opacity 0.15s;opacity:0.9; }
             .ro-store-badge:hover { transform:scale(1.05);opacity:1; }
             .ro-personal-best { font-size:18px;font-weight:bold;color:#7cf6ff;margin-bottom:16px;font-family:Arial,sans-serif;text-shadow:0 0 10px rgba(124,246,255,0.5);opacity:0;transition:opacity 0.5s ease-in; }
@@ -145,16 +142,15 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         </div>
         ${isPersonalBest ? `<div class="ro-personal-best">${t('result.badge.personalBest')}</div>` : ''}
         <div class="ro-message">${(customGetMessage ?? getMessage)(score, total)}</div>
-        ${onSeeRanking ? `<button class="ro-ranking-btn">${t('result.seeRanking')}</button>` : ''}
+        <button class="ro-share-btn">${SHARE_ICON} ${t('result.share.copy')}</button>
         <div class="ro-share">
-            <div class="ro-share-text">${t('result.share.prompt')}</div>
-            <button class="ro-share-btn">${COPY_ICON} ${t('result.share.copy')}</button>
+            ${onSeeRanking ? `<button class="ro-ranking-btn">${TROPHY_ICON}${t('result.seeRanking')}</button>` : ''}
+            <a class="ro-more-btn" href="${MORE_GAMES_URL}">${EXIT_ICON}${t('settings.moreGames')}</a>
+            ${onRetry ? `<button class="ro-retry-btn">${RETRY_ICON}${t('result.retry')}</button>` : ''}
             <div class="ro-store-links">
                 <a href="${APP_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('app-store-badge.svg')}" alt="Download on the App Store" class="ro-store-badge"></a>
                 <a href="${PLAY_STORE_URL}" target="_blank" rel="noopener"><img src="${asset('google-play-badge.png')}" alt="Get it on Google Play" class="ro-store-badge"></a>
             </div>
-            <a class="ro-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
-            ${onRetry ? `<button class="ro-retry-btn">${t('result.retry')}</button>` : ''}
         </div>
     `
 
@@ -212,7 +208,7 @@ export function showResultOverlay(config: ResultOverlayConfig): void {
         shareBtn.innerHTML = `${CHECK_ICON} ${t('result.share.copied')}`
         shareBtn.classList.add('copied')
         setTimeout(() => {
-            shareBtn.innerHTML = `${COPY_ICON} ${t('result.share.copy')}`
+            shareBtn.innerHTML = `${SHARE_ICON} ${t('result.share.copy')}`
             shareBtn.classList.remove('copied')
         }, 2000)
     })
