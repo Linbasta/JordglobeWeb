@@ -1,6 +1,27 @@
 import type { EarthGlobe } from '../../earth-globe/earth-globe';
-import type { StreamLocation, LocationSet } from './locations';
-import { pickRound } from './locations';
+import type { StreamLocation, LocationSet, Continent } from './locations';
+import { pickRoundForSession, getRoundGoal, POINTS_BY_DIFFICULTY } from './locations';
+
+const HIGH_ROUND_KEY = 'eos-high-round';
+
+export function getHighestRound(continent: Continent): number {
+    try {
+        const data = JSON.parse(localStorage.getItem(HIGH_ROUND_KEY) ?? '{}');
+        return data[continent] ?? 0;
+    } catch {
+        return 0;
+    }
+}
+
+export function updateHighestRound(continent: Continent, round: number): void {
+    try {
+        const data = JSON.parse(localStorage.getItem(HIGH_ROUND_KEY) ?? '{}');
+        if (round > (data[continent] ?? 0)) {
+            data[continent] = round;
+            localStorage.setItem(HIGH_ROUND_KEY, JSON.stringify(data));
+        }
+    } catch {}
+}
 
 export interface RoundLocation {
     location: StreamLocation;
@@ -9,9 +30,30 @@ export interface RoundLocation {
     index: number;
 }
 
+export interface PlayerScore {
+    roundPoints: number;
+    totalPoints: number;
+}
+
+export interface GuessResult {
+    match: RoundLocation;
+    points: number;
+}
+
+export interface LeaderboardEntry {
+    username: string;
+    roundPoints: number;
+    totalPoints: number;
+}
+
 let roundLocations: RoundLocation[] = [];
 let guessedCount = 0;
 let roundActive = false;
+
+let sessionRound = 1;
+let globalRoundScore = 0;
+let roundGoal = 0;
+const playerScores = new Map<string, PlayerScore>();
 
 function normalize(text: string): string {
     return text
@@ -21,6 +63,13 @@ function normalize(text: string): string {
         .replace(/[̀-ͯ]/g, '');
 }
 
+export function startSession(): void {
+    sessionRound = 1;
+    globalRoundScore = 0;
+    roundGoal = 0;
+    playerScores.clear();
+}
+
 export function startRound(
     globe: EarthGlobe,
     set: LocationSet,
@@ -28,7 +77,7 @@ export function startRound(
 ): RoundLocation[] {
     resetRound(globe);
 
-    const picked = pickRound(set, count);
+    const picked = pickRoundForSession(set, count, sessionRound);
     roundLocations = picked.map((loc, i) => ({
         location: loc,
         markerId: globe.acquireMarker(loc.lat, loc.lon),
@@ -36,30 +85,51 @@ export function startRound(
         index: i,
     }));
     guessedCount = 0;
+    globalRoundScore = 0;
+    roundGoal = getRoundGoal(sessionRound);
+
+    for (const [, score] of playerScores) {
+        score.roundPoints = 0;
+    }
+
     roundActive = true;
     return roundLocations;
 }
 
-export function processGuess(text: string): RoundLocation | null {
+export function processGuess(text: string, username: string): GuessResult | null {
     if (!roundActive) return null;
     const guess = normalize(text);
     if (!guess) return null;
 
     for (const rl of roundLocations) {
         if (rl.guessed) continue;
-        if (normalize(rl.location.name) === guess) {
-            rl.guessed = true;
-            guessedCount++;
-            return rl;
-        }
-        if (rl.location.aliases) {
+
+        let matched = normalize(rl.location.name) === guess;
+        if (!matched && rl.location.aliases) {
             for (const alias of rl.location.aliases) {
                 if (normalize(alias) === guess) {
-                    rl.guessed = true;
-                    guessedCount++;
-                    return rl;
+                    matched = true;
+                    break;
                 }
             }
+        }
+
+        if (matched) {
+            rl.guessed = true;
+            guessedCount++;
+
+            const points = POINTS_BY_DIFFICULTY[rl.location.difficulty];
+            globalRoundScore += points;
+
+            let player = playerScores.get(username);
+            if (!player) {
+                player = { roundPoints: 0, totalPoints: 0 };
+                playerScores.set(username, player);
+            }
+            player.roundPoints += points;
+            player.totalPoints += points;
+
+            return { match: rl, points };
         }
     }
     return null;
@@ -79,6 +149,39 @@ export function isRoundComplete(): boolean {
 
 export function getRemainingLocations(): RoundLocation[] {
     return roundLocations.filter((rl) => !rl.guessed);
+}
+
+export function getSessionRoundNumber(): number {
+    return sessionRound;
+}
+
+export function getGlobalRoundScore(): number {
+    return globalRoundScore;
+}
+
+export function getCurrentRoundGoal(): number {
+    return roundGoal;
+}
+
+export function isRoundGoalMet(): boolean {
+    return globalRoundScore >= roundGoal;
+}
+
+export function advanceRound(): void {
+    sessionRound++;
+}
+
+export function getLeaderboard(): LeaderboardEntry[] {
+    const entries: LeaderboardEntry[] = [];
+    for (const [username, score] of playerScores) {
+        entries.push({
+            username,
+            roundPoints: score.roundPoints,
+            totalPoints: score.totalPoints,
+        });
+    }
+    entries.sort((a, b) => b.roundPoints - a.roundPoints || b.totalPoints - a.totalPoints);
+    return entries;
 }
 
 export function resetRound(globe: EarthGlobe): void {

@@ -11,37 +11,50 @@
 <script>
     import { EarthGlobe } from '../../earth-globe/earth-globe.ts';
     import { animateToLocation } from '../../shared/animation/camera-utils.ts';
-    import { EUROPEAN_CAPITALS_SET } from './locations.ts';
-    import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound, getRemainingLocations } from './game-state.ts';
-    import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar, getSidebarWidth } from './sidebar-ui.ts';
+    import { loadAllLocations, filterByContinent } from './locations.ts';
+    import type { LocationSet, Continent } from './locations.ts';
+    import { showLobby } from './lobby-ui.ts';
+    import {
+        startSession, startRound, processGuess, getGuessedCount, getRoundTotal,
+        isRoundComplete, resetRound, getRemainingLocations, getSessionRoundNumber,
+        getGlobalRoundScore, getCurrentRoundGoal, isRoundGoalMet, advanceRound,
+        getLeaderboard, getHighestRound, updateHighestRound,
+    } from './game-state.ts';
+    import { createSidebar, revealLocation, updateCounter, updateScore, disposeSidebar, getSidebarWidth } from './sidebar-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
     import { createTimer, disposeTimer } from './timer-ui.ts';
+    import { showLeaderboard } from './leaderboard-ui.ts';
     import { startConfetti } from '../../shared/ui/confetti.ts';
     import { handleOAuthRedirect, getStoredAuth, startOAuthFlow, disconnect as disconnectAuth } from './twitch-auth.ts';
     import { connectChat, disconnectChat } from './twitch-chat.ts';
-    import { createTwitchUI, setTwitchConnected, setTwitchDisconnected, disposeTwitchUI } from './twitch-ui.ts';
+    import { createTwitchUI, setTwitchConnected, setTwitchDisconnected } from './twitch-ui.ts';
 
     const ROUND_SIZE = 6;
-    const ROUND_TIME = 60;
-    const DWELL_TIME = 1500;
-    const FLY_DURATION = 1000;
+    const ROUND_TIME = 120;
+    const DWELL_TIME = 3500;
+    const FLY_DURATION = 3000;
     const FRAME_RADIUS = 5.5;
 
     let cycleTimer: ReturnType<typeof setTimeout> | null = null;
+    let cycleGen = 0;
     let animating = false;
     let twitchActive = false;
+    let locationSet: LocationSet;
+    let activeSet: LocationSet;
+    let selectedContinent: Continent = 'world';
 
     const auth = await handleOAuthRedirect() ?? getStoredAuth();
 
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
-        onReady: () => {
+        onReady: async () => {
             globe.getCamera().detachControl();
             initTwitchUI();
             if (auth) {
                 activateTwitch(auth.accessToken, auth.twitchLogin, auth.displayName);
             }
-            beginRound();
+            locationSet = await loadAllLocations();
+            openLobby();
         },
     });
 
@@ -69,17 +82,20 @@
 
     function startCycling() {
         stopCycling();
-        cycleToNext(0);
+        const gen = ++cycleGen;
+        cycleToNext(0, gen);
     }
 
     function stopCycling() {
+        cycleGen++;
         if (cycleTimer) {
             clearTimeout(cycleTimer);
             cycleTimer = null;
         }
     }
 
-    async function cycleToNext(currentIndex: number) {
+    async function cycleToNext(currentIndex: number, gen: number) {
+        if (gen !== cycleGen) return;
         const remaining = getRemainingLocations();
         if (remaining.length === 0 || animating) return;
 
@@ -88,85 +104,89 @@
 
         await animateToLocation(globe.getCamera(), loc.lat, loc.lon, FRAME_RADIUS, FLY_DURATION);
 
+        if (gen !== cycleGen) return;
         const nextIdx = (idx + 1) % Math.max(remaining.length, 1);
-        cycleTimer = setTimeout(() => cycleToNext(nextIdx), DWELL_TIME);
+        cycleTimer = setTimeout(() => cycleToNext(nextIdx, gen), DWELL_TIME);
+    }
+
+    function openLobby() {
+        showLobby({
+            defaultContinent: selectedContinent,
+            getHighestRound,
+            onStart: (continent) => {
+                selectedContinent = continent;
+                activeSet = filterByContinent(locationSet, continent);
+                startSession();
+                beginRound();
+            },
+        });
     }
 
     function beginRound() {
-        const locations = startRound(globe, EUROPEAN_CAPITALS_SET, ROUND_SIZE);
-        createSidebar(locations);
+        const roundNum = getSessionRoundNumber();
+        updateHighestRound(selectedContinent, roundNum);
+        const locations = startRound(globe, activeSet, ROUND_SIZE);
+        const goal = getCurrentRoundGoal();
+        createSidebar(locations, roundNum, goal);
         createTimer(ROUND_TIME, onTimeUp, getSidebarWidth());
         startCycling();
     }
 
     function onTimeUp() {
         stopCycling();
-        onRoundComplete();
+        onRoundEnd();
     }
 
     async function onGuess(text: string, username: string) {
-        const match = processGuess(text);
-        if (!match) return;
+        const result = processGuess(text, username);
+        if (!result) return;
 
         stopCycling();
         animating = true;
 
         await Promise.all([
-            playCorrectEffect(globe, match.markerId),
-            revealLocation(match.index, username),
+            playCorrectEffect(globe, result.match.markerId),
+            revealLocation(result.match.index, username),
         ]);
 
         animating = false;
         updateCounter(getGuessedCount(), getRoundTotal());
+        updateScore(getGlobalRoundScore(), getCurrentRoundGoal());
 
         if (isRoundComplete()) {
-            onRoundComplete();
+            onRoundEnd();
         } else {
             startCycling();
         }
     }
 
-    function onRoundComplete() {
+    function onRoundEnd() {
+        stopCycling();
         disposeTimer();
-        showCompletion();
 
-        const overlay = document.createElement('div');
-        overlay.style.cssText =
-            'position:fixed;inset:0;z-index:100;display:flex;align-items:center;' +
-            'justify-content:center;background:rgba(0,0,0,0.5);';
+        const goalMet = isRoundGoalMet();
 
-        const card = document.createElement('div');
-        card.style.cssText =
-            'background:rgba(20,20,30,0.95);border-radius:16px;padding:40px 48px;' +
-            'text-align:center;font-family:system-ui,sans-serif;color:#fff;' +
-            'backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);' +
-            'border:1px solid rgba(255,255,255,0.1);';
+        if (goalMet) {
+            startConfetti(document.body, document.body, 3);
+        }
 
-        const title = document.createElement('div');
-        title.style.cssText = 'font-size:28px;font-weight:700;margin-bottom:24px;color:#4CAF50;';
-        title.textContent = 'Round Complete!';
-        card.appendChild(title);
+        showLeaderboard({
+            roundNumber: getSessionRoundNumber(),
+            score: getGlobalRoundScore(),
+            goal: getCurrentRoundGoal(),
+            goalMet,
+            players: getLeaderboard(),
+            onAction: () => {
+                resetRound(globe);
+                disposeSidebar();
 
-        const btn = document.createElement('button');
-        btn.style.cssText =
-            'padding:12px 32px;font-size:16px;font-weight:600;border:none;' +
-            'border-radius:24px;background:#4CAF50;color:#fff;cursor:pointer;' +
-            'transition:transform 0.15s;';
-        btn.textContent = 'Play Again';
-        btn.onmouseenter = () => btn.style.transform = 'scale(1.05)';
-        btn.onmouseleave = () => btn.style.transform = 'scale(1)';
-        btn.onclick = () => {
-            overlay.remove();
-            resetRound(globe);
-            disposeSidebar();
-            disposeTimer();
-            beginRound();
-        };
-        card.appendChild(btn);
-
-        overlay.appendChild(card);
-        document.body.appendChild(overlay);
-
-        startConfetti(document.body, card, 3);
+                if (goalMet) {
+                    advanceRound();
+                    beginRound();
+                } else {
+                    openLobby();
+                }
+            },
+        });
     }
 </script>

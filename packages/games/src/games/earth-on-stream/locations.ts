@@ -1,10 +1,14 @@
-import { EUROPEAN_CAPITALS } from '../../capitals/capitals-data';
+import { asset } from '../../shared/asset-path';
+
+export type LocationType = 'city' | 'landmark';
 
 export interface StreamLocation {
     name: string;
     lat: number;
     lon: number;
     aliases?: string[];
+    difficulty: 1 | 2 | 3;
+    type: LocationType;
 }
 
 export interface LocationSet {
@@ -13,42 +17,132 @@ export interface LocationSet {
     locations: StreamLocation[];
 }
 
-export const EUROPEAN_CAPITALS_SET: LocationSet = {
-    id: 'european-capitals',
-    label: 'European Capitals',
-    locations: EUROPEAN_CAPITALS.map((c) => ({
-        name: c.name,
-        lat: c.lat,
-        lon: c.lon,
-    })),
+const LOCATION_ALIASES: Record<string, string[]> = {
+    'Giza pyramid complex': ['Pyramids of Giza', 'Giza', 'Great Pyramid', 'Pyramids'],
+    'Great Wall of China': ['Great Wall'],
+    'Sydney Opera House': ['Opera House'],
+    'Washington, D.C.': ['Washington', 'Washington DC'],
+    'Santiago de Chile': ['Santiago'],
+    'Luxembourg City': ['Luxembourg'],
+    'Kuwait City': ['Kuwait'],
+    'Guatemala City': ['Guatemala'],
+    'Panama City': ['Panama'],
+    'Mexico City': ['Mexico'],
+    'Ho Chi Minh City': ['Saigon'],
+    'Acropolis of Athens': ['Acropolis'],
+    'Brandenburg Gate': ['Brandenburger Tor'],
+    'The Little Mermaid': ['Little Mermaid'],
+    'Leaning Tower of Pisa': ['Tower of Pisa', 'Pisa'],
+    'Christ the Redeemer': ['Cristo Redentor'],
+    'Mount Everest': ['Everest'],
+    'Kilimanjaro': ['Mount Kilimanjaro'],
+    'Uluru': ['Ayers Rock'],
+    'Sagrada Família': ['Sagrada Familia'],
+    'Colosseum': ['Coliseum'],
+    'Chichen Itza': ['Chichen'],
+    'Hagia Sophia': ['Aya Sofya'],
+    'Golden Gate Bridge': ['Golden Gate'],
+    'Great Sphinx of Giza': ['Sphinx', 'Great Sphinx'],
+    'Niagara Falls': ['Niagara'],
+    'Victoria Falls': ['Mosi-oa-Tunya'],
+    'Frankfurt am Main': ['Frankfurt'],
 };
 
-export const WORLD_LANDMARKS_SET: LocationSet = {
-    id: 'world-landmarks',
-    label: 'World Landmarks',
-    locations: [
-        { name: 'Pyramids of Giza', lat: 29.9792, lon: 31.1342 },
-        { name: 'Machu Picchu', lat: -13.1631, lon: -72.5450 },
-        { name: 'Taj Mahal', lat: 27.1751, lon: 78.0421 },
-        { name: 'Colosseum', lat: 41.8902, lon: 12.4922, aliases: ['Coliseum'] },
-        { name: 'Great Wall', lat: 40.4319, lon: 116.5704, aliases: ['Great Wall of China'] },
-        { name: 'Eiffel Tower', lat: 48.8584, lon: 2.2945 },
-        { name: 'Statue of Liberty', lat: 40.6892, lon: -74.0445 },
-        { name: 'Christ the Redeemer', lat: -22.9519, lon: -43.2105 },
-        { name: 'Stonehenge', lat: 51.1789, lon: -1.8262 },
-        { name: 'Angkor Wat', lat: 13.4125, lon: 103.8670 },
-        { name: 'Mount Fuji', lat: 35.3606, lon: 138.7274, aliases: ['Fuji'] },
-        { name: 'Sydney Opera House', lat: -33.8568, lon: 151.2153, aliases: ['Opera House'] },
+export const POINTS_BY_DIFFICULTY: Record<1 | 2 | 3, number> = {
+    1: 100,
+    2: 200,
+    3: 300,
+};
+
+interface RawEntry {
+    n: string;
+    lat: number;
+    lon: number;
+    d: 1 | 2 | 3;
+    t: 'c' | 'l';
+}
+
+export async function loadAllLocations(): Promise<LocationSet> {
+    const res = await fetch(asset('stream-locations.json'));
+    const data: RawEntry[] = await res.json();
+
+    const locations: StreamLocation[] = data.map((entry) => {
+        const loc: StreamLocation = {
+            name: entry.n,
+            lat: entry.lat,
+            lon: entry.lon,
+            difficulty: entry.d,
+            type: entry.t === 'l' ? 'landmark' : 'city',
+        };
+
+        const aliases = LOCATION_ALIASES[entry.n];
+        if (aliases) loc.aliases = aliases;
+
+        return loc;
+    });
+
+    return { id: 'all-locations', label: 'All Locations', locations };
+}
+
+function shuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+export function pickRoundForSession(set: LocationSet, count: number, roundNumber: number): StreamLocation[] {
+    let pool: StreamLocation[];
+    if (roundNumber <= 2) {
+        pool = set.locations.filter((l) => l.difficulty === 1);
+    } else if (roundNumber <= 4) {
+        pool = set.locations.filter((l) => l.difficulty <= 2);
+    } else if (roundNumber <= 6) {
+        pool = set.locations.filter((l) => l.difficulty >= 2);
+    } else {
+        pool = set.locations.filter((l) => l.difficulty === 3);
+    }
+    if (pool.length < count) {
+        pool = [...set.locations];
+    }
+    return shuffle(pool).slice(0, count);
+}
+
+export function getRoundGoal(roundNumber: number): number {
+    return 300 + roundNumber * 100;
+}
+
+export type Continent = 'world' | 'europe' | 'asia' | 'africa' | 'north-america' | 'south-america' | 'oceania';
+
+interface BoundingBox {
+    latMin: number;
+    latMax: number;
+    lonMin: number;
+    lonMax: number;
+}
+
+const CONTINENT_BOUNDS: Record<Exclude<Continent, 'world'>, BoundingBox[]> = {
+    'europe': [{ latMin: 34, latMax: 72, lonMin: -25, lonMax: 50 }],
+    'asia': [
+        { latMin: -12, latMax: 80, lonMin: 50, lonMax: 180 },
+        { latMin: 0, latMax: 45, lonMin: 25, lonMax: 50 },
+    ],
+    'africa': [{ latMin: -35, latMax: 38, lonMin: -18, lonMax: 55 }],
+    'north-america': [{ latMin: 5, latMax: 85, lonMin: -170, lonMax: -50 }],
+    'south-america': [{ latMin: -57, latMax: 15, lonMin: -82, lonMax: -34 }],
+    'oceania': [
+        { latMin: -48, latMax: 2, lonMin: 100, lonMax: 180 },
+        { latMin: -48, latMax: 2, lonMin: -180, lonMax: -130 },
     ],
 };
 
-export const ALL_SETS: LocationSet[] = [EUROPEAN_CAPITALS_SET, WORLD_LANDMARKS_SET];
-
-export function pickRound(set: LocationSet, count: number): StreamLocation[] {
-    const shuffled = [...set.locations];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, count);
+export function filterByContinent(set: LocationSet, continent: Continent): LocationSet {
+    if (continent === 'world') return set;
+    const bounds = CONTINENT_BOUNDS[continent];
+    const filtered = set.locations.filter((loc) =>
+        bounds.some((b) => loc.lat >= b.latMin && loc.lat <= b.latMax && loc.lon >= b.lonMin && loc.lon <= b.lonMax),
+    );
+    return { id: `${set.id}-${continent}`, label: continent, locations: filtered };
 }

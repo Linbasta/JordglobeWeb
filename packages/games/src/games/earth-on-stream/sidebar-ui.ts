@@ -1,10 +1,13 @@
 import type { RoundLocation } from './game-state';
+import type { LocationType } from './locations';
 
 let sidebarEl: HTMLDivElement | null = null;
+let roundLabelEl: HTMLDivElement | null = null;
+let scoreEl: HTMLDivElement | null = null;
 let counterEl: HTMLDivElement | null = null;
 let rowEls: HTMLDivElement[] = [];
 
-export function createSidebar(locations: RoundLocation[]): void {
+export function createSidebar(locations: RoundLocation[], roundNumber: number, roundGoal: number): void {
     disposeSidebar();
 
     const NAME_COL_WIDTH = 100;
@@ -29,9 +32,22 @@ export function createSidebar(locations: RoundLocation[]): void {
         'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);' +
         'font-family:system-ui,-apple-system,sans-serif;';
 
+    roundLabelEl = document.createElement('div');
+    roundLabelEl.style.cssText =
+        'color:#fff;font-size:16px;font-weight:700;text-align:center;' +
+        'text-transform:uppercase;letter-spacing:1px;';
+    roundLabelEl.textContent = `Round ${roundNumber}`;
+    sidebarEl.appendChild(roundLabelEl);
+
+    scoreEl = document.createElement('div');
+    scoreEl.style.cssText =
+        'color:#4CAF50;font-size:20px;font-weight:700;text-align:center;';
+    updateScore(0, roundGoal);
+    sidebarEl.appendChild(scoreEl);
+
     counterEl = document.createElement('div');
     counterEl.style.cssText =
-        'color:#aaa;font-size:14px;text-align:center;padding-bottom:8px;' +
+        'color:#aaa;font-size:13px;text-align:center;padding-bottom:8px;' +
         'border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:4px;';
     updateCounter(0, locations.length);
     sidebarEl.appendChild(counterEl);
@@ -42,7 +58,7 @@ export function createSidebar(locations: RoundLocation[]): void {
 
     rowEls = new Array(locations.length);
     for (const i of sortedIndices) {
-        const row = createRow(locations[i].location.name, NAME_COL_WIDTH);
+        const row = createRow(locations[i].location.name, NAME_COL_WIDTH, locations[i].location.type);
         rowEls[i] = row;
         sidebarEl.appendChild(row);
     }
@@ -50,12 +66,22 @@ export function createSidebar(locations: RoundLocation[]): void {
     document.body.appendChild(sidebarEl);
 }
 
-function createRow(name: string, nameColWidth: number): HTMLDivElement {
+function createRow(name: string, nameColWidth: number, type: LocationType): HTMLDivElement {
     const row = document.createElement('div');
     row.style.cssText =
-        'display:flex;flex-wrap:nowrap;align-items:center;' +
+        'display:flex;flex-direction:column;gap:2px;' +
         'padding:8px 4px;border-radius:6px;' +
         'transition:background 0.4s;';
+
+    const typeLabel = document.createElement('div');
+    typeLabel.style.cssText =
+        `margin-left:${nameColWidth}px;font-size:9px;font-weight:600;` +
+        'text-transform:uppercase;letter-spacing:0.8px;color:#666;';
+    typeLabel.textContent = type === 'landmark' ? 'Landmark' : 'City';
+    row.appendChild(typeLabel);
+
+    const inner = document.createElement('div');
+    inner.style.cssText = 'display:flex;flex-wrap:nowrap;align-items:center;';
 
     const nameSlot = document.createElement('span');
     nameSlot.className = 'name-slot';
@@ -63,9 +89,10 @@ function createRow(name: string, nameColWidth: number): HTMLDivElement {
         `width:${nameColWidth}px;flex:0 0 ${nameColWidth}px;` +
         'color:transparent;font-size:12px;font-weight:600;' +
         'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
-    row.appendChild(nameSlot);
+    inner.appendChild(nameSlot);
 
     const letters = document.createElement('div');
+    letters.className = 'letter-cells';
     letters.style.cssText = 'display:flex;gap:2px;flex-wrap:nowrap;';
     for (const ch of name) {
         const cell = document.createElement('span');
@@ -82,7 +109,8 @@ function createRow(name: string, nameColWidth: number): HTMLDivElement {
         }
         letters.appendChild(cell);
     }
-    row.appendChild(letters);
+    inner.appendChild(letters);
+    row.appendChild(inner);
     return row;
 }
 
@@ -96,7 +124,7 @@ export function revealLocation(index: number, username: string): Promise<void> {
 
         row.style.background = 'rgba(76,175,80,0.15)';
 
-        const lettersDiv = row.querySelector('div')!;
+        const lettersDiv = row.querySelector('.letter-cells')!;
         const cells = lettersDiv.querySelectorAll('span');
         let delay = 0;
         let lastLetterDelay = 0;
@@ -130,22 +158,21 @@ export function revealLocation(index: number, username: string): Promise<void> {
     });
 }
 
+export function updateScore(score: number, goal: number): void {
+    if (scoreEl) {
+        scoreEl.textContent = `${score} / ${goal}`;
+        if (score >= goal) {
+            scoreEl.style.color = '#4CAF50';
+        } else {
+            scoreEl.style.color = score > 0 ? '#fff' : '#888';
+        }
+    }
+}
+
 export function updateCounter(found: number, total: number): void {
     if (counterEl) {
         counterEl.textContent = `${found} / ${total} found`;
     }
-}
-
-export function showCompletion(): void {
-    if (!sidebarEl) return;
-
-    const banner = document.createElement('div');
-    banner.style.cssText =
-        'color:#4CAF50;font-size:18px;font-weight:700;text-align:center;' +
-        'padding:16px 8px;margin-top:auto;' +
-        'border-top:1px solid rgba(255,255,255,0.1);';
-    banner.textContent = 'Round Complete!';
-    sidebarEl.appendChild(banner);
 }
 
 export function getSidebarWidth(): number {
@@ -156,6 +183,8 @@ export function disposeSidebar(): void {
     if (sidebarEl) {
         sidebarEl.remove();
         sidebarEl = null;
+        roundLabelEl = null;
+        scoreEl = null;
         counterEl = null;
         rowEls = [];
     }

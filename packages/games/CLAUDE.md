@@ -45,18 +45,30 @@ Some games bypass `startQuizGame` entirely and instantiate `EarthGlobe` directly
 
 ### Earth on Stream (`src/games/earth-on-stream/`)
 
-Twitch-style geography guessing game (like "Words on Stream" but for locations). The camera cycles through remaining locations (fly + dwell), framing each one in turn. A right sidebar displays location names as hidden letter squares, sorted shortest-to-longest. Players guess locations via text input (Twitch chat integration planned).
+Twitch-style geography guessing game (like "Words on Stream" but for locations). Players collaborate via Twitch chat to guess locations and earn points together.
 
-**Camera behavior:** No user interaction (`detachControl()`). Camera auto-cycles through unguessed locations using `animateToLocation()` from `camera-utils.ts`. Pauses during correct-guess effects, then resumes.
+**Session/Round system:** A session is a series of rounds. Each round shows 6 locations; players guess to earn points (Easy=100, Medium=200, Hard=300). Points go to the guessing player and a global pool. The global pool must reach a round goal (`300 + round × 100`) to advance. If the goal is met when the round ends (timer or all guessed), players advance to a harder round. If not, the session ends and scores reset.
+
+**Difficulty progression:** Rounds 1-2 use easy locations, 3-4 easy+medium, 5-6 medium+hard, 7+ hard only. Goal escalates each round.
+
+**Between-round leaderboard:** After each round, a popup shows player rankings (round points + session total) and either "Next Round" (goal met) or "New Session" (session over).
+
+**Location data:** 2,241 locations (1,266 cities + 975 landmarks) sourced from `data/legacy/locations_en.json`, pre-processed into `public-prod/stream-locations.json` (134KB). Difficulty ratings come from the legacy data for cities; landmarks have manual overrides for well-known ones. Loaded at runtime via `fetch()`.
+
+**Camera behavior:** No user interaction (`detachControl()`). Camera auto-cycles through unguessed locations using `animateToLocation()` (3s fly, 3.5s dwell). Uses a generation counter to prevent stale animation callbacks from spawning duplicate cycling chains. Pauses during correct-guess effects, then resumes.
 
 **File layout:**
-- `locations.ts` — `StreamLocation`/`LocationSet` types, built-in sets (European Capitals, World Landmarks), `pickRound()` shuffle
-- `game-state.ts` — Round state, `processGuess()` with accent-stripping + alias matching, `getRemainingLocations()` for camera cycling
-- `sidebar-ui.ts` — Right sidebar (auto-width based on longest name) with fixed-size letter squares, sorted short→long, left-side username column shown on correct guess, staggered reveal animation, counter
+- `locations.ts` — `StreamLocation` (with `difficulty: 1|2|3`, `type: 'city'|'landmark'`), `LocationSet` types, `loadAllLocations()` fetches from `stream-locations.json`, alias map for alternative names, `pickRoundForSession()` difficulty-aware picking, `getRoundGoal()`, `POINTS_BY_DIFFICULTY`
+- `game-state.ts` — Session + round state, player score tracking (`Map<username, {roundPoints, totalPoints}>`), `processGuess()` with accent-stripping + alias matching + scoring, `startSession()`/`advanceRound()`/`getLeaderboard()`
+- `sidebar-ui.ts` — Right sidebar with round number, score/goal display, "City"/"Landmark" type label per row, letter squares sorted short→long, staggered reveal animation with username
+- `leaderboard-ui.ts` — Between-round popup: player rankings table, score vs goal, "Next Round" or "New Session" button
 - `input-ui.ts` — Bottom text input with green/red flash feedback
 - `globe-effects.ts` — Particle burst + marker scale pulse → release on correct guess
-- `timer-ui.ts` — Top progress bar (60s default), spans globe area only (excludes sidebar), green→orange→red color shift
-- `GameRoot.astro` — Wires everything: camera cycling, round timer, round lifecycle, guess→effect→reveal flow
+- `timer-ui.ts` — Top progress bar (120s default), spans globe area only (excludes sidebar), green→orange→red color shift
+- `twitch-auth.ts` — OAuth auth code flow, token storage/refresh via stream-server
+- `twitch-chat.ts` — WebSocket IRC connection to Twitch chat, message parsing, reconnection with backoff
+- `twitch-ui.ts` — Connect/disconnect button UI
+- `GameRoot.astro` — Wires everything: session lifecycle, camera cycling, round timer, guess→effect→reveal→score flow, leaderboard between rounds
 
 ## Development Servers
 
