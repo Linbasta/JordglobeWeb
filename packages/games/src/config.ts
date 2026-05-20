@@ -9,6 +9,7 @@ export interface EnvironmentConfig {
     websocketUrl: string;
     baseUrl: string;
     apiUrl: string;
+    streamServerUrl: string;
 }
 
 /**
@@ -27,6 +28,7 @@ function detectEnvironment(): EnvironmentConfig {
             websocketUrl: `ws://${hostname}:3003`,
             baseUrl: `http://${hostname}:${port || 4817}`,
             apiUrl: import.meta.env.PUBLIC_DEV_API_URL || 'http://127.0.0.1:8000/graphql',
+            streamServerUrl: `http://${hostname}:3004`,
         };
     }
 
@@ -36,6 +38,7 @@ function detectEnvironment(): EnvironmentConfig {
         websocketUrl: `wss://${hostname}`,
         baseUrl: `https://${hostname}`,
         apiUrl: 'https://api.jordglobe.com/graphql',
+        streamServerUrl: 'https://stream.jordglobe.com',
     };
 }
 

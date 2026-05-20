@@ -9,7 +9,13 @@
       "Bash(xargs grep -l \"camera.*alpha\\\\|camera.*beta\")",
       "WebSearch",
       "Bash(xargs grep -l \"twitch\\\\|stream\")",
-      "WebFetch(domain:wos.gg)"
+      "WebFetch(domain:wos.gg)",
+      "Bash(Get-ChildItem -Path \"h:\\\\02.Linbasta\\\\01.Projects\\\\JordglobeWeb\\\\packages\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(xargs grep -l -i \"twitch\\\\|oauth\\\\|auth\")",
+      "Bash(xargs grep -l -i \"twitch\\\\|oauth\")",
+      "Bash(xargs grep -l \"firebase\\\\|auth\")",
+      "Bash(xargs grep -l \"earth-on-stream\")"
     ],
     "deny": [],
     "ask": []

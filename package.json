@@ -20,6 +20,7 @@
     "dev:site": "pnpm --filter @jordglobe/site dev",
     "dev:games": "pnpm --filter @jordglobe/games dev",
     "dev:party": "pnpm --filter @jordglobe/party-server dev",
+    "dev:stream": "pnpm --filter stream-server dev",
     "dev:logs": "pnpm --filter @jordglobe/games log-server",
     "build": "turbo run build",
     "build:site": "turbo run build --filter=@jordglobe/site",

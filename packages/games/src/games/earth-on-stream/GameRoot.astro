@@ -14,10 +14,12 @@
     import { EUROPEAN_CAPITALS_SET } from './locations.ts';
     import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound, getRemainingLocations } from './game-state.ts';
     import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar, getSidebarWidth } from './sidebar-ui.ts';
-    import { createInput, flashCorrect, flashWrong, disableInput, disposeInput } from './input-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
     import { createTimer, disposeTimer } from './timer-ui.ts';
     import { startConfetti } from '../../shared/ui/confetti.ts';
+    import { handleOAuthRedirect, getStoredAuth, startOAuthFlow, disconnect as disconnectAuth } from './twitch-auth.ts';
+    import { connectChat, disconnectChat } from './twitch-chat.ts';
+    import { createTwitchUI, setTwitchConnected, setTwitchDisconnected, disposeTwitchUI } from './twitch-ui.ts';
 
     const ROUND_SIZE = 6;
     const ROUND_TIME = 60;
@@ -27,14 +29,43 @@
 
     let cycleTimer: ReturnType<typeof setTimeout> | null = null;
     let animating = false;
+    let twitchActive = false;
+
+    const auth = await handleOAuthRedirect() ?? getStoredAuth();
 
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
         onReady: () => {
             globe.getCamera().detachControl();
+            initTwitchUI();
+            if (auth) {
+                activateTwitch(auth.accessToken, auth.twitchLogin, auth.displayName);
+            }
             beginRound();
         },
     });
+
+    function initTwitchUI() {
+        createTwitchUI({
+            onConnect: () => startOAuthFlow(),
+            onDisconnect: () => {
+                disconnectChat();
+                disconnectAuth();
+                twitchActive = false;
+                setTwitchDisconnected();
+            },
+        });
+    }
+
+    function activateTwitch(token: string, login: string, displayName: string) {
+        twitchActive = true;
+        setTwitchConnected(displayName);
+        connectChat(token, login, onChatMessage);
+    }
+
+    function onChatMessage(username: string, text: string) {
+        onGuess(text, username);
+    }
 
     function startCycling() {
         stopCycling();
@@ -64,7 +95,6 @@
     function beginRound() {
         const locations = startRound(globe, EUROPEAN_CAPITALS_SET, ROUND_SIZE);
         createSidebar(locations);
-        createInput(onGuess);
         createTimer(ROUND_TIME, onTimeUp, getSidebarWidth());
         startCycling();
     }
@@ -74,20 +104,16 @@
         onRoundComplete();
     }
 
-    async function onGuess(text: string) {
+    async function onGuess(text: string, username: string) {
         const match = processGuess(text);
-        if (!match) {
-            flashWrong();
-            return;
-        }
+        if (!match) return;
 
-        flashCorrect();
         stopCycling();
         animating = true;
 
         await Promise.all([
             playCorrectEffect(globe, match.markerId),
-            revealLocation(match.index, 'Player'),
+            revealLocation(match.index, username),
         ]);
 
         animating = false;
@@ -101,7 +127,6 @@
     }
 
     function onRoundComplete() {
-        disableInput();
         disposeTimer();
         showCompletion();
 
@@ -134,7 +159,6 @@
             overlay.remove();
             resetRound(globe);
             disposeSidebar();
-            disposeInput();
             disposeTimer();
             beginRound();
         };
