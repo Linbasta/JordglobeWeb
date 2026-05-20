@@ -148,6 +148,10 @@ export function showCompletion(): void {
     sidebarEl.appendChild(banner);
 }
 
+export function getSidebarWidth(): number {
+    return sidebarEl ? sidebarEl.offsetWidth : 0;
+}
+
 export function disposeSidebar(): void {
     if (sidebarEl) {
         sidebarEl.remove();

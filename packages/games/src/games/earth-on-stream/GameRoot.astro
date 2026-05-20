@@ -13,12 +13,14 @@
     import { animateToLocation } from '../../shared/animation/camera-utils.ts';
     import { EUROPEAN_CAPITALS_SET } from './locations.ts';
     import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound, getRemainingLocations } from './game-state.ts';
-    import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar } from './sidebar-ui.ts';
+    import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar, getSidebarWidth } from './sidebar-ui.ts';
     import { createInput, flashCorrect, flashWrong, disableInput, disposeInput } from './input-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
+    import { createTimer, disposeTimer } from './timer-ui.ts';
     import { startConfetti } from '../../shared/ui/confetti.ts';
 
     const ROUND_SIZE = 6;
+    const ROUND_TIME = 60;
     const DWELL_TIME = 1500;
     const FLY_DURATION = 1000;
     const FRAME_RADIUS = 5.5;
@@ -63,7 +65,13 @@
         const locations = startRound(globe, EUROPEAN_CAPITALS_SET, ROUND_SIZE);
         createSidebar(locations);
         createInput(onGuess);
+        createTimer(ROUND_TIME, onTimeUp, getSidebarWidth());
         startCycling();
+    }
+
+    function onTimeUp() {
+        stopCycling();
+        onRoundComplete();
     }
 
     async function onGuess(text: string) {
@@ -94,6 +102,7 @@
 
     function onRoundComplete() {
         disableInput();
+        disposeTimer();
         showCompletion();
 
         const overlay = document.createElement('div');
@@ -126,6 +135,7 @@
             resetRound(globe);
             disposeSidebar();
             disposeInput();
+            disposeTimer();
             beginRound();
         };
         card.appendChild(btn);

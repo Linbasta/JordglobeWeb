@@ -52,10 +52,11 @@ Twitch-style geography guessing game (like "Words on Stream" but for locations).
 **File layout:**
 - `locations.ts` — `StreamLocation`/`LocationSet` types, built-in sets (European Capitals, World Landmarks), `pickRound()` shuffle
 - `game-state.ts` — Round state, `processGuess()` with accent-stripping + alias matching, `getRemainingLocations()` for camera cycling
-- `sidebar-ui.ts` — Right sidebar (auto-width based on longest name) with fixed-size letter squares, sorted short→long, staggered reveal animation, counter
+- `sidebar-ui.ts` — Right sidebar (auto-width based on longest name) with fixed-size letter squares, sorted short→long, left-side username column shown on correct guess, staggered reveal animation, counter
 - `input-ui.ts` — Bottom text input with green/red flash feedback
 - `globe-effects.ts` — Particle burst + marker scale pulse → release on correct guess
-- `GameRoot.astro` — Wires everything: camera cycling, round lifecycle, guess→effect→reveal flow
+- `timer-ui.ts` — Top progress bar (60s default), spans globe area only (excludes sidebar), green→orange→red color shift
+- `GameRoot.astro` — Wires everything: camera cycling, round timer, round lifecycle, guess→effect→reveal flow
 
 ## Development Servers
 
