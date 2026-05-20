@@ -5,7 +5,11 @@
       "Bash(cat:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(pnpm build:games:*)"
+      "Bash(pnpm build:games:*)",
+      "Bash(xargs grep -l \"camera.*alpha\\\\|camera.*beta\")",
+      "WebSearch",
+      "Bash(xargs grep -l \"twitch\\\\|stream\")",
+      "WebFetch(domain:wos.gg)"
     ],
     "deny": [],
     "ask": []

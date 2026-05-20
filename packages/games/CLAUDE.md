@@ -39,9 +39,27 @@ Write simple, direct code (Handmade Philosophy). Prefer:
 - Avoid abstraction layers
 - Data-oriented design
 
+## Non-Quiz Games
+
+Some games bypass `startQuizGame` entirely and instantiate `EarthGlobe` directly (e.g. `earth-on-stream`). These games have no questions, no score, and no quiz adapter — they use the globe as a standalone rendering component and drive behavior via `scene.registerBeforeRender()` hooks.
+
+### Earth on Stream (`src/games/earth-on-stream/`)
+
+Twitch-style geography guessing game (like "Words on Stream" but for locations). A slowly spinning globe shows location markers; a right sidebar displays location names as hidden letter squares. Players guess locations via text input (Twitch chat integration planned).
+
+**File layout:**
+- `locations.ts` — `StreamLocation`/`LocationSet` types, built-in sets (European Capitals, World Landmarks), `pickRound()` shuffle
+- `game-state.ts` — Round state, `processGuess()` with accent-stripping + alias matching
+- `sidebar-ui.ts` — Right sidebar with letter squares, staggered reveal animation, counter
+- `input-ui.ts` — Bottom text input with green/red flash feedback
+- `globe-effects.ts` — Particle burst + marker scale pulse → release on correct guess
+- `GameRoot.astro` — Wires everything: spinning globe, round lifecycle, guess→effect→reveal flow
+
 ## Development Servers
 
 **Claude must NEVER start/stop/restart servers.** User manages servers manually.
+
+**The log server (`pnpm dev:logs`) must be started before `pnpm dev:games`.**
 
 | Server | Port | Package | Command |
 |--------|------|---------|---------|

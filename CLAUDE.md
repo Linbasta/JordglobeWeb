@@ -5,7 +5,7 @@ Geography learning platform with interactive 3D globe quizzes.
 ## Structure
 
 - `packages/site/` - Marketing website (Astro + Firebase)
-- `packages/games/` - Quiz games (Babylon.js + Astro). See its `CLAUDE.md` for file layout and dev/prod separation.
+- `packages/games/` - Quiz games + stream games (Babylon.js + Astro). See its `CLAUDE.md` for file layout and dev/prod separation.
 - `packages/party-server/` - WebSocket server for multiplayer games
 - `shared/games-seo.json` - Game SEO metadata (legacy; site's game-card data still reads this)
 

@@ -1,0 +1,107 @@
+<canvas id="renderCanvas"></canvas>
+
+<style>
+    #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+    }
+</style>
+
+<script>
+    import { EarthGlobe } from '../../earth-globe/earth-globe.ts';
+    import { EUROPEAN_CAPITALS_SET } from './locations.ts';
+    import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound } from './game-state.ts';
+    import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar } from './sidebar-ui.ts';
+    import { createInput, flashCorrect, flashWrong, disableInput, disposeInput } from './input-ui.ts';
+    import { playCorrectEffect } from './globe-effects.ts';
+    import { startConfetti } from '../../shared/ui/confetti.ts';
+
+    const ROUND_SIZE = 6;
+    const SPIN_SPEED = 0.0003;
+
+    const globe = new EarthGlobe({
+        canvasId: 'renderCanvas',
+        onReady: () => {
+            const camera = globe.getCamera();
+            const scene = globe.getScene();
+
+            scene.registerBeforeRender(() => {
+                camera.alpha += SPIN_SPEED;
+            });
+
+            beginRound();
+        },
+    });
+
+    function beginRound() {
+        const locations = startRound(globe, EUROPEAN_CAPITALS_SET, ROUND_SIZE);
+        createSidebar(locations);
+        createInput(onGuess);
+    }
+
+    async function onGuess(text: string) {
+        const match = processGuess(text);
+        if (!match) {
+            flashWrong();
+            return;
+        }
+
+        flashCorrect();
+
+        await Promise.all([
+            playCorrectEffect(globe, match.markerId),
+            revealLocation(match.index),
+        ]);
+
+        updateCounter(getGuessedCount(), getRoundTotal());
+
+        if (isRoundComplete()) {
+            onRoundComplete();
+        }
+    }
+
+    function onRoundComplete() {
+        disableInput();
+        showCompletion();
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText =
+            'position:fixed;inset:0;z-index:100;display:flex;align-items:center;' +
+            'justify-content:center;background:rgba(0,0,0,0.5);';
+
+        const card = document.createElement('div');
+        card.style.cssText =
+            'background:rgba(20,20,30,0.95);border-radius:16px;padding:40px 48px;' +
+            'text-align:center;font-family:system-ui,sans-serif;color:#fff;' +
+            'backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);' +
+            'border:1px solid rgba(255,255,255,0.1);';
+
+        const title = document.createElement('div');
+        title.style.cssText = 'font-size:28px;font-weight:700;margin-bottom:24px;color:#4CAF50;';
+        title.textContent = 'Round Complete!';
+        card.appendChild(title);
+
+        const btn = document.createElement('button');
+        btn.style.cssText =
+            'padding:12px 32px;font-size:16px;font-weight:600;border:none;' +
+            'border-radius:24px;background:#4CAF50;color:#fff;cursor:pointer;' +
+            'transition:transform 0.15s;';
+        btn.textContent = 'Play Again';
+        btn.onmouseenter = () => btn.style.transform = 'scale(1.05)';
+        btn.onmouseleave = () => btn.style.transform = 'scale(1)';
+        btn.onclick = () => {
+            overlay.remove();
+            resetRound(globe);
+            disposeSidebar();
+            disposeInput();
+            beginRound();
+        };
+        card.appendChild(btn);
+
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        startConfetti(document.body, card, 3);
+    }
+</script>
