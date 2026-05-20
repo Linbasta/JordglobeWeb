@@ -1,6 +1,6 @@
 import type { EarthGlobe } from '../../earth-globe/earth-globe';
 import type { StreamLocation, LocationSet, Continent } from './locations';
-import { pickRoundForSession, getRoundGoal, POINTS_BY_DIFFICULTY } from './locations';
+import { pickRoundForSession, POINTS_BY_DIFFICULTY } from './locations';
 
 const HIGH_ROUND_KEY = 'eos-high-round';
 
@@ -86,7 +86,9 @@ export function startRound(
     }));
     guessedCount = 0;
     globalRoundScore = 0;
-    roundGoal = getRoundGoal(sessionRound);
+
+    const maxScore = picked.reduce((sum, loc) => sum + POINTS_BY_DIFFICULTY[loc.difficulty], 0);
+    roundGoal = Math.round(maxScore * 0.8);
 
     for (const [, score] of playerScores) {
         score.roundPoints = 0;

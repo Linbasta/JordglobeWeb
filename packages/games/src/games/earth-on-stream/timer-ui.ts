@@ -7,25 +7,39 @@ let onExpire: (() => void) | null = null;
 let paused = false;
 let remaining = 0;
 
-export function createTimer(seconds: number, onTimeUp: () => void, rightMargin: number = 0): void {
+export function createTimer(seconds: number, onTimeUp: () => void): void {
     disposeTimer();
 
     duration = seconds * 1000;
     remaining = duration;
     onExpire = onTimeUp;
 
+    const parent = document.getElementById('globe-area') ?? document.body;
+
     containerEl = document.createElement('div');
     containerEl.style.cssText =
-        `position:fixed;top:0;left:0;right:${rightMargin}px;height:6px;z-index:60;` +
-        'background:rgba(255,255,255,0.1);';
+        'position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:60;' +
+        'width:min(800px, 60%);height:28px;border-radius:14px;' +
+        'background:rgba(255,255,255,0.1);overflow:hidden;' +
+        'border:3px solid rgba(255,255,255,0.5);' +
+        'box-shadow:0 2px 16px rgba(0,0,0,0.6),inset 0 0 8px rgba(0,0,0,0.3);';
 
     barEl = document.createElement('div');
     barEl.style.cssText =
-        'height:100%;width:100%;background:#4CAF50;' +
+        'height:100%;width:100%;background:#4CAF50;border-radius:12px;' +
         'transition:background 0.3s;';
 
     containerEl.appendChild(barEl);
-    document.body.appendChild(containerEl);
+
+    for (const pct of [25, 50, 75]) {
+        const tick = document.createElement('div');
+        tick.style.cssText =
+            `position:absolute;top:0;bottom:0;left:${pct}%;width:2px;` +
+            'background:rgba(255,255,255,0.25);pointer-events:none;';
+        containerEl.appendChild(tick);
+    }
+
+    parent.appendChild(containerEl);
 
     startTime = performance.now();
     paused = false;

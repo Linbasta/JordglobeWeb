@@ -23,13 +23,14 @@ export function createSidebar(locations: RoundLocation[], roundNumber: number, r
     }));
     const sidebarWidth = NAME_COL_WIDTH + maxRowWidth + 56;
 
+    const panel = document.getElementById('side-panel')!;
+    panel.style.width = `${sidebarWidth}px`;
+
     sidebarEl = document.createElement('div');
     sidebarEl.style.cssText =
-        `position:fixed;right:0;top:0;height:100%;width:${sidebarWidth}px;` +
-        'background:rgba(10,10,20,0.75);z-index:50;' +
+        'height:100%;background:rgba(10,10,20,0.85);' +
         'display:flex;flex-direction:column;padding:16px 12px;' +
         'box-sizing:border-box;gap:10px;overflow-y:auto;' +
-        'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);' +
         'font-family:system-ui,-apple-system,sans-serif;';
 
     roundLabelEl = document.createElement('div');
@@ -63,7 +64,7 @@ export function createSidebar(locations: RoundLocation[], roundNumber: number, r
         sidebarEl.appendChild(row);
     }
 
-    document.body.appendChild(sidebarEl);
+    panel.appendChild(sidebarEl);
 }
 
 function createRow(name: string, nameColWidth: number, type: LocationType): HTMLDivElement {
@@ -175,10 +176,6 @@ export function updateCounter(found: number, total: number): void {
     }
 }
 
-export function getSidebarWidth(): number {
-    return sidebarEl ? sidebarEl.offsetWidth : 0;
-}
-
 export function disposeSidebar(): void {
     if (sidebarEl) {
         sidebarEl.remove();
@@ -188,4 +185,6 @@ export function disposeSidebar(): void {
         counterEl = null;
         rowEls = [];
     }
+    const panel = document.getElementById('side-panel');
+    if (panel) panel.style.width = '0';
 }

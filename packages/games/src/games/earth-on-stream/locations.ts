@@ -93,21 +93,47 @@ function shuffle<T>(arr: T[]): T[] {
     return a;
 }
 
+function pickFromPool(locations: StreamLocation[], difficulty: 1 | 2 | 3, n: number): StreamLocation[] {
+    const pool = shuffle(locations.filter((l) => l.difficulty === difficulty));
+    return pool.slice(0, n);
+}
+
+function randBetween(min: number, max: number): number {
+    return min + Math.floor(Math.random() * (max - min + 1));
+}
+
 export function pickRoundForSession(set: LocationSet, count: number, roundNumber: number): StreamLocation[] {
-    let pool: StreamLocation[];
-    if (roundNumber <= 2) {
-        pool = set.locations.filter((l) => l.difficulty === 1);
-    } else if (roundNumber <= 4) {
-        pool = set.locations.filter((l) => l.difficulty <= 2);
-    } else if (roundNumber <= 6) {
-        pool = set.locations.filter((l) => l.difficulty >= 2);
-    } else {
-        pool = set.locations.filter((l) => l.difficulty === 3);
+    if (roundNumber >= 10) {
+        const pool = set.locations.filter((l) => l.difficulty === 3);
+        if (pool.length >= count) return shuffle(pool).slice(0, count);
+        return shuffle([...set.locations]).slice(0, count);
     }
-    if (pool.length < count) {
-        pool = [...set.locations];
+
+    let baseDifficulty: 1 | 2 | 3;
+    if (roundNumber <= 3) baseDifficulty = 1;
+    else if (roundNumber <= 6) baseDifficulty = 2;
+    else baseDifficulty = 3;
+
+    const easyCount = baseDifficulty > 1 ? randBetween(1, 2) : 0;
+    const hardCount = baseDifficulty < 3 ? randBetween(1, 2) : 0;
+    const baseCount = count - easyCount - hardCount;
+
+    const easyDiff = Math.max(1, baseDifficulty - 1) as 1 | 2 | 3;
+    const hardDiff = Math.min(3, baseDifficulty + 1) as 1 | 2 | 3;
+
+    const picked = [
+        ...pickFromPool(set.locations, easyDiff, easyCount),
+        ...pickFromPool(set.locations, hardDiff, hardCount),
+        ...pickFromPool(set.locations, baseDifficulty, baseCount),
+    ];
+
+    if (picked.length < count) {
+        const names = new Set(picked.map((l) => l.name));
+        const fill = shuffle(set.locations.filter((l) => !names.has(l.name)));
+        picked.push(...fill.slice(0, count - picked.length));
     }
-    return shuffle(pool).slice(0, count);
+
+    return shuffle(picked);
 }
 
 export function getRoundGoal(roundNumber: number): number {

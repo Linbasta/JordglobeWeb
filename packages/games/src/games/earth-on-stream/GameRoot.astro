@@ -1,15 +1,38 @@
-<canvas id="renderCanvas"></canvas>
+<div id="game-layout">
+    <div id="globe-area">
+        <canvas id="renderCanvas"></canvas>
+    </div>
+    <div id="side-panel"></div>
+</div>
 
 <style>
+    #game-layout {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    #globe-area {
+        flex: 1;
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+    }
     #renderCanvas {
         width: 100%;
         height: 100%;
         touch-action: none;
     }
+    #side-panel {
+        flex: 0 0 auto;
+        width: 0;
+        overflow: hidden;
+        transition: width 0.3s ease;
+    }
 </style>
 
 <script>
     import { EarthGlobe } from '../../earth-globe/earth-globe.ts';
+    import { Color4 } from '@babylonjs/core/Maths/math';
     import { animateToLocation } from '../../shared/animation/camera-utils.ts';
     import { loadAllLocations, filterByContinent } from './locations.ts';
     import type { LocationSet, Continent } from './locations.ts';
@@ -20,16 +43,17 @@
         getGlobalRoundScore, getCurrentRoundGoal, isRoundGoalMet, advanceRound,
         getLeaderboard, getHighestRound, updateHighestRound,
     } from './game-state.ts';
-    import { createSidebar, revealLocation, updateCounter, updateScore, disposeSidebar, getSidebarWidth } from './sidebar-ui.ts';
+    import { createSidebar, revealLocation, updateCounter, updateScore, disposeSidebar } from './sidebar-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
     import { createTimer, disposeTimer } from './timer-ui.ts';
-    import { showLeaderboard } from './leaderboard-ui.ts';
+    import { showLeaderboard, disposeLeaderboard } from './leaderboard-ui.ts';
     import { startConfetti } from '../../shared/ui/confetti.ts';
     import { handleOAuthRedirect, getStoredAuth, startOAuthFlow, disconnect as disconnectAuth } from './twitch-auth.ts';
     import { connectChat, disconnectChat } from './twitch-chat.ts';
     import { createTwitchUI, setTwitchConnected, setTwitchDisconnected } from './twitch-ui.ts';
 
-    const ROUND_SIZE = 6;
+    const ROUND_SIZE_MIN = 8;
+    const ROUND_SIZE_MAX = 12;
     const ROUND_TIME = 120;
     const DWELL_TIME = 3500;
     const FLY_DURATION = 3000;
@@ -48,6 +72,11 @@
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
         onReady: async () => {
+            const scene = globe.getScene();
+            scene.clearColor = new Color4(10 / 255, 10 / 255, 26 / 255, 1);
+            const skybox = scene.getMeshByName('skyBox');
+            if (skybox) skybox.setEnabled(false);
+
             globe.getCamera().detachControl();
             initTwitchUI();
             if (auth) {
@@ -58,20 +87,36 @@
         },
     });
 
+    let twitchChannel = '';
+
     function initTwitchUI() {
         createTwitchUI({
             onConnect: () => startOAuthFlow(),
-            onDisconnect: () => {
-                disconnectChat();
-                disconnectAuth();
-                twitchActive = false;
-                setTwitchDisconnected();
-            },
+            onDisconnect: () => doTwitchDisconnect(),
         });
+    }
+
+    function doTwitchDisconnect() {
+        disconnectChat();
+        disconnectAuth();
+        const wasActive = twitchActive;
+        twitchActive = false;
+        twitchChannel = '';
+        setTwitchDisconnected();
+
+        if (wasActive) {
+            stopCycling();
+            disposeTimer();
+            disposeLeaderboard();
+            resetRound(globe);
+            disposeSidebar();
+            openLobby();
+        }
     }
 
     function activateTwitch(token: string, login: string, displayName: string) {
         twitchActive = true;
+        twitchChannel = displayName;
         setTwitchConnected(displayName);
         connectChat(token, login, onChatMessage);
     }
@@ -113,6 +158,10 @@
         showLobby({
             defaultContinent: selectedContinent,
             getHighestRound,
+            twitchConnected: twitchActive,
+            twitchChannel: twitchChannel || undefined,
+            onTwitchConnect: () => startOAuthFlow(),
+            onTwitchDisconnect: () => doTwitchDisconnect(),
             onStart: (continent) => {
                 selectedContinent = continent;
                 activeSet = filterByContinent(locationSet, continent);
@@ -125,10 +174,11 @@
     function beginRound() {
         const roundNum = getSessionRoundNumber();
         updateHighestRound(selectedContinent, roundNum);
-        const locations = startRound(globe, activeSet, ROUND_SIZE);
+        const roundSize = ROUND_SIZE_MIN + Math.floor(Math.random() * (ROUND_SIZE_MAX - ROUND_SIZE_MIN + 1));
+        const locations = startRound(globe, activeSet, roundSize);
         const goal = getCurrentRoundGoal();
         createSidebar(locations, roundNum, goal);
-        createTimer(ROUND_TIME, onTimeUp, getSidebarWidth());
+        createTimer(ROUND_TIME, onTimeUp);
         startCycling();
     }
 
