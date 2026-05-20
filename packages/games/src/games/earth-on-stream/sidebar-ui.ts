@@ -7,9 +7,22 @@ let rowEls: HTMLDivElement[] = [];
 export function createSidebar(locations: RoundLocation[]): void {
     disposeSidebar();
 
+    const NAME_COL_WIDTH = 100;
+    const maxRowWidth = Math.max(...locations.map((rl) => {
+        const name = rl.location.name;
+        const chars = [...name];
+        let width = 0;
+        for (const ch of chars) {
+            width += ch === ' ' ? 10 : 30;
+        }
+        width += (chars.length - 1) * 2;
+        return width;
+    }));
+    const sidebarWidth = NAME_COL_WIDTH + maxRowWidth + 56;
+
     sidebarEl = document.createElement('div');
     sidebarEl.style.cssText =
-        'position:fixed;right:0;top:0;height:100%;width:280px;' +
+        `position:fixed;right:0;top:0;height:100%;width:${sidebarWidth}px;` +
         'background:rgba(10,10,20,0.75);z-index:50;' +
         'display:flex;flex-direction:column;padding:16px 12px;' +
         'box-sizing:border-box;gap:10px;overflow-y:auto;' +
@@ -23,42 +36,57 @@ export function createSidebar(locations: RoundLocation[]): void {
     updateCounter(0, locations.length);
     sidebarEl.appendChild(counterEl);
 
-    rowEls = [];
-    for (const rl of locations) {
-        const row = createRow(rl.location.name);
-        rowEls.push(row);
+    const sortedIndices = locations
+        .map((_, i) => i)
+        .sort((a, b) => locations[a].location.name.length - locations[b].location.name.length);
+
+    rowEls = new Array(locations.length);
+    for (const i of sortedIndices) {
+        const row = createRow(locations[i].location.name, NAME_COL_WIDTH);
+        rowEls[i] = row;
         sidebarEl.appendChild(row);
     }
 
     document.body.appendChild(sidebarEl);
 }
 
-function createRow(name: string): HTMLDivElement {
+function createRow(name: string, nameColWidth: number): HTMLDivElement {
     const row = document.createElement('div');
     row.style.cssText =
-        'display:flex;gap:3px;flex-wrap:wrap;justify-content:center;' +
+        'display:flex;flex-wrap:nowrap;align-items:center;' +
         'padding:8px 4px;border-radius:6px;' +
         'transition:background 0.4s;';
 
+    const nameSlot = document.createElement('span');
+    nameSlot.className = 'name-slot';
+    nameSlot.style.cssText =
+        `width:${nameColWidth}px;flex:0 0 ${nameColWidth}px;` +
+        'color:transparent;font-size:12px;font-weight:600;' +
+        'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+    row.appendChild(nameSlot);
+
+    const letters = document.createElement('div');
+    letters.style.cssText = 'display:flex;gap:2px;flex-wrap:nowrap;';
     for (const ch of name) {
         const cell = document.createElement('span');
         if (ch === ' ') {
             cell.style.cssText = 'width:10px;';
         } else {
             cell.style.cssText =
-                'width:26px;height:30px;display:inline-flex;align-items:center;' +
+                'width:26px;height:30px;flex:0 0 26px;display:inline-flex;align-items:center;' +
                 'justify-content:center;border:2px solid rgba(255,255,255,0.25);' +
                 'border-radius:4px;color:transparent;font-size:14px;font-weight:700;' +
                 'font-family:monospace;text-transform:uppercase;' +
                 'transition:all 0.25s ease;background:rgba(255,255,255,0.05);';
             cell.textContent = ch;
         }
-        row.appendChild(cell);
+        letters.appendChild(cell);
     }
+    row.appendChild(letters);
     return row;
 }
 
-export function revealLocation(index: number): Promise<void> {
+export function revealLocation(index: number, username: string): Promise<void> {
     return new Promise((resolve) => {
         const row = rowEls[index];
         if (!row) {
@@ -68,7 +96,8 @@ export function revealLocation(index: number): Promise<void> {
 
         row.style.background = 'rgba(76,175,80,0.15)';
 
-        const cells = row.querySelectorAll('span');
+        const lettersDiv = row.querySelector('div')!;
+        const cells = lettersDiv.querySelectorAll('span');
         let delay = 0;
         let lastLetterDelay = 0;
 
@@ -90,7 +119,14 @@ export function revealLocation(index: number): Promise<void> {
             delay += 50;
         });
 
-        setTimeout(resolve, lastLetterDelay + 200);
+        setTimeout(() => {
+            const nameSlot = row.querySelector('.name-slot') as HTMLSpanElement;
+            if (nameSlot) {
+                nameSlot.textContent = username;
+                nameSlot.style.color = '#4CAF50';
+            }
+            resolve();
+        }, lastLetterDelay + 200);
     });
 }
 

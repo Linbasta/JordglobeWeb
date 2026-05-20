@@ -41,19 +41,21 @@ Write simple, direct code (Handmade Philosophy). Prefer:
 
 ## Non-Quiz Games
 
-Some games bypass `startQuizGame` entirely and instantiate `EarthGlobe` directly (e.g. `earth-on-stream`). These games have no questions, no score, and no quiz adapter — they use the globe as a standalone rendering component and drive behavior via `scene.registerBeforeRender()` hooks.
+Some games bypass `startQuizGame` entirely and instantiate `EarthGlobe` directly (e.g. `earth-on-stream`). These games have no questions, no score, and no quiz adapter — they use the globe as a standalone rendering component. User camera interaction is disabled; the camera is driven programmatically.
 
 ### Earth on Stream (`src/games/earth-on-stream/`)
 
-Twitch-style geography guessing game (like "Words on Stream" but for locations). A slowly spinning globe shows location markers; a right sidebar displays location names as hidden letter squares. Players guess locations via text input (Twitch chat integration planned).
+Twitch-style geography guessing game (like "Words on Stream" but for locations). The camera cycles through remaining locations (fly + dwell), framing each one in turn. A right sidebar displays location names as hidden letter squares, sorted shortest-to-longest. Players guess locations via text input (Twitch chat integration planned).
+
+**Camera behavior:** No user interaction (`detachControl()`). Camera auto-cycles through unguessed locations using `animateToLocation()` from `camera-utils.ts`. Pauses during correct-guess effects, then resumes.
 
 **File layout:**
 - `locations.ts` — `StreamLocation`/`LocationSet` types, built-in sets (European Capitals, World Landmarks), `pickRound()` shuffle
-- `game-state.ts` — Round state, `processGuess()` with accent-stripping + alias matching
-- `sidebar-ui.ts` — Right sidebar with letter squares, staggered reveal animation, counter
+- `game-state.ts` — Round state, `processGuess()` with accent-stripping + alias matching, `getRemainingLocations()` for camera cycling
+- `sidebar-ui.ts` — Right sidebar (auto-width based on longest name) with fixed-size letter squares, sorted short→long, staggered reveal animation, counter
 - `input-ui.ts` — Bottom text input with green/red flash feedback
 - `globe-effects.ts` — Particle burst + marker scale pulse → release on correct guess
-- `GameRoot.astro` — Wires everything: spinning globe, round lifecycle, guess→effect→reveal flow
+- `GameRoot.astro` — Wires everything: camera cycling, round lifecycle, guess→effect→reveal flow
 
 ## Development Servers
 

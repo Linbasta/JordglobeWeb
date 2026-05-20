@@ -77,6 +77,10 @@ export function isRoundComplete(): boolean {
     return roundActive && guessedCount >= roundLocations.length;
 }
 
+export function getRemainingLocations(): RoundLocation[] {
+    return roundLocations.filter((rl) => !rl.guessed);
+}
+
 export function resetRound(globe: EarthGlobe): void {
     if (roundLocations.length > 0) {
         globe.releaseAllMarkers();

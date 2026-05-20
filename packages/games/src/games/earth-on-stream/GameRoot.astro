@@ -10,34 +10,60 @@
 
 <script>
     import { EarthGlobe } from '../../earth-globe/earth-globe.ts';
+    import { animateToLocation } from '../../shared/animation/camera-utils.ts';
     import { EUROPEAN_CAPITALS_SET } from './locations.ts';
-    import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound } from './game-state.ts';
+    import { startRound, processGuess, getGuessedCount, getRoundTotal, isRoundComplete, resetRound, getRemainingLocations } from './game-state.ts';
     import { createSidebar, revealLocation, updateCounter, showCompletion, disposeSidebar } from './sidebar-ui.ts';
     import { createInput, flashCorrect, flashWrong, disableInput, disposeInput } from './input-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
     import { startConfetti } from '../../shared/ui/confetti.ts';
 
     const ROUND_SIZE = 6;
-    const SPIN_SPEED = 0.0003;
+    const DWELL_TIME = 1500;
+    const FLY_DURATION = 1000;
+    const FRAME_RADIUS = 5.5;
+
+    let cycleTimer: ReturnType<typeof setTimeout> | null = null;
+    let animating = false;
 
     const globe = new EarthGlobe({
         canvasId: 'renderCanvas',
         onReady: () => {
-            const camera = globe.getCamera();
-            const scene = globe.getScene();
-
-            scene.registerBeforeRender(() => {
-                camera.alpha += SPIN_SPEED;
-            });
-
+            globe.getCamera().detachControl();
             beginRound();
         },
     });
+
+    function startCycling() {
+        stopCycling();
+        cycleToNext(0);
+    }
+
+    function stopCycling() {
+        if (cycleTimer) {
+            clearTimeout(cycleTimer);
+            cycleTimer = null;
+        }
+    }
+
+    async function cycleToNext(currentIndex: number) {
+        const remaining = getRemainingLocations();
+        if (remaining.length === 0 || animating) return;
+
+        const idx = currentIndex % remaining.length;
+        const loc = remaining[idx].location;
+
+        await animateToLocation(globe.getCamera(), loc.lat, loc.lon, FRAME_RADIUS, FLY_DURATION);
+
+        const nextIdx = (idx + 1) % Math.max(remaining.length, 1);
+        cycleTimer = setTimeout(() => cycleToNext(nextIdx), DWELL_TIME);
+    }
 
     function beginRound() {
         const locations = startRound(globe, EUROPEAN_CAPITALS_SET, ROUND_SIZE);
         createSidebar(locations);
         createInput(onGuess);
+        startCycling();
     }
 
     async function onGuess(text: string) {
@@ -48,16 +74,21 @@
         }
 
         flashCorrect();
+        stopCycling();
+        animating = true;
 
         await Promise.all([
             playCorrectEffect(globe, match.markerId),
-            revealLocation(match.index),
+            revealLocation(match.index, 'Player'),
         ]);
 
+        animating = false;
         updateCounter(getGuessedCount(), getRoundTotal());
 
         if (isRoundComplete()) {
             onRoundComplete();
+        } else {
+            startCycling();
         }
     }
 
