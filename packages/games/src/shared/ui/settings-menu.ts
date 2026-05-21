@@ -9,6 +9,7 @@ import { asset } from '../asset-path'
 import { getAvailableLocales, getLocale, setLocale, t } from '../i18n/i18n'
 import { auth, isRealUser } from '../firebase'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { getInputMode, setInputMode, type InputMode } from '../input-mode'
 
 const MORE_GAMES_URL = 'https://jordglobe.com/'
 const APP_STORE_URL = 'https://apps.apple.com/app/id1599500931'
@@ -146,6 +147,7 @@ export function showSettingsMenu(opts: SettingsMenuOptions = {}): void {
             <button class="sm-auth-link" type="button"></button>
         </div>
         ${renderLanguageRow()}
+        ${renderInputModeRow()}
         ${opts.onRetry ? `<button class="sm-retry-btn" type="button">${RETRY_ICON}${t('settings.retry')}</button>` : ''}
         <a class="sm-more-btn" href="${MORE_GAMES_URL}">${t('settings.moreGames')}${EXIT_ICON}</a>
         <button class="sm-share-btn">${SHARE_ICON}${t('settings.share')}</button>
@@ -159,6 +161,7 @@ export function showSettingsMenu(opts: SettingsMenuOptions = {}): void {
     document.body.appendChild(backdrop)
 
     wireLanguageButtons(card)
+    wireInputModeButtons(card)
     wireShareButton(card)
     wireAuthRow(card)
 
@@ -207,6 +210,34 @@ function renderLanguageRow(): string {
             <select class="sm-lang-select" aria-label="${t('settings.language')}">${options}</select>
         </div>
     `
+}
+
+function renderInputModeRow(): string {
+    const active = getInputMode()
+    const opt = (val: InputMode, label: string) =>
+        `<option value="${val}"${val === active ? ' selected' : ''}>${label}</option>`
+    return `
+        <div class="sm-row">
+            <span class="sm-label">${t('settings.inputMode')}</span>
+            <select class="sm-input-mode-select sm-lang-select" aria-label="${t('settings.inputMode')}">
+                ${opt('cursor', t('settings.inputModeCursor'))}
+                ${opt('pin', t('settings.inputModePin'))}
+            </select>
+        </div>
+    `
+}
+
+function wireInputModeButtons(card: HTMLElement): void {
+    const select = card.querySelector<HTMLSelectElement>('.sm-input-mode-select')
+    if (!select) return
+    const active = getInputMode()
+    select.addEventListener('change', () => {
+        const value = select.value
+        if (value !== 'cursor' && value !== 'pin') return
+        if (value === active) return
+        setInputMode(value)
+        window.location.reload()
+    })
 }
 
 function wireLanguageButtons(card: HTMLElement): void {

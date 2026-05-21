@@ -174,6 +174,7 @@ export class SoloGameController extends BaseGameController {
             if (previewPin) {
                 this.hoverCountryLabel.linkToNode(previewPin);
             }
+            // Desktop: cursor is read from pin-manager inside refreshHoverLabel
         }
 
         // Wire hover selection (unless disabled)

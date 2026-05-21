@@ -16,18 +16,20 @@ import { Material } from '@babylonjs/core/Materials/material';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import type { RegionPicker, RegionPolygon, LatLon } from '../../earth-globe';
-import { cartesianToLatLon, ANIMATION_AMPLITUDE, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
+import { cartesianToLatLon, ANIMATION_AMPLITUDE, REGION_ALTITUDE, STATE_DISABLED, STATE_CLEARED } from '../../earth-globe';
 import { PinRecorder, type RecordedPosition } from '../animation/pin-recorder';
 import { BASE_URL } from '../asset-path';
 import { getZoomValue } from '../animation/camera-utils';
 import { zoom } from '../../earth-globe';
 import { initPinScroll, startPinScroll, stopPinScroll, updatePointer, consumeScrolledFlag, setBottomDeadZone } from './pin-scroll';
 import { dismissPinTutorial } from '../ui/pin-tutorial';
+import { useCursorMode } from '../input-mode';
 
 const EARTH_RADIUS = 2.0;
 const TOUCH_Y_OFFSET_PERCENT = 0.10; // 10% of screen height, upward from fingertip
 const CANCEL_ZONE_WIDTH = 600;
 const CANCEL_ZONE_VISIBLE_HEIGHT = 50;
+const DESKTOP_CLICK_DRAG_THRESHOLD_PX = 5;
 
 // --- Module-level state ---
 
@@ -110,6 +112,85 @@ function isPointerInCancelZone(clientX: number, clientY: number): boolean {
     const right = (rect.width + CANCEL_ZONE_WIDTH) / 2;
     const top = rect.height - CANCEL_ZONE_VISIBLE_HEIGHT;
     return relX >= left && relX <= right && relY >= top;
+}
+
+function pickCountryAtScreen(clientX: number, clientY: number): { country: RegionPolygon | null; latLon: LatLon } | null {
+    // Intersect the ray against a sphere at the raised region radius — not the
+    // ocean — so cursor pixels near the limb map to the lat/lon of the region
+    // surface the user actually sees (regions bulge outward and would otherwise
+    // shadow lat/lons that lie "behind" them on the ocean sphere).
+    const ray = scene.createPickingRay(clientX, clientY, null, camera);
+    const radius = EARTH_RADIUS + REGION_ALTITUDE;
+    const b = ray.origin.x * ray.direction.x + ray.origin.y * ray.direction.y + ray.origin.z * ray.direction.z;
+    const c = ray.origin.x * ray.origin.x + ray.origin.y * ray.origin.y + ray.origin.z * ray.origin.z - radius * radius;
+    const disc = b * b - c;
+    if (disc < 0) return null;
+    const t = -b - Math.sqrt(disc);
+    if (t < 0) return null;
+    const hitX = ray.origin.x + ray.direction.x * t;
+    const hitY = ray.origin.y + ray.direction.y * t;
+    const hitZ = ray.origin.z + ray.direction.z * t;
+    const latLon = cartesianToLatLon(hitX, hitY, hitZ);
+    const country = getActiveRegionPicker().getCountryAt(latLon, (p) => {
+        const s = getRegionState(p.regionIndex);
+        return s !== STATE_DISABLED && s !== STATE_CLEARED;
+    });
+    return { country, latLon };
+}
+
+function setupDesktopEventHandlers(): void {
+    let downX = 0;
+    let downY = 0;
+    let downButton = -1;
+
+    canvas.addEventListener('pointermove', (e) => {
+        lastClientX = e.clientX;
+        lastClientY = e.clientY;
+        const hit = pickCountryAtScreen(e.clientX, e.clientY);
+        const country = hit?.country ?? null;
+        const latLon = hit?.latLon ?? { lat: 0, lon: 0 };
+        if (country !== hoveredCountry) {
+            hoveredCountry = country;
+            if (onCountryHoverCallback) {
+                onCountryHoverCallback(country, latLon);
+            }
+        }
+        if (onPinMoveCallback) {
+            onPinMoveCallback(latLon);
+        }
+    });
+
+    canvas.addEventListener('pointerleave', () => {
+        if (hoveredCountry && onCountryHoverCallback) {
+            onCountryHoverCallback(null, { lat: 0, lon: 0 });
+        }
+        hoveredCountry = null;
+    });
+
+    canvas.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        downX = e.clientX;
+        downY = e.clientY;
+        downButton = 0;
+    });
+
+    canvas.addEventListener('pointerup', (e) => {
+        if (e.button !== 0 || downButton !== 0) return;
+        downButton = -1;
+        const dx = e.clientX - downX;
+        const dy = e.clientY - downY;
+        if (Math.hypot(dx, dy) > DESKTOP_CLICK_DRAG_THRESHOLD_PX) return;
+
+        const hit = pickCountryAtScreen(e.clientX, e.clientY);
+        if (!hit) return;
+        if (onPinPlacedCallback) {
+            onPinPlacedCallback(hit.country, hit.latLon);
+        }
+    });
+
+    canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
 }
 
 function setupEventHandlers(): void {
@@ -279,6 +360,11 @@ export async function initPinManager(
     getCountryAltitude = _getCountryAltitude;
     getRegionState = _getRegionState;
 
+    if (useCursorMode()) {
+        setupDesktopEventHandlers();
+        return;
+    }
+
     await loadBossPinModel();
     createPreviewPin();
     initPinScroll(scene, camera, canvas);
@@ -346,6 +432,10 @@ export function isPlacing(): boolean {
 
 export function getPreviewPin(): TransformNode | null {
     return previewPin;
+}
+
+export function getLastPointerScreenPos(): { x: number; y: number } {
+    return { x: lastClientX, y: lastClientY };
 }
 
 export function getRecordedPositions(): RecordedPosition[] {

@@ -32,6 +32,7 @@ import { setSimpleScoreBarBannerOffset } from '../ui/score-bar-simple';
 import { setTextCardBannerOffset } from '../ui/text-card-overlay';
 import { setVideoBannerOffset } from '../ui/video-overlay';
 import { setImageBannerOffset } from '../ui/image-overlay';
+import { useCursorMode } from '../input-mode';
 
 export interface BaseGameOptions {
     onReady?: (controller: any) => void;
@@ -287,8 +288,8 @@ export abstract class BaseGameController {
         this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.globe.getScene());
         this.advancedTexture.background = "";
 
-        // Conditionally create pin UI
-        if (this.options.showPinUI !== false) {
+        // Conditionally create pin UI (skip in cursor mode — cursor replaces the pin)
+        if (this.options.showPinUI !== false && !useCursorMode()) {
             this.pinUI = new PinUI(this.advancedTexture);
             this.pinUI.create({
                 onPinButtonPress: () => {

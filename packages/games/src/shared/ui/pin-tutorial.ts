@@ -6,6 +6,7 @@
  */
 
 import { asset } from '../asset-path'
+import { useCursorMode } from '../input-mode'
 
 const TUTORIAL_SEEN_KEY = 'pin-tutorial-seen'
 const TUTORIAL_DELAY_MS = 5000
@@ -113,6 +114,11 @@ function removeTutorial(): void {
  * @param force - If true, show even if already seen (and show immediately)
  */
 export function showPinTutorial(force = false): void {
+    // Cursor mode has no pin to drag — skip the tutorial entirely
+    if (!force && useCursorMode()) {
+        return
+    }
+
     // Don't show if already seen (unless forced)
     if (!force && wasSeen()) {
         return

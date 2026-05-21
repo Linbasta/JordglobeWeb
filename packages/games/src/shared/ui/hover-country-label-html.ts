@@ -10,6 +10,8 @@ import type { Camera } from '@babylonjs/core/Cameras/camera';
 import { Vector3, Matrix } from '@babylonjs/core/Maths/math.vector';
 import { Viewport } from '@babylonjs/core/Maths/math.viewport';
 import type { TransformNode } from '@babylonjs/core/Meshes/transformNode';
+import { useCursorMode } from '../input-mode';
+import { getLastPointerScreenPos } from '../managers/pin-manager';
 
 export class HoverCountryLabelHTML {
     private element: HTMLDivElement;
@@ -62,14 +64,22 @@ export class HoverCountryLabelHTML {
     }
 
     /**
-     * Update the label's screen position based on the linked node
+     * Update the label's screen position. In cursor mode the label tracks the
+     * mouse pointer; otherwise it follows the linked 3D anchor node.
      */
     updatePosition(): void {
-        if (!this.anchorNode || !this.visible || this.fixedPosition) return;
+        if (!this.visible || this.fixedPosition) return;
 
+        if (useCursorMode()) {
+            const { x, y } = getLastPointerScreenPos();
+            this.element.style.left = `${x}px`;
+            this.element.style.top = `${y}px`;
+            return;
+        }
+
+        if (!this.anchorNode) return;
         const worldPos = this.anchorNode.getAbsolutePosition();
         const screenPos = this.worldToScreen(worldPos);
-
         if (screenPos) {
             this.element.style.left = `${screenPos.x}px`;
             this.element.style.top = `${screenPos.y}px`;
