@@ -264,8 +264,8 @@ function updateFocusDisplay(index: number): void {
 
     const cellsClone = letterCells.cloneNode(true) as HTMLElement;
     cellsClone.style.cssText = 'display:flex;gap:4px;flex-wrap:nowrap;';
-    for (const cell of cellsClone.querySelectorAll('span')) {
-        const span = cell as HTMLSpanElement;
+    const clonedCells = Array.from(cellsClone.querySelectorAll('span'));
+    for (const span of clonedCells) {
         if (span.style.width === '10px') {
             span.style.width = '20px';
         } else if (span.dataset.real) {

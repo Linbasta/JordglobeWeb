@@ -1,5 +1,6 @@
 import type { Continent } from './locations';
 import { TWITCH_ICON } from './twitch-ui';
+import { getMusicVolume, setMusicVolume, onVolumeChange } from './round-music';
 
 export interface LobbyOptions {
     onStart: (continent: Continent) => void;
@@ -184,6 +185,44 @@ export function showLobby(opts: LobbyOptions): void {
     updateBest();
     card.appendChild(chipContainer);
     card.appendChild(bestLine);
+
+    // --- Volume slider ---
+    const volWrap = document.createElement('div');
+    volWrap.style.cssText =
+        'display:flex;align-items:center;gap:10px;margin-bottom:20px;' +
+        'justify-content:center;';
+
+    const volIcon = document.createElement('span');
+    volIcon.style.cssText = 'color:#888;font-size:16px;';
+    volIcon.textContent = '♫';
+    volWrap.appendChild(volIcon);
+
+    const volSlider = document.createElement('input');
+    volSlider.type = 'range';
+    volSlider.min = '0';
+    volSlider.max = '100';
+    volSlider.step = '1';
+    volSlider.value = String(getMusicVolume() * 100);
+    volSlider.style.cssText = 'width:140px;accent-color:#4CAF50;';
+
+    const volVal = document.createElement('span');
+    volVal.style.cssText = 'color:#999;font-size:13px;font-weight:600;min-width:36px;';
+    volVal.textContent = `${Math.round(getMusicVolume() * 100)}%`;
+
+    volSlider.addEventListener('input', () => {
+        const v = Number(volSlider.value);
+        volVal.textContent = `${Math.round(v)}%`;
+        setMusicVolume(v / 100);
+    });
+
+    onVolumeChange((v) => {
+        volSlider.value = String(v * 100);
+        volVal.textContent = `${Math.round(v * 100)}%`;
+    });
+
+    volWrap.appendChild(volSlider);
+    volWrap.appendChild(volVal);
+    card.appendChild(volWrap);
 
     const startBtn = document.createElement('button');
     startBtn.style.cssText =

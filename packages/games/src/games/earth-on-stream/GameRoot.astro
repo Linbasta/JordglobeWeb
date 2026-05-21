@@ -53,7 +53,7 @@
     import { connectChat, disconnectChat } from './twitch-chat.ts';
     import { createTwitchUI, setTwitchConnected, setTwitchDisconnected } from './twitch-ui.ts';
     import { playCorrectSfx, playFanfareSuccess, playFanfareFail } from '../../shared/sfx/sfx-player.ts';
-    import { startRoundMusic, stopRoundMusic } from './round-music.ts';
+    import { startRoundMusic, stopRoundMusic, startMenuMusic, stopMenuMusic, getMusicVolume, setMusicVolume, onVolumeChange } from './round-music.ts';
 
     const ROUND_SIZE_MIN = 8;
     const ROUND_SIZE_MAX = 12;
@@ -152,7 +152,17 @@
             });
             wrap.appendChild(slider);
             panel.appendChild(wrap);
+            return { slider, display: val };
         }
+
+        const volSlider = addSlider('Music Volume', 0, 100, getMusicVolume() * 100, 1,
+            (v) => `${Math.round(v)}%`,
+            (v) => { setMusicVolume(v / 100); },
+        );
+        onVolumeChange((v) => {
+            volSlider.slider.value = String(v * 100);
+            volSlider.display.textContent = `${Math.round(v * 100)}%`;
+        });
 
         addSlider('Dwell Time', 500, 10000, dwellTime, 250,
             (v) => `${(v / 1000).toFixed(1)}s`,
@@ -264,6 +274,7 @@
     }
 
     function openLobby() {
+        startMenuMusic();
         showLobby({
             defaultContinent: selectedContinent,
             getHighestRound,
