@@ -39,11 +39,12 @@
     import { showLobby } from './lobby-ui.ts';
     import {
         startSession, startRound, processGuess, getGuessedCount, getRoundTotal,
-        isRoundComplete, resetRound, getRemainingLocations, getSessionRoundNumber,
-        getGlobalRoundScore, getCurrentRoundGoal, isRoundGoalMet, advanceRound,
-        getLeaderboard, getHighestRound, updateHighestRound,
+        isRoundComplete, resetRound, getRemainingLocations, getRoundLocation,
+        getSessionRoundNumber, getGlobalRoundScore, getCurrentRoundGoal,
+        isRoundGoalMet, advanceRound, getLeaderboard, getHighestRound,
+        updateHighestRound, cheatClearRound,
     } from './game-state.ts';
-    import { createSidebar, revealLocation, updateCounter, updateScore, disposeSidebar } from './sidebar-ui.ts';
+    import { createSidebar, revealLocation, updateCounter, updateScore, disposeSidebar, highlightRow } from './sidebar-ui.ts';
     import { playCorrectEffect } from './globe-effects.ts';
     import { createTimer, disposeTimer } from './timer-ui.ts';
     import { showLeaderboard, disposeLeaderboard } from './leaderboard-ui.ts';
@@ -56,13 +57,15 @@
     const ROUND_SIZE_MIN = 8;
     const ROUND_SIZE_MAX = 12;
     const ROUND_TIME = 120;
-    const DWELL_TIME = 3500;
-    const FLY_DURATION = 3000;
     const FRAME_RADIUS = 5.5;
+    let dwellTime = 3500;
+    let flyDuration = 3000;
 
     let cycleTimer: ReturnType<typeof setTimeout> | null = null;
     let cycleGen = 0;
     let animating = false;
+    let cycleQueue: number[] = [];
+    let cyclePos = 0;
     let twitchActive = false;
     let locationSet: LocationSet;
     let activeSet: LocationSet;
@@ -87,6 +90,79 @@
             openLobby();
         },
     });
+
+    function createSettingsMenu() {
+        const parent = document.getElementById('globe-area')!;
+
+        const toggle = document.createElement('button');
+        toggle.textContent = '⚙';
+        toggle.style.cssText =
+            'position:absolute;top:12px;left:12px;z-index:70;' +
+            'width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;' +
+            'background:rgba(255,255,255,0.12);color:#fff;font-size:20px;' +
+            'display:flex;align-items:center;justify-content:center;' +
+            'backdrop-filter:blur(6px);';
+        parent.appendChild(toggle);
+
+        const panel = document.createElement('div');
+        panel.style.cssText =
+            'position:absolute;top:54px;left:12px;z-index:70;' +
+            'background:rgba(10,10,20,0.85);backdrop-filter:blur(8px);' +
+            'border:1px solid rgba(255,255,255,0.15);border-radius:10px;' +
+            'padding:14px 16px;display:none;flex-direction:column;gap:12px;' +
+            'font-family:system-ui,-apple-system,sans-serif;min-width:200px;' +
+            'box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+        parent.appendChild(panel);
+
+        toggle.addEventListener('click', () => {
+            panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        function addSlider(label: string, min: number, max: number, value: number, step: number, fmt: (v: number) => string, onChange: (v: number) => void) {
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+
+            const header = document.createElement('div');
+            header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;';
+
+            const lbl = document.createElement('span');
+            lbl.style.cssText = 'color:#ccc;font-size:12px;font-weight:600;';
+            lbl.textContent = label;
+            header.appendChild(lbl);
+
+            const val = document.createElement('span');
+            val.style.cssText = 'color:#fff;font-size:12px;font-weight:700;';
+            val.textContent = fmt(value);
+            header.appendChild(val);
+
+            wrap.appendChild(header);
+
+            const slider = document.createElement('input');
+            slider.type = 'range';
+            slider.min = String(min);
+            slider.max = String(max);
+            slider.step = String(step);
+            slider.value = String(value);
+            slider.style.cssText = 'width:100%;accent-color:#4CAF50;';
+            slider.addEventListener('input', () => {
+                const v = Number(slider.value);
+                val.textContent = fmt(v);
+                onChange(v);
+            });
+            wrap.appendChild(slider);
+            panel.appendChild(wrap);
+        }
+
+        addSlider('Dwell Time', 500, 10000, dwellTime, 250,
+            (v) => `${(v / 1000).toFixed(1)}s`,
+            (v) => { dwellTime = v; },
+        );
+        addSlider('Fly Duration', 500, 8000, flyDuration, 250,
+            (v) => `${(v / 1000).toFixed(1)}s`,
+            (v) => { flyDuration = v; },
+        );
+    }
+    createSettingsMenu();
 
     let twitchChannel = '';
 
@@ -126,10 +202,26 @@
         onGuess(text, username);
     }
 
+    function buildCycleQueue() {
+        const indices = Array.from({ length: getRoundTotal() }, (_, i) => i);
+        for (let i = indices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        cycleQueue = indices;
+        cyclePos = 0;
+    }
+
     function startCycling() {
         stopCycling();
         const gen = ++cycleGen;
-        cycleToNext(0, gen);
+        cycleToNext(gen);
+    }
+
+    function resumeCycling() {
+        stopCycling();
+        const gen = ++cycleGen;
+        cycleToNext(gen);
     }
 
     function stopCycling() {
@@ -140,19 +232,33 @@
         }
     }
 
-    async function cycleToNext(currentIndex: number, gen: number) {
+    function nextUnguessedInQueue(): number | null {
+        const len = cycleQueue.length;
+        for (let i = 0; i < len; i++) {
+            const idx = cycleQueue[(cyclePos + i) % len];
+            const rl = getRoundLocation(idx);
+            if (rl && !rl.guessed) {
+                cyclePos = (cyclePos + i) % len;
+                return idx;
+            }
+        }
+        return null;
+    }
+
+    async function cycleToNext(gen: number) {
+        if (gen !== cycleGen || animating) return;
+
+        const idx = nextUnguessedInQueue();
+        if (idx === null) return;
+
+        const rl = getRoundLocation(idx)!;
+        highlightRow(rl.index);
+
+        await animateToLocation(globe.getCamera(), rl.location.lat, rl.location.lon, FRAME_RADIUS, flyDuration);
+
         if (gen !== cycleGen) return;
-        const remaining = getRemainingLocations();
-        if (remaining.length === 0 || animating) return;
-
-        const idx = currentIndex % remaining.length;
-        const loc = remaining[idx].location;
-
-        await animateToLocation(globe.getCamera(), loc.lat, loc.lon, FRAME_RADIUS, FLY_DURATION);
-
-        if (gen !== cycleGen) return;
-        const nextIdx = (idx + 1) % Math.max(remaining.length, 1);
-        cycleTimer = setTimeout(() => cycleToNext(nextIdx, gen), DWELL_TIME);
+        cyclePos = (cyclePos + 1) % cycleQueue.length;
+        cycleTimer = setTimeout(() => cycleToNext(gen), dwellTime);
     }
 
     function openLobby() {
@@ -180,6 +286,7 @@
         const goal = getCurrentRoundGoal();
         createSidebar(locations, roundNum, goal);
         createTimer(ROUND_TIME, onTimeUp);
+        buildCycleQueue();
         startCycling();
     }
 
@@ -208,8 +315,27 @@
         if (isRoundComplete()) {
             onRoundEnd();
         } else {
-            startCycling();
+            resumeCycling();
         }
+    }
+
+    async function devCheatClear() {
+        stopCycling();
+        animating = true;
+        const revealed = cheatClearRound();
+        for (const rl of revealed) {
+            await revealLocation(rl.index, 'DEV');
+        }
+        animating = false;
+        updateCounter(getGuessedCount(), getRoundTotal());
+        updateScore(getGlobalRoundScore(), getCurrentRoundGoal());
+        onRoundEnd();
+    }
+
+    if (import.meta.env.DEV) {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '0') devCheatClear();
+        });
     }
 
     function onRoundEnd() {

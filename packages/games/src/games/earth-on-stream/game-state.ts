@@ -153,6 +153,10 @@ export function getRemainingLocations(): RoundLocation[] {
     return roundLocations.filter((rl) => !rl.guessed);
 }
 
+export function getRoundLocation(index: number): RoundLocation | undefined {
+    return roundLocations[index];
+}
+
 export function getSessionRoundNumber(): number {
     return sessionRound;
 }
@@ -184,6 +188,19 @@ export function getLeaderboard(): LeaderboardEntry[] {
     }
     entries.sort((a, b) => b.roundPoints - a.roundPoints || b.totalPoints - a.totalPoints);
     return entries;
+}
+
+export function cheatClearRound(): RoundLocation[] {
+    const revealed: RoundLocation[] = [];
+    for (const rl of roundLocations) {
+        if (rl.guessed) continue;
+        rl.guessed = true;
+        guessedCount++;
+        const points = POINTS_BY_DIFFICULTY[rl.location.difficulty];
+        globalRoundScore += points;
+        revealed.push(rl);
+    }
+    return revealed;
 }
 
 export function resetRound(globe: EarthGlobe): void {
