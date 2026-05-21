@@ -95,6 +95,8 @@ export {
     ZOOM_MARKER_HIT_RADIUS_FAR,
     ZOOM_COLLIDER_SCALE_CLOSE,
     ZOOM_COLLIDER_SCALE_FAR,
+    KEY_ROTATE_LAT_DEG,
+    KEY_ROTATE_LON_DEG,
     zoom,
 } from './constants';
 

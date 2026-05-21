@@ -10,7 +10,7 @@
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
 import type { LatLon, RegionPolygon, EarthGlobeAPI } from '../earth-globe';
-import { STATE_DISABLED, STATE_CLEARED } from '../earth-globe';
+import { STATE_DISABLED, STATE_CLEARED, KEY_ROTATE_LAT_DEG, KEY_ROTATE_LON_DEG } from '../earth-globe';
 
 import { BaseGameController, BaseGameOptions } from '../shared/controllers/base-game-controller';
 import { getPreviewPin, onCountryHover, onPinPlaced, onPinMove } from '../shared/managers/pin-manager';
@@ -365,15 +365,20 @@ export class SoloGameController extends BaseGameController {
     // =========================================================================
 
     private setupKeyboardShortcuts(): void {
+        const navHandlers: Record<string, () => void> = {
+            w: () => this.rotateCameraBetaDeg(-KEY_ROTATE_LAT_DEG),
+            s: () => this.rotateCameraBetaDeg(KEY_ROTATE_LAT_DEG),
+            a: () => this.rotateCameraAlphaDeg(-KEY_ROTATE_LON_DEG),
+            d: () => this.rotateCameraAlphaDeg(KEY_ROTATE_LON_DEG),
+        };
+
         const shortcuts: Record<string, () => void> = {
             i: () => this.toggleInspector(),
-            w: () => this.toggleWaterShaderControls(),
             c: () => {
                 console.log('[SoloGameController] C key detected - toggling collision debug visualization');
                 this.toggleMarkerDebugVisualization();
             },
             ...(import.meta.env.DEV && {
-                d: () => this.toggleDebugPanel(),
                 v: () => this.globe.toggleColliderDebugVisualization(),
                 p: () => togglePerfOverlay(),
                 z: () => import('../shared/dev/zoom-tweaker').then(m => m.toggleZoomPanel()),
@@ -382,11 +387,46 @@ export class SoloGameController extends BaseGameController {
             }),
         };
 
+        // Shift+key keeps the prior bindings that collided with WASD navigation
+        const shiftShortcuts: Record<string, () => void> = {
+            w: () => this.toggleWaterShaderControls(),
+            ...(import.meta.env.DEV && {
+                d: () => this.toggleDebugPanel(),
+            }),
+        };
+
         window.addEventListener('keydown', (e) => {
             const tag = (e.target as HTMLElement)?.tagName;
             if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-            shortcuts[e.key.toLowerCase()]?.();
+            const key = e.key.toLowerCase();
+            if (e.shiftKey) {
+                shiftShortcuts[key]?.();
+                return;
+            }
+            if (navHandlers[key]) {
+                e.preventDefault();
+                navHandlers[key]();
+                return;
+            }
+            shortcuts[key]?.();
         });
+    }
+
+    /** Rotate the camera around the globe horizontally by `deg` degrees. */
+    private rotateCameraAlphaDeg(deg: number): void {
+        const camera = this.globe.getCamera();
+        camera.alpha += (deg * Math.PI) / 180;
+        camera.inertialAlphaOffset = 0;
+    }
+
+    /** Tilt the camera vertically by `deg` degrees (beta). Clamped to avoid pole flips. */
+    private rotateCameraBetaDeg(deg: number): void {
+        const camera = this.globe.getCamera();
+        const next = camera.beta + (deg * Math.PI) / 180;
+        const min = 0.1;
+        const max = Math.PI - 0.1;
+        camera.beta = Math.min(max, Math.max(min, next));
+        camera.inertialBetaOffset = 0;
     }
 
     private toggleDebugPanel(): void {

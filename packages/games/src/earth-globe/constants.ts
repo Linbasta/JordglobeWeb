@@ -155,6 +155,12 @@ export const CAMERA_PINCH_DELTA_PERCENTAGE = 0.0008;
 /** Camera near clipping plane */
 export const CAMERA_MIN_Z = 0.01;
 
+/** Latitude degrees the camera tilts per W/S keystroke */
+export const KEY_ROTATE_LAT_DEG = 40;
+
+/** Longitude degrees the camera rotates per A/D keystroke */
+export const KEY_ROTATE_LON_DEG = 60;
+
 /** Orbit sensitivity: s = ORBIT_SCALE / (radius - ORBIT_SHIFT) + ORBIT_BASE */
 export const ORBIT_SCALE = 3600;
 export const ORBIT_SHIFT = 2;
