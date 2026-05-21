@@ -53,6 +53,7 @@
     import { connectChat, disconnectChat } from './twitch-chat.ts';
     import { createTwitchUI, setTwitchConnected, setTwitchDisconnected } from './twitch-ui.ts';
     import { playCorrectSfx, playFanfareSuccess, playFanfareFail } from '../../shared/sfx/sfx-player.ts';
+    import { startRoundMusic, stopRoundMusic } from './round-music.ts';
 
     const ROUND_SIZE_MIN = 8;
     const ROUND_SIZE_MAX = 12;
@@ -183,6 +184,7 @@
 
         if (wasActive) {
             stopCycling();
+            stopRoundMusic();
             disposeTimer();
             disposeLeaderboard();
             resetRound(globe);
@@ -286,6 +288,7 @@
         const goal = getCurrentRoundGoal();
         createSidebar(locations, roundNum, goal);
         createTimer(ROUND_TIME, onTimeUp);
+        startRoundMusic(ROUND_TIME);
         buildCycleQueue();
         startCycling();
     }
@@ -340,6 +343,7 @@
 
     function onRoundEnd() {
         stopCycling();
+        stopRoundMusic();
         disposeTimer();
 
         const goalMet = isRoundGoalMet();
