@@ -47,28 +47,39 @@ Some games bypass `startQuizGame` entirely and instantiate `EarthGlobe` directly
 
 Twitch-style geography guessing game (like "Words on Stream" but for locations). Players collaborate via Twitch chat to guess locations and earn points together.
 
-**Session/Round system:** A session is a series of rounds. Each round shows 6 locations; players guess to earn points (Easy=100, Medium=200, Hard=300). Points go to the guessing player and a global pool. The global pool must reach a round goal (`300 + round × 100`) to advance. If the goal is met when the round ends (timer or all guessed), players advance to a harder round. If not, the session ends and scores reset.
+**Page layout:** Two-column flex layout. Left: `#globe-area` (canvas, timer, Twitch status). Right: `#side-panel` (sidebar content, collapses to `width:0` when no round is active, animates open via CSS transition). Globe background is a solid dark navy (`#0a0a1a`), skybox disabled.
 
-**Difficulty progression:** Rounds 1-2 use easy locations, 3-4 easy+medium, 5-6 medium+hard, 7+ hard only. Goal escalates each round.
+**Lobby & Twitch gate:** Game does not auto-start. On load, a lobby overlay appears requiring Twitch connection before play. The lobby shows a "Connect to Twitch" button (triggers OAuth flow) when disconnected — continent chips and Start button are disabled. Once connected, the host chooses a continent filter (World, Europe, Asia, Africa, N. America, S. America, Oceania) and clicks "Start Game". The lobby also displays the highest round reached per continent (persisted in localStorage). Disconnecting mid-game immediately ends the round and returns to the lobby.
 
-**Between-round leaderboard:** After each round, a popup shows player rankings (round points + session total) and either "Next Round" (goal met) or "New Session" (session over).
+**Continent filtering:** `filterByContinent()` in `locations.ts` uses lat/lon bounding boxes to narrow the location pool. Each continent has one or more bounding boxes. "World" returns all locations unfiltered. Some boundary overlap exists (e.g. Turkey appears in both Europe and Asia boxes) which is intentional.
+
+**Session/Round system:** A session is a series of rounds. Each round picks 8–12 locations (randomized); players guess to earn points (Easy=100, Medium=200, Hard=300). Points go to the guessing player and a global pool. The round goal is 60% of the max possible score for that round's actual locations. If the goal is met when the round ends (timer or all guessed), players advance to a harder round. If not, the session ends (returns to lobby) and scores reset.
+
+**Difficulty progression:** Round 1 = difficulty 1 only, round 2 = difficulty 1 & 2 mix, round 3 = difficulty 2 only, round 4 = difficulty 2 & 3 mix, round 5+ = difficulty 3 only.
+
+**Between-round leaderboard:** After each round, a popup shows player rankings (round points + session total) and either "Next Round" (goal met) or "New Session" (session over → returns to lobby).
+
+**Highest round tracking:** `getHighestRound(continent)` / `updateHighestRound(continent, round)` in `game-state.ts` persist per-continent best round in localStorage (`eos-high-round` key). Updated at the start of each round; displayed in the lobby, updating live as the host switches continent chips.
 
 **Location data:** 2,241 locations (1,266 cities + 975 landmarks) sourced from `data/legacy/locations_en.json`, pre-processed into `public-prod/stream-locations.json` (134KB). Difficulty ratings come from the legacy data for cities; landmarks have manual overrides for well-known ones. Loaded at runtime via `fetch()`.
 
 **Camera behavior:** No user interaction (`detachControl()`). Camera auto-cycles through unguessed locations using `animateToLocation()` (3s fly, 3.5s dwell). Uses a generation counter to prevent stale animation callbacks from spawning duplicate cycling chains. Pauses during correct-guess effects, then resumes.
 
+**Sound effects:** Uses the shared `sfx-player.ts` system. Correct guesses play `playCorrectSfx()` (cycles through 7 variants). Round end plays `playFanfareSuccess()` (goal met) or `playFanfareFail()` (goal not met). Audio files: `public-prod/sfx/correct_*.ogg`, `FanfareSuccess.mp3`, `FanfareFail.mp3`.
+
 **File layout:**
-- `locations.ts` — `StreamLocation` (with `difficulty: 1|2|3`, `type: 'city'|'landmark'`), `LocationSet` types, `loadAllLocations()` fetches from `stream-locations.json`, alias map for alternative names, `pickRoundForSession()` difficulty-aware picking, `getRoundGoal()`, `POINTS_BY_DIFFICULTY`
-- `game-state.ts` — Session + round state, player score tracking (`Map<username, {roundPoints, totalPoints}>`), `processGuess()` with accent-stripping + alias matching + scoring, `startSession()`/`advanceRound()`/`getLeaderboard()`
-- `sidebar-ui.ts` — Right sidebar with round number, score/goal display, "City"/"Landmark" type label per row, letter squares sorted short→long, staggered reveal animation with username
+- `locations.ts` — `StreamLocation` (with `difficulty: 1|2|3`, `type: 'city'|'landmark'`), `LocationSet`, `Continent` types, `loadAllLocations()` fetches from `stream-locations.json`, alias map for alternative names, `pickRoundForSession()` mixed-difficulty picking, `filterByContinent()` lat/lon bounding box filter, `POINTS_BY_DIFFICULTY`
+- `game-state.ts` — Session + round state, player score tracking (`Map<username, {roundPoints, totalPoints}>`), `processGuess()` with accent-stripping + alias matching + scoring, `startSession()`/`advanceRound()`/`getLeaderboard()`, round goal = 60% of max possible score, `getHighestRound()`/`updateHighestRound()` localStorage persistence
+- `lobby-ui.ts` — Lobby overlay: Twitch connection gate (connect button or connected pill), continent selector chips, best round display, Start Game button. Disables game controls when Twitch not connected
+- `sidebar-ui.ts` — Renders into `#side-panel` container (not a fixed overlay). Round number, score/goal display, "City"/"Landmark" type label per row, letter squares sorted short→long, staggered reveal animation with username. Sets panel width dynamically; collapses to 0 on dispose
 - `leaderboard-ui.ts` — Between-round popup: player rankings table, score vs goal, "Next Round" or "New Session" button
 - `input-ui.ts` — Bottom text input with green/red flash feedback
 - `globe-effects.ts` — Particle burst + marker scale pulse → release on correct guess
-- `timer-ui.ts` — Top progress bar (120s default), spans globe area only (excludes sidebar), green→orange→red color shift
+- `timer-ui.ts` — Centered pill bar at top of `#globe-area` (position:absolute), 28px tall, max 800px wide, rounded with 3px border frame, 25%/50%/75% divider marks, green→orange→red color shift (120s default)
 - `twitch-auth.ts` — OAuth auth code flow, token storage/refresh via stream-server
 - `twitch-chat.ts` — WebSocket IRC connection to Twitch chat, message parsing, reconnection with backoff
-- `twitch-ui.ts` — Connect/disconnect button UI
-- `GameRoot.astro` — Wires everything: session lifecycle, camera cycling, round timer, guess→effect→reveal→score flow, leaderboard between rounds
+- `twitch-ui.ts` — Connect/disconnect button UI on globe area (during gameplay), exports `TWITCH_ICON` SVG
+- `GameRoot.astro` — Two-column HTML layout (`#globe-area` + `#side-panel`), wires everything: lobby → Twitch gate → session lifecycle, camera cycling, round timer, guess→effect→reveal→score flow, leaderboard between rounds, mid-game disconnect handling
 
 ## Development Servers
 

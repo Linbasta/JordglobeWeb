@@ -51,6 +51,7 @@
     import { handleOAuthRedirect, getStoredAuth, startOAuthFlow, disconnect as disconnectAuth } from './twitch-auth.ts';
     import { connectChat, disconnectChat } from './twitch-chat.ts';
     import { createTwitchUI, setTwitchConnected, setTwitchDisconnected } from './twitch-ui.ts';
+    import { playCorrectSfx, playFanfareSuccess, playFanfareFail } from '../../shared/sfx/sfx-player.ts';
 
     const ROUND_SIZE_MIN = 8;
     const ROUND_SIZE_MAX = 12;
@@ -191,6 +192,7 @@
         const result = processGuess(text, username);
         if (!result) return;
 
+        playCorrectSfx();
         stopCycling();
         animating = true;
 
@@ -217,7 +219,10 @@
         const goalMet = isRoundGoalMet();
 
         if (goalMet) {
+            playFanfareSuccess();
             startConfetti(document.body, document.body, 3);
+        } else {
+            playFanfareFail();
         }
 
         showLeaderboard({

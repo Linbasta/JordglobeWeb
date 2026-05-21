@@ -6,6 +6,8 @@ const MAX_CONCURRENT = 3
 let ctx: AudioContext | null = null
 const correctBuffers: (AudioBuffer | null)[] = new Array(CORRECT_SFX_COUNT).fill(null)
 let incorrectBuffer: AudioBuffer | null = null
+let fanfareSuccessBuffer: AudioBuffer | null = null
+let fanfareFailBuffer: AudioBuffer | null = null
 
 let cursor = 0
 let activeCount = 0
@@ -30,6 +32,8 @@ async function preloadAll() {
             loadBuffer(asset(`sfx/correct_${i + 1}.ogg`)).then(b => { correctBuffers[i] = b })
         ),
         loadBuffer(asset('sfx/incorrect.ogg')).then(b => { incorrectBuffer = b }),
+        loadBuffer(asset('sfx/FanfareSuccess.mp3')).then(b => { fanfareSuccessBuffer = b }),
+        loadBuffer(asset('sfx/FanfareFail.mp3')).then(b => { fanfareFailBuffer = b }),
     ])
 }
 
@@ -78,4 +82,12 @@ export function playCorrectSfx() {
 
 export function playIncorrectSfx() {
     playBuffer(incorrectBuffer)
+}
+
+export function playFanfareSuccess() {
+    playBuffer(fanfareSuccessBuffer)
+}
+
+export function playFanfareFail() {
+    playBuffer(fanfareFailBuffer)
 }

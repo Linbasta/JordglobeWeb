@@ -53,13 +53,15 @@ export function createSidebar(locations: RoundLocation[], roundNumber: number, r
     updateCounter(0, locations.length);
     sidebarEl.appendChild(counterEl);
 
+    const showScrambled = roundNumber <= 4;
+
     const sortedIndices = locations
         .map((_, i) => i)
         .sort((a, b) => locations[a].location.name.length - locations[b].location.name.length);
 
     rowEls = new Array(locations.length);
     for (const i of sortedIndices) {
-        const row = createRow(locations[i].location.name, NAME_COL_WIDTH, locations[i].location.type);
+        const row = createRow(locations[i].location.name, NAME_COL_WIDTH, locations[i].location.type, showScrambled);
         rowEls[i] = row;
         sidebarEl.appendChild(row);
     }
@@ -67,7 +69,21 @@ export function createSidebar(locations: RoundLocation[], roundNumber: number, r
     panel.appendChild(sidebarEl);
 }
 
-function createRow(name: string, nameColWidth: number, type: LocationType): HTMLDivElement {
+function scrambleName(name: string): string {
+    const words = name.split(' ');
+    return words
+        .map((word) => {
+            const chars = [...word];
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            return chars.join('');
+        })
+        .join(' ');
+}
+
+function createRow(name: string, nameColWidth: number, type: LocationType, showScrambled: boolean): HTMLDivElement {
     const row = document.createElement('div');
     row.style.cssText =
         'display:flex;flex-direction:column;gap:2px;' +
@@ -92,26 +108,34 @@ function createRow(name: string, nameColWidth: number, type: LocationType): HTML
         'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
     inner.appendChild(nameSlot);
 
+    const scrambled = showScrambled ? scrambleName(name) : null;
+
     const letters = document.createElement('div');
     letters.className = 'letter-cells';
     letters.style.cssText = 'display:flex;gap:2px;flex-wrap:nowrap;';
+    let charIdx = 0;
     for (const ch of name) {
         const cell = document.createElement('span');
         if (ch === ' ') {
             cell.style.cssText = 'width:10px;';
         } else {
+            const scrambledCh = scrambled ? scrambled[charIdx] : ch;
             cell.style.cssText =
                 'width:26px;height:30px;flex:0 0 26px;display:inline-flex;align-items:center;' +
                 'justify-content:center;border:2px solid rgba(255,255,255,0.25);' +
-                'border-radius:4px;color:transparent;font-size:14px;font-weight:700;' +
+                'border-radius:4px;font-size:14px;font-weight:700;' +
                 'font-family:monospace;text-transform:uppercase;' +
-                'transition:all 0.25s ease;background:rgba(255,255,255,0.05);';
-            cell.textContent = ch;
+                'transition:all 0.25s ease;background:rgba(255,255,255,0.05);' +
+                (scrambled ? 'color:rgba(255,255,255,0.4);' : 'color:transparent;');
+            cell.textContent = scrambledCh;
+            cell.dataset.real = ch;
         }
+        charIdx++;
         letters.appendChild(cell);
     }
     inner.appendChild(letters);
     row.appendChild(inner);
+
     return row;
 }
 
@@ -132,10 +156,11 @@ export function revealLocation(index: number, username: string): Promise<void> {
 
         cells.forEach((cell) => {
             const span = cell as HTMLSpanElement;
-            if (!span.textContent || span.style.width === '10px') return;
+            if (!span.dataset.real || span.style.width === '10px') return;
 
             lastLetterDelay = delay;
             setTimeout(() => {
+                span.textContent = span.dataset.real!;
                 span.style.color = '#fff';
                 span.style.borderColor = 'rgba(76,175,80,0.8)';
                 span.style.background = 'rgba(76,175,80,0.35)';

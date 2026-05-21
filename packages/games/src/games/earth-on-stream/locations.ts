@@ -9,6 +9,7 @@ export interface StreamLocation {
     aliases?: string[];
     difficulty: 1 | 2 | 3;
     type: LocationType;
+    capital: boolean;
 }
 
 export interface LocationSet {
@@ -60,6 +61,7 @@ interface RawEntry {
     lon: number;
     d: 1 | 2 | 3;
     t: 'c' | 'l';
+    cap?: 1;
 }
 
 export async function loadAllLocations(): Promise<LocationSet> {
@@ -73,6 +75,7 @@ export async function loadAllLocations(): Promise<LocationSet> {
             lon: entry.lon,
             difficulty: entry.d,
             type: entry.t === 'l' ? 'landmark' : 'city',
+            capital: entry.cap === 1,
         };
 
         const aliases = LOCATION_ALIASES[entry.n];
@@ -102,38 +105,23 @@ function randBetween(min: number, max: number): number {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function getDifficultiesForRound(round: number): (1 | 2 | 3)[] {
+    if (round <= 1) return [1];
+    if (round === 2) return [1, 2];
+    if (round === 3) return [2];
+    if (round === 4) return [2, 3];
+    return [3];
+}
+
 export function pickRoundForSession(set: LocationSet, count: number, roundNumber: number): StreamLocation[] {
-    if (roundNumber >= 10) {
-        const pool = set.locations.filter((l) => l.difficulty === 3);
-        if (pool.length >= count) return shuffle(pool).slice(0, count);
-        return shuffle([...set.locations]).slice(0, count);
-    }
+    const allowed = getDifficultiesForRound(roundNumber);
+    const pool = shuffle(set.locations.filter((l) => allowed.includes(l.difficulty)));
 
-    let baseDifficulty: 1 | 2 | 3;
-    if (roundNumber <= 3) baseDifficulty = 1;
-    else if (roundNumber <= 6) baseDifficulty = 2;
-    else baseDifficulty = 3;
+    if (pool.length >= count) return pool.slice(0, count);
 
-    const easyCount = baseDifficulty > 1 ? randBetween(1, 2) : 0;
-    const hardCount = baseDifficulty < 3 ? randBetween(1, 2) : 0;
-    const baseCount = count - easyCount - hardCount;
-
-    const easyDiff = Math.max(1, baseDifficulty - 1) as 1 | 2 | 3;
-    const hardDiff = Math.min(3, baseDifficulty + 1) as 1 | 2 | 3;
-
-    const picked = [
-        ...pickFromPool(set.locations, easyDiff, easyCount),
-        ...pickFromPool(set.locations, hardDiff, hardCount),
-        ...pickFromPool(set.locations, baseDifficulty, baseCount),
-    ];
-
-    if (picked.length < count) {
-        const names = new Set(picked.map((l) => l.name));
-        const fill = shuffle(set.locations.filter((l) => !names.has(l.name)));
-        picked.push(...fill.slice(0, count - picked.length));
-    }
-
-    return shuffle(picked);
+    const names = new Set(pool.map((l) => l.name));
+    const fill = shuffle(set.locations.filter((l) => !names.has(l.name)));
+    return shuffle([...pool, ...fill.slice(0, count - pool.length)]);
 }
 
 export function getRoundGoal(roundNumber: number): number {

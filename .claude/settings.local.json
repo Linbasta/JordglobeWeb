@@ -24,7 +24,16 @@
       "Bash(node -e \"const d=require\\('./packages/games/data/legacy/locations_en.json'\\); console.log\\('Type:', typeof d, Array.isArray\\(d\\) ? 'array' : 'object'\\); const keys=Object.keys\\(d\\); console.log\\('Top keys:', keys.slice\\(0,10\\)\\); console.log\\('Total top-level keys:', keys.length\\); const first=d[keys[0]]; console.log\\('First entry:', JSON.stringify\\(first\\).slice\\(0,500\\)\\)\")",
       "Bash(node -e ' *)",
       "Bash(powershell -Command \"Get-Content 'h:\\\\02.Linbasta\\\\01.Projects\\\\JordglobeWeb\\\\packages\\\\games\\\\data\\\\legacy\\\\locations_en.json' -TotalCount 50\")",
-      "Bash(powershell -Command \"Get-Content 'h:\\\\02.Linbasta\\\\01.Projects\\\\JordglobeWeb\\\\packages\\\\games\\\\public-prod\\\\stream-locations.json' -TotalCount 3\")"
+      "Bash(powershell -Command \"Get-Content 'h:\\\\02.Linbasta\\\\01.Projects\\\\JordglobeWeb\\\\packages\\\\games\\\\public-prod\\\\stream-locations.json' -TotalCount 3\")",
+      "Bash(Get-ChildItem -Path \"h:\\\\02.Linbasta\\\\01.Projects\\\\JordglobeWeb\\\\packages\\\\games\\\\src\\\\games\\\\earth-on-stream\" -Recurse -File)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(xargs grep -l \"locations_en\")",
+      "Bash(xargs grep -l \"stream-locations\")",
+      "Bash(xargs grep -l \"stream-locations\\\\|locations_en\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const data = JSON.parse\\(fs.readFileSync\\('h:/02.Linbasta/01.Projects/JordglobeWeb/packages/games/data/legacy/locations_en.json'\\)\\); console.log\\('First entry fields:', Object.keys\\(data[0]\\).sort\\(\\)\\); console.log\\('Sample entry:', JSON.stringify\\(data[0], null, 2\\)\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const data = JSON.parse\\(fs.readFileSync\\('h:/02.Linbasta/01.Projects/JordglobeWeb/packages/games/data/legacy/locations_en.json'\\)\\); console.log\\('Total entries:', data.length\\); const withCapitalTag = data.filter\\(e => e.tags && e.tags.some\\(t => t.toLowerCase\\(\\).includes\\('capital'\\)\\)\\); console.log\\('Entries with capital in tags:', withCapitalTag.length\\); if \\(withCapitalTag.length > 0\\) { console.log\\('Sample:', withCapitalTag[0]\\); }\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const data = JSON.parse\\(fs.readFileSync\\('h:/02.Linbasta/01.Projects/JordglobeWeb/packages/games/public-prod/stream-locations.json'\\)\\); console.log\\('Total entries:', data.length\\); console.log\\('First entry fields:', Object.keys\\(data[0]\\).sort\\(\\)\\); console.log\\('Sample entries:'\\); console.log\\(JSON.stringify\\(data.slice\\(0, 3\\), null, 2\\)\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const legData = JSON.parse\\(fs.readFileSync\\('h:/02.Linbasta/01.Projects/JordglobeWeb/packages/games/data/legacy/locations_en.json'\\)\\); const capitals = legData.filter\\(e => e.tags && e.tags.includes\\('Capital'\\)\\); console.log\\('Capital entries in legacy data:', capitals.length\\); console.log\\('Sample capitals:'\\); console.log\\(capitals.slice\\(0, 5\\).map\\(c => \\({ name: c.nameEn, tags: c.tags, difficulty: c.difficulty }\\)\\)\\);\")"
     ],
     "deny": [],
     "ask": []

@@ -88,7 +88,7 @@ export function startRound(
     globalRoundScore = 0;
 
     const maxScore = picked.reduce((sum, loc) => sum + POINTS_BY_DIFFICULTY[loc.difficulty], 0);
-    roundGoal = Math.round(maxScore * 0.8);
+    roundGoal = Math.round(maxScore * 0.6);
 
     for (const [, score] of playerScores) {
         score.roundPoints = 0;
